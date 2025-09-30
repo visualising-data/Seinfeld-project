@@ -1,0 +1,193 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+@layer base {
+  html {
+    width: 100vw;
+    font-family: "new-science", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    box-sizing: border-box;
+    overflow-x: hidden;
+  }
+  body{
+    margin: 0;
+    font-size: 1.125rem;
+    line-height: 1.5;
+    font-weight: 400;
+    color: #12020A;
+    fill: #12020A;
+    background: #12020A;
+  }
+  .em {
+    font-weight: 600;
+  }
+  h1, h2, h3, h4, h5 {
+    line-height: 1;
+  }
+  h1 {
+    margin: 2rem 0 0;
+    font-size: 3.125rem;
+    font-weight: 700;
+  }
+  h2 {
+    margin: 0;
+    font-size: 3rem;
+    font-weight: 700;
+  }
+  h3 {
+    padding: 2rem 0 1rem;
+    font-size: 2.8rem;
+    font-weight: 600;
+  }
+  h4 {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 600;
+  }
+  h5 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+  p {
+    margin: 1.5rem 0;
+  }
+  .mid {
+    font-size: 1rem;
+    line-height: 1.4;
+  }
+  .small {
+    font-size: 0.875rem;
+    line-height: 1.2;
+  }
+  .number {
+    font-size: 0.9375rem;
+    line-height: 1.2;
+    font-family: "new-science-mono", system-ui, sans-serif;
+  }
+  .accent {
+    color: #E71D80;
+    fill: #E71D80;
+  }
+  a {
+    color: #E71D80;
+    font-weight: 600;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  ul {
+    margin: 0;
+    padding-left: 0;
+    list-style: none;
+  }
+  .container {
+    width: 100%;
+    max-width: 1536px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+  .mask {
+    overflow: hidden;
+  }
+	.overlay {
+		position: absolute;
+		z-index: 1;
+		top: 0;
+		left: 0;
+    right: 0;
+    bottom: 0;
+		background: rgba(18, 2, 10, 0.55);
+	}
+  .backdrop {
+    position: fixed;
+    top:0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 20;
+		background-color: rgba(48, 56, 67, 0.9);
+	}
+	.readable-layer {
+		background: rgba(18, 2, 10, 0.55);
+	}
+  .highlight {
+    font-weight: 600;
+		background: rgb(253, 232, 36);
+		background: linear-gradient(
+			90deg,
+			rgba(253, 232, 36, 1) 0%,
+			rgba(184, 206, 50, 1) 12.5%,
+			rgba(125, 186, 87, 1) 25%,
+			rgba(76, 178, 120, 1) 37.5%,
+			rgba(29, 163, 136, 1) 50%,
+			rgba(34, 138, 141, 1) 62.5%,
+			rgba(47, 112, 142, 1) 75%,
+			rgba(57, 87, 141, 1) 87.5%,
+			rgba(69, 55, 130, 1) 100%
+		);
+		background-size: 200% auto;
+		background-clip: text;
+	}
+  .btn {
+    padding: 12px 20px;
+    transition: all 250ms ease-out;
+    border-radius: 8px;
+  }
+  .btn-primary {
+    font-weight: 600;
+    color: #F9F5F7;
+    background-color: #E71D80;
+  }
+  .btn-primary:hover {
+    background-color: #af1761;
+  }
+  .btn-primary:disabled {
+    background-color: #BEBABC;
+  }
+  .btn-secondary {
+    background-color: transparent;
+  }
+  .btn-secondary:hover {
+    background-color: #EEECED;
+  }
+  .text-overlay {
+    width: 80%;
+    max-width: 600px;
+    padding: 24px 32px;
+    color: #F9F5F7;
+    background-color: #12020A;
+    border-radius: 12px;
+    box-shadow: 0px 1px 15px 0px rgba(0, 0, 0, 0.15);
+  }
+  /* md */
+  @media screen and (min-width: 768px) {
+    h1 {
+      font-size: 5rem;
+    }
+    h2 {
+      font-size: 4rem;
+    }
+    h3 {
+      font-size: 3.5rem;
+    }
+    h5 {
+      font-size: 1.5625rem;
+    }
+  }
+  /* lg */
+  @media screen and (min-width: 1024px) {
+    body {
+      font-size: 1.375rem;
+    }
+    h1 {
+      font-size: 7rem;
+    }
+    h2 {
+      font-size: 5.5rem;
+    }
+    h3 {
+      font-size: 4.0625rem;
+    }
+  }
+}
