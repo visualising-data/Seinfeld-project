@@ -1051,7 +1051,8 @@ export const episodesInfo = [
     "FullDate": "#VALUE!",
     "DaysInYear": "#VALUE!",
     "ImaginedYear": "#VALUE!",
-    "DoubleEpisodes?": 180
+    "DoubleEpisodes?": 180,
+    "verticalStack": -0.5
   },
   {
     "season": 3,
@@ -1082,7 +1083,8 @@ export const episodesInfo = [
     "FullDate": "#VALUE!",
     "DaysInYear": "#VALUE!",
     "ImaginedYear": "#VALUE!",
-    "DoubleEpisodes?": 180
+    "DoubleEpisodes?": 180,
+    "verticalStack": 0.5
   },
   {
     "season": 3,
@@ -1330,7 +1332,8 @@ export const episodesInfo = [
     "FullDate": "#VALUE!",
     "DaysInYear": "#VALUE!",
     "ImaginedYear": "#VALUE!",
-    "DoubleEpisodes?": 180
+    "DoubleEpisodes?": 180,
+    "verticalStack": -0.5
   },
   {
     "season": 4,
@@ -1361,7 +1364,8 @@ export const episodesInfo = [
     "FullDate": "#VALUE!",
     "DaysInYear": "#VALUE!",
     "ImaginedYear": "#VALUE!",
-    "DoubleEpisodes?": 180
+    "DoubleEpisodes?": 180,
+    "verticalStack": 0.5
   },
   {
     "season": 4,
@@ -1950,7 +1954,8 @@ export const episodesInfo = [
     "FullDate": "#VALUE!",
     "DaysInYear": "#VALUE!",
     "ImaginedYear": "#VALUE!",
-    "DoubleEpisodes?": 180
+    "DoubleEpisodes?": 180,
+    "verticalStack": -0.5
   },
   {
     "season": 4,
@@ -1981,7 +1986,8 @@ export const episodesInfo = [
     "FullDate": "#VALUE!",
     "DaysInYear": "#VALUE!",
     "ImaginedYear": "#VALUE!",
-    "DoubleEpisodes?": 180
+    "DoubleEpisodes?": 180,
+    "verticalStack": 0.5
   },
   {
     "season": 5,
@@ -2539,7 +2545,8 @@ export const episodesInfo = [
     "FullDate": "#VALUE!",
     "DaysInYear": "#VALUE!",
     "ImaginedYear": "#VALUE!",
-    "DoubleEpisodes?": 180
+    "DoubleEpisodes?": 180,
+    "verticalStack": -0.5
   },
   {
     "season": 5,
@@ -2570,7 +2577,8 @@ export const episodesInfo = [
     "FullDate": "#VALUE!",
     "DaysInYear": "#VALUE!",
     "ImaginedYear": "#VALUE!",
-    "DoubleEpisodes?": 180
+    "DoubleEpisodes?": 180,
+    "verticalStack": 0.5
   },
   {
     "season": 5,
@@ -3080,7 +3088,8 @@ export const episodesInfo = [
     "isSpecial": true,
     "MonthPart": "February",
     "DayPart": 1,
-    "YearPart": 1995
+    "YearPart": 1995,
+    "verticalStack": -0.5
   },
   {
     "season": 6,
@@ -3094,7 +3103,8 @@ export const episodesInfo = [
     "isSpecial": true,
     "MonthPart": "February",
     "DayPart": 1,
-    "YearPart": 1995
+    "YearPart": 1995,
+    "verticalStack": 0.5
   },
   {
     "season": 6,
@@ -3807,7 +3817,8 @@ export const episodesInfo = [
     "FullDate": "#VALUE!",
     "DaysInYear": "#VALUE!",
     "ImaginedYear": "#VALUE!",
-    "DoubleEpisodes?": 180
+    "DoubleEpisodes?": 180,
+    "verticalStack": -0.5
   },
   {
     "season": 7,
@@ -3838,7 +3849,8 @@ export const episodesInfo = [
     "FullDate": "#VALUE!",
     "DaysInYear": "#VALUE!",
     "ImaginedYear": "#VALUE!",
-    "DoubleEpisodes?": 180
+    "DoubleEpisodes?": 180,
+    "verticalStack": 0.5
   },
   {
     "season": 7,
@@ -4024,7 +4036,8 @@ export const episodesInfo = [
     "FullDate": "#VALUE!",
     "DaysInYear": "#VALUE!",
     "ImaginedYear": "#VALUE!",
-    "DoubleEpisodes?": 180
+    "DoubleEpisodes?": 180,
+    "verticalStack": -0.5
   },
   {
     "season": 7,
@@ -4055,7 +4068,8 @@ export const episodesInfo = [
     "FullDate": "#VALUE!",
     "DaysInYear": "#VALUE!",
     "ImaginedYear": "#VALUE!",
-    "DoubleEpisodes?": 180
+    "DoubleEpisodes?": 180,
+    "verticalStack": 0.5
   },
   {
     "season": 7,
@@ -5433,7 +5447,8 @@ export const episodesInfo = [
     "isSpecial": true,
     "MonthPart": "May",
     "DayPart": 14,
-    "YearPart": 1998
+    "YearPart": 1998,
+    "verticalStack": -1
   },
   {
     "season": 9,
@@ -5447,7 +5462,8 @@ export const episodesInfo = [
     "isSpecial": true,
     "MonthPart": "May",
     "DayPart": 14,
-    "YearPart": 1998
+    "YearPart": 1998,
+    "verticalStack": -0.5
   },
   {
     "season": 9,
@@ -5478,7 +5494,8 @@ export const episodesInfo = [
     "FullDate": "#VALUE!",
     "DaysInYear": "#VALUE!",
     "ImaginedYear": "#VALUE!",
-    "DoubleEpisodes?": 180
+    "DoubleEpisodes?": 180,
+    "verticalStack": 0.5
   },
   {
     "season": 9,
@@ -5509,6 +5526,7 @@ export const episodesInfo = [
     "FullDate": "#VALUE!",
     "DaysInYear": "#VALUE!",
     "ImaginedYear": "#VALUE!",
-    "DoubleEpisodes?": 180
+    "DoubleEpisodes?": 180,
+    "verticalStack": 1
   }
 ]

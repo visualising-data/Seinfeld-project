@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import { scaleTime } from 'd3-scale';
 	import { forceSimulation, forceX, forceY, forceCollide } from 'd3-force';
+	import d3ForceLimit from 'd3-force-limit';
 	import { range } from 'd3-array';
 	import { gsap } from 'gsap/dist/gsap';
 
@@ -169,7 +170,7 @@
 			return timeScale(new Date(date));
 		};
 
-		const getYPosition = (/** @type {number} */ season, /** @type {string} */ date) => {
+		const getYPosition = (/** @type {number} */ season, /** @type {string} */ date, /** @type {number} */ verticalStack) => {
 			const seasonBlockTop = document
 				.getElementById(
 					`catalog-season-${date === 'August 12 1992' || date === 'August 19 1992' ? season - 1 : season}`
@@ -182,9 +183,10 @@
 				?.offsetHeight;
 			
 			if (season === 1) {
-				return date === 'July 5 1989' ? 20 : seasonBlockHeight / 2 + 10;
+				return date === 'July 5 1989' ? 20 + headersHeight : seasonBlockHeight / 2 + headersHeight + 10;
 			} else {
-				return seasonBlockTop - headersHeight + seasonBlockHeight / 2;
+				const yPosition = seasonBlockTop + seasonBlockHeight / 2 + verticalStack * 2 * episodeRadius;
+				return yPosition;
 			}
 		};
 
@@ -193,10 +195,18 @@
 			nodes = simulation.nodes();
 		});
 
+		const wallForce = d3ForceLimit()
+			.radius(episodeRadius)
+			.x0(15)
+			.x1(screenSize.width - seasonsWidth - 15)
+			.y0(headersHeight)
+			.y1(innerHeight)
+
 		simulation
 			.force('x', forceX((d) => getXPosition(d.season, d.date_aired)).strength(1))
-			.force('y', forceY((d) => getYPosition(d.season, d.date_aired)).strength(0.5))
+			.force('y', forceY((d) => getYPosition(d.season, d.date_aired, d.verticalStack ? d.verticalStack : 0)).strength(0.8))
 			.force('collide', forceCollide().radius(episodeRadius).strength(1))
+			.force('walls', wallForce)
 			.alpha(0.5)
 			.alphaDecay(0.1);
 	});
@@ -377,7 +387,7 @@
 				<g
 					id={`calendar-s${node.season}e${node.episode}`}
 					class="calendar-episode"
-					transform={`translate(${node.x}, ${node.y + headersHeight})`}
+					transform={`translate(${node.x}, ${node.y})`}
 					style="cursor: default;"
 					role="document"
 					onmouseenter={(e) => handleMouseEnter(e, node)}
