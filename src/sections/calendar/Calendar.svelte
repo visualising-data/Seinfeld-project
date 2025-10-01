@@ -250,40 +250,26 @@
 		.concat(twentyTwoArray.map((e) => `s8e${e}`))
 		.concat(twentyFourArray.map((e) => `s9e${e}`));
 
-	onMount(() => {
-		// Pin calendar
-		ScrollTrigger.create({
-			trigger: '#intro-calendar-container',
-			start: 'top top',
-			end: 'bottom bottom',
-			pin: '#intro-calendar',
-			preventOverlaps: true
-		});
-	});
-
+	const getSelectors = (/** @type {number} */ number) => {
+		switch (number) {
+			case 1:
+				return episodesShow1.map((e) => `#calendar-${e}`).join(',');
+			case 2:
+				return episodesShow2.map((e) => `#calendar-${e}`).join(',');
+			case 3:
+				return episodesShow3.map((e) => `#calendar-${e}`).join(',');
+			case 4:
+				return episodesShow4.map((e) => `#calendar-${e}`).join(',');
+			default:
+				return episodesShow5.map((e) => `#calendar-${e}`).join(',');
+		}
+	}
+	
 	/**
 	 * @param {number} number
 	 */
 	function showEpisodes(number) {
-		let selectors = '';
-		switch (number) {
-			case 1:
-				selectors = episodesShow1.map((e) => `#calendar-${e}`).join(',');
-				break;
-			case 2:
-				selectors = episodesShow2.map((e) => `#calendar-${e}`).join(',');
-				break;
-			case 3:
-				selectors = episodesShow3.map((e) => `#calendar-${e}`).join(',');
-				break;
-			case 4:
-				selectors = episodesShow4.map((e) => `#calendar-${e}`).join(',');
-				break;
-			default:
-				selectors = episodesShow5.map((e) => `#calendar-${e}`).join(',');
-				break;
-		}
-
+		const selectors = getSelectors(number);
 		gsap.to(selectors, {
 			scale: 1,
 			opacity: 1,
@@ -296,6 +282,91 @@
 			}
 		});
 	}
+	/**
+	 * @param {number} number
+	 */
+	function hideEpisodes(number) {
+		const selectors = getSelectors(number);
+		gsap.to(selectors, {
+			scale: 0,
+			opacity: 0,
+			pointerEvents: 'none'
+		});
+	}
+
+	onMount(() => {
+		// Pin calendar
+		ScrollTrigger.create({
+			trigger: '#intro-calendar-container',
+			start: 'top top',
+			end: 'bottom bottom',
+			pin: '#intro-calendar',
+			preventOverlaps: true
+		});
+
+		// Reveal episodes
+		gsap.timeline({
+			scrollTrigger: {
+				trigger: '#calendar-text-overlay-1',
+				start: 'center bottom',
+        onEnter: () => showEpisodes(1),
+        onEnterBack: () => showEpisodes(1),
+        onLeaveBack: () => {
+					hideEpisodes(1)
+					hideEpisodes(2)
+					hideEpisodes(3)
+					hideEpisodes(4)
+					hideEpisodes(5)
+				}
+			}
+		});
+		gsap.timeline({
+			scrollTrigger: {
+				trigger: '#calendar-text-overlay-2',
+				start: 'center bottom',
+        onEnter: () => showEpisodes(2),
+        onEnterBack: () => showEpisodes(2)
+			}
+		});
+		gsap.timeline({
+			scrollTrigger: {
+				trigger: '#calendar-text-overlay-3',
+				start: 'center bottom',
+        onEnter: () => showEpisodes(3),
+        onEnterBack: () => showEpisodes(3)
+			}
+		});
+		gsap.timeline({
+			scrollTrigger: {
+				trigger: '#calendar-text-overlay-4',
+				start: 'center bottom',
+        onEnter: () => showEpisodes(4),
+        onEnterBack: () => showEpisodes(4)
+			}
+		});
+		gsap.timeline({
+			scrollTrigger: {
+				trigger: '#calendar-text-overlay-5',
+				start: 'center bottom',
+        onEnter: () => showEpisodes(5),
+				onEnterBack: () => showEpisodes(5)
+			}
+		});
+		gsap.timeline({
+			scrollTrigger: {
+				trigger: '#calendar-text-overlay-6',
+				start: 'center bottom',
+        onLeave: () => {
+					hideEpisodes(1)
+					hideEpisodes(2)
+					hideEpisodes(3)
+					hideEpisodes(4)
+					hideEpisodes(5)
+				}
+			}
+		});
+	});
+
 </script>
 
 <svelte:window bind:innerWidth bind:innerHeight />
@@ -414,7 +485,7 @@
 
 	<!-- Scrolling Texts -->
 	<div class="z-10 relative pointer-events-none">
-		<CalendarTexts bind:showEpisodes />
+		<CalendarTexts />
 	</div>
 
 	<!-- Tooltip -->
