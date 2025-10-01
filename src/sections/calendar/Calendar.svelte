@@ -25,15 +25,15 @@
 
 	const tvSeasons = [
 		{
-			season: 'Fall Schedule',
+			season: 'Fall',
 			months: ['Sep', 'Oct', 'Nov', 'Dec']
 		},
 		{
-			season: 'Winter/Spring Schedule',
+			season: 'Winter/Spring',
 			months: ['Jan', 'Feb', 'Mar', 'Apr']
 		},
 		{
-			season: 'Summer Schedule',
+			season: 'Summer',
 			months: ['May', 'Jun', 'Jul', 'Aug']
 		}
 	];
@@ -374,7 +374,10 @@
 <div id="intro-calendar-container" class="relative">
 	<div id="intro-calendar" class="absolute flex h-screen w-screen">
 		<!-- Seasons -->
-		<div class="flex flex-col" style="width: {seasonsWidth}px; padding-top: {headersHeight}px;">
+		<div class="flex flex-col" style="width: {seasonsWidth}px;">
+			<div class="relative px-4" style="height: {headersHeight}px;">
+				<div class="relative" style="top: {12}px;">Schedule</div>
+			</div>
 			{#each seasons as season, i}
 				<div
 					id={`catalog-season-${i + 1}`}
@@ -396,13 +399,6 @@
 			height={innerHeight}
 			style="top: 0px; left: {seasonsWidth}px;"
 		>
-			<!-- <rect
-				x={0}
-				y={0}
-				width="100%"
-				height="80px"
-				fill="#F4F4F4"
-			/> -->
 			<!-- Seasons and Months -->
 			{#each tvSeasons as tvSeason, i}
 				<!-- Season labels -->
@@ -416,7 +412,12 @@
 					text-anchor="middle"
 					dominant-baseline="middle"
 				>
-					{tvSeason.season}
+					{#if tvSeason.season === 'Winter/Spring' && innerWidth < 640}
+						<tspan x={timeScale(new Date('March 1 1990'))} dy="-8" text-anchor="middle">Winter/</tspan>
+						<tspan x={timeScale(new Date('March 1 1990'))} dy="18" text-anchor="middle">Spring</tspan>
+					{:else}
+						{tvSeason.season}
+					{/if}
 				</text>
 
 				<!-- Month labels -->
@@ -469,15 +470,15 @@
 							? '#BEBABC'
 							: seasons.find((s) => s.seasonNum === node.season)?.color}
 					/>
-					{#if innerWidth >= 768}
-						<text
-							class="number"
-							text-anchor="middle"
-							dominant-baseline="middle"
-							dy={1}
-							fill={node.season > 2 && !node.isSpecial ? '#F9F5F7' : '#12020A'}>{node.episode}</text
-						>
-					{/if}
+					<text
+						class="number"
+						text-anchor="middle"
+						dominant-baseline="middle"
+						dy={1}
+						fill={node.season > 2 && !node.isSpecial ? '#F9F5F7' : '#12020A'}
+						style="font-size: {screenSize.width >= 793 ? 15 : 12}px;">
+						{node.episode}
+					</text>
 				</g>
 			{/each}
 		</svg>
@@ -489,7 +490,7 @@
 	</div>
 
 	<!-- Tooltip -->
-	{#if isTooltipVisible && innerWidth >= 793}
+	{#if isTooltipVisible}
 		<div class="fixed z-20 top-0 left-0 right-0 bottom-0 pointer-events-none">
 			<EpisodeTooltip episode={hoveredEpisode} position={mousePosition} />
 		</div>
