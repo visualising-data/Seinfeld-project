@@ -20,7 +20,7 @@
 <!-- Text 2 -->
 <div class="flex h-screen w-screen items-center justify-center">
 	<div class="text-overlay" use:inview={options} oninview_enter={() => showEpisodes(2)}>
-		Though it was watched by 15.4M viewers, the early reviews were mixed - test audiences hated, TV
+		Though it was watched by 15.4M viewers, the early reviews were mixed - test audiences hated it, TV
 		critics liked it - so its future was initially uncertain. However, thanks to the perseverance
 		and persuasion of NBC executive Rick Ludwin, four more episodes were belatedly ordered to
 		complete the unusually short first season.
@@ -30,8 +30,7 @@
 <!-- Text 3 -->
 <div class="flex h-screen w-screen items-center justify-center">
 	<div class="text-overlay" use:inview={options} oninview_enter={() => showEpisodes(3)}>
-		This opening season belatedly wrapped a year later, in the summer of 1990, and was received with
-		healthy ratings from critics and audiences alike. This response was positive enough to convince
+		This opening season belatedly wrapped a year later, in the summer of 1990, and was now receiving warmer ratings from critics and audiences alike. This response was positive enough to convince
 		NBC to commission a second season, this time comprising 12 episodes.
 	</div>
 </div>
@@ -54,3 +53,5 @@
 		<span class="em">176 episodes</span> (plus four specials).
 	</div>
 </div>
+
+<div class="flex h-screen w-screen items-center justify-center"></div>

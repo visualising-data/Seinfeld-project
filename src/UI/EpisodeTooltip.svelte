@@ -3,10 +3,9 @@
 	import EpisodeIcon from '../icons/EpisodeIcon.svelte';
 	import StarIcon from '../icons/StarIcon.svelte';
 	import TvIcon from '../icons/TvIcon.svelte';
-	import { derived } from 'svelte/store';
 
 	let { episode, position } = $props();
-
+$inspect(episode)
 	/**
 	 * @type {number}
 	 */

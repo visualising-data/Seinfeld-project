@@ -3077,7 +3077,10 @@ export const episodesInfo = [
     "img_src": "https://m.media-amazon.com/images/M/MV5BYjBkZjAyNjEtOTdiMi00N2U2LTgzNGItMjRlMTA1ZjJhMTZhXkEyXkFqcGc@._V1_QL75_UY563_CR57,0,1000,563_.jpg",
     "date_aired": "February 2 1995",
     "IMDB_rating": "7,2",
-    "isSpecial": true
+    "isSpecial": true,
+    "MonthPart": "February",
+    "DayPart": 1,
+    "YearPart": 1995
   },
   {
     "season": 6,
@@ -3088,7 +3091,10 @@ export const episodesInfo = [
     "img_src": "https://m.media-amazon.com/images/M/MV5BYjBkZjAyNjEtOTdiMi00N2U2LTgzNGItMjRlMTA1ZjJhMTZhXkEyXkFqcGc@._V1_QL75_UY563_CR57,0,1000,563_.jpg",
     "date_aired": "February 2 1995",
     "IMDB_rating": "7,2",
-    "isSpecial": true
+    "isSpecial": true,
+    "MonthPart": "February",
+    "DayPart": 1,
+    "YearPart": 1995
   },
   {
     "season": 6,
@@ -5424,7 +5430,10 @@ export const episodesInfo = [
     "img_src": "https://m.media-amazon.com/images/M/MV5BN2IyMTFmMzItM2E1MC00ZjE4LWEzMzEtNjQwMzIwMzc5YjQ2XkEyXkFqcGc@._V1_QL75_UX1000_CR0,7,1000,563_.jpg",
     "date_aired": "May 14 1998",
     "IMDB_rating": "8,1",
-    "isSpecial": true
+    "isSpecial": true,
+    "MonthPart": "May",
+    "DayPart": 14,
+    "YearPart": 1998
   },
   {
     "season": 9,
@@ -5435,7 +5444,10 @@ export const episodesInfo = [
     "img_src": "https://m.media-amazon.com/images/M/MV5BN2IyMTFmMzItM2E1MC00ZjE4LWEzMzEtNjQwMzIwMzc5YjQ2XkEyXkFqcGc@._V1_QL75_UX1000_CR0,7,1000,563_.jpg",
     "date_aired": "May 14 1998",
     "IMDB_rating": "8,1",
-    "isSpecial": true
+    "isSpecial": true,
+    "MonthPart": "May",
+    "DayPart": 14,
+    "YearPart": 1998
   },
   {
     "season": 9,
