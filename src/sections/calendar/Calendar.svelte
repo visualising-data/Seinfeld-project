@@ -208,7 +208,15 @@
 			.force('collide', forceCollide().radius(episodeRadius).strength(1))
 			.force('walls', wallForce)
 			.alpha(0.5)
-			.alphaDecay(0.1);
+			.alphaDecay(0.1)
+			.on('end', () => {
+				gsap.set('.calendar-episode', {
+					scale: 0.1,
+					opacity: 0,
+					transformOrigin: 'center',
+					pointerEvents: 'none'
+				});
+			});
 	});
 
 	let isTooltipVisible = $state(false);
@@ -251,15 +259,6 @@
 			pin: '#intro-calendar',
 			preventOverlaps: true
 		});
-
-		setTimeout(() => {
-			gsap.set('.calendar-episode', {
-				scale: 0,
-				opacity: 0,
-				transformOrigin: 'center',
-				pointerEvents: 'none'
-			});
-		}, 1000);
 	});
 
 	/**
@@ -288,7 +287,7 @@
 		gsap.to(selectors, {
 			scale: 1,
 			opacity: 1,
-			ease: 'back.out(5)',
+			ease: 'back.out(3)',
 			duration: 1,
 			pointerEvents: 'auto',
 			stagger: {
