@@ -19,20 +19,20 @@
 	let innerHeight = $state(800);
 	let screenSize = $derived({ width: innerWidth, height: innerHeight });
 	let seasonsWidth = $derived(screenSize.width >= 793 ? 130 : 100);
-	let headersHeight = $derived(screenSize.width >= 793 ? 68 : 36);
+	let headersHeight = $derived(screenSize.width >= 793 ? 80 : 40);
 	let episodeRadius = $derived(screenSize.width >= 793 ? 15 : 10);
 
 	const tvSeasons = [
 		{
-			season: 'Fall',
+			season: 'Fall Schedule',
 			months: ['Sep', 'Oct', 'Nov', 'Dec']
 		},
 		{
-			season: 'Spring',
+			season: 'Winter/Spring Schedule',
 			months: ['Jan', 'Feb', 'Mar', 'Apr']
 		},
 		{
-			season: 'Summer',
+			season: 'Summer Schedule',
 			months: ['May', 'Jun', 'Jul', 'Aug']
 		}
 	];
@@ -182,7 +182,7 @@
 				?.offsetHeight;
 			
 			if (season === 1) {
-				return date === 'July 5 1989' ? seasonBlockHeight / 2 - 50 : seasonBlockHeight / 2 + 10;
+				return date === 'July 5 1989' ? 20 : seasonBlockHeight / 2 + 10;
 			} else {
 				return seasonBlockTop - headersHeight + seasonBlockHeight / 2;
 			}
@@ -294,12 +294,12 @@
 <div id="intro-calendar-container" class="relative">
 	<div id="intro-calendar" class="absolute flex h-screen w-screen">
 		<!-- Seasons -->
-		<div class="flex flex-col" style="width: {seasonsWidth}px;">
+		<div class="flex flex-col" style="width: {seasonsWidth}px; padding-top: {headersHeight}px;">
 			{#each seasons as season, i}
 				<div
 					id={`catalog-season-${i + 1}`}
 					class="flex flex-col justify-center px-4"
-					style="flex-grow: {i === 0 ? 2 : 1}; color: {i > 1
+					style="flex-grow: 1; color: {i > 1
 						? '#F9F5F7'
 						: '#12020A'}; background: {season.color};
           font-size: {innerWidth >= 793 ? '1.125rem' : '0.875rem'};"
@@ -316,13 +316,13 @@
 			height={innerHeight}
 			style="top: 0px; left: {seasonsWidth}px;"
 		>
-			<rect
-				x={timeScale(new Date('January 1 1990'))}
+			<!-- <rect
+				x={0}
 				y={0}
-				width={timeScale(new Date('May 1 1990')) - timeScale(new Date('January 1 1990'))}
-				height={innerHeight}
-				fill="#EEECED"
-			/>
+				width="100%"
+				height="80px"
+				fill="#F4F4F4"
+			/> -->
 			<!-- Seasons and Months -->
 			{#each tvSeasons as tvSeason, i}
 				<!-- Season labels -->
@@ -332,7 +332,7 @@
 						: i === 1
 							? timeScale(new Date('March 1 1990'))
 							: timeScale(new Date('July 1 1990'))}
-					y={24}
+					y={26}
 					text-anchor="middle"
 					dominant-baseline="middle"
 				>
@@ -345,7 +345,7 @@
 						<text
 							class="text-base"
 							x={monthScale(month)}
-							y={56}
+							y={66}
 							text-anchor="middle"
 							dominant-baseline="middle"
 						>
@@ -362,7 +362,7 @@
 						{#if month !== 'Aug'}
 							<line
 								x1={globalTimeScale(month)}
-								y1={44}
+								y1={month === 'Dec' || month === 'Apr' ? 0 : 50}
 								x2={globalTimeScale(month)}
 								y2={innerHeight}
 								stroke="#BEBABC"
