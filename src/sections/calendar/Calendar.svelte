@@ -20,8 +20,8 @@
 	let innerHeight = $state(800);
 	let screenSize = $derived({ width: innerWidth, height: innerHeight });
 	let seasonsWidth = $derived(innerWidth >= 793 ? 130 : 100);
-	let headersHeight = $derived(innerWidth >= 793 ? 80 : 40);
-	let episodeRadius = $derived(innerWidth >= 793 ? 15 : innerWidth > 540 ? 12 : 10);
+	let headersHeight = $derived(innerWidth >= 768 ? 80 : 40);
+	let episodeRadius = $derived(innerWidth >= 1400 ? 15 : innerWidth > 540 ? 12 : 10);
 
 	const tvSeasons = [
 		{
@@ -162,62 +162,39 @@
 		return date1 + (date2 - date1) / 2;
 	};
 
-	$effect(() => {
-		const getXPosition = (/** @type {number} */ season, /** @type {string} */ date) => {
-			const timeScale = scaleTime()
-				.domain(getTimeDomain(season, date))
-				.range([15, screenSize.width - seasonsWidth - 15]);
-			return timeScale(new Date(date));
-		};
+	const getXPosition = (/** @type {number} */ season, /** @type {string} */ date) => {
+		const timeScale = scaleTime()
+			.domain(getTimeDomain(season, date))
+			.range([15, screenSize.width - seasonsWidth - 15]);
+		return timeScale(new Date(date));
+	};
 
-		const getYPosition = (/** @type {number} */ season, /** @type {string} */ date, /** @type {number} */ verticalStack) => {
-			const seasonBlockTop = document
-				.getElementById(
-					`catalog-season-${date === 'August 12 1992' || date === 'August 19 1992' ? season - 1 : season}`
-				)
-				?.offsetTop;
-			const seasonBlockHeight = document
-				.getElementById(
-					`catalog-season-${date === 'August 12 1992' || date === 'August 19 1992' ? season - 1 : season}`
-				)
-				?.offsetHeight;
-			
-			if (season === 1) {
-				return date === 'July 5 1989' ? 20 + headersHeight : seasonBlockHeight / 2 + headersHeight + 10;
-			} else {
-				const yPosition = seasonBlockTop + seasonBlockHeight / 2 + verticalStack * 2 * episodeRadius;
-				return yPosition;
-			}
-		};
+	const getYPosition = (/** @type {number} */ season, /** @type {string} */ date, /** @type {number} */ verticalStack) => {
+		const seasonBlockTop = document
+			.getElementById(
+				`catalog-season-${date === 'August 12 1992' || date === 'August 19 1992' ? season - 1 : season}`
+			)
+			?.offsetTop;
+		const seasonBlockHeight = document
+			.getElementById(
+				`catalog-season-${date === 'August 12 1992' || date === 'August 19 1992' ? season - 1 : season}`
+			)
+			?.offsetHeight;
+		
+		if (season === 1) {
+			return date === 'July 5 1989' ? 20 + headersHeight : seasonBlockHeight / 2 + headersHeight + 10;
+		} else {
+			const yPosition = seasonBlockTop + seasonBlockHeight / 2 + verticalStack * 2 * episodeRadius;
+			return yPosition;
+		}
+	};
 
-		let simulation = forceSimulation(episodesInfo);
-		simulation.on('tick', () => {
-			nodes = simulation.nodes();
-		});
-
-		const wallForce = d3ForceLimit()
-			.radius(episodeRadius)
-			.x0(15)
-			.x1(screenSize.width - seasonsWidth - 15)
-			.y0(headersHeight)
-			.y1(innerHeight)
-
-		simulation
-			.force('x', forceX((d) => getXPosition(d.season, d.date_aired)).strength(1))
-			.force('y', forceY((d) => getYPosition(d.season, d.date_aired, d.verticalStack ? d.verticalStack : 0)).strength(0.8))
-			.force('collide', forceCollide().radius(episodeRadius).strength(1))
-			.force('walls', wallForce)
-			.alpha(0.5)
-			.alphaDecay(0.1)
-			.on('end', () => {
-				gsap.set('.calendar-episode', {
-					scale: 0.1,
-					opacity: 0,
-					transformOrigin: 'center',
-					pointerEvents: 'none'
-				});
-			});
-	});
+	const wallForce = $derived(d3ForceLimit()
+		.radius(episodeRadius)
+		.x0(15)
+		.x1(screenSize.width - seasonsWidth - 15)
+		.y0(headersHeight)
+		.y1(innerHeight))
 
 	let isTooltipVisible = $state(false);
 	let hoveredEpisode = $state();
@@ -294,7 +271,41 @@
 		});
 	}
 
+	/**
+	 * @type {import("d3-force").Simulation<import("d3-force").SimulationNodeDatum, undefined>}
+	 */
+	let simulation
+	const initializeSimulation = () => {
+		simulation = forceSimulation(episodesInfo);
+		simulation.on('tick', () => {
+			nodes = simulation.nodes();
+		});
+
+		simulation
+			.force('x', forceX((d) => getXPosition(d.season, d.date_aired)).strength(1))
+			.force('y', forceY((d) => getYPosition(d.season, d.date_aired, d.verticalStack ? d.verticalStack : 0)).strength(0.5))
+			.force('collide', forceCollide().radius(episodeRadius).strength(1))
+			.force('walls', wallForce)
+			.alpha(0.5)
+			.alphaDecay(0.1)
+	}
+
+	const handleWindowResize = () => {
+		initializeSimulation()
+	}
+
 	onMount(() => {
+		// Run simulation
+		initializeSimulation()
+		simulation.on('end', () => {
+				gsap.set('.calendar-episode', {
+					scale: 0.1,
+					opacity: 0,
+					transformOrigin: 'center',
+					pointerEvents: 'none'
+				});
+			});
+
 		// Pin calendar
 		ScrollTrigger.create({
 			trigger: '#intro-calendar-container',
@@ -366,10 +377,9 @@
 			}
 		});
 	});
-
 </script>
 
-<svelte:window bind:innerWidth bind:innerHeight />
+<svelte:window bind:innerWidth bind:innerHeight onresize={handleWindowResize} />
 
 <div id="intro-calendar-container" class="relative">
 	<div id="intro-calendar" class="absolute flex h-screen w-screen">
