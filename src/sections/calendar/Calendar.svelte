@@ -19,9 +19,9 @@
 	let innerWidth = $state(1600);
 	let innerHeight = $state(800);
 	let screenSize = $derived({ width: innerWidth, height: innerHeight });
-	let seasonsWidth = $derived(screenSize.width >= 793 ? 130 : 100);
-	let headersHeight = $derived(screenSize.width >= 793 ? 80 : 40);
-	let episodeRadius = $derived(screenSize.width >= 793 ? 15 : 10);
+	let seasonsWidth = $derived(innerWidth >= 793 ? 130 : 100);
+	let headersHeight = $derived(innerWidth >= 793 ? 80 : 40);
+	let episodeRadius = $derived(innerWidth >= 793 ? 15 : innerWidth > 540 ? 12 : 10);
 
 	const tvSeasons = [
 		{
@@ -451,6 +451,20 @@
 						{/if}
 					{/each}
 				{/each}
+			{:else}
+				{#each tvSeasons as season}
+					{#each season.months as month}
+						{#if month === 'Dec' || month === 'Apr'}
+							<line
+								x1={globalTimeScale(month)}
+								y1={0}
+								x2={globalTimeScale(month)}
+								y2={innerHeight}
+								stroke="#BEBABC"
+							/>
+						{/if}
+					{/each}
+				{/each}		
 			{/if}
 
 			<!-- Episodes -->

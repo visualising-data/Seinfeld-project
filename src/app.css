@@ -18,6 +18,7 @@
     color: #12020A;
     fill: #12020A;
     background: #12020A;
+    overflow-x: hidden;
   }
   .em {
     font-weight: 600;
