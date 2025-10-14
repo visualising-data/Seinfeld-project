@@ -3,6 +3,8 @@
 	import { gsap } from 'gsap/dist/gsap';
 	import { scaleLinear } from 'd3-scale';
 	import { max } from 'd3-array';
+	import * as Tone from 'tone';
+	import { soundIsAuth } from '../stores/soundAuthStore';
 
 	import { seasons } from '$lib/data/seasons';
 
@@ -40,20 +42,70 @@
 			.range([0, svgWidth])
 	);
 
-	onMount(() => {
-		const tl = gsap.timeline({
-			scrollTrigger: {
-				trigger: '#title-screen',
-				start: 'top 20%'
-			}
-		});
-		tl.from('.season-rect', {
-			width: 0,
-			height: 0,
-			stagger: 0.15,
-			duration: 2,
-			ease: 'power3.out'
-		})
+	const animateBars = () => {
+		var tl = gsap.timeline();
+		tl
+			.from('.season-rect-0', {
+				width: 0,
+				height: 0,
+				duration: 0.8,
+				ease: 'back.out(1.7)'
+			}, '+=.1')
+			.from('.season-rect-1', {
+				width: 0,
+				height: 0,
+				duration: 0.2,
+				ease: 'back.out(1.7)'
+			}, '-=.1')
+			.from('.season-rect-2', {
+				width: 0,
+				height: 0,
+				duration: 0.2,
+				ease: 'back.out(1.7)'
+			}, '-=.1')
+			.from('.season-rect-3', {
+				width: 0,
+				height: 0,
+				duration: 0.8,
+				ease: 'back.out(1.7)'
+			}, '-=.1')
+			.from('.season-rect-4', {
+				width: 0,
+				height: 0,
+				duration: 0.5,
+				ease: 'back.out(1.7)'
+			}, '-=.1')
+			.from('.season-rect-5', {
+				width: 0,
+				height: 0,
+				duration: 0.8,
+				ease: 'back.out(1.7)'
+			}, '+=.2')
+			.from('.season-rect-6', {
+				width: 0,
+				height: 0,
+				duration: 0.25,
+				ease: 'back.out(1.7)'
+			}, '-=.1')
+			.from('.season-rect-7', {
+				width: 0,
+				height: 0,
+				duration: 0.5,
+				ease: 'back.out(1.7)'
+			}, '-=.1')
+			.from('.season-rect-8', {
+				width: 0,
+				height: 0,
+				duration: 1.5,
+				ease: 'back.out(1.7)'
+			}, '-=.1')
+			
+		return tl;
+	}
+
+	const revealContent = () => {
+		var tl = gsap.timeline();
+		tl
 			.from(
 				['h1', '#subtitle'],
 				{
@@ -63,7 +115,7 @@
 					opacity: 0,
 					ease: 'power3.out'
 				},
-				'-=1.5'
+				'-=2.5'
 			)
 			.to(
 				'.name',
@@ -85,6 +137,51 @@
 				},
 				'+=.3'
 			);
+			
+		return tl;
+	}
+
+	onMount(() => {
+		// Preload Title jingle
+		/**
+		 * @type {Tone.Player}
+		 */
+		let soundtrack;
+		const preload = () => {
+			soundtrack = new Tone.Player('https://amdufour.github.io/hosted-data/apis/sonification/20250925_Seinfeld_Intro_Title_All.mp3').toDestination(); //connects to the system sound output
+		};
+		preload()
+
+		const playJingle = () => {
+			if ($soundIsAuth) {
+				soundtrack.start()
+			}
+		}
+
+		const stopJingle = () => {
+			if ($soundIsAuth) {
+				soundtrack.stop()
+			}
+		}
+
+		// Timeline
+		const tl = gsap.timeline({
+			scrollTrigger: {
+				trigger: '#title-screen',
+				start: 'top 30%',
+				end: 'bottom top',
+				onEnter: playJingle,
+				onEnterBack: playJingle,
+				onLeave: stopJingle,
+				onLeaveBack: stopJingle,
+				toggleActions: "play reset play reset"
+			}
+		});
+		
+		tl
+			.add(animateBars())
+			.add(revealContent(), "-=1")
+			
 	});
 </script>
 
@@ -94,7 +191,7 @@
 	<svg width={svgWidth} height="132">
 		{#each seasons as season, i}
 			<rect
-				class="season-rect"
+				class="season-rect season-rect-{i}"
 				x={0}
 				y={i * 12}
 				width={seasonScale(season.numEpisodes)}
