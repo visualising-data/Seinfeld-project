@@ -141,28 +141,35 @@
 		return tl;
 	}
 
+	// Preload Title jingle
+	/**
+	 * @type {Tone.Player}
+	 */
+	let soundtrack;
+	const playJingle = () => {
+		if ($soundIsAuth) {
+			soundtrack.start()
+		}
+	}
+	const stopJingle = () => {
+		if ($soundIsAuth) {
+			soundtrack.stop()
+		}
+	}
+
+	const barsTl = gsap.timeline()
+	const handleMouseEnterBars = () => {
+		if (!barsTl.isActive()) {
+			playJingle()
+			barsTl.add(animateBars())
+		}
+	}
+
 	onMount(() => {
-		// Preload Title jingle
-		/**
-		 * @type {Tone.Player}
-		 */
-		let soundtrack;
 		const preload = () => {
 			soundtrack = new Tone.Player('https://amdufour.github.io/hosted-data/apis/sonification/20250925_Seinfeld_Intro_Title_All.mp3').toDestination(); //connects to the system sound output
 		};
 		preload()
-
-		const playJingle = () => {
-			if ($soundIsAuth) {
-				soundtrack.start()
-			}
-		}
-
-		const stopJingle = () => {
-			if ($soundIsAuth) {
-				soundtrack.stop()
-			}
-		}
 
 		// Timeline
 		const tl = gsap.timeline({
@@ -188,7 +195,7 @@
 <svelte:window bind:innerWidth />
 
 <section id="title-screen" class="h-screen mb-80" style="margin-top: 1200px;">
-	<svg width={svgWidth} height="132">
+	<svg width={svgWidth} height="132" onmouseenter={handleMouseEnterBars} role="figure">
 		{#each seasons as season, i}
 			<rect
 				class="season-rect season-rect-{i}"
