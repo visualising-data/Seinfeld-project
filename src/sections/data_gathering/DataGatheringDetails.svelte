@@ -9,6 +9,7 @@
 
     import Laugh from '../../icons/Laugh.svelte';
     import tv_noise from '$lib/assets/tv_noise.png';
+    import ReplayButton from '../../UI/ReplayButton.svelte';
     import { soundIsAuth } from '../../stores/soundAuthStore'
 
     let { laughData } = $props();
@@ -50,17 +51,11 @@
     /**
 	 * @type {number | undefined}
 	 */
-    let playLoop;
     const playLaughs = () => {
         if ($soundIsAuth && laughsTrack) {
             // @ts-ignore
             laughsTrack.start();
         }
-
-        const pauseDuration = Math.floor(Math.random() * (10000 - 5000 + 1) + 5000);
-        playLoop = setTimeout(() => {
-            playLaughs();
-        }, pauseDuration);
     };
 
     let tlVideo;
@@ -109,13 +104,17 @@
                 duration: 2,
                 delay: 1,
                 ease: 'power3.out'
-            }, "<2")
-            .from(["#data-gathering-1 svg"], {
+            }, "<0.5")
+            .from(["#data-gathering-1 .laugh-icon-large svg"], {
                 yPercent: 140,
                 opacity: 0,
                 duration: 1,
                 ease: 'bounce.out'
-            }, 0.5);
+            }, 0.5)
+            .from(["#data-gathering-1 .replay-laugh"], {
+                opacity: 0,
+                duration: 0.5
+            }, "-=0.5");
 
         tl2
             .from(["#data-gathering-2 .text"], {
@@ -206,8 +205,13 @@
                 <div class="mask">
                     <div class="text">It doesn’t take a genius to recognise the main goal of a sitcom is to offer situational comedy. It also stands to reason that a reliable indicator of a situation comedy being funny is to measure the reaction of an audience’s laughter through the laugh track. These days it is rare to find laugh tracks on modern sitcoms, but Seinfeld had one and with the show always being filmed in front of a <span class="highlight pl-1">live studio audience</span> (any scenes filmed outside were played back in the studio) so the laughter heard is authentic.</div>
                 </div>
-                <div class="absolute w-20 md:w-32 h-20 md:h-32" style="top:-68px; right: {innerWidth >= 768 ? -130 : -50}px;">
-                    <Laugh />
+                <div class="absolute flex items-end" style="top:-68px; right: {innerWidth >= 768 ? -140 : -50}px;">
+                    <div class="laugh-icon-large w-20 md:w-36 h-20 md:h-32">
+                        <Laugh />
+                    </div>
+                    <div class="replay-laugh" style="margin-left: -20px;">
+                        <ReplayButton />
+                    </div>
                 </div>
             </div>
             <div class="col-span-2 md:col-span-6"></div>
