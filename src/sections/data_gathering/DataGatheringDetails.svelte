@@ -204,7 +204,7 @@
         <div id="data-gathering-1" class="grid grid-cols-12 mb-48">
             <div class="col-span-10 md:col-span-6 relative">
                 <div class="mask">
-                    <div class="text">It doesn’t take a genius to recognise the main goal of a sitcom is to offer situational comedy. It also stands to reason that a reliable indicator of a situation comedy being funny is to measure the reaction of an audience’s laughter through the laugh track. These days it is rare to find laugh tracks on modern sitcoms, but Seinfeld had one and with the show always being filmed in front of a <span class="highlight pl-1">live studio audience</span> - with any scenes filmed outside played back in the studio - and so the laughter heard is authentic.</div>
+                    <div class="text">It doesn’t take a genius to recognise the main goal of a sitcom is to offer situational comedy. It also stands to reason that a reliable indicator of a situation comedy being funny is to measure the reaction of an audience’s laughter through the laugh track. These days it is rare to find laugh tracks on modern sitcoms, but Seinfeld had one and with the show always being filmed in front of a <span class="highlight pl-1">live studio audience</span> (any scenes filmed outside were played back in the studio) so the laughter heard is authentic.</div>
                 </div>
                 <div class="absolute w-20 md:w-32 h-20 md:h-32" style="top:-68px; right: {innerWidth >= 768 ? -130 : -50}px;">
                     <Laugh />
