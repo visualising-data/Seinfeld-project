@@ -229,14 +229,14 @@
             {/if}
             <div class="col-span-10 md:col-span-4 relative z-10 mask" style="background-color: rgba(249, 245, 247, 0.6);">
                 <p class="text">We gathered all the data for this project by watching every Seinfeld episode and <span class="highlight">manually logging</span> the events and classifications established to serve the intention of the analysis.</p>
-                <p class="text">Laughter has a spectrum of levels, from the subtle smile characteristic of ‘inner’ laughter, through to more external titters, chuckles, chortles, and through to belly laughs or howls. To establish a standard measurement any laughter heard during the episodes counted as simply as laughter, regardless of whether it was loud or fleeting.</p>
+                <p class="text">Laughter has a spectrum of levels, from the subtle smile characteristic of ‘inner’ laughter, through to more external titters, chuckles, chortles, and through to belly laughs or howls. To establish a standard measurement any laughter heard during the episodes counted as a laughter moment”, regardless of whether it was loud or fleeting.</p>
             </div>
         </div>
 
         <div id="data-gathering-3" class="grid grid-cols-12">
             <div class="col-span-12 md:col-span-8 mask">
                 <div class="text">
-                    <p>For consistency each distinct moment of laughter was allocated to distinct units of <span class="highlight">5-second durations</span>. When testing out the data collection approach over three sample episodes, the 5-second duration proved to be the most reliable and representative ‘average’ duration, from the gag’s delivery to the audience’s laughter subsiding.</p>
+                    <p>For consistency, each observed laughter moment was recorded against an associated <span class="highlight">5-second</span> block of time. When testing out the data collection approach over three sample episodes, the 5-second duration proved to be the most reliable and representative ‘average’ duration, from the gag’s delivery to the audience’s laughter subsiding.</p>
                     <p>Occasionally, laughter would run for longer than 5 seconds, sometimes persisting for 10 and even 15 seconds. In these rare cases, each 5-second unit would count as a laughter moment.</p>
                 </div>
             </div>
