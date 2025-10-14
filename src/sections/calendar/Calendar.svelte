@@ -5,6 +5,8 @@
 	import d3ForceLimit from 'd3-force-limit';
 	import { range } from 'd3-array';
 	import { gsap } from 'gsap/dist/gsap';
+	import * as Tone from 'tone';
+	import { soundIsAuth } from '../../stores/soundAuthStore';
 
 	import { seasons } from '$lib/data/seasons';
 	import { episodesInfo } from '$lib/data/episodesInfo';
@@ -241,6 +243,16 @@
 				return episodesShow5.map((e) => `#calendar-${e}`).join(',');
 		}
 	}
+
+	/**
+	 * @type {Tone.Player}
+	 */
+	let soundtrack;
+	const playSound = () => {
+		if ($soundIsAuth) {
+			soundtrack.start()
+		}
+	}
 	
 	/**
 	 * @param {number} number
@@ -253,9 +265,11 @@
 			ease: 'back.out(3)',
 			duration: 1,
 			pointerEvents: 'auto',
+			onEnter: playSound,
 			stagger: {
 				from: 'random',
-				amount: 0.4
+				amount: 0.4,
+				ease: 'power2'
 			}
 		});
 	}
@@ -295,6 +309,12 @@
 	}
 
 	onMount(() => {
+		// Preload Plip sound
+		const preload = () => {
+			soundtrack = new Tone.Player('https://amdufour.github.io/hosted-data/apis/sonification/20250925_Seinfeld_Intro_Plip.mp3').toDestination(); //connects to the system sound output
+		};
+		preload()
+
 		// Run simulation
 		initializeSimulation()
 		simulation.on('end', () => {

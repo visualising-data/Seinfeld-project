@@ -5,7 +5,7 @@
 	import TvIcon from '../icons/TvIcon.svelte';
 
 	let { episode, position } = $props();
-$inspect(episode)
+
 	/**
 	 * @type {number}
 	 */
