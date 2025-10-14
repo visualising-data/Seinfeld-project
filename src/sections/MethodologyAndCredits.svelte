@@ -1,5 +1,4 @@
 <script>
-	import DataIcon from '../icons/DataIcon.svelte';
 	import BrainIcon from '../icons/BrainIcon.svelte';
 	import TableIcon from '../icons/TableIcon.svelte';
 	import CodeIcon from '../icons/CodeIcon.svelte';
@@ -55,12 +54,6 @@
 				Further qualitative enquiries about joke topics, specific patterns in language, and themes
 				of representation were tempting to pursue but were considered beyond the scope of the
 				enquiry.
-			</p>
-			<p>
-				<a class="flex items-center" href="" target="_blank">
-					<DataIcon />
-					<span class="mx-2">Access the data</span>
-				</a>
 			</p>
 		</div>
 	</div>
