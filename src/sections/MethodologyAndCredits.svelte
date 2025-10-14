@@ -19,7 +19,7 @@
 			imgUrl: 'https://amdufour.github.io/hosted-data/apis/portraits/annemarie_square_closeup.jpg'
 		},
 		{ name: 'Loud Numbers', url: 'https://www.loudnumbers.net/', role: 'Sound design, composition, and sonification' },
-		{ name: 'Mark Knott', role: 'Illustrations' },
+		{ name: 'Matt Knott', role: 'Illustrations' },
 		{ name: 'Rob Barker', role: 'Data Collection Support' }
 	];
 </script>
