@@ -11,3 +11,11 @@ export const laughterFiles = {
 	laughter_7: `${host}Laughter7${ext}`,
 	laughter_8: `${host}Laughter8${ext}`,
 };
+
+export const getRandomLaughterFile = () => {
+	const min = 1;
+  const max = 8;
+  const num = Math.floor(Math.random() * (max - min + 1) + min);
+
+	return `laughter_${num}`
+}

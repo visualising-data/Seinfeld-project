@@ -1,9 +1,18 @@
 <script>
-  import ReplayIcon from "../icons/ReplayIcon.svelte";
+  import PlayLineIcon from "../icons/PlayLineIcon.svelte";
+  import StopLineIcon from "../icons/StopLineIcon.svelte";
+
+  let { isPlaying, handleClickOnReplay = $bindable() } = $props()
 </script>
 
-<button class="replay-button relative flex justify-center items-center w-8 h-8 rounded-full">
-  <ReplayIcon />
+<button 
+  class="replay-button relative flex justify-center items-center w-8 h-8 rounded-full"
+  onclick={handleClickOnReplay}>
+  {#if isPlaying}
+    <StopLineIcon />
+  {:else}
+    <PlayLineIcon />
+  {/if}
 </button>
 
 <style>

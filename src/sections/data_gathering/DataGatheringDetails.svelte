@@ -11,7 +11,7 @@
     import tv_noise from '$lib/assets/tv_noise.png';
     import ReplayButton from '../../UI/ReplayButton.svelte';
     import { soundIsAuth } from '../../stores/soundAuthStore'
-    import { laughterFiles } from '$lib/data/laughterFiles';
+    import { laughterFiles, getRandomLaughterFile } from '$lib/data/laughterFiles';
 
     let { laughData } = $props();
 
@@ -48,14 +48,28 @@
         laughTracks.fadeOut = 1;
     };
 
+    let isPlaying = $state(false)
     const playLaughs = () => {
         if ($soundIsAuth && laughTracks) {
-            const min = 1;
-            const max = 1;
-            const num = Math.floor(Math.random() * (max - min + 1) + min);
-            laughTracks.player(`laughter_${num}`).start();
+            const file = getRandomLaughterFile()
+            const player = laughTracks.player(file)
+            
+            player.onstop = () => {
+                isPlaying = false
+            }
+                
+            player.start();
+            isPlaying = true
         }
     };
+
+    function handleClickOnReplay() {
+        if (laughTracks.state === 'started') {
+            laughTracks.stopAll()
+        } else {
+            playLaughs();
+        }
+    }
 
     let tlVideo;
     onMount(() => {
@@ -72,9 +86,7 @@
 				trigger: '#data-gathering-1',
 				start: 'top center',
                 onEnter: () => playLaughs(),
-                onEnterBack: () => playLaughs(),
-                onLeave: () => clearTimeout(playLoop),
-                onLeaveBack: () => clearTimeout(playLoop)
+                onEnterBack: () => playLaughs()
 			}
 		});
 		const tl2 = gsap.timeline({
@@ -209,7 +221,7 @@
                         <Laugh />
                     </div>
                     <div class="replay-laugh" style="margin-left: -20px;">
-                        <ReplayButton />
+                        <ReplayButton {isPlaying} bind:handleClickOnReplay />
                     </div>
                 </div>
             </div>
