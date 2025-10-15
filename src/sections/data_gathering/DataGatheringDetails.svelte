@@ -11,6 +11,7 @@
     import tv_noise from '$lib/assets/tv_noise.png';
     import ReplayButton from '../../UI/ReplayButton.svelte';
     import { soundIsAuth } from '../../stores/soundAuthStore'
+    import { laughterFiles } from '$lib/data/laughterFiles';
 
     let { laughData } = $props();
 
@@ -39,22 +40,20 @@
     /**
 	 * @type {Tone.Players}
 	 */
-    // TODO: Add different laugh tracks
-	let laughsTrack;
+	let laughTracks;
 	const preloadLaughs = () => {
 		// @ts-ignore
-		laughsTrack = new Tone.Player('https://amdufour.github.io/hosted-data/apis/videos/laugh.mp3').toDestination(); //connects to the system sound output
-        laughsTrack.fadeIn = 1;
-        laughsTrack.fadeOut = 1;
+		laughTracks = new Tone.Players(laughterFiles).toDestination(); //connects to the system sound output
+        laughTracks.fadeIn = 1;
+        laughTracks.fadeOut = 1;
     };
 
-    /**
-	 * @type {number | undefined}
-	 */
     const playLaughs = () => {
-        if ($soundIsAuth && laughsTrack) {
-            // @ts-ignore
-            laughsTrack.start();
+        if ($soundIsAuth && laughTracks) {
+            const min = 1;
+            const max = 1;
+            const num = Math.floor(Math.random() * (max - min + 1) + min);
+            laughTracks.player(`laughter_${num}`).start();
         }
     };
 
