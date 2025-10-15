@@ -218,7 +218,7 @@
                 </div>
                 <div class="absolute flex items-end" style="top:-68px; right: {innerWidth >= 768 ? -140 : -50}px;">
                     <div class="laugh-icon-large w-20 md:w-36 h-20 md:h-32">
-                        <Laugh />
+                        <Laugh isActive={isPlaying} />
                     </div>
                     <div class="replay-laugh" style="margin-left: -20px;">
                         <ReplayButton {isPlaying} bind:handleClickOnReplay />
