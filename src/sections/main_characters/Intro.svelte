@@ -27,14 +27,26 @@
         ease: 'power3.out',
         stagger: { each: 0.3 }
       })
-      .to('#lead-chars-intro .highlight', {
-        webkitTextFillColor: 'transparent',
-        backgroundPosition: '200% center',
-        duration: 2,
-        delay: 1,
-        ease: 'power3.out',
-        stagger: { each: 0.3, ease: 'power3.out' }
-      }, '<-0.7');
+      .to('#lead-chars-intro .color-jerry', {
+        color: '#5FA8D3',
+        duration: 1,
+        ease: 'back.out(1.7)'
+      })
+      .to('#lead-chars-intro .color-george', {
+        color: '#EB6447',
+        duration: 1,
+        ease: 'back.out(1.7)'
+      }, "-=0.5")
+      .to('#lead-chars-intro .color-elaine', {
+        color: '#FBBA3A',
+        duration: 1,
+        ease: 'back.out(1.7)'
+      }, "-=0.8")
+      .to('#lead-chars-intro .color-kramer', {
+        color: '#83C8C3',
+        duration: 1,
+        ease: 'back.out(1.7)'
+      }, "-=0.9")
 
     // Add parallax effect to videos
 		let chars = gsap.utils.toArray('.lead-char-parallax');
@@ -70,14 +82,14 @@
   <div class="container">
     <div class="grid grid-cols-12 gap-4">
       <div id="lead-chars-intro-text-container" class="col-span-12 md:col-span-7 h-screen flex flex-col justify-center">
-        <p>It was no surprise to find the majority of screen-time was dominated by the four leading characters - <span class="highlight">Jerry</span>, <span class="highlight">George</span>, <span class="highlight">Elaine</span>, and <span class="highlight">Kramer</span>.</p>
+        <p>We begin with a look at the lead characters. It was no surprise to find the majority of screen-time was dominated by the four leading characters - <span class="color color-jerry">Jerry</span>, <span class="color color-george">George</span>, <span class="color color-elaine">Elaine</span>, and <span class="color color-kramer">Kramer</span>.</p>
         <p>They were the stars who delivered most of the lines, acted out the stories, and ultimately caused the majority of the laughs.</p>
         <p>In this section we’ll explore the time they spent on screen, their individual shares of laughs, and how they were used in combinations in scenes to create memorable moments.</p>
       </div>
     </div>
 
       <!-- Characters -->
-    <div class="container absolute z-1" style="height: 1400px; top: 100vh; left: 0; right: 0;">
+    <div class="container absolute" style="height: 1400px; top: 100vh; left: 0; right: 0;">
       <div class="grid grid-cols-12 gap-4">
         <div class="md:col-span-1"></div>
           <div class="col-span-12 md:col-span-11 h-screen flex flex-col justify-center">
@@ -86,7 +98,7 @@
                 <li class="my-2">
                   <div 
                     class="lead-char-parallax relative flex flex-col items-center"
-                    style="top: {i % 2 === 0 ? 0 : '160px'}; background-color: rgba(18, 2, 10, 0.7);"
+                    style="top: {i % 2 === 0 ? 0 : '160px'};"
                     data-speed={i % 2 === 0 ? 3 : 0.5} 
                   >
                     <div 
@@ -96,7 +108,7 @@
                         width: 100px; 
                         height: 100px;
                       "></div>
-                    <div>{char.label}</div>
+                    <div style="background-color: rgba(18, 2, 10, 0.8);">{char.label}</div>
                   </div>
                 </li>
               {/each}
@@ -106,3 +118,9 @@
       </div>
   </div>
 </div>
+
+<style>
+  .color {
+    font-weight: 600;
+  }
+</style>

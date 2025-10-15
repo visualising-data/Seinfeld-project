@@ -134,8 +134,8 @@
       <div class="grid grid-cols-12 gap-4">
         <div class="col-span-12 md:col-span-7 h-screen flex flex-col justify-center">
           <p>As a show grows, it is inevitable that so does the universe of different characters. And as the list of potential characters grows, so too does the temptation to use them more to deliver the storylines.</p>
-          <p>In any sitcom, you will have permanent lead characters, supporting or recurring characters, and transient characters. At the start of the data-gathering exercise, it wasn't necessarily obvious how to best categorise and distinguish those non-lead characters.</p>
           <p><span class="highlight">Supporting characters</span> come and go but will appear quite frequently, are quite popular, and are usually played by the same actors for continuity. <span class="highlight">Transient characters</span> tend to appear just once, are often unnamed, and primarily exist to help progress a single strand of an episode story.</p>
+          <p>In any sitcom, you will have permanent lead characters, supporting or recurring characters, and transient characters. At the start of the data-gathering exercise, it wasn't necessarily obvious how to best categorise and distinguish those non-lead characters.</p>
         </div>
       </div>
     </div>

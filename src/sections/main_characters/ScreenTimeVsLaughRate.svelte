@@ -871,7 +871,7 @@
   </div>
 
   <!-- Texts -->
-  <div class="z-10 relative" style="top: 100vh;">
+  <div class="z-10 relative pointer-events-none" style="top: 100vh;">
    <MainCharsTexts {charData} />
   </div>
 </div>
