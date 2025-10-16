@@ -14,7 +14,7 @@
 				let currentScene;
 				if (char.timesOnScreen) {
 					char.timesOnScreen.forEach((time, i) => {
-						const scene = scenes.find((s) => time >= s.startTime && time < s.endTime).sceneNum;
+						const scene = scenes.find((s) => time >= s.startTime && time < s.endTime)?.sceneNum;
 						const addedTime = i === char.timesOnScreen.length - 1 ? 10 : 5;
 						switch (true) {
 							case i === 0:
