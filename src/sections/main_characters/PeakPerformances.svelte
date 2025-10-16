@@ -146,27 +146,8 @@
           <g>
             {#each orderedChars as char}
               {#each performances as episode}
-                {#if isTooltipVisible && hoveredEpisode.season === episode.seasonNum && hoveredEpisode.episode === episode.episode && char.id === hoveredChar}
-                  <line
-                    x1={charLaughterRateScale(episode.charsBreakdown.find(c => c.id === char.id).laughterRate)}
-                    y1={0}
-                    x2={charLaughterRateScale(episode.charsBreakdown.find(c => c.id === char.id).laughterRate)}
-                    y2={chartHeight}
-                    stroke="#12020A"
-                    stroke-dasharray="5 5"
-                  />
-                  <line
-                    x1={0}
-                    y1={charShareLaughScale(episode.charsBreakdown.find(c => c.id === char.id).shareOfLaughs)}
-                    x2={chartWidth}
-                    y2={charShareLaughScale(episode.charsBreakdown.find(c => c.id === char.id).shareOfLaughs)}
-                    stroke="#12020A"
-                    stroke-dasharray="5 5"
-                  />
-                {/if}
-
                 <circle
-                  class="performance performance-{char.id} {char.isActive ? 'active' : ''}"
+                  class="performance performance-{char.id} {char.isActive ? 'active' : ''} {isTooltipVisible ? 'faded' : ''}"
                   cx={charLaughterRateScale(episode.charsBreakdown.find(c => c.id === char.id).laughterRate)}
                   cy={charShareLaughScale(episode.charsBreakdown.find(c => c.id === char.id).shareOfLaughs)}
                   r={relativeScreenTimeRateScale(episode.charsBreakdown.find(c => c.id === char.id).relativeScreenTime)}
@@ -178,6 +159,36 @@
               {/each}
             {/each}
           </g>
+
+          <!-- Hover details -->
+          {#if isTooltipVisible && hoveredEpisode}
+            <g class="pointer-events-none">
+              <line
+                x1={charLaughterRateScale(hoveredEpisodeData.charsBreakdown.find(c => c.id === hoveredChar).laughterRate)}
+                y1={0}
+                x2={charLaughterRateScale(hoveredEpisodeData.charsBreakdown.find(c => c.id === hoveredChar).laughterRate)}
+                y2={chartHeight}
+                stroke="#12020A"
+                stroke-dasharray="5 5"
+              />
+              <line
+                x1={0}
+                y1={charShareLaughScale(hoveredEpisodeData.charsBreakdown.find(c => c.id === hoveredChar).shareOfLaughs)}
+                x2={chartWidth}
+                y2={charShareLaughScale(hoveredEpisodeData.charsBreakdown.find(c => c.id === hoveredChar).shareOfLaughs)}
+                stroke="#12020A"
+                stroke-dasharray="5 5"
+              />
+              <circle
+                class="performance performance-{hoveredChar} active"
+                cx={charLaughterRateScale(hoveredEpisodeData.charsBreakdown.find(c => c.id === hoveredChar).laughterRate)}
+                cy={charShareLaughScale(hoveredEpisodeData.charsBreakdown.find(c => c.id === hoveredChar).shareOfLaughs)}
+                r={relativeScreenTimeRateScale(hoveredEpisodeData.charsBreakdown.find(c => c.id === hoveredChar).relativeScreenTime)}
+                fill={"#DDDBDC"}
+                role="document"
+              />
+            </g>
+          {/if}
 
           <!-- Axis labels -->
           <g transform="translate(0, {chartHeight + 16})">
@@ -290,6 +301,10 @@
 
   .performance {
     transition: fill 0.3s ease-out;
+  }
+  .performance.faded {
+    fill-opacity: 0.05;
+    stroke-opacity: 0.05;
   }
   .performance-JERRY:hover,
   .performance-JERRY.active {
