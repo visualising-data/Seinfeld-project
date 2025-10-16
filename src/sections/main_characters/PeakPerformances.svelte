@@ -294,17 +294,21 @@
   .performance-JERRY:hover,
   .performance-JERRY.active {
     fill: #5FA8D3;
+    stroke: #12020A;
   }
   .performance-GEORGE:hover,
   .performance-GEORGE.active {
     fill: #EB6447;
+    stroke: #12020A;
   }
   .performance-ELAINE:hover,
   .performance-ELAINE.active {
     fill: #FBBA3A;
+    stroke: #12020A;
   }
   .performance-KRAMER:hover,
   .performance-KRAMER.active {
     fill: #83C8C3;
+    stroke: #12020A;
   }
 </style>
