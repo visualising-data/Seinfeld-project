@@ -14,7 +14,7 @@
       <span class="em" style="color: {color};">Elaine Benes</span> was the lead female character. The general trends of her appearance levels match the shape of George's, albeit with slightly lower absolute levels.
     </div>
     <div class="small mb-2">Average screen-time per season</div>
-    <Sparkline charData={charData.ELAINE} showLabels={true} charId="GEORGE" showMax={true} yAxisLabels={[0]} />
+    <Sparkline charData={charData.ELAINE} showLabels={true} charId="GEORGE" showMax={true} yAxisLabels={[0, 1]} />
   </div>
 </div>
 
@@ -47,6 +47,6 @@
       <img src="https://amdufour.github.io/hosted-data/apis/images/Carol_Leifer.jpg" alt="Carol Leifer" style="height: 200px;" />
     </div>
     <div class="small mb-2">Average laughter share per season</div>
-    <Sparkline charData={charData.ELAINE} showLabels={true} charId="GEORGE" showMax={true} isScreenTime={false} yAxisLabels={[0]} />
+    <Sparkline charData={charData.ELAINE} showLabels={true} charId="GEORGE" showMax={true} isScreenTime={false} yAxisLabels={[0, 1]} />
   </div>
 </div>

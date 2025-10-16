@@ -24,7 +24,7 @@
       George's relative appearance rates <span class="highlight">dropped gradually</span> through the middle and later seasons before a Season 9 increase.
     </div>
     <div class="small mb-2">Average screen-time per season</div>
-    <Sparkline charData={charData.GEORGE} showLabels={true} charId="GEORGE" showMax={true} yAxisLabels={[0]} />
+    <Sparkline charData={charData.GEORGE} showLabels={true} charId="GEORGE" showMax={true} yAxisLabels={[0, 1]} />
   </div>
 </div>
 
@@ -35,6 +35,6 @@
       This directly matches the shape of his laughter share patterns, which had peaked by Season 2.
     </div>
     <div class="small mb-2">Average laughter share per season</div>
-    <Sparkline charData={charData.GEORGE} showLabels={true} charId="GEORGE" showMax={true} isScreenTime={false} yAxisLabels={[0]} />
+    <Sparkline charData={charData.GEORGE} showLabels={true} charId="GEORGE" showMax={true} isScreenTime={false} yAxisLabels={[0, 1]} />
   </div>
 </div>

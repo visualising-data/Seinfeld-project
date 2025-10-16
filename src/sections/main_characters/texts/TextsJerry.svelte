@@ -4,6 +4,8 @@
 
   let { charData } = $props()
 
+  let sparklinesContainerWidth = $state(1000)
+
   const color = characters.find(char => char.id === 'JERRY')?.color;
 </script>
 
@@ -70,7 +72,7 @@
       This is mirrored in the trends for his share of <span class="highlight">episode laughs</span>, which peaked in Season 1 at 54% but dropped by Season 9 to around 20%.
     </div>
     <div class="small mb-2">Average laughter share per season</div>
-    <Sparkline charData={charData.JERRY} isScreenTime={false} showLabels={true} charId="JERRY" showMax={true} yAxisLabels={[0]} />
+    <Sparkline charData={charData.JERRY} isScreenTime={false} showLabels={true} charId="JERRY" showMax={true} yAxisLabels={[0, 1]} />
   </div>
 </div>
 
@@ -82,19 +84,29 @@
     </div>
     <div>
       <div class="small mb-2">Average screen-time per season</div>
-      <div class="flex items-end gap-3">
-        <Sparkline charData={charData.JERRY} showLabels={true} charId="JERRY" yAxisLabels={[0, 0.5, 1]} />
-        <Sparkline charData={charData.GEORGE} charId="GEORGE" />
-        <Sparkline charData={charData.ELAINE} charId="ELAINE" />
-        <Sparkline charData={charData.KRAMER} charId="KRAMER" />
+      <div class="relative">
+        <div bind:clientWidth={sparklinesContainerWidth} class="absolute top-0 left-0 w-full overflow-hidden">
+          <Sparkline onlyAxes={true} containerWidth={sparklinesContainerWidth} />
+        </div>
+        <div class="flex items-end gap-3">
+          <Sparkline charData={charData.JERRY} showCharBadge={true} showLabels={true} charId="JERRY" />
+          <Sparkline charData={charData.GEORGE} showCharBadge={true} charId="GEORGE" />
+          <Sparkline charData={charData.ELAINE} showCharBadge={true} charId="ELAINE" />
+          <Sparkline charData={charData.KRAMER} showCharBadge={true} charId="KRAMER" />
+        </div>
       </div>
       <div class="mt-8">
         <div class="small mb-2">Average laughter share per season</div>
-        <div class="flex items-end gap-3">
-          <Sparkline charData={charData.JERRY} isScreenTime={false} showLabels={true} showCharBadge={true} charId="JERRY" yAxisLabels={[0, 0.5]} />
-          <Sparkline charData={charData.GEORGE} isScreenTime={false} showCharBadge={true} charId="GEORGE" />
-          <Sparkline charData={charData.ELAINE} isScreenTime={false} showCharBadge={true} charId="ELAINE" />
-          <Sparkline charData={charData.KRAMER} isScreenTime={false} showCharBadge={true} charId="KRAMER" />
+        <div class="relative">
+          <div bind:clientWidth={sparklinesContainerWidth} class="absolute top-0 left-0 w-full overflow-hidden">
+            <Sparkline onlyAxes={true} containerWidth={sparklinesContainerWidth} />
+          </div>
+          <div class="flex items-end gap-3">
+            <Sparkline charData={charData.JERRY} isScreenTime={false} showLabels={true} showCharBadge={true} charId="JERRY" />
+            <Sparkline charData={charData.GEORGE} isScreenTime={false} showCharBadge={true} charId="GEORGE" />
+            <Sparkline charData={charData.ELAINE} isScreenTime={false} showCharBadge={true} charId="ELAINE" />
+            <Sparkline charData={charData.KRAMER} isScreenTime={false} showCharBadge={true} charId="KRAMER" />
+          </div>
         </div>
       </div>
     </div>

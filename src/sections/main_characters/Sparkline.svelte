@@ -5,40 +5,41 @@
 	import { seasons } from "$lib/data/seasons";
   import { getCharacterImagePath } from "../../utils/getCharacterImagePath";
 
-  let { charData, isScreenTime = true, showLabels = false, yAxisLabels = [], showCharBadge = false, charId, showMax = false } = $props()
+  let { charData = undefined, isScreenTime = true, showLabels = false, yAxisLabels = [], showCharBadge = false, charId = undefined, showMax = false, onlyAxes = false, containerWidth = undefined } = $props()
 
-  const width = 160
+  const width = containerWidth ? containerWidth : 160
   const height = 180
   const margin = { top: 14, right: 10, bottom: 10, left: 46 }
   const innerWidth = width - margin.left - margin.right
   const innerHeight = height - margin.top - margin.bottom
 
   const averagePerSeason = []
-  seasons.forEach(s => {
-    const episodes = charData.filter(d => d.season === s.seasonNum)
+  if (charData) {
+    seasons.forEach(s => {
+      const episodes = charData?.filter(d => d.season === s.seasonNum)
 
-    const onScreenTimePerEpisode = episodes.map(e => e.onScreen.length * 5 / e.duration)
-    const avgOnScreenTime = mean(onScreenTimePerEpisode)
+      const onScreenTimePerEpisode = episodes?.map(e => e.onScreen.length * 5 / e.duration)
+      const avgOnScreenTime = mean(onScreenTimePerEpisode)
 
-    const laughsSharePerEpisode = episodes.map(e => e.causesLaughs.length / e.episodeLaughs.length)
-    const avgLaughShare = mean(laughsSharePerEpisode)
+      const laughsSharePerEpisode = episodes?.map(e => e.causesLaughs.length / e.episodeLaughs.length)
+      const avgLaughShare = mean(laughsSharePerEpisode)
 
-    averagePerSeason.push({
-      season: s.seasonNum,
-      onScreen: avgOnScreenTime,
-      laughShare: avgLaughShare
+      averagePerSeason.push({
+        season: s.seasonNum,
+        onScreen: avgOnScreenTime,
+        laughShare: avgLaughShare
+      })
     })
-  })
+  }
 
   const maxOnScreenTime = max(averagePerSeason, d => d.onScreen)
   const maxLaughShare = max(averagePerSeason, d => d.laughShare)
-  const maxToDisplay = isScreenTime ? maxOnScreenTime : maxLaughShare
-  const maxSeasonScreenTime = averagePerSeason.find(s => s.onScreen === maxOnScreenTime).season
-  const maxSeasonLaughShare = averagePerSeason.find(s => s.laughShare === maxLaughShare).season
+  const maxSeasonScreenTime = averagePerSeason?.find(s => s.onScreen === maxOnScreenTime)?.season
+  const maxSeasonLaughShare = averagePerSeason?.find(s => s.laughShare === maxLaughShare)?.season
 
   const percentageScale = scaleLinear()
-    .domain([0, maxToDisplay])
-    .range([maxToDisplay * innerHeight, 0])
+    .domain([0, 1])
+    .range([innerHeight, 0])
   const seasonsScale = scalePoint()
     .domain(seasons.map(s => `season-${s.seasonNum}`))
     .range([0, innerWidth])
@@ -52,8 +53,8 @@
     .y0(percentageScale(0))
 </script>
 
-<div class="flex flex-col {showCharBadge ? 'items-center' : 'items-start'}" style="margin-left: {showLabels ? 0 : -46}px;">
-  <svg width={width} height={maxToDisplay * innerHeight + margin.top + margin.bottom}>
+<div class="flex flex-col {showCharBadge ? 'items-center' : 'items-start'}" style="margin-left: {showLabels || onlyAxes ? 0 : -46}px;">
+  <svg width={width} height={innerHeight + margin.top + margin.bottom}>
     <defs>
       <!-- White gradient -->
       <linearGradient id="gradient-white" x1="0" x2="0" y1="0" y2="1">
@@ -75,19 +76,85 @@
     </defs>
 
     <g transform="translate({margin.left}, {margin.top})">
-      {#if showLabels}
-        {#each yAxisLabels as label, i}
+      {#if onlyAxes}
+        <!-- 0% -->
+        <g transform="translate(0, {percentageScale(0)})">
           <text
             class="number"
             x={-8}
-            y={percentageScale(label)}
             fill="#F9F5F7"
             text-anchor="end"
             dominant-baseline="middle"
           >
-            {`${label * 100}${i > 0 ? '%' : ''}`}
+            {'0'}
           </text>
-          
+          <line 
+            x1={0}
+            x2={innerWidth}
+            stroke="#F9F5F7"
+            stroke-opacity="0.7"
+            stroke-linecap="round"
+          />
+        </g>
+        <!-- 50% -->
+        <g transform="translate(0, {percentageScale(0.5)})">
+          <text
+            class="number"
+            x={-8}
+            fill="#F9F5F7"
+            text-anchor="end"
+            dominant-baseline="middle"
+          >
+            {'50%'}
+          </text>
+          <line 
+            x1={0}
+            x2={innerWidth}
+            stroke="#F9F5F7"
+            stroke-opacity="0.7"
+            stroke-linecap="round"
+          />
+        </g>
+        <!-- 100% -->
+        <g transform="translate(0, {percentageScale(1)})">
+          <text
+            class="number"
+            x={-8}
+            fill="#F9F5F7"
+            text-anchor="end"
+            dominant-baseline="middle"
+          >
+            {'100%'}
+          </text>
+          <line 
+            x1={0}
+            x2={innerWidth}
+            stroke="#F9F5F7"
+            stroke-opacity="0.7"
+            stroke-linecap="round"  
+          />
+        </g>
+      {:else}
+      {#if showLabels}
+        {#each yAxisLabels as label, i}
+          <g transform="translate(0, {percentageScale(label)})">
+            <line 
+              x1={0}
+              x2={innerWidth}
+              stroke="#F9F5F7"
+              stroke-opacity="0.7"
+              stroke-linecap="round"
+            />
+            <text
+              class="number"
+              x={-8}
+              fill="#F9F5F7"
+              text-anchor="end"
+              dominant-baseline="middle"
+            >
+              {`${label * 100}${i > 0 ? '%' : ''}`}
+            </text>
+          </g>
         {/each}
       {/if}
 
@@ -97,6 +164,7 @@
       />
       <path 
         d={lineGenerator(averagePerSeason)} 
+        fill="none"
         stroke="url(#gradient-seasons)" 
         stroke-width={4} 
         stroke-linecap="round" 
@@ -121,6 +189,7 @@
           stroke="#F9F5F7"
           stroke-linecap="round"
         />
+      {/if}
       {/if}
     </g>
   </svg>

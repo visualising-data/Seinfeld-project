@@ -24,7 +24,7 @@
       As one of the most popular characters amongst fans and critics alike, you can see his scene appearances and screen time <span class="highlight">trend upward season after season</span>, achieving parity with George and Elaine by Season 8.
     </div>
     <div class="small mb-2">Average screen-time per season</div>
-    <Sparkline charData={charData.KRAMER} showLabels={true} charId="KRAMER" showMax={true} yAxisLabels={[0]} />
+    <Sparkline charData={charData.KRAMER} showLabels={true} charId="KRAMER" showMax={true} yAxisLabels={[0, 1]} />
   </div>
 </div>
 
@@ -35,6 +35,6 @@
       Also, as the most naturally slapstick physical comedian, Kramer often got the most wacky gags, sometimes picking up spare stories that had been intended for Jerry, but were instead repackaged for Kramer. Moreover, Keishin Armstrong mentions that Seinfeld was inspired by the burlesque qualities of Abbot and Costello, and when he took over as Head Writer and Executive Producer (and appointed young writers on staff), the show went in a slightly different, more absurd or cartoonish direction. By contrast, under Larry David's stewardship, the stories had, at times, been somewhat darker. As Jerry and George drop in their laughter share, Kramer's rises, and he arguably <span class="highlight">emerges to become the show's central comic force</span>.
     </div>
     <div class="small mb-2">Average laughter share per season</div>
-    <Sparkline charData={charData.KRAMER} showLabels={true} isScreenTime={false} charId="KRAMER" showMax={true} yAxisLabels={[0]} />
+    <Sparkline charData={charData.KRAMER} showLabels={true} isScreenTime={false} charId="KRAMER" showMax={true} yAxisLabels={[0, 1]} />
   </div>
 </div>
