@@ -232,6 +232,7 @@
   });
 
   let isMouseOver = $state(false);
+  let isTextOver = false;
   let highlightedEpisode = $state('');
   let highlightedEpisodeInfo = $state();
   let highlightedEpisodeOverviewPercentage = $state(0);
@@ -239,9 +240,18 @@
   let highlightedEpisodeTimeLabel = $state('');
   let episodeTooltipPosition = $state();
   const handleOverviewMouseEnter = () => {
+    if (isTextOver) {
+      return
+    }
+
     isMouseOver = true;
   }
   const handleMouseMove = (/** @type {MouseEvent & { currentTarget: EventTarget & SVGRectElement; }} */ e) => {
+    if (isTextOver) {
+      isMouseOver = false;
+      return
+    }
+
     if (!isMouseOver) isMouseOver = true;
     
     const x = e.offsetX - margin.left;
@@ -255,7 +265,7 @@
       highlightedEpisodeInfo = episode;
     }
     const data = charData[activeCharacter].find(e => e.season === episode.season && e.episode === episode.episode);
-    highlightedEpisodeOverviewPercentage = Math.round((data[activeFilter === FILTER.SCREEN_TIME ? 'onScreen' : 'causesLaughs'].reduce((acc, value) => acc + value.duration, 0)) / data?.duration * 100) ?? undefined;
+    highlightedEpisodeOverviewPercentage = Math.round((data[activeFilter === FILTER.SCREEN_TIME ? 'onScreen' : 'causesLaughs']?.reduce((acc, value) => acc + value.duration, 0)) / data?.duration * 100) ?? undefined;
 
     const newXPosition = x <= episodeDetailsInnerWidth ? Math.round(x) : 0;
     if (highlightedEpisodeTimePosition !== newXPosition) {
@@ -274,12 +284,32 @@
   }
 
   onMount(() => {
-    const tl1 = gsap.timeline({
+    // Pin visualization
+    gsap.timeline({
       scrollTrigger: {
         trigger: '#lead-chars-episodes-container',
         start: `top top-=${headerHeight}`,
         end: 'bottom bottom',
         pin: '#lead-chars-episodes-viz'
+      }
+    });
+
+    // Prevent mouse over effect while text is scrolling
+    gsap.timeline({
+      scrollTrigger: {
+        trigger: '#lead-chars-episodes-texts',
+        start: `top bottom`,
+        end: 'bottom bottom',
+        onEnter: () => {
+          isMouseOver = false;
+          isTextOver = true;
+        },
+        onEnterBack: () => {
+          isMouseOver = false;
+          isTextOver = true;
+        },
+        onLeave: () => { isTextOver = false },
+        onLeaveBack: () => { isTextOver = false }
       }
     });
 
@@ -295,9 +325,9 @@
     const tlJerryText2 = gsap.timeline({
       scrollTrigger: {
         trigger: '#jerry-text-2',
-        start: 'top bottom',
-        // end: 'top top',
-        toggleActions: 'play none play none'
+        start: 'top center',
+        end: 'bottom center',
+				toggleActions: 'play reverse play reverse'
       }
     });
     tlJerryText2
@@ -308,9 +338,9 @@
     const tlJerryText3 = gsap.timeline({
       scrollTrigger: {
         trigger: '#jerry-text-3',
-        start: 'top bottom',
-        // end: 'top top',
-        toggleActions: 'play none play none'
+        start: 'top center',
+        end: 'bottom center',
+        toggleActions: 'play reverse play reverse'
       }
     });
     tlJerryText3
@@ -321,9 +351,9 @@
     const tlJerryText4 = gsap.timeline({
       scrollTrigger: {
         trigger: '#jerry-text-4',
-        start: 'top bottom',
-        // end: 'top top',
-        toggleActions: 'play none play none'
+        start: 'top center',
+        end: 'bottom center',
+        toggleActions: 'play reverse play reverse'
       }
     });
     tlJerryText4
@@ -335,9 +365,9 @@
     const tlJerryText5 = gsap.timeline({
       scrollTrigger: {
         trigger: '#jerry-text-5',
-        start: 'top bottom',
-        // end: 'top top',
-        toggleActions: 'play none play none'
+        start: 'top center',
+        end: 'bottom center',
+        toggleActions: 'play reverse play reverse'
       }
     });
     tlJerryText5
@@ -348,23 +378,23 @@
     const tlJerryText6 = gsap.timeline({
       scrollTrigger: {
         trigger: '#jerry-text-6',
-        start: 'top bottom',
-        // end: 'top top',
-        toggleActions: 'play none play none'
+        start: 'top center',
+        end: 'bottom center',
+        toggleActions: 'play reverse play reverse'
       }
     });
     tlJerryText6
       .to('.first-scene-without-jerry', { opacity: 0 })
       .to('.JERRY-laugh', { opacity: 0 }, 0)
-      .to('.JERRY-onscreen, .JERRY-onscreen.season-1', { opacity: 1 }, 0)
+      .to('.JERRY-onscreen, .JERRY-onscreen.season-1', { opacity: 1, stroke: '#F9F5F7'}, 0)
       .to('#jerry-text-6 .highlight', highlightAnimation, "<-0.7")
 
     const tlJerryText7 = gsap.timeline({
       scrollTrigger: {
         trigger: '#jerry-text-7',
-        start: 'top bottom',
-        // end: 'top top',
-        toggleActions: 'play none play none',
+        start: 'top center',
+        end: 'bottom center',
+        toggleActions: 'play reverse play reverse',
         onEnter: () => activeFilter = FILTER.LAUGHS,
         onLeaveBack: () => activeFilter = FILTER.SCREEN_TIME
       }
@@ -377,7 +407,9 @@
     const tlJerryText8 = gsap.timeline({
       scrollTrigger: {
         trigger: '#jerry-text-8',
-        start: 'top bottom'
+        start: 'top center',
+        end: 'bottom center',
+        toggleActions: 'play reverse play reverse',
       }
     });
     tlJerryText8
@@ -387,9 +419,9 @@
     const tlGeorgeText1 = gsap.timeline({
       scrollTrigger: {
         trigger: '#george-text-1',
-        start: 'top bottom',
-        // end: 'top top',
-        toggleActions: 'play none play none',
+        start: 'top center',
+        end: 'bottom center',
+        toggleActions: 'play reverse play reverse',
         onEnter: () => {
           activeCharacter = 'GEORGE'
           activeFilter = FILTER.SCREEN_TIME
@@ -404,9 +436,9 @@
     const tlGeorgeText2 = gsap.timeline({
       scrollTrigger: {
         trigger: '#george-text-2',
-        start: 'top bottom',
-        // end: 'top top',
-        toggleActions: 'play none play none'
+        start: 'top center',
+        end: 'bottom center',
+        toggleActions: 'play reverse play reverse'
       }
     });
     tlGeorgeText2
@@ -415,9 +447,9 @@
     const tlGeorgeText3 = gsap.timeline({
       scrollTrigger: {
         trigger: '#george-text-3',
-        start: 'top bottom',
-        // end: 'top top',
-        toggleActions: 'play none play none',
+        start: 'top center',
+        end: 'bottom center',
+        toggleActions: 'play reverse play reverse',
         onEnter: () => {
           activeFilter = FILTER.LAUGHS
         },
@@ -431,9 +463,9 @@
     const tlElaineText1 = gsap.timeline({
       scrollTrigger: {
         trigger: '#elaine-text-1',
-        start: 'top bottom',
-        // end: 'top top',
-        toggleActions: 'play none play none',
+        start: 'top center',
+        end: 'bottom center',
+        toggleActions: 'play reverse play reverse',
         onEnter: () => {
           activeCharacter = 'ELAINE'
           activeFilter = FILTER.SCREEN_TIME
@@ -448,9 +480,9 @@
     const tlElaineText2 = gsap.timeline({
       scrollTrigger: {
         trigger: '#elaine-text-2',
-        start: 'top bottom',
-        // end: 'top top',
-        toggleActions: 'play none play none'
+        start: 'top center',
+        end: 'bottom center',
+        toggleActions: 'play reverse play reverse'
       }
     });
     tlElaineText2
@@ -460,9 +492,9 @@
     const tlElaineText3 = gsap.timeline({
       scrollTrigger: {
         trigger: '#elaine-text-3',
-        start: 'top bottom',
-        // end: 'top top',
-        toggleActions: 'play none play none'
+        start: 'top center',
+        end: 'bottom center',
+        toggleActions: 'play reverse play reverse'
       }
     });
     tlElaineText3
@@ -472,9 +504,9 @@
     const tlElaineText4 = gsap.timeline({
       scrollTrigger: {
         trigger: '#elaine-text-4',
-        start: 'top bottom',
-        // end: 'top top',
-        toggleActions: 'play none play none',
+        start: 'top center',
+        end: 'bottom center',
+        toggleActions: 'play reverse play reverse',
         onEnter: () => {
           activeFilter = FILTER.LAUGHS
         },
@@ -491,9 +523,9 @@
     const tlKramerText1 = gsap.timeline({
       scrollTrigger: {
         trigger: '#kramer-text-1',
-        start: 'top bottom',
-        // end: 'top top',
-        toggleActions: 'play none play none',
+        start: 'top center',
+        end: 'bottom center',
+        toggleActions: 'play reverse play reverse',
         onEnter: () => {
           activeCharacter = 'KRAMER'
           activeFilter = FILTER.SCREEN_TIME
@@ -508,9 +540,9 @@
     const tlKramerText2 = gsap.timeline({
       scrollTrigger: {
         trigger: '#kramer-text-2',
-        start: 'top bottom',
-        // end: 'top top',
-        toggleActions: 'play none play none'
+        start: 'top center',
+        end: 'bottom center',
+        toggleActions: 'play reverse play reverse'
       }
     });
     tlKramerText2
@@ -519,9 +551,9 @@
     const tlKramerText3 = gsap.timeline({
       scrollTrigger: {
         trigger: '#kramer-text-3',
-        start: 'top bottom',
-        // end: 'top top',
-        toggleActions: 'play none play none',
+        start: 'top center',
+        end: 'bottom center',
+        toggleActions: 'play reverse play reverse',
         onEnter: () => {
           activeFilter = FILTER.LAUGHS
         },
@@ -537,7 +569,7 @@
     const tlHint = gsap.timeline({
       scrollTrigger: {
         trigger: '#kramer-text-3',
-        start: 'bottom top'
+        start: 'top center'
       }
     });
     gsap.set('#lead-chars-episodes .hint', { opacity: 0, translateY: 30 })
@@ -649,7 +681,7 @@
                       y1={-12}
                       x2={0}
                       y2={visualizationsInnerHeight + 12}
-                      stroke="#E71D80"
+                      stroke="#303843"
                     />
                     <g class="number" fill="#928D90" text-anchor="middle" fill-opacity={isMouseOver ? 0.3 : 1}>
                       <text
@@ -699,6 +731,7 @@
                         width={episodeTimeScale(d.duration)}
                         height={episodesVerticalScale.bandwidth()}
                         fill="#F9F5F7"
+                        stroke="transparent"
                       />
                     {/if}
 
@@ -707,12 +740,10 @@
                       <rect
                         class="pointer-events-none {activeCharacter}-onscreen season-{d.season}"
                         x={episodeTimeScale(screenMoment.start)}
-                        y={isMouseOver && highlightedEpisode === `${d.season}-${d.episode}` ? -2 : 0}
+                        y={0}
                         width={episodeTimeScale(screenMoment.duration)}
-                        height={episodesVerticalScale.bandwidth() + (isMouseOver && highlightedEpisode === `${d.season}-${d.episode}` ? 4 : 0)}
+                        height={episodesVerticalScale.bandwidth()}
                         fill={characters.find(char => char.id === activeCharacter)?.color}
-                        stroke={isMouseOver && highlightedEpisode === `${d.season}-${d.episode}` ? '#F9F5F7' : 'none'}
-                        stroke-width={2}
                         rx={3}
                         ry={3}
                         style="opacity: {activeFilter === FILTER.LAUGHS ? 0.3 : (isMouseOver && highlightedEpisode === `${d.season}-${d.episode}`) || !isMouseOver ? 1 : 0.3};"
@@ -729,6 +760,10 @@
                           width={episodeTimeScale(screenMoment.duration)}
                           height={episodesVerticalScale.bandwidth()}
                           fill={characters.find(char => char.id === activeCharacter)?.color}
+                          stroke={'#F9F5F7'}
+                          stroke-width={1}
+                          rx={3}
+                          ry={3}
                           style="opacity: 0;"
                         />
                       {/each}
@@ -738,10 +773,14 @@
                         <rect
                           class="pointer-events-none without-jerry"
                           x={episodeTimeScale(screenMoment.start)}
-                          y={0}
+                          y={-2}
                           width={episodeTimeScale(screenMoment.duration)}
-                          height={episodesVerticalScale.bandwidth()}
+                          height={episodesVerticalScale.bandwidth() + 4}
                           fill="#E71D80"
+                          stroke={'#F9F5F7'}
+                          stroke-width={2}
+                          rx={3}
+                          ry={3}
                           style="opacity: 0;"
                         />
                       {/each}
@@ -751,10 +790,14 @@
                         <rect
                           class="pointer-events-none first-scene-without-jerry"
                           x={episodeTimeScale(screenMoment.start)}
-                          y={0}
+                          y={-2}
                           width={episodeTimeScale(screenMoment.duration)}
-                          height={episodesVerticalScale.bandwidth()}
+                          height={episodesVerticalScale.bandwidth() + 4}
                           fill="#E71D80"
+                          stroke={'#F9F5F7'}
+                          stroke-width={2}
+                          rx={3}
+                          ry={3}
                           style="opacity: 0;"
                         />
                       {/each}
@@ -783,6 +826,47 @@
 
                 <!-- Time tooltip -->
                 {#if isMouseOver}
+                  {#each charData[activeCharacter] as d}
+                     <!-- Screen time -->
+                    {#each d.aggregatedOnScreen as screenMoment}
+                      {#if isMouseOver && highlightedEpisode === `${d.season}-${d.episode}`}
+                        <rect
+                          class="pointer-events-none {activeCharacter}-onscreen season-{d.season}"
+                          x={episodeTimeScale(screenMoment.start)}
+                          y={episodesVerticalScale(`${d.season}-${d.episode}`) - 2}
+                          width={episodeTimeScale(screenMoment.duration)}
+                          height={episodesVerticalScale.bandwidth() + 4}
+                          fill={characters.find(char => char.id === activeCharacter)?.color}
+                          fill-opacity={activeFilter === FILTER.LAUGHS ? 0.6 : 1}
+                          stroke={activeFilter === FILTER.LAUGHS ? 'none' : '#F9F5F7'}
+                          stroke-width={2}
+                          rx={3}
+                          ry={3}
+                        />
+                      {/if}
+                    {/each}
+
+                    <!-- Laughs -->
+                    {#if activeFilter === FILTER.LAUGHS}
+                      {#each d.aggregatedLaughs as screenMoment}
+                        {#if isMouseOver && highlightedEpisode === `${d.season}-${d.episode}`}
+                          <rect
+                            class="pointer-events-none {activeCharacter}-laugh"
+                            x={episodeTimeScale(screenMoment.start) - 2}
+                            y={episodesVerticalScale(`${d.season}-${d.episode}`) - 2}
+                            width={episodeTimeScale(screenMoment.duration) + 4}
+                            height={episodesVerticalScale.bandwidth() + 4}
+                            fill={characters.find(char => char.id === activeCharacter)?.color}
+                            stroke={'#F9F5F7'}
+                            stroke-width={2}
+                            rx={3}
+                            ry={3}
+                          />
+                        {/if}
+                      {/each}
+                    {/if}
+                  {/each}
+
                   <g transform="translate({highlightedEpisodeTimePosition}, 0)" class="pointer-events-none">
                     <line
                       x1={0}
@@ -855,28 +939,14 @@
                     {#if activeFilter === FILTER.SCREEN_TIME}
                       <!-- Screen time -->
                       {#if episodeOverviewScale((d.aggregatedOnScreen.length * 60) / d.duration)}
-                        {#if isMouseOver && highlightedEpisode === `${d.season}-${d.episode}`}
-                          <rect
-                            class="pointer-events-none"
-                            x={0}
-                            y={0}
-                            width={episodesOverviewWidth - marginEnd}
-                            height={episodesVerticalScale.bandwidth()}
-                            fill="#F9F5F7"
-                            rx={3}
-                            ry={3}
-                          />
-                        {/if}
                         <rect
                           class="pointer-events-none"
                           x={0}
-                          y={isMouseOver && highlightedEpisode === `${d.season}-${d.episode}` ? -2 : 0}
+                          y={0}
                           width={episodeOverviewScale((d.aggregatedOnScreen.reduce((acc, value) => acc + value.duration, 0)) / d.duration)}
-                          height={episodesVerticalScale.bandwidth() + (isMouseOver && highlightedEpisode === `${d.season}-${d.episode}` ? 4 : 0)}
+                          height={episodesVerticalScale.bandwidth()}
                           fill={characters.find(char => char.id === activeCharacter)?.color}
                           fill-opacity={activeFilter === FILTER.LAUGHS ? 0.3 : (isMouseOver && highlightedEpisode === `${d.season}-${d.episode}`) || !isMouseOver ? 1 : 0.3}
-                          stroke={isMouseOver && highlightedEpisode === `${d.season}-${d.episode}` ? '#F9F5F7' : 'none'}
-                          stroke-width={2}
                           rx={3}
                           ry={3}
                         />
@@ -884,34 +954,65 @@
                     {:else}
                       <!-- Laugh rate -->
                       {#if episodeOverviewScale(d.causesLaughs.length / d.episodeLaughs.length)}
-                        {#if isMouseOver && highlightedEpisode === `${d.season}-${d.episode}`}
-                          <rect
-                            class="pointer-events-none"
-                            x={0}
-                            y={0}
-                            width={episodesOverviewWidth - marginEnd}
-                            height={episodesVerticalScale.bandwidth()}
-                            fill="#F9F5F7"
-                            rx={3}
-                            ry={3}
-                          />
-                        {/if}
                         <rect
                           class="pointer-events-none"
                           x={0}
-                          y={isMouseOver && highlightedEpisode === `${d.season}-${d.episode}` ? -2 : 0}
+                          y={0}
                           width={episodeOverviewScale(d.causesLaughs.length / d.episodeLaughs.length)}
-                          height={episodesVerticalScale.bandwidth() + (isMouseOver && highlightedEpisode === `${d.season}-${d.episode}` ? 4 : 0)}
+                          height={episodesVerticalScale.bandwidth()}
                           fill={characters.find(char => char.id === activeCharacter)?.color}
                           fill-opacity={(isMouseOver && highlightedEpisode === `${d.season}-${d.episode}`) || !isMouseOver ? 1 : 0.3}
-                          stroke={isMouseOver && highlightedEpisode === `${d.season}-${d.episode}` ? '#F9F5F7' : 'none'}
-                          stroke-width={2}
                           rx={3}
                           ry={3}
                         />
                       {/if}
                     {/if}
                   </g>
+                {/each}
+
+                {#each charData[activeCharacter] as d}
+                  {#if isMouseOver && highlightedEpisode === `${d.season}-${d.episode}`}
+                    <g transform="translate(0, {episodesVerticalScale(`${d.season}-${d.episode}`)})">
+                      <rect
+                        class="pointer-events-none"
+                        x={0}
+                        y={0}
+                        width={episodesOverviewWidth - marginEnd}
+                        height={episodesVerticalScale.bandwidth()}
+                        fill="#F9F5F7"
+                        rx={3}
+                        ry={3}
+                      />
+
+                      {#if activeFilter === FILTER.SCREEN_TIME}
+                        <rect
+                          class="pointer-events-none"
+                          x={0}
+                          y={-2}
+                          width={episodeOverviewScale((d.aggregatedOnScreen.reduce((acc, value) => acc + value.duration, 0)) / d.duration)}
+                          height={episodesVerticalScale.bandwidth() + 4}
+                          fill={characters.find(char => char.id === activeCharacter)?.color}
+                          stroke={'#F9F5F7'}
+                          stroke-width={2}
+                          rx={3}
+                          ry={3}
+                        />
+                      {:else}
+                        <rect
+                          class="pointer-events-none"
+                          x={0}
+                          y={-2}
+                          width={episodeOverviewScale(d.causesLaughs.length / d.episodeLaughs.length)}
+                          height={episodesVerticalScale.bandwidth() + 4}
+                          fill={characters.find(char => char.id === activeCharacter)?.color}
+                          stroke={'#F9F5F7'}
+                          stroke-width={2}
+                          rx={3}
+                          ry={3}
+                        />
+                      {/if}
+                    </g>
+                  {/if}
                 {/each}
 
                 <!-- Overview tooltip -->
@@ -952,7 +1053,8 @@
                     y1={0}
                     x2={visualizationsWidth - 14}
                     y2={0}
-                    stroke="#E71D80"
+                    stroke="#303843"
+                    stroke-opacity={isMouseOver ? 0 : 1}
                   />
                 {#each seasons as season, i}
                   <line
@@ -960,7 +1062,8 @@
                     y1={seasonScale(sum(seasons.slice(0, i), (d) => d.numEpisodes)) + seasonScale(season.numEpisodes)}
                     x2={visualizationsWidth - 14}
                     y2={seasonScale(sum(seasons.slice(0, i), (d) => d.numEpisodes)) + seasonScale(season.numEpisodes)}
-                    stroke="#E71D80"
+                    stroke="#303843"
+                    stroke-opacity={isMouseOver ? 0 : 1}
                   />
                 {/each}
               </g>
@@ -973,7 +1076,7 @@
   </div>
 
   <!-- Texts -->
-  <div class="z-10 relative pointer-events-none" style="top: 100vh;">
+  <div id="lead-chars-episodes-texts" class="z-10 relative pointer-events-none" style="top: 100vh;">
    <MainCharsTexts {charData} />
   </div>
 </div>
