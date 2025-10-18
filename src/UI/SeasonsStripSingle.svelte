@@ -3,11 +3,7 @@
 	import { sum } from 'd3-array';
 	import { seasons, totalNumEpisodes } from '$lib/data/seasons';
 
-	/**
-	 * @type {number}
-	 */
-	const width = 25;
-	let { height } = $props();
+	let { width = 25, height } = $props();
 
 	let seasonScale = $derived(
 		scaleLinear()
@@ -20,7 +16,7 @@
 	<rect
 		x={0}
 		y={seasonScale(sum(seasons.slice(0, i), (d) => d.numEpisodes))}
-		width={25}
+		width={width}
 		height={seasonScale(season.numEpisodes)}
 		fill={season.color}
 	/>

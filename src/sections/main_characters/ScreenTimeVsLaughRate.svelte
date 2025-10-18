@@ -3,7 +3,9 @@
 	import { gsap } from 'gsap/dist/gsap';
   import { scaleLinear, scaleBand } from 'd3-scale';
   import { max, sum } from 'd3-array';
-  import { episodesInfo } from '$lib/data/episodesInfo';
+  import { area, curveStepAfter } from 'd3-shape'
+
+  import { episodesInfo, clipShows } from '$lib/data/episodesInfo';
   import { characters } from '$lib/data/characters';
   import { getCharacterImagePath } from '../../utils/getCharacterImagePath';
   import { getLocationIconPath } from '../../utils/getLocationIconPath';
@@ -20,6 +22,7 @@
 
   let innerWidth = $state(1600);
   let innerHeight = $state(800);
+  let headerHeight = $state(200);
 
   let currentChars = characters.slice(0, 4);
   let activeCharacter = $state("JERRY");
@@ -36,10 +39,10 @@
 
   let visualizationsWidth = $state(800);
   const episodesOverviewWidth = 150;
-  const marginEnd = 22;
+  const marginEnd = 25;
   let episodeDetailsWidth = $derived(visualizationsWidth - episodesOverviewWidth);
   let visualizationsContainerHeight = $state(800);
-  let visualizationsHeight = $derived(innerHeight - 260);
+  let visualizationsHeight = $derived(innerHeight - 110);
 
   const margin = { top: 30, right: 100, bottom: 34, left: 14 + 25 };
   let episodeDetailsInnerWidth = $derived(episodeDetailsWidth - margin.left - margin.right);
@@ -274,9 +277,9 @@
     const tl1 = gsap.timeline({
       scrollTrigger: {
         trigger: '#lead-chars-episodes-container',
-        start: 'top top',
+        start: `top top-=${headerHeight}`,
         end: 'bottom bottom',
-        pin: '#lead-chars-episodes'
+        pin: '#lead-chars-episodes-viz'
       }
     });
 
@@ -463,7 +466,7 @@
       }
     });
     tlElaineText3
-      .to('.episode-duration.season-1-episode-1, .episode-duration.season-4-episode-1, .episode-duration.season-4-episode-2, .episode-duration.season-4-episode-3, .episode-duration.season-4-episode-4', { fill: '#EEECED' })
+      .to('.episode-duration.season-1-episode-1, .episode-duration.season-4-episode-1, .episode-duration.season-4-episode-2, .episode-duration.season-4-episode-3, .episode-duration.season-4-episode-4', { fill: '#F9F5F7' })
       .to('#elaine-text-3 .highlight', highlightAnimation, "<-0.7")
 
     const tlElaineText4 = gsap.timeline({
@@ -541,16 +544,46 @@
     tlHint
       .to('#lead-chars-episodes .hint', { opacity: 1, translateY: 0, ease: 'bounce.out', duration: 1 })
   })
+
+  const pointsForEpisodesDuration = []
+  episodesInfo.forEach((e, i) => {
+    pointsForEpisodesDuration.push({
+      season: e.season,
+      episode: e.episode,
+      duration: e.duration,
+      position: 'start'
+    })
+    pointsForEpisodesDuration.push({
+      season: e.season,
+      episode: e.episode,
+      duration: e.duration,
+      position: 'end'
+    })
+  })
+
+  const episodesDurationPathGenerator = $derived.by(() => area()
+    .x0(() => 0)
+    .x1(d => episodeTimeScale(d.duration))
+    .y(d => episodesVerticalScale(`${d.season}-${d.episode}`) + (d.position === 'end' ? episodesVerticalScale.bandwidth() : 0)))
 </script>
 
 <svelte:window bind:innerWidth bind:innerHeight />
 
 <div id="lead-chars-episodes-container" class="relative mt-20 mb-52" style="padding-bottom: 200vh;">
-  <div id="lead-chars-episodes" class="absolute h-screen w-screen top-0 left-0">
+  <div 
+    id="lead-chars-episodes" 
+    class="absolute w-screen top-0 left-0" 
+    style="height: {innerHeight + headerHeight}px">
     <div class="container">
-      <h3 class="my-8">Screen time vs laughter rate</h3>
-      <div class="grid grid-cols-12 md:gap-8">
-        <div class="col-span-12 md:col-span-2 flex flex-col items-center relative">
+      <!-- Header -->
+      <div class="mb-8" bind:clientHeight={headerHeight}>
+        <h3>Screen time vs laughter rate</h3>
+        <div style="max-width: 900px;">Intro goes here...</div>
+      </div>
+
+      <!-- Visualization -->
+      <div id="lead-chars-episodes-viz" class="grid grid-cols-12 md:gap-8">
+        <div class="col-span-2 flex flex-col items-center relative">
           <div class="hint small flex items-center gap-2 mb-6" style="max-width: 320px;">
             <span class="shrink"><HelpIcon color="#E71D80" /></span>
             <span class="relative top-1">Select a character to explore their screen time and laughter rate.</span>
@@ -574,7 +607,7 @@
           {/if}
         </div>
 
-        <div class="col-span-12 md:col-span-9" bind:clientHeight={visualizationsContainerHeight}>
+        <div class="col-span-10" bind:clientHeight={visualizationsContainerHeight}>
           <Toggle bind:activeFilter />
           <div class="flex" bind:clientWidth={visualizationsWidth}>
             <!-- Episode details -->
@@ -586,7 +619,7 @@
                   <ArrowDown />
                 </g>
                 <g transform="translate(14, 0)">
-                  <SeasonsStripSingle height={visualizationsInnerHeight} />
+                  <SeasonsStripSingle width={visualizationsWidth} height={visualizationsInnerHeight} />
                 </g>
               </g>
 
@@ -597,7 +630,7 @@
                   y={0}
                   width={visualizationsWidth - margin.left}
                   height={visualizationsInnerHeight}
-                  fill="#F9F5F7"
+                  fill="transparent"
                   role="document"
                   onmouseenter={handleOverviewMouseEnter}
                   onmousemove={(e) => handleMouseMove(e)}
@@ -605,20 +638,7 @@
                 />
               </g>
 
-              <!-- Season separators -->
-              <g transform="translate({margin.left}, {margin.top})" class="pointer-events-none">
-                {#each seasons as season, i}
-                  {#if i < seasons.length - 1}
-                    <line
-                      x1={0}
-                      y1={seasonScale(sum(seasons.slice(0, i), (d) => d.numEpisodes)) + seasonScale(season.numEpisodes)}
-                      x2={visualizationsWidth - margin.left}
-                      y2={seasonScale(sum(seasons.slice(0, i), (d) => d.numEpisodes)) + seasonScale(season.numEpisodes)}
-                      stroke="#928D90"
-                    />
-                  {/if}
-                {/each}
-              </g>
+              <g class="pointer-events-none">
 
               <g transform="translate({margin.left}, {margin.top})">
                 <!-- Time labels -->
@@ -629,7 +649,7 @@
                       y1={-12}
                       x2={0}
                       y2={visualizationsInnerHeight + 12}
-                      stroke="#928D90"
+                      stroke="#E71D80"
                     />
                     <g class="number" fill="#928D90" text-anchor="middle" fill-opacity={isMouseOver ? 0.3 : 1}>
                       <text
@@ -649,28 +669,52 @@
                   </g>
                 {/each}
 
-                {#each charData[activeCharacter] as d}
-                  <g transform="translate(0, {episodesVerticalScale(`${d.season}-${d.episode}`)})">
-                    <!-- Episode durations -->
+                <path
+                  d={episodesDurationPathGenerator(pointsForEpisodesDuration)}
+                  fill="#F9F5F7"
+                  fill-opacity={isMouseOver ? 0.3 : 0.8}
+                />
+                {#each clipShows as episode}
+                  <g transform="translate(0, {episodesVerticalScale(`${episode.season}-${episode.episode}`)})">
+                    <!-- Episode durations for clip shows -->
                     <rect
-                      class="pointer-events-none episode-duration season-{d.season}-episode-{d.episode}"
+                      class="pointer-events-none episode-duration season-{episode.season}-episode-{episode.episode}"
                       x={0}
                       y={0}
-                      width={episodeTimeScale(d.duration)}
+                      width={episodeTimeScale(episode.duration)}
                       height={episodesVerticalScale.bandwidth()}
-                      fill="#EEECED"
-                      fill-opacity={(isMouseOver && highlightedEpisode === `${d.season}-${d.episode}`) || !isMouseOver ? 1 : 0.3}
+                      fill="#303843"
+                      fill-opacity={(isMouseOver && highlightedEpisode === `${episode.season}-${episode.episode}`) || !isMouseOver ? 1 : 0.3}
                     />
+                  </g>
+                {/each}
+
+                {#each charData[activeCharacter] as d}
+                  <g transform="translate(0, {episodesVerticalScale(`${d.season}-${d.episode}`)})">
+                    {#if isMouseOver && highlightedEpisode === `${d.season}-${d.episode}`}
+                      <rect
+                        class="pointer-events-none episode-duration season-{d.season}-episode-{d.episode}"
+                        x={0}
+                        y={0}
+                        width={episodeTimeScale(d.duration)}
+                        height={episodesVerticalScale.bandwidth()}
+                        fill="#F9F5F7"
+                      />
+                    {/if}
 
                     <!-- Screen time -->
                     {#each d.aggregatedOnScreen as screenMoment}
                       <rect
                         class="pointer-events-none {activeCharacter}-onscreen season-{d.season}"
                         x={episodeTimeScale(screenMoment.start)}
-                        y={0}
+                        y={isMouseOver && highlightedEpisode === `${d.season}-${d.episode}` ? -2 : 0}
                         width={episodeTimeScale(screenMoment.duration)}
-                        height={episodesVerticalScale.bandwidth()}
+                        height={episodesVerticalScale.bandwidth() + (isMouseOver && highlightedEpisode === `${d.season}-${d.episode}` ? 4 : 0)}
                         fill={characters.find(char => char.id === activeCharacter)?.color}
+                        stroke={isMouseOver && highlightedEpisode === `${d.season}-${d.episode}` ? '#F9F5F7' : 'none'}
+                        stroke-width={2}
+                        rx={3}
+                        ry={3}
                         style="opacity: {activeFilter === FILTER.LAUGHS ? 0.3 : (isMouseOver && highlightedEpisode === `${d.season}-${d.episode}`) || !isMouseOver ? 1 : 0.3};"
                       />
                     {/each}
@@ -721,12 +765,16 @@
                       {#each d.aggregatedLaughs as screenMoment}
                         <rect
                           class="pointer-events-none {activeCharacter}-laugh"
-                          x={episodeTimeScale(screenMoment.start)}
-                          y={0}
-                          width={episodeTimeScale(screenMoment.duration)}
-                          height={episodesVerticalScale.bandwidth()}
+                          x={episodeTimeScale(screenMoment.start) - (isMouseOver && highlightedEpisode === `${d.season}-${d.episode}` ? 2 : 0)}
+                          y={isMouseOver && highlightedEpisode === `${d.season}-${d.episode}` ? -2 : 0}
+                          width={episodeTimeScale(screenMoment.duration) + (isMouseOver && highlightedEpisode === `${d.season}-${d.episode}` ? 4 : 0)}
+                          height={episodesVerticalScale.bandwidth() + (isMouseOver && highlightedEpisode === `${d.season}-${d.episode}` ? 4 : 0)}
                           fill={characters.find(char => char.id === activeCharacter)?.color}
                           style="opacity: {(isMouseOver && highlightedEpisode === `${d.season}-${d.episode}`) || !isMouseOver ? 1 : 0.3};"
+                          stroke={isMouseOver && highlightedEpisode === `${d.season}-${d.episode}` ? '#F9F5F7' : 'none'}
+                          stroke-width={2}
+                          rx={3}
+                          ry={3}
                         />
                       {/each}
                     {/if}
@@ -771,8 +819,8 @@
                   y={0}
                   width={episodesOverviewWidth - marginEnd}
                   height={visualizationsInnerHeight}
-                  fill="#EEECED"
-                  fill-opacity={isMouseOver ? 0.3 : 1}
+                  fill="#F9F5F7"
+                  fill-opacity={isMouseOver ? 0.3 : 0.8}
                 />
                 <!-- Vertical Axes -->
                 {#each overviewLabels as overviewLabel}
@@ -782,7 +830,7 @@
                       y1={-12}
                       x2={0}
                       y2={visualizationsInnerHeight + 12}
-                      stroke="#928D90"
+                      stroke="#E71D80"
                     />
                     <g class="number" fill="#928D90" text-anchor="middle" fill-opacity={isMouseOver ? 0.3 : 1}>
                       <text
@@ -806,29 +854,61 @@
                   <g transform="translate(0, {episodesVerticalScale(`${d.season}-${d.episode}`)})">
                     {#if activeFilter === FILTER.SCREEN_TIME}
                       <!-- Screen time -->
-                      {#if episodeOverviewScale((d.aggregatedOnScreen.length * 5) / d.duration)}
+                      {#if episodeOverviewScale((d.aggregatedOnScreen.length * 60) / d.duration)}
+                        {#if isMouseOver && highlightedEpisode === `${d.season}-${d.episode}`}
+                          <rect
+                            class="pointer-events-none"
+                            x={0}
+                            y={0}
+                            width={episodesOverviewWidth - marginEnd}
+                            height={episodesVerticalScale.bandwidth()}
+                            fill="#F9F5F7"
+                            rx={3}
+                            ry={3}
+                          />
+                        {/if}
                         <rect
                           class="pointer-events-none"
                           x={0}
-                          y={0}
+                          y={isMouseOver && highlightedEpisode === `${d.season}-${d.episode}` ? -2 : 0}
                           width={episodeOverviewScale((d.aggregatedOnScreen.reduce((acc, value) => acc + value.duration, 0)) / d.duration)}
-                          height={episodesVerticalScale.bandwidth()}
+                          height={episodesVerticalScale.bandwidth() + (isMouseOver && highlightedEpisode === `${d.season}-${d.episode}` ? 4 : 0)}
                           fill={characters.find(char => char.id === activeCharacter)?.color}
                           fill-opacity={activeFilter === FILTER.LAUGHS ? 0.3 : (isMouseOver && highlightedEpisode === `${d.season}-${d.episode}`) || !isMouseOver ? 1 : 0.3}
+                          stroke={isMouseOver && highlightedEpisode === `${d.season}-${d.episode}` ? '#F9F5F7' : 'none'}
+                          stroke-width={2}
+                          rx={3}
+                          ry={3}
                         />
                       {/if}
                     {:else}
                       <!-- Laugh rate -->
                       {#if episodeOverviewScale(d.causesLaughs.length / d.episodeLaughs.length)}
-                      <rect
-                        class="pointer-events-none"
-                        x={0}
-                        y={0}
-                        width={episodeOverviewScale(d.causesLaughs.length / d.episodeLaughs.length)}
-                        height={episodesVerticalScale.bandwidth()}
-                        fill={characters.find(char => char.id === activeCharacter)?.color}
-                        fill-opacity={(isMouseOver && highlightedEpisode === `${d.season}-${d.episode}`) || !isMouseOver ? 1 : 0.3}
-                      />
+                        {#if isMouseOver && highlightedEpisode === `${d.season}-${d.episode}`}
+                          <rect
+                            class="pointer-events-none"
+                            x={0}
+                            y={0}
+                            width={episodesOverviewWidth - marginEnd}
+                            height={episodesVerticalScale.bandwidth()}
+                            fill="#F9F5F7"
+                            rx={3}
+                            ry={3}
+                          />
+                        {/if}
+                        <rect
+                          class="pointer-events-none"
+                          x={0}
+                          y={isMouseOver && highlightedEpisode === `${d.season}-${d.episode}` ? -2 : 0}
+                          width={episodeOverviewScale(d.causesLaughs.length / d.episodeLaughs.length)}
+                          height={episodesVerticalScale.bandwidth() + (isMouseOver && highlightedEpisode === `${d.season}-${d.episode}` ? 4 : 0)}
+                          fill={characters.find(char => char.id === activeCharacter)?.color}
+                          fill-opacity={(isMouseOver && highlightedEpisode === `${d.season}-${d.episode}`) || !isMouseOver ? 1 : 0.3}
+                          stroke={isMouseOver && highlightedEpisode === `${d.season}-${d.episode}` ? '#F9F5F7' : 'none'}
+                          stroke-width={2}
+                          rx={3}
+                          ry={3}
+                        />
                       {/if}
                     {/if}
                   </g>
@@ -863,6 +943,28 @@
                   </g>
                 {/if}
               </g>
+
+
+              <!-- Season separators -->
+              <g transform="translate(14, {margin.top})" class="pointer-events-none">
+                <line
+                    x1={0}
+                    y1={0}
+                    x2={visualizationsWidth - 14}
+                    y2={0}
+                    stroke="#E71D80"
+                  />
+                {#each seasons as season, i}
+                  <line
+                    x1={0}
+                    y1={seasonScale(sum(seasons.slice(0, i), (d) => d.numEpisodes)) + seasonScale(season.numEpisodes)}
+                    x2={visualizationsWidth - 14}
+                    y2={seasonScale(sum(seasons.slice(0, i), (d) => d.numEpisodes)) + seasonScale(season.numEpisodes)}
+                    stroke="#E71D80"
+                  />
+                {/each}
+              </g>
+              </g>
             </svg>
           </div>
         </div>
@@ -886,8 +988,5 @@
   }
   .character-button.active .character {
     cursor: default;
-  }
-  rect {
-    transition: fill-opacity 0.2s ease-out;
   }
 </style>
