@@ -55,8 +55,8 @@
 
 	// @ts-ignore
 	const tiles = $derived(getRandom(tilesData, numTiles));
-	const tilesWidth = $derived(innerWidth / numColumns);
-	const tilesHeight = $derived(innerHeight / numRows);
+	const tilesWidth = $derived(innerWidth / numColumns - 1);
+	const tilesHeight = $derived(innerHeight / numRows - 1);
 
 	// Play video on hover
 	let videoIsPlaying = $state(false);
