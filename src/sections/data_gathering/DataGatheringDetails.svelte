@@ -229,7 +229,7 @@
             <div class="col-span-2 md:col-span-4"></div>
             <div class="col-span-10 md:col-span-8 mt-8" style="margin-right: -{sideSpacing}px;">
                 <img class="data-gathering-parallax" src="https://amdufour.github.io/hosted-data/apis/images/audience.jpg" alt="Jerry Seinfeld talking with the audience during taping." />
-                <div class="number text pt-2" style="background-color: rgba(249, 245, 247, 0.6);">Source: <a href="https://www.facebook.com/story.php?story_fbid=539096318663826&id=100076903884453" target="_blank">The Seinfeld World</a></div>
+                <div class="number text pt-2" style="background-color: rgba(249, 245, 247, 0.6);">Photo source: <a href="https://www.facebook.com/story.php?story_fbid=539096318663826&id=100076903884453" target="_blank">The Seinfeld World</a></div>
             </div>
         </div>
 

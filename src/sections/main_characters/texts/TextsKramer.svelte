@@ -13,7 +13,10 @@
     <div>
       <span class="em" style="color: {color};">Cosmo Kramer</span>, based on Kenny Kramer, the real-life friend of Larry David, was Jerry's friend and neighbour and the fourth lead character. Kramer was often used more sparingly than the other leads, in terms of screen time, as he was effectively the clown of the group, a role which works best when used somewhat sparingly.
     </div>
-    <img src="https://amdufour.github.io/hosted-data/apis/images/the_real_kramer.jpg" alt="The real Kramer" style="height: 215px;" />
+    <div class="shrink-0">
+      <img src="https://amdufour.github.io/hosted-data/apis/images/the_real_kramer.jpg" alt="The real Kramer" style="height: 215px;" />
+      <div class="number text pt-2">Photo source: <a href="https://www.reddit.com/r/seinfeld/comments/185fl6f/larry_david_kenny_kramer_and_jerry_seinfeld_all/?tl=fr" target="_blank">reddit</a></div>
+    </div>
   </div>
 </div>
 

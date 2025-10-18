@@ -30,10 +30,13 @@
 <!-- Text 3 -->
 <div id="elaine-text-3" class="flex h-screen w-screen items-center justify-end pr-6">
   <div class="text-overlay flex gap-4" style="max-width: 1000px;">
+    <div class="shrink-0">
+      <img src="https://amdufour.github.io/hosted-data/apis/images/seinfeldia.jpg" alt="Cover of the book Seinfeldia by Jennifer Keishin Armstrong" style="height: 350px;" />
+      <div class="number text pt-2">Photo source: <a href="https://www.goodreads.com/book/show/27171845-seinfeldia" target="_blank">goodreads</a></div>
+    </div>
     <div>
       In the book 'Seinfeldia', author Jennifer Keishin Armstrong reports that, at the start of Season 3, Julia Louis-Dreyfus (who played Elaine) was unhappy with her lack of quality screen time - being on-screen and being funny. In the absence of women writers, this was perhaps an unsurprising effect of there being a male-dominated staff, but it was also a consequence of the grounded role her character played within the group of leads, considering Jerry's omnipresence as the gag-man, George's with his neuroticism and Kramer bringing the slapstick. Elaine, as arguably the strongest actor, took on more of the role <span class="highlight">holding the main stories together</span>.
     </div>
-    <img src="https://amdufour.github.io/hosted-data/apis/images/seinfeldia.jpg" alt="Cover of the book Seinfeldia by Jennifer Keishin Armstrong" style="height: 350px;" />
   </div>
 </div>
 
@@ -44,7 +47,10 @@
       <div>
         Things changed in Season 5 when Carol Leifer joined the show as a writer and became responsible for pitching most of Elaine's subsequent stories and character development. Though her laughter share only <span class="highlight">rose gradually</span>, her laughter rates jumped from 13% in Season 1 to a peak of 24% by Season 8.
       </div>
-      <img src="https://amdufour.github.io/hosted-data/apis/images/Carol_Leifer.jpg" alt="Carol Leifer" style="height: 200px;" />
+      <div class="shrink-0">
+        <img src="https://amdufour.github.io/hosted-data/apis/images/Carol_Leifer.jpg" alt="Carol Leifer" style="height: 200px;" />
+        <div class="number text pt-2">Photo source: <a href="https://en.wikipedia.org/wiki/Carol_Leifer" target="_blank">Wikipedia</a></div>
+      </div>
     </div>
     <div class="small mb-2">Average laughter share per season</div>
     <Sparkline charData={charData.ELAINE} showLabels={true} charId="GEORGE" showMax={true} isScreenTime={false} yAxisLabels={[0, 1]} />

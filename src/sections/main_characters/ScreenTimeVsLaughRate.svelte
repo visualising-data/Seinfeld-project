@@ -704,7 +704,7 @@
                 <path
                   d={episodesDurationPathGenerator(pointsForEpisodesDuration)}
                   fill="#F9F5F7"
-                  fill-opacity={isMouseOver ? 0.3 : 0.8}
+                  fill-opacity={isMouseOver ? 0.3 : 0.9}
                 />
                 {#each clipShows as episode}
                   <g transform="translate(0, {episodesVerticalScale(`${episode.season}-${episode.episode}`)})">

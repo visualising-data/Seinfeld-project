@@ -13,7 +13,10 @@
     <div>
       <span class="em" style="color: {color};">George Costanza</span>, who was essentially based on co-creator Larry David, was the second most-seen character, appearing in all but one episode and a little under half of all scenes and screen time.
     </div>
-    <img src="https://amdufour.github.io/hosted-data/apis/images/larry_david.jpg" alt="Larry David" style="height: 200px;" />
+    <div class="shrink-0">
+      <img src="https://amdufour.github.io/hosted-data/apis/images/larry_david.jpg" alt="Larry David" style="height: 200px;" />
+      <div class="number text pt-2">Photo source: <a href="https://ast.wikipedia.org/wiki/Larry_David" target="_blank">Wikipedia</a></div>
+    </div>
   </div>
 </div>
 
