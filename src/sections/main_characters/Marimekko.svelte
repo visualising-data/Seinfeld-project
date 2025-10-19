@@ -128,11 +128,6 @@
               {#if i === 0}
                 <text
                   class="small accent"
-                  x={0}
-                  y={-char.laughsWidth}
-                >Relative screen time</text>
-                <text
-                  class="small accent"
                   style="transform: translateX(94px) translateY(-4px) rotate(-90deg); transform-origin: 0 0;"
                   x={0}
                   y={-char.laughsWidth + 4}
@@ -147,13 +142,22 @@
               {/if}
 
               <!-- Laughs -->
-              <rect
-                x={0}
-                y={-char.laughsWidth}
-                width={char.screenTimeWidth}
-                height={char.laughsWidth}
-                fill={characters.find(c => c.id === char.id)?.color || 'gray'}
-              />
+              <g transform="translate(0, {-char.laughsWidth})">
+                {#if i === 0}
+                  <text
+                    class="small accent"
+                    x={0}
+                    y={-10}
+                  >Relative screen time</text>
+                {/if}
+                <rect
+                  x={0}
+                  y={0}
+                  width={char.screenTimeWidth}
+                  height={char.laughsWidth}
+                  fill={characters.find(c => c.id === char.id)?.color || 'gray'}
+                />
+              </g>
 
               <!-- No Laugh -->
               <rect
