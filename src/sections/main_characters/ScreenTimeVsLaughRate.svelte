@@ -673,6 +673,13 @@
               <g class="pointer-events-none">
 
               <g transform="translate({margin.left}, {margin.top})">
+                <text 
+                  x={3}
+                  y={-4}
+                  class="small accent">Duration</text>
+                <g transform="rotate(-90) translate(4, 62)">
+                  <ArrowDown />
+                </g>
                 <!-- Time labels -->
                 {#each timeLabels as timeLabel}
                   <g transform="translate({episodeTimeScale(timeLabel * 60)}, 0)" class="pointer-events-none">
@@ -715,7 +722,7 @@
                       y={0}
                       width={episodeTimeScale(episode.duration)}
                       height={episodesVerticalScale.bandwidth()}
-                      fill="#303843"
+                      fill="#928D90"
                       fill-opacity={(isMouseOver && highlightedEpisode === `${episode.season}-${episode.episode}`) || !isMouseOver ? 1 : 0.3}
                     />
                   </g>
@@ -897,6 +904,13 @@
 
               <!-- Episode overviews -->
               <g transform="translate({visualizationsWidth - episodesOverviewWidth}, {margin.top})">
+                <text 
+                  x={3}
+                  y={-4}
+                  class="small accent">{activeFilter === FILTER.SCREEN_TIME ? 'Screen time' : 'Laugh rate'}</text>
+                <g transform="rotate(-90) translate(4, 77)">
+                  <ArrowDown />
+                </g>
                 <rect
                   class="pointer-events-none"
                   x={0}
@@ -914,7 +928,7 @@
                       y1={-12}
                       x2={0}
                       y2={visualizationsInnerHeight + 12}
-                      stroke="#12020A"
+                      stroke="#303843"
                     />
                     <g class="number" fill="#928D90" text-anchor="middle" fill-opacity={isMouseOver ? 0.3 : 1}>
                       <text
