@@ -17,6 +17,7 @@
   import SeasonsStripSingle from '../../UI/SeasonsStripSingle.svelte';
   import EpisodeTooltip from '../../UI/EpisodeTooltip.svelte';
   import MainCharsTexts from './texts/MainCharsTexts.svelte';
+  import ScreenTimeVsLaughRateLegend from './ScreenTimeVsLaughRateLegend.svelte';
 
   let { episodesData, currentSection } = $props();
 
@@ -27,7 +28,7 @@
   let currentChars = characters.slice(0, 4);
   let activeCharacter = $state("JERRY");
 
-  const FILTER = {
+  export const FILTER = {
     SCREEN_TIME: 'screenTime',
     LAUGHS: 'causesLaughs'
   }
@@ -650,7 +651,11 @@
         </div>
 
         <div class="col-span-10 md:mt-1" bind:clientHeight={visualizationsContainerHeight}>
-          <Toggle bind:activeFilter />
+          <div class="flex gap-10">
+            <Toggle bind:activeFilter />
+            <ScreenTimeVsLaughRateLegend activeCharacter={activeCharacter} activeFilter={activeFilter} />
+          </div>
+
           <div class="flex" bind:clientWidth={visualizationsWidth}>
             <!-- Episode details -->
             <svg width={visualizationsWidth} height={visualizationsHeight}>
