@@ -58,14 +58,18 @@
 	const tilesWidth = $derived(innerWidth / numColumns - 1);
 	const tilesHeight = $derived(innerHeight / numRows - 1);
 
-	// Play video on hover
-	let videoIsPlaying = $state(false);
-	const handlePlayVideo = (/** @type {string} */ tileId, /** @type {number} */ index) => {
+	const pauseAllVideos = () => {
 		// Pause all loading videos
 		document.querySelectorAll('video').forEach((video) => {
 			video.pause()
 			video.removeEventListener("loadeddata", () => startVideo(video))
 		});
+	}
+
+	// Play video on hover
+	let videoIsPlaying = $state(false);
+	const handlePlayVideo = (/** @type {string} */ tileId, /** @type {number} */ index) => {
+		pauseAllVideos()
 
 		if (index < numColumns) {
 			videoIsPlaying = true;
@@ -83,13 +87,8 @@
 	};
 
 	const handlePauseVideo = (/** @type {string} */ tileId) => {
+		pauseAllVideos()
 		videoIsPlaying = false;
-
-		/**
-		 * @type {HTMLVideoElement | null}
-		 */
-		const video = document.querySelector(`#${tileId} video`);
-		video?.pause();
 	};
 
 	onMount(() => {
