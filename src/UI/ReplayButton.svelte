@@ -1,4 +1,5 @@
 <script>
+  import { soundIsAuth } from "../stores/soundAuthStore";
   import PlayLineIcon from "../icons/PlayLineIcon.svelte";
   import StopLineIcon from "../icons/StopLineIcon.svelte";
 
@@ -7,7 +8,8 @@
 
 <button 
   class="replay-button relative flex justify-center items-center w-8 h-8 rounded-full"
-  onclick={handleClickOnReplay}>
+  onclick={handleClickOnReplay}
+  disabled={!$soundIsAuth}>
   {#if isPlaying}
     <StopLineIcon />
   {:else}
@@ -44,6 +46,10 @@
 	  );
     background-size: 500% auto;
     animation: slidebg 5s linear infinite;
+  }
+  .replay-button:disabled {
+    background: #BEBABC;
+    cursor: not-allowed;
   }
 
   @keyframes slidebg {

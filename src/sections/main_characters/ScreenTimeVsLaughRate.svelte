@@ -37,6 +37,11 @@
     activeCharacter = char.id;
   }
 
+  const resetFilters = (char) => {
+    activeCharacter = char
+    activeFilter = FILTER.SCREEN_TIME
+  }
+
   let visualizationsWidth = $state(800);
   const episodesOverviewWidth = 150;
   const marginEnd = 25;
@@ -239,6 +244,7 @@
   let highlightedEpisodeTimePosition = $state(0);
   let highlightedEpisodeTimeLabel = $state('');
   let episodeTooltipPosition = $state();
+
   const handleOverviewMouseEnter = () => {
     if (isTextOver) {
       return
@@ -256,7 +262,7 @@
     
     const x = e.offsetX - margin.left;
     const y = e.offsetY - margin.top;
-
+    
     const bandHeight = episodesVerticalScale.bandwidth();
     const episodeIndex = Math.ceil(y / bandHeight);
     const episode = episodesInfo[episodeIndex - 1];
@@ -298,11 +304,12 @@
     gsap.timeline({
       scrollTrigger: {
         trigger: '#lead-chars-episodes-texts',
-        start: `top bottom`,
+        start: `top center`,
         end: 'bottom bottom',
         onEnter: () => {
           isMouseOver = false;
           isTextOver = true;
+          resetFilters('JERRY')
         },
         onEnterBack: () => {
           isMouseOver = false;
@@ -557,6 +564,9 @@
         onEnter: () => {
           activeFilter = FILTER.LAUGHS
         },
+        onEnterBack: () => {
+          resetFilters('KRAMER')
+        },
         onLeaveBack: () => {
           activeFilter = FILTER.SCREEN_TIME
         },
@@ -601,7 +611,7 @@
 
 <svelte:window bind:innerWidth bind:innerHeight />
 
-<div id="lead-chars-episodes-container" class="relative mt-20 mb-52" style="padding-bottom: 200vh;">
+<div id="lead-chars-episodes-container" class="relative mt-20 mb-52" style="padding-bottom: 250vh;">
   <div 
     id="lead-chars-episodes" 
     class="absolute w-screen top-0 left-0" 
@@ -1090,7 +1100,7 @@
   </div>
 
   <!-- Texts -->
-  <div id="lead-chars-episodes-texts" class="z-10 relative pointer-events-none" style="top: 100vh;">
+  <div id="lead-chars-episodes-texts" class="z-10 relative pointer-events-none" style="top: calc(100vh + {headerHeight}px);">
    <MainCharsTexts {charData} />
   </div>
 </div>
