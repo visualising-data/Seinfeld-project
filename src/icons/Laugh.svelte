@@ -1,5 +1,5 @@
 <script>
-    let { width='100%', height='100%', color = '#12020A', isActive = 'false' } = $props()
+    let { width='100%', height='100%', color = '#12020A', isActive = false } = $props()
 </script>
 
 <svg class="{isActive ? 'active' : ''}" width={width} height={height} viewBox="0 0 142 140" fill={color} xmlns="http://www.w3.org/2000/svg">

@@ -9,10 +9,10 @@
   let { activeFilter = $bindable() } = $props();
 
   const selectScreenTime = () => {
-    activeFilter = 'screenTime';
+    activeFilter = FILTER.SCREEN_TIME;
   };
   const selectLaughRate = () => {
-    activeFilter = 'causesLaughs';
+    activeFilter = FILTER.LAUGHS;
   };
 </script>
 
@@ -33,7 +33,7 @@
       class="flex items-center rounded-r-full {activeFilter !== FILTER.SCREEN_TIME ? 'text-white' : 'text-black'} {activeFilter !== FILTER.SCREEN_TIME ? 'cursor-default' : 'cursor-pointer'}"
       style="border-color: {activeFilter !== FILTER.SCREEN_TIME ? '#E71D80' : '#12020A'};"
       onclick={selectLaughRate}>
-      <div class="w-8"><Laugh color={activeFilter !== FILTER.SCREEN_TIME ? '#F9F5F7' : '#12020A'} /></div>
+      <div class="w-8"><Laugh color={activeFilter === FILTER.SCREEN_TIME ? '#12020A' :'#F9F5F7' } /></div>
       <h4 class="ml-2">Laughter rate</h4>
     </button>
   </div>

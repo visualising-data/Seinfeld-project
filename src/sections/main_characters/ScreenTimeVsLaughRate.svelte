@@ -639,7 +639,7 @@
           {/if}
         </div>
 
-        <div class="col-span-10" bind:clientHeight={visualizationsContainerHeight}>
+        <div class="col-span-10 md:mt-1" bind:clientHeight={visualizationsContainerHeight}>
           <Toggle bind:activeFilter />
           <div class="flex" bind:clientWidth={visualizationsWidth}>
             <!-- Episode details -->
