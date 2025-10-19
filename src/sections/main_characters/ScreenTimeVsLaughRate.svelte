@@ -337,7 +337,7 @@
         trigger: '#jerry-text-2',
         start: 'top center',
         end: 'bottom center',
-				toggleActions: 'play reverse play reverse'
+				// toggleActions: 'play reverse play reverse'
       }
     });
     tlJerryText2
@@ -350,7 +350,7 @@
         trigger: '#jerry-text-3',
         start: 'top center',
         end: 'bottom center',
-        toggleActions: 'play reverse play reverse'
+        // toggleActions: 'play reverse play reverse'
       }
     });
     tlJerryText3
@@ -363,7 +363,7 @@
         trigger: '#jerry-text-4',
         start: 'top center',
         end: 'bottom center',
-        toggleActions: 'play reverse play reverse'
+        // toggleActions: 'play reverse play reverse'
       }
     });
     tlJerryText4
@@ -377,7 +377,7 @@
         trigger: '#jerry-text-5',
         start: 'top center',
         end: 'bottom center',
-        toggleActions: 'play reverse play reverse'
+        // toggleActions: 'play reverse play reverse'
       }
     });
     tlJerryText5
@@ -390,7 +390,7 @@
         trigger: '#jerry-text-6',
         start: 'top center',
         end: 'bottom center',
-        toggleActions: 'play reverse play reverse'
+        // toggleActions: 'play reverse play reverse'
       }
     });
     tlJerryText6
@@ -404,7 +404,7 @@
         trigger: '#jerry-text-7',
         start: 'top center',
         end: 'bottom center',
-        toggleActions: 'play reverse play reverse',
+        // toggleActions: 'play reverse play reverse',
         onEnter: () => activeFilter = FILTER.LAUGHS,
         onLeaveBack: () => activeFilter = FILTER.SCREEN_TIME
       }
@@ -419,7 +419,7 @@
         trigger: '#jerry-text-8',
         start: 'top center',
         end: 'bottom center',
-        toggleActions: 'play reverse play reverse',
+        // toggleActions: 'play reverse play reverse',
       }
     });
     tlJerryText8
@@ -431,7 +431,7 @@
         trigger: '#george-text-1',
         start: 'top center',
         end: 'bottom center',
-        toggleActions: 'play reverse play reverse',
+        // toggleActions: 'play reverse play reverse',
         onEnter: () => {
           activeCharacter = 'GEORGE'
           activeFilter = FILTER.SCREEN_TIME
@@ -448,7 +448,7 @@
         trigger: '#george-text-2',
         start: 'top center',
         end: 'bottom center',
-        toggleActions: 'play reverse play reverse'
+        // toggleActions: 'play reverse play reverse'
       }
     });
     tlGeorgeText2
@@ -459,7 +459,7 @@
         trigger: '#george-text-3',
         start: 'top center',
         end: 'bottom center',
-        toggleActions: 'play reverse play reverse',
+        // toggleActions: 'play reverse play reverse',
         onEnter: () => {
           activeFilter = FILTER.LAUGHS
         },
@@ -475,7 +475,7 @@
         trigger: '#elaine-text-1',
         start: 'top center',
         end: 'bottom center',
-        toggleActions: 'play reverse play reverse',
+        // toggleActions: 'play reverse play reverse',
         onEnter: () => {
           activeCharacter = 'ELAINE'
           activeFilter = FILTER.SCREEN_TIME
@@ -492,7 +492,7 @@
         trigger: '#elaine-text-2',
         start: 'top center',
         end: 'bottom center',
-        toggleActions: 'play reverse play reverse'
+        // toggleActions: 'play reverse play reverse'
       }
     });
     tlElaineText2
@@ -504,7 +504,7 @@
         trigger: '#elaine-text-3',
         start: 'top center',
         end: 'bottom center',
-        toggleActions: 'play reverse play reverse'
+        // toggleActions: 'play reverse play reverse'
       }
     });
     tlElaineText3
@@ -516,7 +516,7 @@
         trigger: '#elaine-text-4',
         start: 'top center',
         end: 'bottom center',
-        toggleActions: 'play reverse play reverse',
+        // toggleActions: 'play reverse play reverse',
         onEnter: () => {
           activeFilter = FILTER.LAUGHS
         },
@@ -535,7 +535,7 @@
         trigger: '#kramer-text-1',
         start: 'top center',
         end: 'bottom center',
-        toggleActions: 'play reverse play reverse',
+        // toggleActions: 'play reverse play reverse',
         onEnter: () => {
           activeCharacter = 'KRAMER'
           activeFilter = FILTER.SCREEN_TIME
@@ -552,7 +552,7 @@
         trigger: '#kramer-text-2',
         start: 'top center',
         end: 'bottom center',
-        toggleActions: 'play reverse play reverse'
+        // toggleActions: 'play reverse play reverse'
       }
     });
     tlKramerText2
@@ -563,7 +563,7 @@
         trigger: '#kramer-text-3',
         start: 'top center',
         end: 'bottom center',
-        toggleActions: 'play reverse play reverse',
+        // toggleActions: 'play reverse play reverse',
         onEnter: () => {
           activeFilter = FILTER.LAUGHS
         },

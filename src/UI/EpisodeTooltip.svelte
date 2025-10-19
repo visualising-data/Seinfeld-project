@@ -31,7 +31,7 @@
 
 <div
 	bind:this={tooltip}
-	class="tooltip absolute z-10"
+	class="tooltip absolute z-50"
 	style="width: {tooltipWidth}px; max-height: {innerHeight -
 		40}px; top: {tooltipTopPosition}px; left: {tooltipLeftPosition}px;}"
 	in:fly={{ duration: 100, y: 50 }}
