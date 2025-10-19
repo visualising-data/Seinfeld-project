@@ -914,7 +914,7 @@
                       y1={-12}
                       x2={0}
                       y2={visualizationsInnerHeight + 12}
-                      stroke="#E71D80"
+                      stroke="#12020A"
                     />
                     <g class="number" fill="#928D90" text-anchor="middle" fill-opacity={isMouseOver ? 0.3 : 1}>
                       <text
@@ -953,12 +953,12 @@
                       {/if}
                     {:else}
                       <!-- Laugh rate -->
-                      {#if episodeOverviewScale(d.causesLaughs.length / d.episodeLaughs.length)}
+                      {#if episodeOverviewScale(d.causesLaughs.length / (d.aggregatedOnScreen.reduce((acc, value) => acc + value.duration, 0)))}
                         <rect
                           class="pointer-events-none"
                           x={0}
                           y={0}
-                          width={episodeOverviewScale(d.causesLaughs.length / d.episodeLaughs.length)}
+                          width={episodeOverviewScale(d.causesLaughs.length / (d.aggregatedOnScreen.reduce((acc, value) => acc + value.duration, 0)))}
                           height={episodesVerticalScale.bandwidth()}
                           fill={characters.find(char => char.id === activeCharacter)?.color}
                           fill-opacity={(isMouseOver && highlightedEpisode === `${d.season}-${d.episode}`) || !isMouseOver ? 1 : 0.3}
