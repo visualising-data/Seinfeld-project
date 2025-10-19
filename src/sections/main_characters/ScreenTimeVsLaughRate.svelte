@@ -272,7 +272,9 @@
       highlightedEpisodeInfo = episode;
     }
     const data = charData[activeCharacter].find(e => e.season === episode.season && e.episode === episode.episode);
-    highlightedEpisodeOverviewPercentage = Math.round((data[activeFilter === FILTER.SCREEN_TIME ? 'onScreen' : 'causesLaughs']?.reduce((acc, value) => acc + value.duration, 0)) / data?.duration * 100) ?? undefined;
+    highlightedEpisodeOverviewPercentage = activeFilter === FILTER.SCREEN_TIME
+      ? Math.round(data.aggregatedOnScreen.reduce((acc, value) => acc + value.duration, 0) / data.duration * 100)
+      : Math.round(data.causesLaughs.length / data.aggregatedOnScreen.reduce((acc, value) => acc + value.duration, 0) * 100)
 
     const newXPosition = x <= episodeDetailsInnerWidth ? Math.round(x) : 0;
     if (highlightedEpisodeTimePosition !== newXPosition) {
@@ -688,12 +690,14 @@
               <g class="pointer-events-none">
 
               <g transform="translate({margin.left}, {margin.top})">
-                <text 
-                  x={3}
-                  y={-4}
-                  class="small accent">Duration</text>
-                <g transform="rotate(-90) translate(4, 62)">
-                  <ArrowDown />
+                <g fill-opacity={isMouseOver ? 0.3 : 1}>
+                  <text 
+                    x={3}
+                    y={-4}
+                    class="small accent">Duration</text>
+                  <g transform="rotate(-90) translate(4, 62)">
+                    <ArrowDown />
+                  </g>
                 </g>
                 <!-- Time labels -->
                 {#each timeLabels as timeLabel}
@@ -918,7 +922,7 @@
               </g>
 
               <!-- Episode overviews -->
-              <g transform="translate({visualizationsWidth - episodesOverviewWidth}, {margin.top})">
+              <g transform="translate({visualizationsWidth - episodesOverviewWidth}, {margin.top})" fill-opacity={isMouseOver ? 0.3 : 1}>
                 <text 
                   x={3}
                   y={-4}
@@ -933,7 +937,6 @@
                   width={episodesOverviewWidth - marginEnd}
                   height={visualizationsInnerHeight}
                   fill="#F9F5F7"
-                  fill-opacity={isMouseOver ? 0.3 : 0.8}
                 />
                 <!-- Vertical Axes -->
                 {#each overviewLabels as overviewLabel}
@@ -1031,7 +1034,7 @@
                           class="pointer-events-none"
                           x={0}
                           y={-2}
-                          width={episodeOverviewScale(d.causesLaughs.length / d.episodeLaughs.length)}
+                          width={episodeOverviewScale(d.causesLaughs.length / (d.aggregatedOnScreen.reduce((acc, value) => acc + value.duration, 0)))}
                           height={episodesVerticalScale.bandwidth() + 4}
                           fill={characters.find(char => char.id === activeCharacter)?.color}
                           stroke={'#F9F5F7'}
