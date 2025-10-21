@@ -108,11 +108,11 @@
       if ($soundIsAuth && soundtrackCanPlay && soundtrack?.state === 'started') {
         soundtrack.player(playingFile).stop();
         clearTimeout(playCharTimeout);
-        updatePlayingFile(char.id)
+        updatePlayingFile(char)
         playChar();
       }
 
-      activeCharacter = char.id;
+      activeCharacter = char;
     }
   }
 
@@ -530,11 +530,11 @@
         end: 'bottom center',
         // toggleActions: 'play reverse play reverse',
         onEnter: () => {
-          activeCharacter = 'GEORGE'
+          handleCharacterClick('GEORGE')
           activeFilter = FILTER.SCREEN_TIME
         },
         onLeaveBack: () => {
-          activeCharacter = 'JERRY'
+          handleCharacterClick('JERRY')
           activeFilter = FILTER.LAUGHS
         },
       }
@@ -574,11 +574,11 @@
         end: 'bottom center',
         // toggleActions: 'play reverse play reverse',
         onEnter: () => {
-          activeCharacter = 'ELAINE'
+          handleCharacterClick('ELAINE')
           activeFilter = FILTER.SCREEN_TIME
         },
         onLeaveBack: () => {
-          activeCharacter = 'GEORGE'
+          handleCharacterClick('GEORGE')
           activeFilter = FILTER.LAUGHS
         },
       }
@@ -634,11 +634,11 @@
         end: 'bottom center',
         // toggleActions: 'play reverse play reverse',
         onEnter: () => {
-          activeCharacter = 'KRAMER'
+          handleCharacterClick('KRAMER')
           activeFilter = FILTER.SCREEN_TIME
         },
         onLeaveBack: () => {
-          activeCharacter = 'ELAINE'
+          handleCharacterClick('ELAINE')
           activeFilter = FILTER.LAUGHS
         },
       }
@@ -735,7 +735,7 @@
               <li class="flex justify-center">
                 <button 
                   class="character-button flex flex-col items-center max-w-28 {activeCharacter === char.id ? 'active' : ''}"
-                  onclick={() => handleCharacterClick(char)}>
+                  onclick={() => handleCharacterClick(char.id)}>
                   <div class="character rounded-full bg-contain bg-center opacity-50" 
                       style="background-image: url('{currentSection === "locations" ? getLocationIconPath(char.id) : getCharacterImagePath(char.id)}'); width: 75px; height: 75px;"></div>
                   <div class="text-center pt-1" style="font-size: 1.25rem; line-height: 1.2;">{char.label}</div>
