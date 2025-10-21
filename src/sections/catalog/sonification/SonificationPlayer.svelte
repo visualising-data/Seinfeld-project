@@ -10,6 +10,7 @@
 		getLocationSoundFileName
 	} from '$lib/data/sonificationFilesMapping';
 	import { soundIsAuth } from '../../../stores/soundAuthStore';
+	import ExposesCompressorSettings from './ExposesCompressorSettings.svelte';
 
 	let {
 		labelsWidth,
@@ -29,9 +30,51 @@
 	 * @type {Tone.Players}
 	 */
 	let soundtrack;
+
+	/**
+	 * @type {Tone.Compressor}
+	 */
+	let compressor
+	// --- 🎚️ Reactive compressor state ---
+	let threshold = $state(-24);
+	let ratio = $state(12);
+	let attack = $state(0.003);
+	let release = $state(0.25);
 	const preload = () => {
-		soundtrack = new Tone.Players(sonificationFiles).toDestination(); //connects to the system sound output
+		soundtrack = new Tone.Players(sonificationFiles);
+
+		compressor = new Tone.Compressor({
+			threshold: threshold,
+			ratio: ratio,
+			attack: attack,
+			release: release,
+		});
+
+		soundtrack.connect(compressor);
+		compressor.toDestination();
 	};
+
+	// --- ⚡ Reactive audio parameter updates ---
+	function updateThreshold(value) {
+		compressor.threshold.value = value
+		console.log('threshold', compressor.threshold.value)
+	}
+	function updateRatio(value) {
+		compressor.ratio.value = value
+		console.log('ratio', compressor.ratio.value)
+	}
+	function updateAttack(value) {
+		compressor.attack.value = value
+		console.log('attack', compressor.attack.value)
+	}
+	function updateRelease(value) {
+		compressor.release.value = value
+		console.log('release', compressor.release.value)
+	}
+
+	// function play(name: string) {
+	// 	players?.player(name).start();
+	// }
 
 	/**
 	 * @type {number | undefined}
@@ -139,4 +182,16 @@
 		{playPrev}
 		{stop}
 	/>
+	<div>
+		<ExposesCompressorSettings 
+			bind:threshold 
+			bind:ratio 
+			bind:attack 
+			bind:release 
+			bind:updateThreshold 
+			bind:updateRatio
+			bind:updateAttack
+			bind:updateRelease
+		/>
+	</div>
 </div>
