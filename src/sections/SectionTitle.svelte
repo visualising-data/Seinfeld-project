@@ -86,7 +86,7 @@
 		video?.addEventListener("loadeddata", () => startVideo(video));
 	};
 
-	const handlePauseVideo = (/** @type {string} */ tileId) => {
+	const handlePauseVideo = () => {
 		pauseAllVideos()
 		videoIsPlaying = false;
 	};
@@ -147,7 +147,7 @@
 				role="group"
 				onfocus={() => handlePlayVideo(tile.id, i)}
 				onmouseenter={() => handlePlayVideo(tile.id, i)}
-				onmouseleave={() => handlePauseVideo(tile.id)}
+				onmouseleave={() => handlePauseVideo()}
 			>
 				<div
 					class="tile relative z-10"

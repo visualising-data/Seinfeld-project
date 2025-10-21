@@ -3,7 +3,8 @@
 	import { gsap } from 'gsap/dist/gsap';
   import { scaleLinear, scaleBand } from 'd3-scale';
   import { max, sum } from 'd3-array';
-  import { area, curveStepAfter } from 'd3-shape'
+  import { area } from 'd3-shape';
+	import * as Tone from 'tone';
 
   import { episodesInfo, clipShows } from '$lib/data/episodesInfo';
   import { characters } from '$lib/data/characters';
@@ -11,6 +12,8 @@
   import { getLocationIconPath } from '../../utils/getLocationIconPath';
   import { seasons, totalNumEpisodes } from '$lib/data/seasons';
   import { formatTimeLabel } from '../../utils/formatTime';
+  import { sonificationFiles, getCharSoundFileName } from '$lib/data/sonificationFilesMapping';
+  import { soundIsAuth } from '../../stores/soundAuthStore';
   import Toggle from '../supporting_characters/Toggle.svelte';
   import HelpIcon from '../../icons/HelpIcon.svelte';
   import ArrowDown from '../../icons/ArrowDown.svelte';
@@ -34,8 +37,83 @@
   }
   let activeFilter = $state(FILTER.SCREEN_TIME);
 
+  /**
+	 * @type {Tone.Players}
+	 */
+	let soundtrack;
+	const preload = () => {
+		soundtrack = new Tone.Players(sonificationFiles).toDestination(); //connects to the system sound output
+    soundtrack.volume.value = -3
+  };
+
+  let soundtrackCanPlay = false
+  /**
+	 * @type {number | undefined}
+	 */
+  let playRythmTimeout
+  /**
+	 * @type {number | undefined}
+	 */
+  let playCharTimeout
+  /**
+	 * @type {string}
+	 */
+  let playingFile
+
+  const updatePlayingFile = (char) => {
+    playingFile = getCharSoundFileName(char, '1')
+  }
+  updatePlayingFile(activeCharacter)
+
+  const playRythm = () => {
+    if ($soundIsAuth) {
+      soundtrack.player('rythm').start();
+
+      playRythmTimeout = setTimeout(() => {
+				playRythm()
+			}, 8727.272727);
+    }
+  }
+  const playChar = () => {
+    if ($soundIsAuth) {
+      soundtrack.player(playingFile).start();
+
+      playCharTimeout = setTimeout(() => {
+				playChar()
+			}, 8727.272727);
+    }
+  }
+
+  const playAudio = () => {
+    playRythm()
+    playChar()
+  }
+
+  const stopAudio = () => {
+		soundtrack.stopAll();
+    clearTimeout(playRythmTimeout);
+    clearTimeout(playCharTimeout);
+  }
+
+  $effect(() => {
+    if ($soundIsAuth && soundtrackCanPlay && soundtrack?.state !== 'started') {
+      playAudio()
+    } else if (!$soundIsAuth && soundtrackCanPlay && soundtrack?.state === 'started') {
+      stopAudio()
+    }
+  })
+
   const handleCharacterClick = (char) => {
-    activeCharacter = char.id;
+    if (char.id !== activeCharacter) {
+      if ($soundIsAuth && soundtrackCanPlay && soundtrack?.state === 'started') {
+        soundtrack.player(playingFile).stop();
+        clearTimeout(playCharTimeout);
+        updatePlayingFile(char.id)
+        playChar();
+      }
+
+      activeCharacter = char.id;
+    }
   }
 
   const resetFilters = (char) => {
@@ -293,13 +371,32 @@
   }
 
   onMount(() => {
+    // Preload audio files
+		preload();
+
     // Pin visualization
     gsap.timeline({
       scrollTrigger: {
         trigger: '#lead-chars-episodes-container',
         start: `top top-=${headerHeight}`,
         end: 'bottom bottom',
-        pin: '#lead-chars-episodes-viz'
+        pin: '#lead-chars-episodes-viz',
+        onEnter: () => {
+          soundtrackCanPlay = true
+          playAudio()
+        },
+        onEnterBack: () => {
+          soundtrackCanPlay = true
+          playAudio()
+        },
+        onLeave: () => {
+          soundtrackCanPlay = false
+          stopAudio()
+        },
+        onLeaveBack: () => {
+          soundtrackCanPlay = false
+          stopAudio()
+        },
       }
     });
 
@@ -937,6 +1034,7 @@
                   width={episodesOverviewWidth - marginEnd}
                   height={visualizationsInnerHeight}
                   fill="#F9F5F7"
+                  fill-opacity={isMouseOver ? 0.3 : 0.9}
                 />
                 <!-- Vertical Axes -->
                 {#each overviewLabels as overviewLabel}
@@ -1058,7 +1156,7 @@
                       stroke="#12020A"
                       stroke-width={2}
                     />
-                    <g class="number" fill="#12020A" text-anchor="middle">
+                    <g class="number" fill="#12020A" fill-opacity={1} text-anchor="middle">
                       <text
                         x={0}
                         y={-18}

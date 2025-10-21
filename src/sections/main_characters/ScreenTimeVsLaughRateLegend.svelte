@@ -53,10 +53,12 @@
     </g>
   </g>
 
-  <g transform="translate({195}, {44})">
-    <text class="small accent" alignment-baseline="middle">Character being funny</text>
-    <g transform="translate({-19}, {-12})">
-      <path d="M16.5 10.8824L11.5804 13.9042L11.4233 8.13284L16.5 10.8824ZM1 0H1.5C1.5 3.34372 2.36843 5.851 4.0684 7.57297C5.77177 9.29837 8.38404 10.3106 12.0277 10.5056L12.001 11.0049L11.9742 11.5042C8.1835 11.3013 5.29528 10.2391 3.35677 8.27552C1.41486 6.30849 0.5 3.51225 0.5 0H1Z" fill="#E71D80"/>
+  {#if activeFilter === 'causesLaughs'}
+    <g transform="translate({195}, {44})">
+      <text class="small accent" alignment-baseline="middle">Character being funny</text>
+      <g transform="translate({-19}, {-12})">
+        <path d="M16.5 10.8824L11.5804 13.9042L11.4233 8.13284L16.5 10.8824ZM1 0H1.5C1.5 3.34372 2.36843 5.851 4.0684 7.57297C5.77177 9.29837 8.38404 10.3106 12.0277 10.5056L12.001 11.0049L11.9742 11.5042C8.1835 11.3013 5.29528 10.2391 3.35677 8.27552C1.41486 6.30849 0.5 3.51225 0.5 0H1Z" fill="#E71D80"/>
+      </g>
     </g>
-  </g>
+  {/if}
 </svg>
