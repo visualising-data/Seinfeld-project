@@ -116,9 +116,20 @@
     }
   }
 
+  function switchFilter(filter) {
+    if ($soundIsAuth && soundtrackCanPlay) {
+      const toggleAudioFile = filter === FILTER.SCREEN_TIME
+        ? 'buzz'
+        : 'laugh'
+      soundtrack.player(toggleAudioFile).start();
+    }
+
+    activeFilter = filter
+  }
+
   const resetFilters = (char) => {
     activeCharacter = char
-    activeFilter = FILTER.SCREEN_TIME
+    switchFilter(FILTER.SCREEN_TIME)
   }
 
   let visualizationsWidth = $state(800);
@@ -502,8 +513,8 @@
         start: 'top center',
         end: 'bottom center',
         // toggleActions: 'play reverse play reverse',
-        onEnter: () => activeFilter = FILTER.LAUGHS,
-        onLeaveBack: () => activeFilter = FILTER.SCREEN_TIME
+        onEnter: () => switchFilter(FILTER.LAUGHS),
+        onLeaveBack: () => switchFilter(FILTER.SCREEN_TIME)
       }
     });
     tlJerryText7
@@ -531,11 +542,11 @@
         // toggleActions: 'play reverse play reverse',
         onEnter: () => {
           handleCharacterClick('GEORGE')
-          activeFilter = FILTER.SCREEN_TIME
+          switchFilter(FILTER.SCREEN_TIME)
         },
         onLeaveBack: () => {
           handleCharacterClick('JERRY')
-          activeFilter = FILTER.LAUGHS
+          switchFilter(FILTER.LAUGHS)
         },
       }
     });
@@ -558,10 +569,10 @@
         end: 'bottom center',
         // toggleActions: 'play reverse play reverse',
         onEnter: () => {
-          activeFilter = FILTER.LAUGHS
+          switchFilter(FILTER.LAUGHS)
         },
         onLeaveBack: () => {
-          activeFilter = FILTER.SCREEN_TIME
+          switchFilter(FILTER.SCREEN_TIME)
         },
       }
     });
@@ -575,11 +586,11 @@
         // toggleActions: 'play reverse play reverse',
         onEnter: () => {
           handleCharacterClick('ELAINE')
-          activeFilter = FILTER.SCREEN_TIME
+          switchFilter(FILTER.SCREEN_TIME)
         },
         onLeaveBack: () => {
           handleCharacterClick('GEORGE')
-          activeFilter = FILTER.LAUGHS
+          switchFilter(FILTER.LAUGHS)
         },
       }
     });
@@ -615,10 +626,10 @@
         end: 'bottom center',
         // toggleActions: 'play reverse play reverse',
         onEnter: () => {
-          activeFilter = FILTER.LAUGHS
+          switchFilter(FILTER.LAUGHS)
         },
         onLeaveBack: () => {
-          activeFilter = FILTER.SCREEN_TIME
+          switchFilter(FILTER.SCREEN_TIME)
         },
       }
     });
@@ -635,11 +646,11 @@
         // toggleActions: 'play reverse play reverse',
         onEnter: () => {
           handleCharacterClick('KRAMER')
-          activeFilter = FILTER.SCREEN_TIME
+          switchFilter(FILTER.SCREEN_TIME)
         },
         onLeaveBack: () => {
           handleCharacterClick('ELAINE')
-          activeFilter = FILTER.LAUGHS
+          switchFilter(FILTER.LAUGHS)
         },
       }
     });
@@ -662,13 +673,13 @@
         end: 'bottom center',
         // toggleActions: 'play reverse play reverse',
         onEnter: () => {
-          activeFilter = FILTER.LAUGHS
+          switchFilter(FILTER.LAUGHS)
         },
         onEnterBack: () => {
           resetFilters('KRAMER')
         },
         onLeaveBack: () => {
-          activeFilter = FILTER.SCREEN_TIME
+          switchFilter(FILTER.SCREEN_TIME)
         },
       }
     });
@@ -751,7 +762,7 @@
 
         <div class="col-span-10 md:mt-1" bind:clientHeight={visualizationsContainerHeight}>
           <div class="flex gap-10">
-            <Toggle bind:activeFilter />
+            <Toggle bind:switchFilter {activeFilter} />
             <ScreenTimeVsLaughRateLegend activeCharacter={activeCharacter} activeFilter={activeFilter} />
           </div>
 

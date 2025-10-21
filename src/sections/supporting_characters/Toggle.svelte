@@ -6,13 +6,13 @@
     SCREEN_TIME: 'screenTime',
     LAUGHS: 'causesLaughs'
   }
-  let { activeFilter = $bindable() } = $props();
+  let { switchFilter = $bindable(), activeFilter } = $props();
 
   const selectScreenTime = () => {
-    activeFilter = FILTER.SCREEN_TIME;
+    switchFilter(FILTER.SCREEN_TIME);
   };
   const selectLaughRate = () => {
-    activeFilter = FILTER.LAUGHS;
+    switchFilter(FILTER.LAUGHS);
   };
 </script>
 
