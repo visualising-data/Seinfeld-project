@@ -18,8 +18,8 @@
 	const height = 40;
 	const numMinutes = $derived(Math.ceil(episodeDuration / 60));
 	let minutesArray = $derived(range(0, numMinutes + 1));
-
-	const formattedHoveredTime = formatTimeLabel(hoveredTime);
+	
+	const formattedHoveredTime = $derived(formatTimeLabel(hoveredTime));
 </script>
 
 <svelte:window bind:innerWidth />

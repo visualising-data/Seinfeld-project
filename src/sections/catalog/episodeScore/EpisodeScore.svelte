@@ -35,8 +35,6 @@
 		}
 	};
 	const handleMouseOver = (/** @type {MouseEvent} */ e) => {
-		{
-		}
 		if (innerWidth > 1000 && sonificationCharactersData) {
 			const x = e.clientX - 198;
 			hoveredPosition = x >= 0 ? x : 0;
