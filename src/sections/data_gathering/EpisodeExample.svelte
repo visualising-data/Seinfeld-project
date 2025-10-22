@@ -54,7 +54,7 @@
 	);
 
 	onMount(() => {
-		// Pin calendar
+		// Pin Episode viz
 		ScrollTrigger.create({
 			trigger: '#episode-example-container',
 			start: 'top top',

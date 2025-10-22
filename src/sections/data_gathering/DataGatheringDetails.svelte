@@ -62,6 +62,9 @@
             isPlaying = true
         }
     };
+    const stopLaughs = () => {
+        laughTracks.stopAll()
+    }
 
     function handleClickOnReplay() {
         if (laughTracks.state === 'started') {
@@ -85,8 +88,11 @@
 			scrollTrigger: {
 				trigger: '#data-gathering-1',
 				start: 'top center',
+                end: 'bottom top',
                 onEnter: () => playLaughs(),
-                onEnterBack: () => playLaughs()
+                onEnterBack: () => playLaughs(),
+                onLeave: () => stopLaughs(),
+                onLeaveBack: () => stopLaughs(),
 			}
 		});
 		const tl2 = gsap.timeline({
