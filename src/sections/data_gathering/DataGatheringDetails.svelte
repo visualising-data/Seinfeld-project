@@ -12,14 +12,18 @@
     import ReplayButton from '../../UI/ReplayButton.svelte';
     import { soundIsAuth } from '../../stores/soundAuthStore'
     import { laughterFiles, getRandomLaughterFile } from '$lib/data/laughterFiles';
+    import { getCharacterImagePath } from '../../utils/getCharacterImagePath';
+    import { characters as charactersAll } from '$lib/data/characters';
 
     let { laughData } = $props();
 
-    const videoStartTime = 19 * 60 + 22 // 19:22
-    const videoEndTime = 20 * 60 + 55 // 20:55
+    const characters = charactersAll.slice(0, 4)
+
+    const videoStartTime = 19 * 60 + 20 // 19:20
+    const videoEndTime = 21 * 60 + 24 // 21:24
     const videoLaughs = laughData.filter((/** @type {{ eventTimeSeconds: string; }} */ d) => +d.eventTimeSeconds >= videoStartTime && +d.eventTimeSeconds <= videoEndTime);
     const videoDuration = videoEndTime - videoStartTime;
-    const fiveSecondsArray = range(videoStartTime + 3, videoEndTime + 10, 5);
+    const fiveSecondsArray = range(videoStartTime - 5, videoEndTime + 5, 5);
 
     let innerWidth = $state(1600);
     let videoWidth = $state(800);
@@ -32,7 +36,7 @@
 
     let laughsBarScale = $derived(
         scaleLinear()
-            .domain([videoStartTime, videoEndTime + 5])
+            .domain([videoStartTime, videoEndTime + 1])
             .range([0, videoWidth])
     );
     let laughWidth = $derived(laughsBarScale(videoStartTime + 5));
@@ -182,34 +186,34 @@
 			}
 		});
 
-        setTimeout(() => {
-            gsap.set('.laugh-icon', { yPercent: 50, opacity: 0 });
-            const laughIconReveal = { yPercent: 0, opacity: 1, duration: 1, ease: 'power3.out' };
-            tlVideo
-                .from('#data-gathering-3 circle', {
-                    cx: 0,
-                    ease: 'none',
-                    duration: videoDuration
-                })
-                .to('.laugh-icon-1165', laughIconReveal, 1165 - videoStartTime)
-                .to('.laugh-icon-1170', laughIconReveal, 1170 - videoStartTime)
-                .to('.laugh-icon-1185', laughIconReveal, 1185 - videoStartTime)
-                .to('.laugh-icon-1190', laughIconReveal, 1190 - videoStartTime)
-                .to('.laugh-icon-1195', laughIconReveal, 1195 - videoStartTime)
-                .to('.laugh-icon-1200', laughIconReveal, 1200 - videoStartTime)
-                .to('.laugh-icon-1205', laughIconReveal, 1205 - videoStartTime)
-                .to('.laugh-icon-1210', laughIconReveal, 1210 - videoStartTime)
-                .to('.laugh-icon-1215', laughIconReveal, 1215 - videoStartTime)
-                .to('.laugh-icon-1220', laughIconReveal, 1220 - videoStartTime)
-                .to('.laugh-icon-1225', laughIconReveal, 1225 - videoStartTime)
-                .to('.laugh-icon-1230', laughIconReveal, 1230 - videoStartTime)
-                .to('.laugh-icon-1245', laughIconReveal, 1245 - videoStartTime)
-                .to('.laugh-icon-1250', laughIconReveal, 1250 - videoStartTime)
-                .to('.laugh-icon-1255', laughIconReveal, 1255 - videoStartTime);
+        // setTimeout(() => {
+        //     gsap.set('.laugh-icon', { yPercent: 50, opacity: 0 });
+        //     const laughIconReveal = { yPercent: 0, opacity: 1, duration: 1, ease: 'power3.out' };
+        //     tlVideo
+        //         .from('#data-gathering-3 circle', {
+        //             cx: 0,
+        //             ease: 'none',
+        //             duration: videoDuration
+        //         })
+        //         .to('.laugh-icon-1165', laughIconReveal, 1165 - videoStartTime)
+        //         .to('.laugh-icon-1170', laughIconReveal, 1170 - videoStartTime)
+        //         .to('.laugh-icon-1185', laughIconReveal, 1185 - videoStartTime)
+        //         .to('.laugh-icon-1190', laughIconReveal, 1190 - videoStartTime)
+        //         .to('.laugh-icon-1195', laughIconReveal, 1195 - videoStartTime)
+        //         .to('.laugh-icon-1200', laughIconReveal, 1200 - videoStartTime)
+        //         .to('.laugh-icon-1205', laughIconReveal, 1205 - videoStartTime)
+        //         .to('.laugh-icon-1210', laughIconReveal, 1210 - videoStartTime)
+        //         .to('.laugh-icon-1215', laughIconReveal, 1215 - videoStartTime)
+        //         .to('.laugh-icon-1220', laughIconReveal, 1220 - videoStartTime)
+        //         .to('.laugh-icon-1225', laughIconReveal, 1225 - videoStartTime)
+        //         .to('.laugh-icon-1230', laughIconReveal, 1230 - videoStartTime)
+        //         .to('.laugh-icon-1245', laughIconReveal, 1245 - videoStartTime)
+        //         .to('.laugh-icon-1250', laughIconReveal, 1250 - videoStartTime)
+        //         .to('.laugh-icon-1255', laughIconReveal, 1255 - videoStartTime);
             
-            laughsBarScale.range([0, videoWidth]);
-            laughWidth = laughsBarScale(videoStartTime + 5);
-        }, 3000)
+        //     laughsBarScale.range([0, videoWidth]);
+        //     laughWidth = laughsBarScale(videoStartTime + 5);
+        // }, 3000)
     });
 </script>
 
@@ -255,13 +259,13 @@
         </div>
 
         <div id="data-gathering-3" class="grid grid-cols-12">
-            <div class="col-span-12 md:col-span-8 mask">
+            <div class="col-span-12 md:col-start-3 md:col-span-8 mask">
                 <div class="text">
                     <p>For consistency, each observed laughter moment was recorded against an associated <span class="highlight">5-second</span> block of time. When testing out the data collection approach over three sample episodes, the 5-second duration proved to be the most reliable and representative ‘average’ duration, from the gag’s delivery to the audience’s laughter subsiding.</p>
                     <p>Occasionally, laughter would run for longer than 5 seconds, sometimes persisting for 10 and even 15 seconds. In these rare cases, each 5-second unit would count as a laughter moment.</p>
                 </div>
             </div>
-            <div class="col-span-12" style="margin-left: {innerWidth >= 768 ? 0 : -sideSpacing + 25}px; margin-right: {innerWidth >= 768 ? 0 : -sideSpacing}px;">
+            <div class="col-start-3 col-span-8" style="margin-left: {innerWidth >= 768 ? 0 : -sideSpacing + 25}px; margin-right: {innerWidth >= 768 ? 0 : -sideSpacing}px;">
                 <!-- svelte-ignore a11y_media_has_caption -->
 				 <div class="relative video-container">
 					<video id="demo-video" playsinline bind:muted={isMuted} bind:clientWidth={videoWidth}>
@@ -276,27 +280,49 @@
 						style="background-image: url('{tv_noise}'); width: {videoWidth}px;"
 					></div>
 				</div>
-                <svg class="mt-8" width={videoWidth + 50} height={100} style="margin-left: -25px;">
+            </div>
+            <div class="col-start-1 col-span-2">
+                <ul class="relative z-10 shrink-0 pt-8 pr-4" style="margin-top: 14px;">
+                    {#each characters as char, i}
+                        <li class="mask w-full my-4">
+                            <div class="episode-example-character-label flex justify-end">
+                                {#if innerWidth >= 1280}
+                                    <div class="small flex items-center justify-end pr-2">{char.label}</div>
+                                {/if}
+                                <div
+                                    class="image h-8 w-8 rounded-full"
+                                    style="background-image: url({getCharacterImagePath(char.id)});"
+                                ></div>
+                            </div>
+                        </li>
+                    {/each}
+                </ul>
+            </div> 
+            <div class="col-span-8">
+                <svg class="mt-8" width={videoWidth + 50} height={220} style="margin-left: {-25}px">
                     <g transform="translate(25, 10)">
-                        <line x1={0} y1={0} x2={videoWidth} y2={0} stroke="#928D90" />
+                        <line x1={-6} y1={12} x2={videoWidth + 6} y2={12} stroke="#928D90" />
 
-                        {#each fiveSecondsArray as fiveSecconds, i}
-                            <g transform={`translate(${laughsBarScale(fiveSecconds)}, 0)`}>
-                                <line x1={0} y1={0} x2={0} y2={i % 2 !== 0 ? 5 : 3} stroke="#928D90" />
+                        {#each characters as char, i}
+                            <line x1={-6} y1={(i + 1) * 48 + 12} x2={videoWidth + 6} y2={(i + 1) * 48 + 12} stroke="#928D90" />
+                        {/each}
+
+                        {#each fiveSecondsArray as fiveSeconds, i}
+                            <g transform={`translate(${laughsBarScale(fiveSeconds)}, 0)`}>
+                                <line x1={0} y1={6} x2={0} y2={220} stroke="#928D90" />
                                 {#if innerWidth >= 768 ? i % 2 !== 0 : i % 5 === 0 }
-                                    <text class="number" y=22 text-anchor="middle" fill="#928D90" style="font-size: {innerWidth >= 758 ? 15 : 13}px;">
-                                        {`${Math.floor(fiveSecconds/60)}:${fiveSecconds - Math.floor(fiveSecconds/60) * 60 === 0 ? '00' : fiveSecconds - Math.floor(fiveSecconds/60) * 60}`}
+                                    <text class="number" y={2} text-anchor="middle" fill="#928D90" style="font-size: {innerWidth >= 758 ? 15 : 13}px;">
+                                        {`${Math.floor(fiveSeconds/60)}:${fiveSeconds - Math.floor(fiveSeconds/60) * 60 === 0 ? '00' : fiveSeconds - Math.floor(fiveSeconds/60) * 60}`}
                                     </text>
                                 {/if}
                             </g>
                         {/each}
                         
-                        {#each videoLaughs as laugh}
+                        <!-- {#each videoLaughs as laugh}
                             <g class={`laugh-icon laugh-icon-${laugh.eventTimeSeconds}`} transform={`translate(${laughsBarScale(+laugh.eventTimeSeconds)}, 30)`}>
                                 <Laugh width={innerWidth >= 900 ? laughWidth - 20 : laughWidth} height={innerWidth >= 900 ? laughWidth - 20 : laughWidth} />
                             </g>
-                        {/each}
-
+                        {/each} -->
                         <circle cx={laughsBarScale(videoEndTime + 5)} cy={0} r={10} fill="#E71D80" />
                     </g>
                 </svg>
@@ -304,3 +330,11 @@
         </div>
     </div>
 </div>
+
+<style>
+    .image {
+		background-repeat: no-repeat;
+		background-position: center;
+		background-size: cover;
+	}
+</style>
