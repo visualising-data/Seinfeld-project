@@ -86,7 +86,7 @@
 		{isPlaying}
 	/>
 	<div
-		class="flex-shrink-0"
+		class="flex-col flex-shrink-0"
 		style="max-width: {innerWidth >= 1280 ? width : innerWidth - 63}px; overflow: scroll;"
 	>
 		<svg
@@ -119,6 +119,14 @@
 			{#if isHover}
 				<line x1={hoveredPosition} y1={0} x2={hoveredPosition} y2={vizHeight} stroke="#12020A" />
 			{/if}
+		</svg>
+		<svg height={18}>
+			<g transform="translate(0, 9)">
+				<text class="small accent" alignment-baseline="middle">Scene number</text>
+				<g transform="translate({102}, {-3})">
+					<path d="M30 3L25 0.113249V5.88675L30 3ZM0 3V3.5H25.5V3V2.5H0V3Z" fill="#E71D80"/>
+				</g>
+			</g>
 		</svg>
 	</div>
 	{#if statsWidth > 0}

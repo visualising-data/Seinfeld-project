@@ -40,7 +40,7 @@
 
   <!-- Labels -->
   <g transform="translate(0, {38})">
-    <text class="small accent" alignment-baseline="middle">Episode duration</text>
+    <text class="small accent" alignment-baseline="middle">Episode time</text>
     <g transform="translate({114}, {-3})">
     <path d="M30 3L25 0.113249V5.88675L30 3ZM0 3V3.5H25.5V3V2.5H0V3Z" fill="#E71D80"/>
     </g>

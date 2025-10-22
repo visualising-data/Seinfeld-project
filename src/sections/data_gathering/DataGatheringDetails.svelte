@@ -211,7 +211,11 @@
         const video = document.getElementById("demo-video");
 
         const playVideo = () => {
-            video?.play();
+            var isPlaying = video.currentTime > 0 && !video.paused && !video.ended 
+                && video.readyState > video.HAVE_CURRENT_DATA;
+            if (!isPlaying) {
+                video.play();
+            }
             tlVideo.restart()
         };
         const pauseVideo = () => {
