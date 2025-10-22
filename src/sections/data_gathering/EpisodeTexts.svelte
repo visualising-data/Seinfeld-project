@@ -59,4 +59,12 @@
 	</div>
 </div>
 
+<!-- Text 8 -->
+<div class="flex h-screen w-screen items-center justify-center">
+	<div id="episode-example-text-8" class="text-overlay" use:inview={options} oninview_enter={() => episodeStepChange(8)}>
+		<p>We repeated this visualisation approach for each of the <span class="em highlight">176 original episodes</span>, those that were written discounting any clip/highlight shows and discovered the laugh rate was pretty stable over the 9 seasons.</p> 
+		<p>You’ll be able to see and explore them later, as well as hearing the translation of the data patterns into sound representation or ‘sonification’.</p> 
+	</div>
+</div>
+
 <div class="flex h-screen w-screen items-center justify-center"></div>

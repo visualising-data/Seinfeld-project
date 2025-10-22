@@ -3,7 +3,6 @@
   import SeasonsStrip from "../../UI/SeasonsStrip.svelte";
   import DataGatheringDetails from "./DataGatheringDetails.svelte";
   import EpisodeExample from "./EpisodeExample.svelte";
-	import AllEpisodesTexts from "./AllEpisodesTexts.svelte";
 	import type { Episode } from "$lib/types/episode";
 	import { episodesInfo } from '$lib/data/episodesInfo';
 
@@ -67,6 +66,5 @@
         <DataGatheringDetails {laughData} />
         <EpisodeExample {episodeInfo} {episodeData} {laughData} {ScrollTrigger} />
 				<!-- <AllEpisodes {episodesData} {stripHeight} {ScrollTrigger} /> -->
-				 <AllEpisodesTexts />
     </div>
 </section>

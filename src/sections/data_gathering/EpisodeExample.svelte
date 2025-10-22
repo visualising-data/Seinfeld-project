@@ -191,6 +191,16 @@
 		});
 	};
 
+	const reveal8 = () => {
+		gsap.to('#episode-example-text-8 .highlight', {
+			webkitTextFillColor: 'transparent',
+      backgroundPosition: '200% center',
+      duration: 2,
+      delay: 1,
+      ease: 'power3.out'
+		});
+	};
+
 	/**
 	 * @param {number} number
 	 */
@@ -216,6 +226,9 @@
 				break;
 			case 7:
 				reveal7();
+				break;
+			case 8:
+				reveal8();
 				break;
 			default:
 				return null;
