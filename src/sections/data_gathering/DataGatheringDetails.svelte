@@ -25,6 +25,8 @@
     const videoDuration = videoEndTime - videoStartTime;
     const fiveSecondsArray = range(videoStartTime - 5, videoEndTime + 5, 5);
 
+    console.log('videoLaughs', videoLaughs)
+
     let innerWidth = $state(1600);
     let videoWidth = $state(800);
 	let sideSpacing = $derived(innerWidth >= 1280 ? (innerWidth - 1280) / 2 + 16 + 25 : 32)
@@ -39,7 +41,7 @@
             .domain([videoStartTime, videoEndTime + 1])
             .range([0, videoWidth])
     );
-    let laughWidth = $derived(laughsBarScale(videoStartTime + 5));
+    let laughWidth = $derived(laughsBarScale(videoStartTime + 5) - 6);
 
     /**
 	 * @type {Tone.Players}
@@ -215,6 +217,19 @@
         //     laughWidth = laughsBarScale(videoStartTime + 5);
         // }, 3000)
     });
+
+    const getLaughVerticalIndex = (char) => {
+        switch (char) {
+            case 'JERRY':
+                return 0;
+            case 'GEORGE':
+                return 1;
+            case 'ELAINE':
+                return 2;
+            case 'KRAMER':
+                return 3;
+        }
+    }
 </script>
 
 <svelte:window bind:innerWidth />
@@ -318,11 +333,14 @@
                             </g>
                         {/each}
                         
-                        <!-- {#each videoLaughs as laugh}
-                            <g class={`laugh-icon laugh-icon-${laugh.eventTimeSeconds}`} transform={`translate(${laughsBarScale(+laugh.eventTimeSeconds)}, 30)`}>
-                                <Laugh width={innerWidth >= 900 ? laughWidth - 20 : laughWidth} height={innerWidth >= 900 ? laughWidth - 20 : laughWidth} />
+                        {#each videoLaughs as laugh}
+                            <g 
+                                class={`laugh-icon laugh-icon-${laugh.eventTimeSeconds}`} 
+                                transform={`translate(${laughsBarScale(+laugh.eventTimeSeconds) + 3}, ${getLaughVerticalIndex(laugh.eventAttribute) * 48 + 19})`}
+                            >
+                                <Laugh width={laughWidth} height={laughWidth} />
                             </g>
-                        {/each} -->
+                        {/each}
                         <circle cx={laughsBarScale(videoEndTime + 5)} cy={0} r={10} fill="#E71D80" />
                     </g>
                 </svg>
