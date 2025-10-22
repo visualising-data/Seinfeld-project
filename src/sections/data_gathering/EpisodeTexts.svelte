@@ -58,3 +58,5 @@
 		We also categorised the specific or type of location in which each scene was taking place.
 	</div>
 </div>
+
+<div class="flex h-screen w-screen items-center justify-center"></div>
