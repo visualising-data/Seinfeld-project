@@ -14,6 +14,7 @@
     import { laughterFiles, getRandomLaughterFile } from '$lib/data/laughterFiles';
     import { getCharacterImagePath } from '../../utils/getCharacterImagePath';
     import { characters as charactersAll } from '$lib/data/characters';
+    import { formatTimeLabel } from '../../utils/formatTime';
 
     let { laughData } = $props();
 
@@ -164,19 +165,10 @@
                 delay: 1,
                 ease: 'power3.out'
             }, "-=2");
-
-        const video = document.getElementById("demo-video");
-        const playVideo = () => {
-            video?.play();
-        };
-        const pauseVideo = () => {
-            video?.pause();
-            video.currentTime = 0;
-        };
         tlVideo = gsap.timeline({
 			scrollTrigger: {
 				trigger: '#data-gathering-3 svg',
-				start: 'top bottom-=10%',
+				start: 'top top-=10%',
                 end: 'bottom top',
 				toggleActions: 'play reset play reset',
                 onEnter: () => playVideo(),
@@ -185,35 +177,51 @@
                 onLeaveBack: () => pauseVideo(),
 			}
 		});
-
+        const laughIconReveal = { opacity: 0, yPercent: 50, duration: 1, ease: 'power3.out' };
+        
         setTimeout(() => {
-            // gsap.set('.laugh-icon', { yPercent: 50, opacity: 0 });
-            const laughIconReveal = { yPercent: 0, opacity: 1, duration: 1, ease: 'power3.out' };
+            laughsBarScale.range([0, videoWidth]);
+            
             tlVideo
-                .from('#data-gathering-3 circle', {
-                    cx: 0,
+                .to('#data-gathering-3 circle', {
+                    cx: laughsBarScale(videoEndTime),
                     ease: 'none',
                     duration: videoDuration
                 })
-                // .to('.laugh-icon-1165', laughIconReveal, 1165 - videoStartTime)
-                // .to('.laugh-icon-1170', laughIconReveal, 1170 - videoStartTime)
-                // .to('.laugh-icon-1185', laughIconReveal, 1185 - videoStartTime)
-                // .to('.laugh-icon-1190', laughIconReveal, 1190 - videoStartTime)
-                // .to('.laugh-icon-1195', laughIconReveal, 1195 - videoStartTime)
-                // .to('.laugh-icon-1200', laughIconReveal, 1200 - videoStartTime)
-                // .to('.laugh-icon-1205', laughIconReveal, 1205 - videoStartTime)
-                // .to('.laugh-icon-1210', laughIconReveal, 1210 - videoStartTime)
-                // .to('.laugh-icon-1215', laughIconReveal, 1215 - videoStartTime)
-                // .to('.laugh-icon-1220', laughIconReveal, 1220 - videoStartTime)
-                // .to('.laugh-icon-1225', laughIconReveal, 1225 - videoStartTime)
-                // .to('.laugh-icon-1230', laughIconReveal, 1230 - videoStartTime)
-                // .to('.laugh-icon-1245', laughIconReveal, 1245 - videoStartTime)
-                // .to('.laugh-icon-1250', laughIconReveal, 1250 - videoStartTime)
-                // .to('.laugh-icon-1255', laughIconReveal, 1255 - videoStartTime);
-            
-            laughsBarScale.range([0, videoWidth]);
-            laughWidth = laughsBarScale(videoStartTime + 5) - 8;
+                .from('.laugh-icon-1115', laughIconReveal, 1115 - videoStartTime)
+                .from('.laugh-icon-1125', laughIconReveal, 1125 - videoStartTime)
+                .from('.laugh-icon-1130', laughIconReveal, 1130 - videoStartTime)
+                .from('.laugh-icon-1145', laughIconReveal, 1145 - videoStartTime)
+                .from('.laugh-icon-1150', laughIconReveal, 1150 - videoStartTime)
+                .from('.laugh-icon-1160', laughIconReveal, 1160 - videoStartTime)
+                .from('.laugh-icon-1165', laughIconReveal, 1165 - videoStartTime)
+                .from('.laugh-icon-1170', laughIconReveal, 1170 - videoStartTime)
+                .from('.laugh-icon-1185', laughIconReveal, 1185 - videoStartTime)
+                .from('.laugh-icon-1190', laughIconReveal, 1190 - videoStartTime)
+                .from('.laugh-icon-1195', laughIconReveal, 1195 - videoStartTime)
+                .from('.laugh-icon-1200', laughIconReveal, 1200 - videoStartTime)
+                .from('.laugh-icon-1205', laughIconReveal, 1205 - videoStartTime)
+                .from('.laugh-icon-1210', laughIconReveal, 1210 - videoStartTime)
+                .from('.laugh-icon-1215', laughIconReveal, 1215 - videoStartTime)
+                .from('.laugh-icon-1220', laughIconReveal, 1220 - videoStartTime)
+                .from('.laugh-icon-1225', laughIconReveal, 1225 - videoStartTime)
+                .from('.laugh-icon-1230', laughIconReveal, 1230 - videoStartTime)
         }, 3000)
+
+        const video = document.getElementById("demo-video");
+
+        const playVideo = () => {
+            video?.play();
+            tlVideo.restart()
+        };
+        const pauseVideo = () => {
+            video?.pause();
+            video.currentTime = 0;
+            tlVideo.pause()
+        };
+
+        video.addEventListener('play', playVideo)
+        video.addEventListener('pause', pauseVideo)
     });
 
     const getLaughVerticalIndex = (char) => {
@@ -280,16 +288,16 @@
             </div>
             <div class="col-start-3 col-span-8" style="margin-left: {innerWidth >= 768 ? 0 : -sideSpacing + 25}px; margin-right: {innerWidth >= 768 ? 0 : -sideSpacing}px;">
                 <!-- svelte-ignore a11y_media_has_caption -->
-				 <div class="relative video-container">
-					<video id="demo-video" playsinline bind:muted={isMuted} bind:clientWidth={videoWidth}>
+				 <div class="relative video-container w-full">
+					<video id="demo-video" playsinline controls bind:muted={isMuted} bind:clientWidth={videoWidth}>
 						<source
 							src="https://amdufour.github.io/hosted-data/apis/videos/MarineBiologist_edited.mp4"
 							type="video/mp4"
 						/>
 					</video>
-					<div class="z-1 absolute bottom-0 left-0 right-0 top-0" style="background: rgba(18, 2, 10, 0.3); width: {videoWidth}px;"></div>
+					<div class="z-1 absolute bottom-0 left-0 right-0 top-0 pointer-events-none" style="background: rgba(18, 2, 10, 0.3); width: {videoWidth}px;"></div>
 					<div
-						class="absolute z-10 bottom-0 left-0 right-0 top-0"
+						class="absolute z-10 bottom-0 left-0 right-0 top-0 pointer-events-none"
 						style="background-image: url('{tv_noise}'); width: {videoWidth}px;"
 					></div>
 				</div>
@@ -325,22 +333,21 @@
                                 <line x1={0} y1={6} x2={0} y2={220} stroke="#928D90" />
                                 {#if innerWidth >= 768 ? i % 2 !== 0 : i % 5 === 0 }
                                     <text class="number" y={2} text-anchor="middle" fill="#928D90" style="font-size: {innerWidth >= 758 ? 15 : 13}px;">
-                                        {`${Math.floor(fiveSeconds/60)}:${fiveSeconds - Math.floor(fiveSeconds/60) * 60 === 0 ? '00' : fiveSeconds - Math.floor(fiveSeconds/60) * 60}`}
+                                        {formatTimeLabel(fiveSeconds)}
                                     </text>
                                 {/if}
                             </g>
                         {/each}
                         
                         {#each videoLaughs as laugh}
-                            <g 
-                                class={`laugh-icon laugh-icon-${laugh.eventTimeSeconds}`} 
-                                transform={`translate(${laughsBarScale(+laugh.eventTimeSeconds) + 4}, ${getLaughVerticalIndex(laugh.eventAttribute) * 48 + 20})`}
-                            >
-                                <Laugh width={laughWidth} height={laughWidth} />
+                            <g transform={`translate(${laughsBarScale(+laugh.eventTimeSeconds) + 4}, ${getLaughVerticalIndex(laugh.eventAttribute) * 48 + 20})`}>
+                                <g class={`laugh-icon laugh-icon-${laugh.eventTimeSeconds}`}>
+                                    <Laugh width={laughWidth} height={laughWidth} />
+                                </g>
                             </g>
                         {/each}
                         
-                        <circle cx={laughsBarScale(videoEndTime)} cy={12} r={10} fill="#E71D80" />
+                        <circle cx={0} cy={12} r={8} fill="#E71D80" />
                     </g>
                 </svg>
             </div>
