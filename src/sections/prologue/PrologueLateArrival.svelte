@@ -23,8 +23,15 @@
 					duration: 2,
 					ease: 'power3.out'
 				},
-				'-=0.5'
-			);
+				'-=1'
+			)
+			.to('#prologue-1 .highlight', {
+        webkitTextFillColor: 'transparent',
+        backgroundPosition: '200% center',
+        duration: 2,
+        delay: 1,
+        ease: 'power3.out'
+    	});
 
 		// Hide down icons
 		const tl2 = gsap.timeline({
@@ -47,7 +54,7 @@
 
 <div id="prologue-container" class="relative flex h-screen items-center">
 	<div class="container">
-		<div id="prologue-1">I was a late arrival to Seinfeld fandom.</div>
+		<div id="prologue-1">I was a late arrival to <span class="highlight">Seinfeld</span> fandom.</div>
 	</div>
 	<div id="down-icons" class="down-icons-container flex justify-center gap-4 absolute bottom-4 number w-full">
 		<div class="flex flex-col items-center gap-4">

@@ -223,7 +223,7 @@
 			<div class="col-span-12 md:col-span-8">
 				<div class="mask">
 					<div class="text">
-						<div>It rejected the classic three-act story, sidestepping sentimentality and the pursuit of resolution. With its mantra of <span class="highlight" style="-webkit-text-fill-color: transparent">no hugging*, no learning</span> the lead characters were insecure and entertainingly flawed, lacking any desire and capability for personal growth.</div>
+						<div>It rejected the classic three-act story, sidestepping sentimentality and the pursuit of resolution. With its mantra of <a href="https://www.theguardian.com/tv-and-radio/2018/may/10/no-hugging-no-learning-20-years-on-seinfelds-mantra-still-looms-large" target="_blank">no hugging*, no learning</a> the lead characters were insecure and entertainingly flawed, lacking any desire and capability for personal growth.</div>
 						<div class="number mb-2 text-right">*the earlier clip notwithstanding!</div>
 					</div>
 				</div>
@@ -261,7 +261,7 @@
 		>
 			<div class="col-span-1 md:col-span-2"></div>
 			<div class="col-span-6 md:col-span-5 mask">
-				<div class="text">As with any shows from its time, as <a href="https://www.theguardian.com/culture/2024/oct/16/jerry-seinfeld-tom-papa-breaking-bad-podcast-interview-politics-comedy-extreme-left-pc-crap-#:~:text=%E2%80%9CDoes%20culture%20change,my%20skiing%20analogy.%E2%80%9D" target="_blank">culture and society evolve</a> a contemporary lens exposes negative stereotypes and flashes of chauvinism and sizeism, to name but two isms. The amoral instincts of these <a href="https://www.theguardian.com/tv-and-radio/2018/may/10/no-hugging-no-learning-20-years-on-seinfelds-mantra-still-looms-large" target="_blank">anti-heroes</a> was most on-show in their romantic encounters and when faced with the slightest adversity or irrational annoyance.</div>
+				<div class="text">As with any shows from its time, as <a href="https://www.theguardian.com/culture/2024/oct/16/jerry-seinfeld-tom-papa-breaking-bad-podcast-interview-politics-comedy-extreme-left-pc-crap-#:~:text=%E2%80%9CDoes%20culture%20change,my%20skiing%20analogy.%E2%80%9D" target="_blank">culture and society evolve</a> a contemporary lens exposes negative stereotypes and flashes of chauvinism and sizeism, to name but two isms. The amoral instincts of these anti-heroes was most on-show in their romantic encounters and when faced with the slightest adversity or irrational annoyance.</div>
 			</div>
 			<div class="col-span-5">
 				<!-- svelte-ignore a11y_media_has_caption -->

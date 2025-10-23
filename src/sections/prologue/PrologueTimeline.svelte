@@ -135,7 +135,7 @@
 		<div class="flex h-screen flex-col justify-center">
 			<p id="prologue-2">
 				It wasn't until the 2010s when Seinfeld reappeared on UK TV in a prime-time slot.
-				Fully aware of the show's standing in the canon of popular culture this was my best
+				Fully aware of the show's standing in the canon of popular culture this was my
 				opportunity to tune in.
 			</p>
 		</div>

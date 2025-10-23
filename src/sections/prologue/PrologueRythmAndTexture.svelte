@@ -126,7 +126,7 @@
 				<div class="col-span-1 px-4">
 					<p>
 						As I progressed through the episodes my fascination with the creative process behind the
-						show grew. It was the musicality of the writing and its delivery that I particularly
+						show grew. It was the <span class="highlight">musicality</span> of the writing and its delivery that I particularly
 						loved, orchestrated by the comedic talents of co-creators Jerry Seinfeld and Larry
 						David.
 					</p>
