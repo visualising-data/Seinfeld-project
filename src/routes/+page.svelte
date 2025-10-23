@@ -23,6 +23,7 @@
 	import Catalog from '../sections/catalog/Catalog.svelte';
 	import MethodologyAndCredits from '../sections/MethodologyAndCredits.svelte';
 	import Footer from '../sections/Footer.svelte';
+	import Warning from '../sections/Warning.svelte';
 
 	const episodesDataUrl = 'https://amdufour.github.io/hosted-data/apis/episodes_laughs.min.json';
 	const sonificationCharactersDataUrl =
@@ -71,6 +72,7 @@
 			<SoundAuthPopup />
 		{/if}
 		<Title />
+		<Warning />
 	</div>
 	<div class="bg-white text-black">
 			<Calendar {ScrollTrigger} />

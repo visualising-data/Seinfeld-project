@@ -5,6 +5,7 @@
   import EpisodeExample from "./EpisodeExample.svelte";
 	import type { Episode } from "$lib/types/episode";
 	import { episodesInfo } from '$lib/data/episodesInfo';
+	import Bridge from "./Bridge.svelte";
 
   let { episodesData, ScrollTrigger } = $props();
 
@@ -64,6 +65,7 @@
 		</div>
     <div class="w-screen" style="padding-left: 25px;">
         <DataGatheringDetails {laughData} />
+				<Bridge />
         <EpisodeExample {episodeInfo} {episodeData} {laughData} {ScrollTrigger} />
 				<!-- <AllEpisodes {episodesData} {stripHeight} {ScrollTrigger} /> -->
     </div>

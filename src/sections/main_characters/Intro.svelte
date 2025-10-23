@@ -47,6 +47,14 @@
         duration: 1,
         ease: 'back.out(1.7)'
       }, "-=0.9")
+      .to('#lead-chars-intro .highlight', {
+        webkitTextFillColor: 'transparent',
+        backgroundPosition: '200% center',
+        duration: 2,
+        delay: 1,
+        ease: 'power3.out',
+        stagger: { each: 0.5 }
+      })
 
     // Add parallax effect to videos
 		let chars = gsap.utils.toArray('.lead-char-parallax');
@@ -84,7 +92,7 @@
       <div id="lead-chars-intro-text-container" class="col-span-12 md:col-span-7 h-screen flex flex-col justify-center">
         <p>We begin with a look at the lead characters. It was no surprise to find the majority of screen-time was dominated by the four leading characters - <span class="color color-jerry">Jerry</span>, <span class="color color-george">George</span>, <span class="color color-elaine">Elaine</span>, and <span class="color color-kramer">Kramer</span>.</p>
         <p>They were the stars who delivered most of the lines, acted out the stories, and ultimately caused the majority of the laughs.</p>
-        <p>In this section we’ll explore the time they spent on screen, their individual shares of laughs, and how they were used in combinations in scenes to create memorable moments.</p>
+        <p>In this section we’ll explore how much these characters were used on-screen during each episode’s run-time - <span class="highlight">screen time</span> - and how funny they were during those appearances - <span class="highlight">laughter rate</span>.</p>
       </div>
     </div>
 

@@ -877,7 +877,7 @@
                         y={0}
                         width={episodeTimeScale(screenMoment.duration)}
                         height={episodesVerticalScale.bandwidth()}
-                        fill={characters.find(char => char.id === activeCharacter)?.color}
+                        fill="#303843"
                         rx={3}
                         ry={3}
                         style="opacity: {activeFilter === FILTER.LAUGHS ? 0.3 : (isMouseOver && highlightedEpisode === `${d.season}-${d.episode}`) || !isMouseOver ? 1 : 0.3};"
@@ -946,7 +946,7 @@
                           y={isMouseOver && highlightedEpisode === `${d.season}-${d.episode}` ? -2 : 0}
                           width={episodeTimeScale(screenMoment.duration) + (isMouseOver && highlightedEpisode === `${d.season}-${d.episode}` ? 4 : 0)}
                           height={episodesVerticalScale.bandwidth() + (isMouseOver && highlightedEpisode === `${d.season}-${d.episode}` ? 4 : 0)}
-                          fill={characters.find(char => char.id === activeCharacter)?.color}
+                          fill="#12020A"
                           style="opacity: {(isMouseOver && highlightedEpisode === `${d.season}-${d.episode}`) || !isMouseOver ? 1 : 0.3};"
                           stroke={isMouseOver && highlightedEpisode === `${d.season}-${d.episode}` ? '#F9F5F7' : 'none'}
                           stroke-width={2}

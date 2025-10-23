@@ -290,7 +290,7 @@
 								/>
 							{/each}
 							<text class="mid label" x={timeScale(+laughData[0].eventTimeSeconds)} y={-20}
-								>Each bar represents a block of 5s with laughter.</text
+								>Each bar represents a block of 5s with audience laughter.</text
 							>
 							<line
 								class="label"
