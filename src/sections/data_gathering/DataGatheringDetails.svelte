@@ -77,15 +77,12 @@ function playLaughs() {
 	player.onstop = () => { isPlaying = false; };
 	player.start();
 	isPlaying = true;
-
-	console.log('▶️ playLaughs', file, performance.now());
 }
 
 function stopLaughs() {
 	if (!laughTracks || !isPlaying) return;
 	laughTracks.stopAll();
 	isPlaying = false;
-	console.log('⏹ stopLaughs', performance.now());
 }
 
 function handleClickOnReplay() {
@@ -231,7 +228,6 @@ function handleClickOnReplay() {
         }
 
         const playVideo = () => debouncePlayPause(() => {
-            console.log('play')
             if (!video.paused) return;
             video.play().catch(err => {
                 if (err.name !== "AbortError") console.warn("Video play failed:", err);
@@ -240,7 +236,6 @@ function handleClickOnReplay() {
         });
 
         const pauseVideo = () => debouncePlayPause(() => {
-            console.log('pause')
             if (video.paused) return;
             video.pause();
             video.currentTime = 0;
