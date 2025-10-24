@@ -85,11 +85,13 @@
   }
 
   const playAudio = () => {
+    if (soundtrack.state === 'started') return; // already playing
     playRythm()
     playChar()
   }
 
   const stopAudio = () => {
+    if (soundtrack.state !== 'started') return; // already stopped
 		soundtrack.stopAll();
     clearTimeout(playRythmTimeout);
     clearTimeout(playCharTimeout);
