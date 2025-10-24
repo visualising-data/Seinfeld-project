@@ -42,42 +42,56 @@
     );
     let laughWidth = $derived(laughsBarScale(videoStartTime + 5) - 8);
 
-    /**
-	 * @type {Tone.Players}
-	 */
-	let laughTracks;
-	const preloadLaughs = () => {
-		// @ts-ignore
-		laughTracks = new Tone.Players(laughterFiles).toDestination(); //connects to the system sound output
-        laughTracks.fadeIn = 1;
-        laughTracks.fadeOut = 1;
-    };
+    /** @type {Tone.Players} */
+let laughTracks;
 
-    let isPlaying = $state(false)
-    const playLaughs = () => {
-        if ($soundIsAuth && laughTracks) {
-            const file = getRandomLaughterFile()
-            const player = laughTracks.player(file)
-            
-            player.onstop = () => {
-                isPlaying = false
-            }
-                
-            player.start();
-            isPlaying = true
-        }
-    };
-    const stopLaughs = () => {
-        laughTracks.stopAll()
-    }
+const preloadLaughs = async () => {
+	await Tone.start(); // ensure browser gesture permission
+	await Tone.loaded();
+	laughTracks = new Tone.Players(laughterFiles).toDestination();
+	laughTracks.fadeIn = 1;
+	laughTracks.fadeOut = 1;
+};
 
-    function handleClickOnReplay() {
-        if (laughTracks.state === 'started') {
-            laughTracks.stopAll()
-        } else {
-            playLaughs();
-        }
-    }
+// ✅ manage playback safely with internal state + debounce
+let isPlaying = $state(false);
+let debounceTimer;
+
+// safe wrappers
+function safePlayLaughs() {
+	clearTimeout(debounceTimer);
+	debounceTimer = setTimeout(playLaughs, 50);
+}
+
+function safeStopLaughs() {
+	clearTimeout(debounceTimer);
+	debounceTimer = setTimeout(stopLaughs, 50);
+}
+
+function playLaughs() {
+	if (!laughTracks || isPlaying || !$soundIsAuth) return;
+
+	const file = getRandomLaughterFile();
+	const player = laughTracks.player(file);
+
+	player.onstop = () => { isPlaying = false; };
+	player.start();
+	isPlaying = true;
+
+	console.log('▶️ playLaughs', file, performance.now());
+}
+
+function stopLaughs() {
+	if (!laughTracks || !isPlaying) return;
+	laughTracks.stopAll();
+	isPlaying = false;
+	console.log('⏹ stopLaughs', performance.now());
+}
+
+function handleClickOnReplay() {
+	if (isPlaying) stopLaughs();
+	else playLaughs();
+}
 
     let tlVideo;
     onMount(() => {
@@ -94,10 +108,10 @@
 				trigger: '#data-gathering-1',
 				start: 'top center',
                 end: 'bottom top',
-                onEnter: () => playLaughs(),
-                onEnterBack: () => playLaughs(),
-                onLeave: () => stopLaughs(),
-                onLeaveBack: () => stopLaughs(),
+                onEnter: () => safePlayLaughs(),
+                onEnterBack: () => safePlayLaughs(),
+                onLeave: () => safeStopLaughs(),
+                onLeaveBack: () => safeStopLaughs(),
 			}
 		});
 		const tl2 = gsap.timeline({
@@ -167,14 +181,14 @@
             }, "-=2");
         tlVideo = gsap.timeline({
 			scrollTrigger: {
-				trigger: '#data-gathering-3 svg',
-				start: 'top top-=10%',
+				trigger: '#data-gathering-3',
+				start: 'top top',
                 end: 'bottom top',
-				toggleActions: 'play reset play reset',
+				toggleActions: 'play pause resume pause',
                 onEnter: () => playVideo(),
                 onLeave: () => pauseVideo(),
                 onEnterBack: () => playVideo(),
-                onLeaveBack: () => pauseVideo(),
+                onLeaveBack: () => pauseVideo()
 			}
 		});
         const laughIconReveal = { opacity: 0, yPercent: 50, duration: 1, ease: 'power3.out' };
@@ -210,22 +224,28 @@
 
         const video = document.getElementById("demo-video");
 
-        const playVideo = () => {
-            var isPlaying = video.currentTime > 0 && !video.paused && !video.ended 
-                && video.readyState > video.HAVE_CURRENT_DATA;
-            if (!isPlaying) {
-                video.play();
-            }
-            tlVideo.restart()
-        };
-        const pauseVideo = () => {
-            video?.pause();
-            video.currentTime = 0;
-            tlVideo.pause()
-        };
+        let playPauseTimer;
+        function debouncePlayPause(fn) {
+            clearTimeout(playPauseTimer);
+            playPauseTimer = setTimeout(fn, 100);
+        }
 
-        video.addEventListener('play', playVideo)
-        video.addEventListener('pause', pauseVideo)
+        const playVideo = () => debouncePlayPause(() => {
+            console.log('play')
+            if (!video.paused) return;
+            video.play().catch(err => {
+                if (err.name !== "AbortError") console.warn("Video play failed:", err);
+            });
+            tlVideo.restart();
+        });
+
+        const pauseVideo = () => debouncePlayPause(() => {
+            console.log('pause')
+            if (video.paused) return;
+            video.pause();
+            video.currentTime = 0;
+            tlVideo.pause();
+        });
     });
 
     const getLaughVerticalIndex = (char) => {

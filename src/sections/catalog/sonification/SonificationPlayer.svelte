@@ -56,19 +56,19 @@
 
 	// --- ⚡ Reactive audio parameter updates ---
 	function updateThreshold(value) {
-		compressor.threshold.value = value
+		compressor.threshold.value = parseFloat(value)
 		console.log('threshold', compressor.threshold.value)
 	}
 	function updateRatio(value) {
-		compressor.ratio.value = value
+		compressor.ratio.value = parseFloat(value)
 		console.log('ratio', compressor.ratio.value)
 	}
 	function updateAttack(value) {
-		compressor.attack.value = value
+		compressor.attack.value = parseFloat(value)
 		console.log('attack', compressor.attack.value)
 	}
 	function updateRelease(value) {
-		compressor.release.value = value
+		compressor.release.value = parseFloat(value)
 		console.log('release', compressor.release.value)
 	}
 

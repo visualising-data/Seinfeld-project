@@ -248,11 +248,15 @@
 	 * @type {Tone.Player}
 	 */
 	let soundtrack;
+	let isSoundPlaying = $state(false)
+
 	const playSound = () => {
-		if ($soundIsAuth) {
-			soundtrack.start()
-		}
-	}
+		if (!$soundIsAuth || !soundtrack) return;
+		// prevent duplicate starts
+		if (isSoundPlaying) return;
+		soundtrack.start();
+		isSoundPlaying = true;
+	};
 	
 	/**
 	 * @param {number} number
@@ -310,8 +314,11 @@
 
 	onMount(() => {
 		// Preload Plip sound
-		const preload = () => {
+		const preload = async () => {
+			await Tone.start();
+  		await Tone.loaded();
 			soundtrack = new Tone.Player('https://amdufour.github.io/hosted-data/apis/sonification/20250925_Seinfeld_Intro_Plip.mp3').toDestination(); //connects to the system sound output
+			soundtrack.onstop = () => (isSoundPlaying = false);
 		};
 		preload()
 
