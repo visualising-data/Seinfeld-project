@@ -328,6 +328,8 @@
     return mainCharsData
   });
 
+  $inspect('charData', charData)
+
   let isMouseOver = $state(false);
   let isTextOver = false;
   let highlightedEpisode = $state('');
@@ -365,7 +367,7 @@
     const data = charData[activeCharacter].find(e => e.season === episode.season && e.episode === episode.episode);
     highlightedEpisodeOverviewPercentage = activeFilter === FILTER.SCREEN_TIME
       ? Math.round(data.aggregatedOnScreen.reduce((acc, value) => acc + value.duration, 0) / data.duration * 100)
-      : Math.round(data.causesLaughs.length / data.aggregatedOnScreen.reduce((acc, value) => acc + value.duration, 0) * 100)
+      : Math.round(data.causesLaughs.length / data.onScreen.length * 100)
 
     const newXPosition = x <= episodeDetailsInnerWidth ? Math.round(x) : 0;
     if (highlightedEpisodeTimePosition !== newXPosition) {
@@ -1101,7 +1103,7 @@
                           class="pointer-events-none"
                           x={0}
                           y={0}
-                          width={episodeOverviewScale(d.causesLaughs.length / (d.aggregatedOnScreen.reduce((acc, value) => acc + value.duration, 0)))}
+                          width={episodeOverviewScale(d.causesLaughs.length / d.onScreen.length)}
                           height={episodesVerticalScale.bandwidth()}
                           fill={characters.find(char => char.id === activeCharacter)?.color}
                           fill-opacity={(isMouseOver && highlightedEpisode === `${d.season}-${d.episode}`) || !isMouseOver ? 1 : 0.3}
@@ -1145,7 +1147,7 @@
                           class="pointer-events-none"
                           x={0}
                           y={-2}
-                          width={episodeOverviewScale(d.causesLaughs.length / (d.aggregatedOnScreen.reduce((acc, value) => acc + value.duration, 0)))}
+                          width={episodeOverviewScale(d.causesLaughs.length / d.onScreen.length)}
                           height={episodesVerticalScale.bandwidth() + 4}
                           fill={characters.find(char => char.id === activeCharacter)?.color}
                           stroke={'#F9F5F7'}

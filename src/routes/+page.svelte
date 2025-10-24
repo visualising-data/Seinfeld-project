@@ -54,9 +54,7 @@
 	<Navbar />
 	{#if showOnlyLatest}
 		{#await json(episodesDataUrl) then episodesData}
-			<div class="bg-white text-black">
-				<Quotes />
-			</div>
+			<MainCharsSection {episodesData} />
 		{/await}
 	{:else}
 	<div
