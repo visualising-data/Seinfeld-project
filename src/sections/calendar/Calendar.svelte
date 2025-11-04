@@ -186,8 +186,9 @@
 		if (season === 1) {
 			return date === 'July 5 1989' ? 20 + headersHeight : seasonBlockHeight / 2 + headersHeight + 10;
 		} else {
+			const offset = season === 9 ? 16 : 0;
 			const yPosition = seasonBlockTop + seasonBlockHeight / 2 + verticalStack * 2 * episodeRadius;
-			return yPosition;
+			return yPosition - offset;
 		}
 	};
 
@@ -301,9 +302,9 @@
 
 		simulation
 			.force('x', forceX((d) => getXPosition(d.season, d.date_aired)).strength(1))
-			.force('y', forceY((d) => getYPosition(d.season, d.date_aired, d.verticalStack ? d.verticalStack : 0)).strength(0.5))
+			.force('y', forceY((d) => getYPosition(d.season, d.date_aired, d.verticalStack ? d.verticalStack : 0)).strength(0.8))
 			.force('collide', forceCollide().radius(episodeRadius).strength(1))
-			.force('walls', wallForce)
+			// .force('walls', wallForce)
 			.alpha(0.5)
 			.alphaDecay(0.1)
 	}
