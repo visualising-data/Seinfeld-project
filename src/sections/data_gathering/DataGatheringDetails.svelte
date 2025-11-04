@@ -131,7 +131,7 @@ function handleClickOnReplay() {
                 stagger: .1
             })
             .from('#data-gathering-1 img', assetTransform, "-=.3")
-            .to('#data-gathering-1 .highlight', {
+            .to('#data-gathering-1 .highlight-reverse', {
                 webkitTextFillColor: 'transparent',
                 backgroundPosition: '200% center',
                 duration: 2,
@@ -155,7 +155,7 @@ function handleClickOnReplay() {
                 stagger: .1
             })
             .from('#data-gathering-2 img', assetTransform, "-=.3")
-            .to('#data-gathering-2 .highlight', {
+            .to('#data-gathering-2 .highlight-reverse', {
                 webkitTextFillColor: 'transparent',
                 backgroundPosition: '200% center',
                 duration: 2,
@@ -169,7 +169,7 @@ function handleClickOnReplay() {
                 stagger: .1
             })
             .from('#data-gathering-3 .video-container', assetTransform, "-=.3")
-            .to('#data-gathering-3 .highlight', {
+            .to('#data-gathering-3 .highlight-reverse', {
                 webkitTextFillColor: 'transparent',
                 backgroundPosition: '200% center',
                 duration: 2,
@@ -281,7 +281,7 @@ function handleClickOnReplay() {
         <div id="data-gathering-1" class="grid grid-cols-12 mb-48">
             <div class="col-span-12 md:col-span-6 relative">
                 <div class="mask">
-                    <p class="text">We gathered all the data for this project <span class="highlight">manually</span>, by watching every one of the 176 written episodes of Seinfeld using a detailed spreadsheet template to record observations about the show’s rhythm and texture.</p>
+                    <p class="text">We gathered all the data for this project <span class="highlight-reverse">manually</span>, by watching every one of the 176 written episodes of Seinfeld using a detailed spreadsheet template to record observations about the show’s rhythm and texture.</p>
                 </div>
             </div>
             <div class="col-span-2 md:col-span-6"></div>
@@ -317,7 +317,7 @@ function handleClickOnReplay() {
             <div class="col-span-2 md:col-span-4"></div>
             <div class="col-span-12 md:col-span-6 md:col-start-6 relative">
                 <div class="mask">
-                    <p class="text">It doesn’t take a genius to recognise the main goal of a sitcom is to offer situational comedy. It also stands to reason that a reliable indicator of a situation comedy being funny is to measure the reaction of an audience’s laughter through the laugh track. These days it is rare to find laugh tracks on modern sitcoms, but Seinfeld had one and with the show always being filmed in front of a <span class="highlight pl-1">live studio audience</span> (any scenes filmed outside were played back in the studio) so the laughter heard is authentic.</p>
+                    <p class="text">It doesn’t take a genius to recognise the main goal of a sitcom is to offer situational comedy. It also stands to reason that a reliable indicator of a situation comedy being funny is to measure the reaction of an audience’s laughter through the laugh track. These days it is rare to find laugh tracks on modern sitcoms, but Seinfeld had one and with the show always being filmed in front of a <span class="highlight-reverse pl-1">live studio audience</span> (any scenes filmed outside were played back in the studio) so the laughter heard is authentic.</p>
                 </div>
             </div>
         </div>
@@ -334,7 +334,7 @@ function handleClickOnReplay() {
                 </div>
                 <div class="mask">
                     <p class="text">Laughter has a spectrum of levels, from the subtle smile characteristic of ‘inner’ laughter, through to more external titters, chuckles, chortles, and through to belly laughs or howls. To establish a standard measurement any laughter heard during the episodes counted as a "laughter moment", regardless of whether it was loud or fleeting.</p>
-                    <p class="text">For consistency, each observed laughter moment was recorded against an associated <span class="highlight">5-second</span> block of time. When testing out the data collection approach over three sample episodes, the 5-second duration proved to be the most reliable and representative ‘average’ duration, from the gag’s delivery to the audience’s laughter subsiding.</p>
+                    <p class="text">For consistency, each observed laughter moment was recorded against an associated <span class="highlight-reverse">5-second</span> block of time. When testing out the data collection approach over three sample episodes, the 5-second duration proved to be the most reliable and representative ‘average’ duration, from the gag’s delivery to the audience’s laughter subsiding.</p>
                     <p class="text">Occasionally, laughter would run for longer than 5 seconds, sometimes persisting for 10 and even 15 seconds. In these rare cases, each 5-second unit would count as a laughter moment.</p>
                 </div>
             </div>

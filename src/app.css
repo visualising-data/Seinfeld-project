@@ -130,6 +130,23 @@
 		background-size: 200% auto;
 		background-clip: text;
 	}
+  .highlight-reverse {
+    font-weight: 600;
+    background: linear-gradient(
+			90deg,
+      rgba(69, 55, 130, 1) 0%,
+      rgba(57, 87, 141, 1) 12.5%,
+      rgba(47, 112, 142, 1) 25%,
+      rgba(34, 138, 141, 1) 37.5%,
+      rgba(29, 163, 136, 1) 50%,
+      rgba(76, 178, 120, 1) 62.5%,
+      rgba(125, 186, 87, 1) 75%,
+      rgba(184, 206, 50, 1) 87.5%,
+			rgba(253, 232, 36, 1) 100%
+		);
+		background-size: 200% auto;
+		background-clip: text;
+  }
   .btn {
     padding: 12px 20px;
     transition: all 250ms ease-out;
