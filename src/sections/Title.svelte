@@ -147,19 +147,19 @@
 	 */
 	let soundtrack;
 	const playJingle = () => {
-		if ($soundIsAuth) {
+		if ($soundIsAuth && soundtrack?.loaded && soundtrack.state !== "started") {
 			soundtrack.start()
 		}
 	}
 	const stopJingle = () => {
-		if ($soundIsAuth) {
+		if ($soundIsAuth && soundtrack?.loaded && soundtrack.state !== "started") {
 			soundtrack.stop()
 		}
 	}
 
 	const barsTl = gsap.timeline()
 	const handleMouseEnterBars = () => {
-		if (!barsTl.isActive()) {
+		if (!barsTl.isActive()&& soundtrack?.loaded && soundtrack.state !== "started") {
 			playJingle()
 			barsTl.add(animateBars())
 		}
@@ -186,8 +186,8 @@
 		});
 		
 		tl
-			.add(animateBars())
-			.add(revealContent(), "-=1")
+			.add(revealContent())
+			.add(animateBars(), 0)
 			
 	});
 </script>
