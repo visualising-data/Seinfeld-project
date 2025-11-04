@@ -86,7 +86,7 @@
 				height: 0,
 				duration: 0.25,
 				ease: 'back.out(1.7)'
-			}, '-=.1')
+			}, '-=.15')
 			.from('.season-rect-7', {
 				width: 0,
 				height: 0,
