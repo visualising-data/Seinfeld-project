@@ -92,6 +92,14 @@
 		});
 	});
 
+	const textAnim = {
+		webkitTextFillColor: 'transparent',
+    backgroundPosition: '200% center',
+    duration: 2,
+    delay: 1,
+    ease: 'power3.out'
+	};
+
 	const reveal1 = () => {
 		gsap.to('#episode-detail-container', {
 			translateY: 0,
@@ -118,6 +126,7 @@
 	};
 
 	const reveal3 = () => {
+		gsap.to('#episode-example-text-3 .highlight', textAnim);
 		gsap.to('#duration-example .laugh-bar', {
 			translateY: 0,
 			opacity: 1,
@@ -134,6 +143,7 @@
 	};
 
 	const reveal4 = () => {
+		gsap.to('#episode-example-text-4 .highlight', textAnim);
 		gsap.to(
 			'#episode-length, #duration-example .episode-start-end, #duration-example .laugh-bar, #duration-example .label',
 			{
@@ -153,6 +163,7 @@
 	};
 
 	const reveal5 = () => {
+		gsap.to('#episode-example-text-5 .highlight', textAnim);
 		gsap.to('#episode-example-container .catalog-character-label', {
 			translateX: 0,
 			opacity: 1,
@@ -168,6 +179,7 @@
 	};
 
 	const reveal6 = () => {
+		gsap.to('#episode-example-text-6 .highlight', textAnim);
 		gsap.to('#episode-example-container .catalog-laugh-bar', {
 			translateY: 0,
 			opacity: 1,
@@ -177,6 +189,7 @@
 	};
 
 	const reveal7 = () => {
+		gsap.to('#episode-example-text-7 .highlight', textAnim);
 		gsap.to('#episode-example-container .catalog-location-label', {
 			translateX: 0,
 			opacity: 1,
@@ -192,13 +205,7 @@
 	};
 
 	const reveal8 = () => {
-		gsap.to('#episode-example-text-8 .highlight', {
-			webkitTextFillColor: 'transparent',
-      backgroundPosition: '200% center',
-      duration: 2,
-      delay: 1,
-      ease: 'power3.out'
-		});
+		gsap.to('#episode-example-text-8 .highlight', textAnim);
 	};
 
 	/**
