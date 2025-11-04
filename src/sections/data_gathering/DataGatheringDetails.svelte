@@ -259,54 +259,50 @@ function handleClickOnReplay() {
 
 <svelte:window bind:innerWidth />
 
-<div class="w-screen" style="margin-left: {innerWidth >= 768 ? -25 : 0}px;">
-    <div class="container py-96">
-
-        <div id="data-gathering-2" class="grid grid-cols-12 mb-48">
-            <div class="col-auto md:col-span-1"></div>
-            <div class="col-span-7" style="margin-right: -50px;">
-                <img class="data-gathering-parallax" src="https://amdufour.github.io/hosted-data/apis/images/data_gathering_1.jpg" alt="Data spreadsheet and tv during data gathering." />
-            </div>
-            {#if innerWidth < 768}
-                <div class="col-span-4"></div>
-                <div class="col-span-2"></div>
-            {/if}
-            <div class="col-span-10 md:col-span-4 relative z-10 mask" style="background-color: rgba(249, 245, 247, 0.6);">
-                <p class="text">We gathered all the data for this project <span class="highlight">manually</span>, by watching every one of the 176 written episodes of Seinfeld using a detailed spreadsheet template to record observations about the show’s rhythm and texture.</p>
-            </div>
-        </div>
+<div>
+    <div class="container pt-40 pb-96">
 
         <div id="data-gathering-1" class="grid grid-cols-12 mb-48">
-            <div class="col-span-10 md:col-span-6 relative">
+            <div class="col-span-12 md:col-span-6 relative">
                 <div class="mask">
-                    <div class="text">It doesn’t take a genius to recognise the main goal of a sitcom is to offer situational comedy. It also stands to reason that a reliable indicator of a situation comedy being funny is to measure the reaction of an audience’s laughter through the laugh track. These days it is rare to find laugh tracks on modern sitcoms, but Seinfeld had one and with the show always being filmed in front of a <span class="highlight pl-1">live studio audience</span> (any scenes filmed outside were played back in the studio) so the laughter heard is authentic.</div>
+                    <p class="text">We gathered all the data for this project <span class="highlight">manually</span>, by watching every one of the 176 written episodes of Seinfeld using a detailed spreadsheet template to record observations about the show’s rhythm and texture.</p>
                 </div>
             </div>
             <div class="col-span-2 md:col-span-6"></div>
             <div class="col-span-2 md:col-span-4"></div>
-            <div class="col-span-10 md:col-span-8 mt-8" style="margin-right: -{sideSpacing}px;">
+            <div class="col-span-12 md:col-span-8" style="margin-left: {innerWidth >= 768 ? 0 : -sideSpacing}px; margin-right: -{sideSpacing}px;">
+                <img class="data-gathering-parallax" src="https://amdufour.github.io/hosted-data/apis/images/data_gathering_1.jpg" alt="Data spreadsheet and tv during data gathering." />
+            </div>
+        </div>
+
+        <div id="data-gathering-2" class="grid grid-cols-12 mb-48">
+            <div class="col-span-12 md:col-span-8 mt-8" style="margin-left: {innerWidth >= 768 ? 0 : -sideSpacing}px; margin-right: {innerWidth >= 768 ? 0 : -sideSpacing}px;">
                 <img class="data-gathering-parallax" src="https://amdufour.github.io/hosted-data/apis/images/audience.jpg" alt="Jerry Seinfeld talking with the audience during taping." />
-                <div class="number text pt-2" style="background-color: rgba(249, 245, 247, 0.6);">Photo source: <a href="https://www.facebook.com/story.php?story_fbid=539096318663826&id=100076903884453" target="_blank">The Seinfeld World</a></div>
+                <div class="number text pt-2 pl-2 lg:pl-0" style="background-color: rgba(249, 245, 247, 0.6);">Photo source: <a href="https://www.facebook.com/story.php?story_fbid=539096318663826&id=100076903884453" target="_blank">The Seinfeld World</a></div>
+            </div>
+            <div class="col-span-2 md:col-span-4"></div>
+            <div class="col-span-12 md:col-span-6 md:col-start-6 relative">
+                <div class="mask">
+                    <p class="text">It doesn’t take a genius to recognise the main goal of a sitcom is to offer situational comedy. It also stands to reason that a reliable indicator of a situation comedy being funny is to measure the reaction of an audience’s laughter through the laugh track. These days it is rare to find laugh tracks on modern sitcoms, but Seinfeld had one and with the show always being filmed in front of a <span class="highlight pl-1">live studio audience</span> (any scenes filmed outside were played back in the studio) so the laughter heard is authentic.</p>
+                </div>
             </div>
         </div>
 
         <div id="data-gathering-3" class="grid grid-cols-12">
-            <div class="absolute flex items-end" style="top:-68px; right: {innerWidth >= 768 ? -140 : -50}px;">
+            <div class="col-span-12 md:col-start-3 md:col-span-8 relative">
+                <div class="absolute flex items-end" style="top:-68px; right: {innerWidth >= 768 ? -144 : -80}px;">
                     <div class="laugh-icon-large w-20 md:w-36 h-20 md:h-32">
                         <Laugh isActive={isPlaying} />
                     </div>
-                    <div class="replay-laugh" style="margin-left: -20px;">
+                    <div class="replay-laugh" style="margin-left: {innerWidth >= 768 ? -20 : 0}px;">
                         <ReplayButton {isPlaying} bind:handleClickOnReplay />
                     </div>
                 </div>
-            <div class="col-span-12 md:col-start-3 md:col-span-8 mask">
-                <div class="text">
-                    <p class="text">Laughter has a spectrum of levels, from the subtle smile characteristic of ‘inner’ laughter, through to more external titters, chuckles, chortles, and through to belly laughs or howls. To establish a standard measurement any laughter heard during the episodes counted as a "laughter moment", regardless of whether it was loud or fleeting.</p>
-                    <p>For consistency, each observed laughter moment was recorded against an associated <span class="highlight">5-second</span> block of time. When testing out the data collection approach over three sample episodes, the 5-second duration proved to be the most reliable and representative ‘average’ duration, from the gag’s delivery to the audience’s laughter subsiding.</p>
-                    <p>Occasionally, laughter would run for longer than 5 seconds, sometimes persisting for 10 and even 15 seconds. In these rare cases, each 5-second unit would count as a laughter moment.</p>
-                </div>
+                <p class="text">Laughter has a spectrum of levels, from the subtle smile characteristic of ‘inner’ laughter, through to more external titters, chuckles, chortles, and through to belly laughs or howls. To establish a standard measurement any laughter heard during the episodes counted as a "laughter moment", regardless of whether it was loud or fleeting.</p>
+                <p class="text">For consistency, each observed laughter moment was recorded against an associated <span class="highlight">5-second</span> block of time. When testing out the data collection approach over three sample episodes, the 5-second duration proved to be the most reliable and representative ‘average’ duration, from the gag’s delivery to the audience’s laughter subsiding.</p>
+                <p class="text">Occasionally, laughter would run for longer than 5 seconds, sometimes persisting for 10 and even 15 seconds. In these rare cases, each 5-second unit would count as a laughter moment.</p>
             </div>
-            <div class="col-start-3 col-span-8" style="margin-left: {innerWidth >= 768 ? 0 : -sideSpacing + 25}px; margin-right: {innerWidth >= 768 ? 0 : -sideSpacing}px;">
+            <div class="lg:col-start-3 col-span-12 lg:col-span-8" style="margin-left: {innerWidth >= 768 ? 0 : -sideSpacing}px; margin-right: {innerWidth >= 768 ? 0 : -sideSpacing}px;">
                 <!-- svelte-ignore a11y_media_has_caption -->
 				 <div class="relative video-container w-full">
 					<video id="demo-video" playsinline controls bind:muted={isMuted} bind:clientWidth={videoWidth}>

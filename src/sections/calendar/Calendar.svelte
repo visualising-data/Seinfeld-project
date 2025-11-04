@@ -171,7 +171,7 @@
 		return timeScale(new Date(date));
 	};
 
-	const getYPosition = (/** @type {number} */ season, /** @type {string} */ date, /** @type {number} */ verticalStack) => {
+	const getYPosition = (/** @type {number} */ season, /** @type {number} */ episode, /** @type {string} */ date, /** @type {number} */ verticalStack) => {
 		const seasonBlockTop = document
 			.getElementById(
 				`catalog-season-${date === 'August 12 1992' || date === 'August 19 1992' ? season - 1 : season}`
@@ -186,7 +186,8 @@
 		if (season === 1) {
 			return date === 'July 5 1989' ? 20 + headersHeight : seasonBlockHeight / 2 + headersHeight + 10;
 		} else {
-			const offset = season === 9 ? 16 : 0;
+			const lastEpisodes = [21, 22, 23, 24]
+			const offset = season === 9 && lastEpisodes.includes(episode) ? 16 : 0;
 			const yPosition = seasonBlockTop + seasonBlockHeight / 2 + verticalStack * 2 * episodeRadius;
 			return yPosition - offset;
 		}
@@ -302,7 +303,7 @@
 
 		simulation
 			.force('x', forceX((d) => getXPosition(d.season, d.date_aired)).strength(1))
-			.force('y', forceY((d) => getYPosition(d.season, d.date_aired, d.verticalStack ? d.verticalStack : 0)).strength(0.8))
+			.force('y', forceY((d) => getYPosition(d.season, d.episode, d.date_aired, d.verticalStack ? d.verticalStack : 0)).strength(0))
 			.force('collide', forceCollide().radius(episodeRadius).strength(1))
 			// .force('walls', wallForce)
 			.alpha(0.5)
