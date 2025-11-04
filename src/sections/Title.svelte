@@ -194,7 +194,8 @@
 
 <svelte:window bind:innerWidth />
 
-<section id="title-screen" class="h-screen mb-80">
+<section id="title-screen" class="py-40">
+	<div class="title-container h-screen">
 	<svg width={svgWidth} height="132" onmouseenter={handleMouseEnterBars} role="figure">
 		{#each seasons as season, i}
 			<rect
@@ -266,12 +267,15 @@
 			<span>{' }'}</span>
 		</div>
 	</div>
+	</div>
 </section>
 
 <style>
 	section {
+		background: linear-gradient(180deg,rgba(18, 2, 10, 1) 0%, rgba(48, 56, 67, 1) 38%, rgba(48, 56, 67, 1) 50%, rgba(48, 56, 67, 1) 68%, rgba(18, 2, 10, 1) 100%);
+	}
+	.title-container {
 		padding-top: 100px;
-		background: linear-gradient(174deg,rgba(18, 2, 10, 1) 0%, rgba(48, 56, 67, 1) 38%, rgba(48, 56, 67, 1) 50%, rgba(48, 56, 67, 1) 68%, rgba(18, 2, 10, 1) 100%);
 	}
 	.subtitle {
 		font-size: 1rem;
