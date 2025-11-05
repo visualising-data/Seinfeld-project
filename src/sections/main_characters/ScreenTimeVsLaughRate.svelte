@@ -782,7 +782,10 @@
                   <ArrowDown />
                 </g>
                 <g transform="translate(14, 0)">
-                  <SeasonsStripSingle width={visualizationsWidth} height={visualizationsInnerHeight} />
+                  <SeasonsStripSingle width={episodeTimeScale(31 * 60) + margin.left} height={visualizationsInnerHeight} />
+                  <g transform="translate({visualizationsWidth - episodesOverviewWidth - 15}, 0)">
+                    <SeasonsStripSingle width={episodesOverviewWidth + 15} height={visualizationsInnerHeight} />
+                  </g>
                 </g>
               </g>
 
@@ -1180,7 +1183,7 @@
 
 
               <!-- Season separators -->
-              <g transform="translate(14, {margin.top})" class="pointer-events-none">
+              <!-- <g transform="translate(14, {margin.top})" class="pointer-events-none">
                 <line
                     x1={0}
                     y1={0}
@@ -1193,13 +1196,13 @@
                   <line
                     x1={0}
                     y1={seasonScale(sum(seasons.slice(0, i), (d) => d.numEpisodes)) + seasonScale(season.numEpisodes)}
-                    x2={visualizationsWidth - 14}
+                    x2={episodeTimeScale(31 * 60) + margin.left}
                     y2={seasonScale(sum(seasons.slice(0, i), (d) => d.numEpisodes)) + seasonScale(season.numEpisodes)}
                     stroke="#303843"
                     stroke-opacity={isMouseOver ? 0 : 1}
                   />
                 {/each}
-              </g>
+              </g> -->
               </g>
             </svg>
           </div>
