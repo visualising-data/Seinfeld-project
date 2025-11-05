@@ -20,7 +20,7 @@
     y={20}
     width={60}
     height={8}
-    fill={characters.find(char => char.id === activeCharacter)?.color}
+    fill="#303843"
     fill-opacity={activeFilter === 'screenTime' ? 1 : 0.3}
     rx={4}
     ry={4}
@@ -32,7 +32,7 @@
     y={20}
     width={14}
     height={8}
-    fill={characters.find(char => char.id === activeCharacter)?.color}
+    fill="#303843"
     fill-opacity={activeFilter === 'screenTime' ? 0 : 1}
     rx={4}
     ry={4}

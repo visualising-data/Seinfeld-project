@@ -1027,7 +1027,7 @@
                   x={3}
                   y={-4}
                   class="small accent">{activeFilter === FILTER.SCREEN_TIME ? 'Screen time' : 'Laugh rate'}</text>
-                <g transform="rotate(-90) translate(4, 77)">
+                <g transform="rotate(-90) translate(4, {activeFilter === FILTER.SCREEN_TIME ? 88 : 77})">
                   <ArrowDown />
                 </g>
                 <rect
@@ -1078,7 +1078,7 @@
                           y={0}
                           width={episodeOverviewScale((d.aggregatedOnScreen.reduce((acc, value) => acc + value.duration, 0)) / d.duration)}
                           height={episodesVerticalScale.bandwidth()}
-                          fill={characters.find(char => char.id === activeCharacter)?.color}
+                          fill="#303843"
                           fill-opacity={activeFilter === FILTER.LAUGHS ? 0.3 : (isMouseOver && highlightedEpisode === `${d.season}-${d.episode}`) || !isMouseOver ? 1 : 0.3}
                           rx={3}
                           ry={3}
@@ -1093,7 +1093,7 @@
                           y={0}
                           width={episodeOverviewScale(d.causesLaughs.length / d.onScreen.length)}
                           height={episodesVerticalScale.bandwidth()}
-                          fill={characters.find(char => char.id === activeCharacter)?.color}
+                          fill="#303843"
                           fill-opacity={(isMouseOver && highlightedEpisode === `${d.season}-${d.episode}`) || !isMouseOver ? 1 : 0.3}
                           rx={3}
                           ry={3}
