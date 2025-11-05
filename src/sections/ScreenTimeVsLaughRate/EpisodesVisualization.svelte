@@ -90,7 +90,7 @@
           y={0}
           width={episodeTimeScale(screenMoment.duration)}
           height={episodesVerticalScale.bandwidth()}
-          fill={characters.find((/** @type {{ id: any; }} */ char) => char.id === activeSelector)?.color}
+          fill="#303843"
           stroke={'#F9F5F7'}
           stroke-width={1}
           rx={3}
@@ -104,12 +104,12 @@
         <rect
           class="pointer-events-none without-jerry"
           x={episodeTimeScale(screenMoment.start)}
-          y={-2}
+          y={0}
           width={episodeTimeScale(screenMoment.duration)}
-          height={episodesVerticalScale.bandwidth() + 4}
+          height={episodesVerticalScale.bandwidth()}
           fill="#E71D80"
           stroke={'#F9F5F7'}
-          stroke-width={2}
+          stroke-width={1}
           rx={3}
           ry={3}
           style="opacity: 0;"
@@ -121,12 +121,12 @@
         <rect
           class="pointer-events-none first-scene-without-jerry"
           x={episodeTimeScale(screenMoment.start)}
-          y={-2}
+          y={0}
           width={episodeTimeScale(screenMoment.duration)}
-          height={episodesVerticalScale.bandwidth() + 4}
-          fill="#E71D80"
+          height={episodesVerticalScale.bandwidth()}
+          fill="#303843"
           stroke={'#F9F5F7'}
-          stroke-width={2}
+          stroke-width={1}
           rx={3}
           ry={3}
           style="opacity: 0;"

@@ -203,11 +203,11 @@
             onScreen.push(d)
           }
 
-          if (char.id === 'JERRY' && d.eventCategory === 'LOCATION' && d.eventAttribute === 'Workplace') {
+          if (currentSection === "main_chars" && char.id === 'JERRY' && d.eventCategory === 'LOCATION' && d.eventAttribute === 'Workplace') {
             onScreenAtWork.push(d)
           }
 
-          if (char.id === 'JERRY' && d.eventCategory === 'CHARACTERS' && d.eventAttribute === 'GEORGE' &&
+          if (currentSection === "main_chars" && char.id === 'JERRY' && d.eventCategory === 'CHARACTERS' && d.eventAttribute === 'GEORGE' &&
               episode.data.find(e => e.eventAttribute === "ELAINE" && e.eventTimeSeconds === d.eventTimeSeconds) &&
               episode.data.find(e => e.eventAttribute === "KRAMER" && e.eventTimeSeconds === d.eventTimeSeconds) &&
               !episode.data.find(e => e.eventAttribute === "JERRY" && e.eventTimeSeconds === d.eventTimeSeconds)
@@ -215,10 +215,10 @@
             withoutJerry.push(d)
           }
 
-          if (char.id === 'JERRY' && +d.sceneNumber === 1 && 
+          if (currentSection === "main_chars" && char.id === 'JERRY' && +d.sceneNumber === 1 && 
               !episode.data.find(e => +e.sceneNumber === 1 && e.eventAttribute === "JERRY")
           ) {
-          firstSceneWithoutJerry.push(d)
+            firstSceneWithoutJerry.push(d)
           }
 
           if (d.eventCategory === 'CAUSES THE LAUGH' && d.eventAttribute.includes(char.id)) {
@@ -423,7 +423,7 @@
           trigger: '#jerry-text-2',
           start: 'top center',
           end: 'bottom center',
-          // toggleActions: 'play reverse play reverse'
+          //toggleActions: 'play reverse play reverse'
         }
       });
       tlJerryText2
@@ -436,7 +436,7 @@
           trigger: '#jerry-text-3',
           start: 'top center',
           end: 'bottom center',
-          // toggleActions: 'play reverse play reverse'
+          //toggleActions: 'play reverse play reverse'
         }
       });
       tlJerryText3
@@ -449,7 +449,7 @@
           trigger: '#jerry-text-4',
           start: 'top center',
           end: 'bottom center',
-          // toggleActions: 'play reverse play reverse'
+          //toggleActions: 'play reverse play reverse'
         }
       });
       tlJerryText4
@@ -463,7 +463,7 @@
           trigger: '#jerry-text-5',
           start: 'top center',
           end: 'bottom center',
-          // toggleActions: 'play reverse play reverse'
+          //toggleActions: 'play reverse play reverse'
         }
       });
       tlJerryText5
@@ -476,7 +476,7 @@
           trigger: '#jerry-text-6',
           start: 'top center',
           end: 'bottom center',
-          // toggleActions: 'play reverse play reverse'
+          //toggleActions: 'play reverse play reverse'
         }
       });
       tlJerryText6
@@ -490,7 +490,7 @@
           trigger: '#jerry-text-7',
           start: 'top center',
           end: 'bottom center',
-          // toggleActions: 'play reverse play reverse',
+          //toggleActions: 'play reverse play reverse',
           onEnter: () => switchFilter(FILTER.LAUGHS),
           onLeaveBack: () => switchFilter(FILTER.SCREEN_TIME)
         }
@@ -505,7 +505,7 @@
           trigger: '#jerry-text-8',
           start: 'top center',
           end: 'bottom center',
-          // toggleActions: 'play reverse play reverse',
+          //toggleActions: 'play reverse play reverse'
         }
       });
       tlJerryText8
@@ -517,7 +517,7 @@
           trigger: '#george-text-1',
           start: 'top center',
           end: 'bottom center',
-          // toggleActions: 'play reverse play reverse',
+          //toggleActions: 'play reverse play reverse',
           onEnter: () => {
             handleCharacterClick('GEORGE')
             switchFilter(FILTER.SCREEN_TIME)
@@ -534,7 +534,7 @@
           trigger: '#george-text-2',
           start: 'top center',
           end: 'bottom center',
-          // toggleActions: 'play reverse play reverse'
+          //toggleActions: 'play reverse play reverse'
         }
       });
       tlGeorgeText2
@@ -545,7 +545,7 @@
           trigger: '#george-text-3',
           start: 'top center',
           end: 'bottom center',
-          // toggleActions: 'play reverse play reverse',
+          //toggleActions: 'play reverse play reverse',
           onEnter: () => {
             switchFilter(FILTER.LAUGHS)
           },
@@ -561,7 +561,7 @@
           trigger: '#elaine-text-1',
           start: 'top center',
           end: 'bottom center',
-          // toggleActions: 'play reverse play reverse',
+          //toggleActions: 'play reverse play reverse',
           onEnter: () => {
             handleCharacterClick('ELAINE')
             switchFilter(FILTER.SCREEN_TIME)
@@ -578,7 +578,7 @@
           trigger: '#elaine-text-2',
           start: 'top center',
           end: 'bottom center',
-          // toggleActions: 'play reverse play reverse'
+          //toggleActions: 'play reverse play reverse'
         }
       });
       tlElaineText2
@@ -590,7 +590,7 @@
           trigger: '#elaine-text-3',
           start: 'top center',
           end: 'bottom center',
-          // toggleActions: 'play reverse play reverse'
+          //toggleActions: 'play reverse play reverse'
         }
       });
       tlElaineText3
@@ -602,7 +602,7 @@
           trigger: '#elaine-text-4',
           start: 'top center',
           end: 'bottom center',
-          // toggleActions: 'play reverse play reverse',
+          //toggleActions: 'play reverse play reverse',
           onEnter: () => {
             switchFilter(FILTER.LAUGHS)
           },
@@ -621,7 +621,7 @@
           trigger: '#kramer-text-1',
           start: 'top center',
           end: 'bottom center',
-          // toggleActions: 'play reverse play reverse',
+          //toggleActions: 'play reverse play reverse',
           onEnter: () => {
             handleCharacterClick('KRAMER')
             switchFilter(FILTER.SCREEN_TIME)
@@ -638,7 +638,7 @@
           trigger: '#kramer-text-2',
           start: 'top center',
           end: 'bottom center',
-          // toggleActions: 'play reverse play reverse'
+          //toggleActions: 'play reverse play reverse'
         }
       });
       tlKramerText2
@@ -649,7 +649,7 @@
           trigger: '#kramer-text-3',
           start: 'top center',
           end: 'bottom center',
-          // toggleActions: 'play reverse play reverse',
+          //toggleActions: 'play reverse play reverse',
           onEnter: () => {
             switchFilter(FILTER.LAUGHS)
           },
