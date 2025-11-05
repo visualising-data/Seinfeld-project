@@ -2,7 +2,7 @@
 	import Lazy from 'svelte-lazy';
 	import SectionTitle from '../SectionTitle.svelte';
 	import Intro from './Intro.svelte';
-	import ScreenTimeVsLaughRate from './ScreenTimeVsLaughRate.svelte';
+	import ScreenTimeVsLaughRate from '../ScreenTimeVsLaughRate/ScreenTimeVsLaughRate.svelte';
 	import Marimekko from './Marimekko.svelte';
 
 	let { episodesData } = $props();

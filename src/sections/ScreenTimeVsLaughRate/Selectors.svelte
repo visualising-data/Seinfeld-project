@@ -8,7 +8,7 @@
 
 <div class="hint small flex items-center gap-2 mb-6" style="max-width: 320px;">
   <span class="shrink"><HelpIcon color="#E71D80" /></span>
-  <span class="relative top-1">Select a selector to explore their time on screen and when they were funny.</span>
+  <span class="relative top-1">{`Select a ${currentSection === 'locations' ? 'location' : 'character'} to explore their time on screen and when they were funny.`}</span>
 </div>
 <ul class="grid gap-6 flex-wrap {currentSection === 'main_chars' ? 'grid-cols-1' : 'grid-cols-2'}">
   {#each selectors as selector}

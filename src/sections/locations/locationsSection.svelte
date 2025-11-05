@@ -3,7 +3,7 @@
 	import SectionTitle from '../SectionTitle.svelte';
 	import Intro from './Intro.svelte';
 	import Marimekko from './Marimekko.svelte';
-	import ScreenTimeVsLaughRate from '../supporting_characters/ScreenTimeVsLaughRate.svelte';
+	import ScreenTimeVsLaughRate from '../ScreenTimeVsLaughRate/ScreenTimeVsLaughRate.svelte';
 
 	let { episodesData } = $props();
 </script>

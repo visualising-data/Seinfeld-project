@@ -18,9 +18,6 @@
     activeFilter
   } = $props();
 
-  $inspect("activeFilter", activeFilter)
-  $inspect(FILTER, FILTER.LAUGHS)
-
   /**
 	 * @type {{ season: number; episode: number; duration: number; position: string; }[]}
 	 */
