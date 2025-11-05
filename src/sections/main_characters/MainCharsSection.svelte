@@ -4,7 +4,7 @@
 	import Marimekko from './Marimekko.svelte';
 	import PeakPerformances from './PeakPerformances.svelte';
 	import Intro from './Intro.svelte';
-	import ScreenTimeVsLaughRate from './ScreenTimeVsLaughRate.svelte';
+	import ScreenTimeVsLaughRate from '../ScreenTimeVsLaughRate/ScreenTimeVsLaughRate.svelte';
 	import CombinedPerformances from './CombinedPerformances.svelte';
 
 	let { episodesData } = $props();
