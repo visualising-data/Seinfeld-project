@@ -46,7 +46,7 @@
     </g>
   </g>
 
-  <g transform="translate({170}, {6})">
+  <g transform="translate({170}, {7})">
     <text class="small accent" alignment-baseline="middle">Character on screen</text>
     <g transform="translate({-19}, {-3})">
       <path d="M16.5 3.11761L11.5804 0.0957994L11.4233 5.86716L16.5 3.11761ZM1 14H1.5C1.5 10.6563 2.36843 8.149 4.0684 6.42703C5.77177 4.70163 8.38404 3.68937 12.0277 3.49436L12.001 2.99507L11.9742 2.49579C8.1835 2.69867 5.29528 3.76089 3.35677 5.72448C1.41486 7.69151 0.5 10.4877 0.5 14H1Z" fill="#E71D80"/>

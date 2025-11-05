@@ -14,6 +14,8 @@
   import { formatTimeLabel } from '../../utils/formatTime';
   import { sonificationFiles, getCharSoundFileName } from '$lib/data/sonificationFilesMapping';
   import { soundIsAuth } from '../../stores/soundAuthStore';
+  import { getIfClipShow } from '../../utils/getIfClipShow';
+
   import Toggle from '../supporting_characters/Toggle.svelte';
   import HelpIcon from '../../icons/HelpIcon.svelte';
   import ArrowDown from '../../icons/ArrowDown.svelte';
@@ -703,17 +705,17 @@
   })
 
   const pointsForEpisodesDuration = []
-  episodesInfo.forEach((e, i) => {
+  episodesInfo.forEach((e) => {
     pointsForEpisodesDuration.push({
       season: e.season,
       episode: e.episode,
-      duration: e.duration,
+      duration: getIfClipShow(e.season, e.episode) ? 0 : e.duration,
       position: 'start'
     })
     pointsForEpisodesDuration.push({
       season: e.season,
       episode: e.episode,
-      duration: e.duration,
+      duration: getIfClipShow(e.season, e.episode) ? 0 : e.duration,
       position: 'end'
     })
   })
@@ -844,20 +846,6 @@
                   fill="#F9F5F7"
                   fill-opacity={isMouseOver ? 0.3 : 0.9}
                 />
-                {#each clipShows as episode}
-                  <g transform="translate(0, {episodesVerticalScale(`${episode.season}-${episode.episode}`)})">
-                    <!-- Episode durations for clip shows -->
-                    <rect
-                      class="pointer-events-none episode-duration season-{episode.season}-episode-{episode.episode}"
-                      x={0}
-                      y={0}
-                      width={episodeTimeScale(episode.duration)}
-                      height={episodesVerticalScale.bandwidth()}
-                      fill="#928D90"
-                      fill-opacity={(isMouseOver && highlightedEpisode === `${episode.season}-${episode.episode}`) || !isMouseOver ? 1 : 0.3}
-                    />
-                  </g>
-                {/each}
 
                 {#each charData[activeCharacter] as d}
                   <g transform="translate(0, {episodesVerticalScale(`${d.season}-${d.episode}`)})">
