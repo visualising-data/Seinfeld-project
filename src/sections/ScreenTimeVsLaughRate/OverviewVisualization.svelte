@@ -1,7 +1,7 @@
 <script>
   import { scaleLinear } from "d3-scale";
 
-  import FILTER from "./ScreenTimeVsLaughRate.svelte";
+  import { FILTER } from '../../types/filter';
   import ArrowDown from "../../icons/ArrowDown.svelte";
 
   let { 

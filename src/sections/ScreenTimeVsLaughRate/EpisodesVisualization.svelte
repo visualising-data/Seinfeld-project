@@ -6,7 +6,7 @@
   import { getIfClipShow } from "../../utils/getIfClipShow";
   import { characters } from '$lib/data/characters';
 
-  import FILTER from "./ScreenTimeVsLaughRate.svelte";
+  import { FILTER } from '../../types/filter';
 
   let { 
     isMouseOver, 
@@ -17,6 +17,9 @@
     highlightedEpisode, 
     activeFilter
   } = $props();
+
+  $inspect("activeFilter", activeFilter)
+  $inspect(FILTER, FILTER.LAUGHS)
 
   /**
 	 * @type {{ season: number; episode: number; duration: number; position: string; }[]}

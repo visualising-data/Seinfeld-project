@@ -1,5 +1,5 @@
 <script>
-  import FILTER from "./ScreenTimeVsLaughRate.svelte";
+  import { FILTER } from '../../types/filter';
 
   let { 
     charData,

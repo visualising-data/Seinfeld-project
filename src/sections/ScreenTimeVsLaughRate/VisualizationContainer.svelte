@@ -4,7 +4,7 @@
 
   import { episodesInfo } from "$lib/data/episodesInfo";
   import { formatTimeLabel } from '../../utils/formatTime';
-  import FILTER from "./ScreenTimeVsLaughRate.svelte";
+  import { FILTER } from '../../types/filter';
   
   import ArrowDown from "../../icons/ArrowDown.svelte";
   import SeasonsStripSingle from "../../UI/SeasonsStripSingle.svelte";
@@ -14,7 +14,7 @@
   import TimeTooltip from "./TimeTooltip.svelte";
   import OverviewVisualization from "./OverviewVisualization.svelte";
 
-  let { episodesData, charData, activeSelector, activeFilter } = $props()
+  let { episodesData, charData, activeSelector, activeFilter, isMouseOver, isTextOver } = $props()
 
   let visualizationsWidth = $state(800);
   const episodesOverviewWidth = 150;
@@ -42,8 +42,6 @@
         .range([0, episodeDetailsInnerWidth])
   );
 
-  let isMouseOver = $state(false);
-  let isTextOver = false;
   let highlightedEpisode = $state('');
   let highlightedEpisodeInfo = $state();
   let highlightedEpisodeOverviewPercentage = $state(0);

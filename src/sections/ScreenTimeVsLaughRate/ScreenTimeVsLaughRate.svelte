@@ -6,6 +6,7 @@
   import { sonificationFiles, getCharSoundFileName } from '$lib/data/sonificationFilesMapping';
   import { soundIsAuth } from '../../stores/soundAuthStore';
   import { characters } from '$lib/data/characters';
+  import { FILTER } from '../../types/filter';
 
   import Header from './Header.svelte';
   import Selectors from './Selectors.svelte';
@@ -24,11 +25,10 @@
 
   let currentChars = characters.slice(0, 4);
   let activeCharacter = $state("JERRY");
+
+  let isMouseOver = $state(false);
+  let isTextOver = $state(false);
   
-  export const FILTER = {
-    SCREEN_TIME: 'screenTime',
-    LAUGHS: 'causesLaughs'
-  }
   let activeFilter = $state(FILTER.SCREEN_TIME);
 
   /**
@@ -112,6 +112,9 @@
     }
   }
 
+  /**
+	 * @param {FILTER} filter
+	 */
   function switchFilter(filter) {
     if ($soundIsAuth && soundtrackCanPlay) {
       const toggleAudioFile = filter === FILTER.SCREEN_TIME
@@ -123,7 +126,7 @@
     activeFilter = filter
   }
 
-  const resetFilters = (char) => {
+  const resetFilters = (/** @type {string} */ char) => {
     activeCharacter = char
     switchFilter(FILTER.SCREEN_TIME)
   }
@@ -621,7 +624,14 @@
             <ScreenTimeVsLaughRateLegend activeCharacter={activeCharacter} activeFilter={activeFilter} />
           </div>
 
-          <VisualizationContainer {episodesData} {charData} activeSelector={activeCharacter} {activeFilter} />
+          <VisualizationContainer 
+            {episodesData} 
+            {charData} 
+            activeSelector={activeCharacter} 
+            {activeFilter} 
+            {isMouseOver}
+            {isTextOver}
+          />
         </div>
       </div>
     </div>
