@@ -306,7 +306,7 @@
 
 		simulation
 			.force('x', forceX((d) => getXPosition(d.season, d.date_aired)).strength(1))
-			.force('y', forceY((d) => getYPosition(d.season, d.episode, d.date_aired, d.verticalStack ? d.verticalStack : 0)).strength(0))
+			.force('y', forceY((d) => getYPosition(d.season, d.episode, d.date_aired, d.verticalStack ? d.verticalStack : 0)).strength(0.5))
 			.force('collide', forceCollide().radius(episodeRadius).strength(1))
 			// .force('walls', wallForce)
 			.alpha(0.5)
@@ -318,7 +318,7 @@
 		if (simulation) {
 			simulation
 				.force('x', forceX((d) => getXPosition(d.season, d.date_aired)).strength(1))
-				.force('y', forceY((d) => getYPosition(d.season, d.episode, d.date_aired, d.verticalStack ? d.verticalStack : 0)).strength(0))
+				.force('y', forceY((d) => getYPosition(d.season, d.episode, d.date_aired, d.verticalStack ? d.verticalStack : 0)).strength(0.5))
 				.force('collide', forceCollide().radius(episodeRadius).strength(1))
 				// .force('walls', wallForce)
 				.alpha(0.5)
