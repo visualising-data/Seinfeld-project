@@ -203,7 +203,7 @@
 					></div>
 				</div>
 				<div class="mask">
-					<h5 class="mt-2">S8E3 - The Bizzaro Jerry</h5>
+					<h5 class="mt-2">S8E3 - The Bizarro Jerry</h5>
 				</div>
 			</div>
 			<div class="col-span-7 md:col-span-3 mask">
