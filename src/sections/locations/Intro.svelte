@@ -131,7 +131,7 @@
     <div class="container">
       <div class="grid grid-cols-12 gap-4">
         <div class="col-span-12 md:col-span-7 h-screen flex flex-col justify-center">
-          <p>After examining the use of characters - lead and supporting, the people in the show - the next dimension that has an influence on the texture of sitcom relates to the classification of locations - <span class="highlight">the where of the show</span>.</p>
+          <p>After examining the use of lead and supporting characters - <span class="highlight">the who</span> of the show - the next dimension that has an influence on the texture of a sitcom relates to the scene locations - <span class="highlight">the where</span> of the show.</p>
           <p>Classifying locations concerns defining the characteristics and use of different settings as the physical backdrop to each scene. Sometimes scenes were set indoors, sometimes outdoors: sometimes scenes were shot in a studio, sometimes they were shot on location.</p>
         </div>
       </div>
@@ -143,8 +143,8 @@
     <div class="container">
       <div class="grid grid-cols-12 gap-4">
         <div class="col-span-12 md:col-span-7 md:h-screen flex flex-col justify-center">
-          <p>Just as the list of characters grew, so too did the spatial ambitions of the storylines. Once the show became a fixture in NBC's Fall schedule, from Season Three onwards, it gained a significant production budget increase. As Jennifer Keishin Armstrong noted in her book, S3E6 "The Parking Garage" marked the first episode in which an outside custom set, away from a studio audience, was built and used.</p>
-          <p>This began a pattern of filming on-location and off-set that gradually expanded the physicality of the Seinfeld universe and signposted the <span class="highlight">commencing of the single-camera comedy era</span>.</p>
+          <p>Just as the list of characters grew, so too did the spatial ambitions of the storylines. Once the show became a fixture in NBC's Fall schedule, from Season Three onwards, it gained a significant production budget increase. </p>
+          <p>As Jennifer Keishin Armstrong noted in <a href="https://jenniferkarmstrong.com/books/seinfeldia/" target="_blank">her book</a>, S3E6 "The Parking Garage" marked the first episode in which an outside custom set, away from a studio audience, was built and used. This began a pattern of filming on-location and off-set that gradually expanded the physicality of the Seinfeld universe.</p>
         </div>
         <div class="col-span-12 md:col-span-5">
           <div class="grid grid-cols-5 mt-16">
@@ -208,7 +208,7 @@
       <div class="grid grid-cols-12 md:gap-20">
         <div class="col-span-12 md:col-span-7 md:h-screen md:flex md:flex-col md:justify-center">
           <p>As with the task of classifying characters, there were challenges with establishing a robust taxonomy for distinguishing different types of locations. You don't want too many distinct groups, but you want enough to capture the variety of different physical settings.</p>
-          <p>The final list of distinct locations would include the homes of the four leads, as well as a further family home to cover all and any family setting. The diner was another common hangout location, but separate from other places of leisure, which would include other restaurants as well as cinemas and indoor sports venues. The lead characters' workplace would be a recurring setting, from Jerry doing his stand-up routines to George working at Yankee Stadium. Scenes set in various forms of transport, like taxis, planes, or cars, were common, as were outside locations like visits to the Hamptons or when disputes arose about street-side parking. An ‘other’ grouping would be necessary to organise together the many other residual additional types of locations used.</p>
+          <p>The final list of distinct locations would include the homes of the four leads, as well as a further 'family home' to cover all and any family setting. The 'diner' was another common hangout location, but separate from other 'places of leisure', which would include other restaurants as well as cinemas and indoor sports venues. The lead characters' 'workplace' would be a recurring setting, from Jerry doing his stand-up routines to George working at Yankee Stadium. Scenes set in various forms of 'transport', like taxis, planes, or cars, were common, as were 'outside' locations like visits to the Hamptons or when disputes arose about street-side parking. An 'other' grouping would be necessary to organise together the many other residual additional types of locations used.</p>
         </div>
         <div class="col-span-12 md:col-span-4 flex items-center">
           <div class="grid grid-cols-2 gap-8 flex-wrap">

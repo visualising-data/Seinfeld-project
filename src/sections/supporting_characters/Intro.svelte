@@ -146,7 +146,7 @@
     <div class="container">
       <div class="grid grid-cols-12 gap-4">
         <div class="col-span-12 md:col-span-7 md:h-screen flex flex-col justify-center">
-          <p>The main struggle was to strike a balance between creating enough distinct character categories, with sufficient individuality for those who warrant it, but not carving out too many that the list becomes excessive and unwieldy. For instance, recurring characters like Jerry and Kramer's neighbour, <span class="highlight">Newman</span>, or Elaine's boss, <span class="highlight">J. Peterman</span>, have a cult following that made it tempting to mark them out as distinct individual characters.</p>
+          <p>The main struggle was to strike a balance between creating enough distinct character categories, with sufficient individuality for those who warrant it, but not carving out too many that the list becomes excessive. For instance, recurring characters like Jerry and Kramer's neighbour, <span class="highlight">Newman</span>, or Elaine's boss, <span class="highlight">J. Peterman</span>, have a cult following that made it tempting to mark them out as distinct individual characters.</p>
         </div>
         <div class="col-span-12 md:col-span-5">
           <div class="grid grid-cols-5 mt-16">
@@ -209,7 +209,7 @@
     <div class="container">
       <div class="grid grid-cols-12 md:gap-20">
         <div class="col-span-12 md:col-span-7 md:h-screen md:flex md:flex-col md:justify-center">
-          <p>The ultimate decision was to create categories for the four respective families of the lead characters, as well as groupings for acquaintances - specifically, love interests, friends, neighbours, colleagues - and then a final other persons group to sweep up the growing list of transient characters.</p>
+          <p>The ultimate decision was to create categories for the four respective families of the lead characters, as well as groupings for acquaintances - specifically, love interests, friends, neighbours, colleagues - and then a final 'other persons' group to sweep up the growing list of transient characters.</p>
           <p>When classifying supporting characters, it was <span class="highlight">their central purpose in that episode</span> that informed their grouping, e.g. a friend of Elaine's who dates George would be considered a love interest, rather than a friend. Some supporting characters were therefore alternated into different groupings across the show (e.g. a former love interest may shift to become a friend, and vice-versa).</p>
         </div>
         <div class="col-span-12 md:col-span-4 flex items-center">

@@ -106,8 +106,8 @@
       </g>
       <g transform="translate(14, 0)">
         <SeasonsStripSingle width={episodeTimeScale(31 * 60) + margin.left} height={visualizationsInnerHeight} />
-        <g transform="translate({visualizationsWidth - episodesOverviewWidth - 15 - 25}, 0)">
-          <SeasonsStripSingle width={episodesOverviewWidth + 15 + 25} height={visualizationsInnerHeight} />
+        <g transform="translate({visualizationsWidth - episodesOverviewWidth - 15}, 0)">
+          <SeasonsStripSingle width={episodesOverviewWidth} height={visualizationsInnerHeight} />
         </g>
       </g>
     </g>

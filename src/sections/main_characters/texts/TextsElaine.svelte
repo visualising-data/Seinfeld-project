@@ -35,7 +35,7 @@
       <div class="number text pt-2">Photo source: <a href="https://www.goodreads.com/book/show/27171845-seinfeldia" target="_blank">goodreads</a></div>
     </div>
     <div>
-      In the book 'Seinfeldia', author Jennifer Keishin Armstrong reports that, at the start of Season 3, Julia Louis-Dreyfus (who played Elaine) was unhappy with her lack of quality screen time - being on-screen and being funny. In the absence of women writers, this was perhaps an unsurprising effect of there being a male-dominated staff, but it was also a consequence of the grounded role her character played within the group of leads, considering Jerry's omnipresence as the gag-man, George's with his neuroticism and Kramer bringing the slapstick. Elaine, as arguably the strongest actor, took on more of the role <span class="highlight">holding the main stories together</span>.
+      In <a href="https://jenniferkarmstrong.com/books/seinfeldia/" target="_blank">the book 'Seinfeldia'</a>, author Jennifer Keishin Armstrong reports that, at the start of Season 3, Julia Louis-Dreyfus (who played Elaine) was unhappy with her lack of quality screen time - being on-screen and being funny. In the absence of women writers, this was perhaps an unsurprising effect of there being a male-dominated staff, but it was also a consequence of the grounded role her character played within the group of leads, considering Jerry's omnipresence as the gag-man, George's with his neuroticism and Kramer bringing the slapstick. Elaine, as arguably the strongest actor, took on more of the role <span class="highlight">holding the main stories together</span>.
     </div>
   </div>
 </div>

@@ -275,7 +275,7 @@
 							<text class="number" y={90}>00:00</text>
 							<text class="number" x={episodeWidth} y={90}>21:45</text>
 							<g transform="translate(60, 86)">
-								<text class="small accent" alignment-baseline="middle">Episode time</text>
+								<text class="small accent" alignment-baseline="middle">Episode run-time</text>
 								<g transform="translate({90}, {-3})">
 									<path d="M30 3L25 0.113249V5.88675L30 3ZM0 3V3.5H25.5V3V2.5H0V3Z" fill="#E71D80"/>
 								</g>
