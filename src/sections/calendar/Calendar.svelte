@@ -164,14 +164,14 @@
 		return date1 + (date2 - date1) / 2;
 	};
 
-	const getXPosition = (/** @type {number} */ season, /** @type {string} */ date) => {
+	let getXPosition = $derived.by(() => (/** @type {number} */ season, /** @type {string} */ date) => {
 		const timeScale = scaleTime()
 			.domain(getTimeDomain(season, date))
 			.range([15, screenSize.width - seasonsWidth - 15]);
 		return timeScale(new Date(date));
-	};
+	});
 
-	const getYPosition = (/** @type {number} */ season, /** @type {number} */ episode, /** @type {string} */ date, /** @type {number} */ verticalStack) => {
+	let getYPosition = $derived.by(() => (/** @type {number} */ season, /** @type {number} */ episode, /** @type {string} */ date, /** @type {number} */ verticalStack) => {
 		const seasonBlockTop = document
 			.getElementById(
 				`catalog-season-${date === 'August 12 1992' || date === 'August 19 1992' ? season - 1 : season}`
@@ -191,7 +191,7 @@
 			const yPosition = seasonBlockTop + seasonBlockHeight / 2 + verticalStack * 2 * episodeRadius;
 			return yPosition - offset;
 		}
-	};
+	});
 
 	const wallForce = $derived(d3ForceLimit()
 		.radius(episodeRadius)
@@ -265,6 +265,9 @@
 	 */
 	function showEpisodes(number) {
 		const selectors = getSelectors(number);
+
+		if (!selectors) return
+
 		gsap.to(selectors, {
 			scale: 1,
 			opacity: 1,
@@ -310,9 +313,21 @@
 			.alphaDecay(0.1)
 	}
 
-	const handleWindowResize = () => {
-		initializeSimulation()
-	}
+	$effect(() => {
+		// Re-center and reheat simulation when screen size changes
+		if (simulation) {
+			simulation
+				.force('x', forceX((d) => getXPosition(d.season, d.date_aired)).strength(1))
+				.force('y', forceY((d) => getYPosition(d.season, d.episode, d.date_aired, d.verticalStack ? d.verticalStack : 0)).strength(0))
+				.force('collide', forceCollide().radius(episodeRadius).strength(1))
+				// .force('walls', wallForce)
+				.alpha(0.5)
+				.alphaDecay(0.1)
+
+			// Reheat and restart the simulation
+			simulation.alpha(1).restart();
+		}
+	});
 
 	onMount(() => {
 		// Preload Plip sound
@@ -408,7 +423,7 @@
 	});
 </script>
 
-<svelte:window bind:innerWidth bind:innerHeight onresize={handleWindowResize} />
+<svelte:window bind:innerWidth bind:innerHeight />
 
 <div id="intro-calendar-container" class="relative">
 	<div id="intro-calendar" class="absolute flex h-screen w-screen">
