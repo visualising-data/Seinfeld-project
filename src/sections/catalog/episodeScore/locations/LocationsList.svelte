@@ -25,7 +25,7 @@
 				{/if}
 				<div
 					class="image h-8 w-8 rounded-full"
-					style="background-image: url({getLocationIconPath(location.id, true)});"
+					style="background-image: url({getLocationIconPath(location.id)});"
 				></div>
 			</div>
 		</li>
