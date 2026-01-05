@@ -1,33 +1,40 @@
+import js from "@eslint/js";
+import svelte from "eslint-plugin-svelte";
 import prettier from "eslint-config-prettier";
-import js from '@eslint/js';
-import svelte from 'eslint-plugin-svelte';
-import globals from 'globals';
-import ts from 'typescript-eslint';
+import svelteParser from "svelte-eslint-parser";
 
-export default ts.config(
+export default [
+  // Base JS rules
   js.configs.recommended,
-  ...ts.configs.recommended,
-  ...svelte.configs["flat/recommended"],
-  prettier,
-  ...svelte.configs['flat/prettier'],
-  {
-    languageOptions: {
-	  globals: {
-	    ...globals.browser,
-	    ...globals.node
-	  }
-	}
-  },
+
+  // Svelte files
   {
     files: ["**/*.svelte"],
-
     languageOptions: {
-	  parserOptions: {
-	    parser: ts.parser
-	  }
-	}
+      parser: svelteParser,
+      parserOptions: {
+        parser: undefined,        // remove if not using TypeScript
+        extraFileExtensions: [".svelte"],
+        sourceType: "module"
+      }
+    },
+    plugins: {
+      svelte
+    },
+    rules: {
+      ...svelte.configs.recommended.rules
+    }
   },
+
+  // JS / TS files
   {
-    ignores: ["build/", ".svelte-kit/", "dist/"]
-  }
-);
+    files: ["**/*.{js,ts}"],
+    languageOptions: {
+      parser: undefined,          // remove if not using TypeScript
+      sourceType: "module"
+    }
+  },
+
+  // Disable ESLint rules that conflict with Prettier
+  prettier
+];

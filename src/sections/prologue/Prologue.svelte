@@ -10,7 +10,7 @@
 	let { ScrollTrigger } = $props();
 </script>
 
-<section id="intro">
+<section id="intro" class="bg-black">
 	<PrologueLateArrival />
 	<PrologueTimeline {ScrollTrigger} />
 	<PrologueVideo />
