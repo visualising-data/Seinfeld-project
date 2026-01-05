@@ -2,6 +2,8 @@ import js from "@eslint/js";
 import svelte from "eslint-plugin-svelte";
 import prettier from "eslint-config-prettier";
 import svelteParser from "svelte-eslint-parser";
+import tsParser from "@typescript-eslint/parser";
+import globals from "globals";
 
 export default [
   // Base JS rules
@@ -12,8 +14,11 @@ export default [
     files: ["**/*.svelte"],
     languageOptions: {
       parser: svelteParser,
+      globals: {
+        ...globals.browser
+      },
       parserOptions: {
-        parser: undefined,        // remove if not using TypeScript
+        parser: tsParser,
         extraFileExtensions: [".svelte"],
         sourceType: "module"
       }
@@ -30,9 +35,12 @@ export default [
   {
     files: ["**/*.{js,ts}"],
     languageOptions: {
-      parser: undefined,          // remove if not using TypeScript
+      parser: tsParser,
       sourceType: "module"
-    }
+    },
+    globals: {
+        ...globals.browser
+      }
   },
 
   // Disable ESLint rules that conflict with Prettier
