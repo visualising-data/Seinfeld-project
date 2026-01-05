@@ -37,7 +37,7 @@
   const handleMouseOver = (/** @type {MouseEvent} */ e) => {
     if (innerWidth > 1000 && sonificationCharactersData) {
       const x = e.clientX - 198 + 24;
-      isHover = x > width ? false : true;
+      isHover = x > width || x < 0 ? false : true;
       hoveredPosition = x >= 0 ? x : 0;
       hoveredTime = xScale.invert(hoveredPosition);
     }

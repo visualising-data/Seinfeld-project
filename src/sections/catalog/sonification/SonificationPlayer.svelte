@@ -4,6 +4,7 @@
 
   import SonificationControls from './SonificationControls.svelte';
   import SonificationTrack from './SonificationTrack.svelte';
+  import SoundIsDisabledPopup from '../../../UI/SoundIsDisabledPopup.svelte';
   import {
     sonificationFiles,
     getCharSoundFileName,
@@ -24,6 +25,9 @@
   } = $props();
 
   let innerWidth = $state(1200);
+  let showSoundDisabledPopup = $state(false);
+  let popupWasShown = $state(false);
+  let hoveredPosition = $state({ x: 0, y: 0 });
 
   /**
    * @type {Tone.Players}
@@ -126,14 +130,16 @@
   };
 
   const handleClickOnScene = (/** @type {number} */ sceneNum) => {
-    updatePlayingData(true, sceneNum);
-    clearTimeout(playSceneTimeout);
-    soundtrack.stopAll(); // Stop currently playing scenes
+    if ($soundIsAuth) {
+      updatePlayingData(true, sceneNum);
+      clearTimeout(playSceneTimeout);
+      soundtrack.stopAll(); // Stop currently playing scenes
 
-    if (sceneNum === 1) {
-      playFirstScene();
-    } else {
-      playScene(sceneNum);
+      if (sceneNum === 1) {
+        playFirstScene();
+      } else {
+        playScene(sceneNum);
+      }
     }
   };
 
@@ -141,11 +147,37 @@
     // Preload audio files
     preload();
   });
+
+  const handleMouseEnter = (/** @type {MouseEvent} */ e) => {
+    if (!$soundIsAuth) {
+      hoveredPosition = { x: e.clientX, y: e.clientY };
+      showSoundDisabledPopup = true;
+    }
+  };
+
+  const handleMouseLeave = () => {
+    popupWasShown = true;
+    showSoundDisabledPopup = false;
+  };
+
+  // Close popup as soon as sound becomes authorized
+  $effect(() => {
+    if ($soundIsAuth && showSoundDisabledPopup) {
+      popupWasShown = true;
+      showSoundDisabledPopup = false;
+    }
+  });
 </script>
 
 <svelte:window bind:innerWidth />
 
-<div class="mb-4" style="margin-left: {labelsWidth}px;">
+<div
+  class="mb-4"
+  style="margin-left: {labelsWidth}px;"
+  role="complementary"
+  onmouseenter={handleMouseEnter}
+  onmouseleave={handleMouseLeave}
+>
   <div style="max-width: {innerWidth - 63}px; overflow: scroll;">
     <SonificationTrack {scenesWidth} {scenes} {xScale} {playingScene} {handleClickOnScene} />
   </div>
@@ -159,4 +191,13 @@
     {playPrev}
     {stop}
   />
+
+  {#if showSoundDisabledPopup && !popupWasShown}
+    <div
+      class="absolute z-50"
+      style="top: {hoveredPosition.y - 30}px; left: {hoveredPosition.x + 16}px;"
+    >
+      <SoundIsDisabledPopup bind:showSoundDisabledPopup />
+    </div>
+  {/if}
 </div>
