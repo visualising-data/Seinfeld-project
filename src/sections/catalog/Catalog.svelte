@@ -25,12 +25,12 @@
   );
   let scenesWidth = $derived(vizWidth - labelsWidth);
 
-  const navHeight = $derived(innerWidth > 540 ? 0 : 56);
-  const detailsHeight = $derived(innerWidth >= 1280 ? 254 : 230 - navHeight);
-  const sonificationPlayerHeight = 100;
-  const vizHeight = $derived(
-    innerHeight - detailsHeight - sonificationPlayerHeight - 40 + (innerWidth <= 539 ? 56 : 0),
-  );
+  // const navHeight = $derived(innerWidth > 540 ? 0 : 56);
+  // const detailsHeight = $derived(innerWidth >= 1280 ? 254 : 230 - navHeight);
+  // const sonificationPlayerHeight = 100;
+  // const vizHeight = $derived(
+  //   innerHeight - detailsHeight - sonificationPlayerHeight - 40 + (innerWidth <= 539 ? 56 : 0),
+  // );
 
   let isPlaying = $state(false);
   let playingScene = $state(0);
