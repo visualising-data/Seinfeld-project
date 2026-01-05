@@ -24,10 +24,10 @@
 
 <div
   class="relative"
-  style="display: {innerWidth >= 1280 ? 'flex' : 'block'}; z-index: {innerWidth <= 539 ? 10 : 0};"
+  style="display: {innerWidth >= 1280 ? 'flex' : 'block'}; z-index: {innerWidth <= 539 ? 10 : 50};"
 >
   {#if innerWidth >= 1280}
-    <div class="shrink-0" style="width: 450px;">
+    <div class="shrink-0" style="width: 480px;">
       <img src={episodeInfo.img_src} alt="Episode cover" />
     </div>
   {/if}
@@ -75,14 +75,22 @@
             : 42}px; display: {innerWidth >= 1280 ? 'flex' : 'block'};"
         >
           <div
-            class="description mid mr-4"
+            class="desc-wrap relative mid mr-4"
             style="width: {innerWidth >= 1280
               ? Math.min(innerWidth - 25 - 450 - 225 - 100, 800)
               : 450}px;"
           >
-            {episodeInfo.description}
+            <!-- The clamped, always-visible version -->
+            <div class="desc-clamp">
+              {episodeInfo.description}
+            </div>
+
+            <!-- The full text, shown on hover/focus; does not affect layout -->
+            <div class="desc-popover bg-white py-2 rounded-sm" role="tooltip">
+              {episodeInfo.description}
+            </div>
           </div>
-          <div class="mid mt-2 shrink-0">
+          <div class="mid mt-1 shrink-0">
             <div class="mb-2 flex items-center">
               <StarIcon />
               <span class="relative" style="top: 2px;">
@@ -105,9 +113,49 @@
 </div>
 
 <style>
-  .description {
-    max-height: 70px;
+  /* 3-line clamp + ellipsis */
+  .desc-clamp {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3; /* <= three lines */
+    line-clamp: 3; /* <= three lines */
     overflow: hidden;
+
+    /* optional: ensures a stable line height */
+    line-height: 1.4;
+  }
+  /* Hidden by default; absolutely positioned so it won't push anything */
+  .desc-popover {
+    position: absolute;
+    left: 0;
+    top: -8px;
+
+    /* Popover sizing */
+    width: 100%;
+    max-width: 100%;
+    max-height: 240px; /* prevents enormous blocks */
+    overflow: auto;
+
+    /* Important: it shouldn't affect layout and should overlay */
+    z-index: 50;
+
+    /* Hide until hover/focus */
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 120ms ease;
+  }
+
+  /* Show popover when user hovers the wrapper or focuses within it */
+  .desc-wrap:hover .desc-popover,
+  .desc-wrap:focus-within .desc-popover {
+    opacity: 1;
+    pointer-events: auto; /* allow selecting/copying/scrolling */
+    transform: translateY(0);
+  }
+
+  /* Accessibility: keyboard users can focus to reveal */
+  .desc-clamp:focus {
+    outline: none;
   }
   h2 {
     line-height: 1.4;
