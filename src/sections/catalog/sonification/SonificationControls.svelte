@@ -79,7 +79,11 @@
     </div>
   </div>
   <div class="absolute right-0 top-1">
-    <button onclick={toggleSonificationLegend}><InfoIcon /></button>
+    <button
+      onclick={toggleSonificationLegend}
+      class="rounded-full"
+      style="background-color: #E71D80;"><InfoIcon color="#F9F5F7" /></button
+    >
   </div>
 </div>
 
