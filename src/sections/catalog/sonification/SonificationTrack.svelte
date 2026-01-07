@@ -33,7 +33,7 @@
           y1={0}
           x2={xScale(scene.endTime)}
           y2={0}
-          stroke-width={10}
+          stroke-width={14}
           role="button"
           tabindex={0}
           onclick={() => handleClickOnScene(i + 1)}
@@ -44,8 +44,8 @@
             y1={-10}
             x2={xScale(scene.startTime)}
             y2={10}
-            stroke="#BEBABC"
-            stroke-width={3}
+            stroke="#F9F5F7"
+            stroke-width={4}
             stroke-linecap="round"
           />
         {/if}
