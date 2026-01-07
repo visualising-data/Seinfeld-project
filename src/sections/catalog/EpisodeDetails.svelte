@@ -92,17 +92,17 @@
           </div>
           <div class="mid mt-1 shrink-0">
             <div class="mb-2 flex items-center">
-              <StarIcon />
-              <span class="relative" style="top: 2px;">
-                <span class="mx-1 font-semibold">IMDb rating:</span>
-                <span>{episodeInfo.IMDB_rating.replace(',', '.')}/10</span>
-              </span>
-            </div>
-            <div class="flex items-center">
               <TvIcon />
               <span class="relative" style="top: 2px;">
                 <span class="mx-1 font-semibold">First aired:</span>
                 <span>{episodeInfo.date_aired}</span>
+              </span>
+            </div>
+            <div class="flex items-center">
+              <StarIcon />
+              <span class="relative" style="top: 2px;">
+                <span class="mx-1 font-semibold">IMDb rating:</span>
+                <span>{episodeInfo.IMDB_rating.replace(',', '.')}/10</span>
               </span>
             </div>
           </div>

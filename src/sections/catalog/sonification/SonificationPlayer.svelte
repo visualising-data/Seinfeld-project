@@ -23,6 +23,7 @@
     playingScene,
     updatePlayingData,
     externallyClickedScene,
+    toggleSonificationLegend,
   } = $props();
 
   let innerWidth = $state(1200);
@@ -202,6 +203,7 @@
     {playNext}
     {playPrev}
     {stop}
+    {toggleSonificationLegend}
   />
 
   {#if showSoundDisabledPopup && !popupWasShown}

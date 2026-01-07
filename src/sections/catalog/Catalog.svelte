@@ -9,6 +9,7 @@
   import EpisodeDetails from './EpisodeDetails.svelte';
   import SonificationPlayer from './sonification/SonificationPlayer.svelte';
   import EpisodeScore from './episodeScore/EpisodeScore.svelte';
+  import SonificationLegend from './sonification/SonificationLegend.svelte';
 
   let { episodesData, sonificationCharactersData, sonificationLocationData, ScrollTrigger } =
     $props();
@@ -24,9 +25,10 @@
       : Math.max(innerWidth - extraPadding, 1000),
   );
   let scenesWidth = $derived(vizWidth - labelsWidth);
+  let sonificationLegendIsVisible = $state(false);
 
-  // const navHeight = $derived(innerWidth > 540 ? 0 : 56);
-  // const detailsHeight = $derived(innerWidth >= 1280 ? 254 : 230 - navHeight);
+  const navHeight = $derived(innerWidth > 540 ? 0 : 56);
+  const detailsHeight = $derived(innerWidth >= 1280 ? 254 : 230 - navHeight);
   // const sonificationPlayerHeight = 100;
   // const vizHeight = $derived(
   //   innerHeight - detailsHeight - sonificationPlayerHeight - 40 + (innerWidth <= 539 ? 56 : 0),
@@ -106,12 +108,16 @@
   const handleClickOnScene = (/** @type {number} */ scene) => {
     externallyClickedScene = scene;
   };
+
+  const toggleSonificationLegend = () => {
+    sonificationLegendIsVisible = !sonificationLegendIsVisible;
+  };
 </script>
 
 <svelte:window bind:innerWidth bind:innerHeight />
 
 <section id="catalog-section">
-  <div id="catalog" class="flex w-screen pb-12">
+  <div id="catalog" class="relative flex w-screen pb-12">
     <div>
       <!-- Episode details and controls -->
       <EpisodeDetails
@@ -132,6 +138,7 @@
         {isPlaying}
         {playingScene}
         {externallyClickedScene}
+        {toggleSonificationLegend}
         {updatePlayingData}
       />
 
@@ -154,6 +161,10 @@
         </div>
       </div>
     </div>
+
+    {#if sonificationLegendIsVisible}
+      <SonificationLegend top={detailsHeight} width={statsWidth + 50} {toggleSonificationLegend} />
+    {/if}
   </div>
 </section>
 

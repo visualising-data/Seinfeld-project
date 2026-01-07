@@ -1,54 +1,15 @@
 <script>
-	import { fade, fly } from 'svelte/transition';
-	import CloseIcon from '../../../icons/CloseIcon.svelte';
-	import SonificationLegendContent from './SonificationLegendContent.svelte';
-	import { stopPropagation } from 'svelte/legacy';
+  import { fly } from 'svelte/transition';
+  import SonificationLegendContent from './SonificationLegendContent.svelte';
 
-	let { toggleLegend } = $props();
+  let { top, width, toggleSonificationLegend } = $props();
 </script>
 
-<!-- svelte-ignore a11y_click_events_have_key_events -->
-<!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
-	in:fade={{ duration: 250 }}
-	out:fade={{ duration: 250 }}
-	class="backdrop"
-	onclick={toggleLegend}
+  in:fly={{ duration: 250, x: 500 }}
+  out:fly={{ duration: 250, x: 500 }}
+  class="sonification-legend-container absolute right-0 z-50 px-4 py-4 bg-accent text-white"
+  style="top: {top}px; width: {width}px;"
 >
-	<div
-		in:fly={{ duration: 250, x: 500 }}
-		out:fly={{ duration: 250, x: 500 }}
-		class="sonification-legend-container h-screen"
-		onclick={(e) => e.stopPropagation()}
-	>
-		<SonificationLegendContent />
-		<button
-			class="menu-close-button"
-			onclick={(e) => {
-				e.stopPropagation();
-				toggleLegend();
-			}}
-		>
-			<CloseIcon color="#12020a" />
-		</button>
-	</div>
+  <SonificationLegendContent {toggleSonificationLegend} />
 </div>
-
-<style>
-	.sonification-legend-container {
-		position: absolute;
-		top: 0;
-		right: 0px;
-		z-index: 100;
-		width: 500px;
-		max-width: 100vw;
-		padding: 24px;
-		background-color: #f9f5f7;
-		color: #e71d80;
-	}
-	.menu-close-button {
-		position: absolute;
-		top: 24px;
-		right: 24px;
-	}
-</style>
