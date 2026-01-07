@@ -22,6 +22,7 @@
     isPlaying,
     playingScene,
     updatePlayingData,
+    externallyClickedScene,
   } = $props();
 
   let innerWidth = $state(1200);
@@ -142,6 +143,17 @@
       }
     }
   };
+
+  /**
+   * @type {any}
+   */
+  let externallyClickedSceneInternal;
+  $effect(() => {
+    if (externallyClickedScene >= 0 && externallyClickedScene !== externallyClickedSceneInternal) {
+      externallyClickedSceneInternal = externallyClickedScene;
+      handleClickOnScene(externallyClickedScene);
+    }
+  });
 
   onMount(() => {
     // Preload audio files

@@ -101,6 +101,11 @@
       preventOverlaps: true,
     });
   });
+
+  let externallyClickedScene = $state();
+  const handleClickOnScene = (/** @type {number} */ scene) => {
+    externallyClickedScene = scene;
+  };
 </script>
 
 <svelte:window bind:innerWidth bind:innerHeight />
@@ -126,6 +131,7 @@
         sonificationLocationData={currentEpisodeSonificationLocationData}
         {isPlaying}
         {playingScene}
+        {externallyClickedScene}
         {updatePlayingData}
       />
 
@@ -143,6 +149,7 @@
             sonificationLocationData={currentEpisodeSonificationLocationData}
             {isPlaying}
             {playingScene}
+            {handleClickOnScene}
           />
         </div>
       </div>

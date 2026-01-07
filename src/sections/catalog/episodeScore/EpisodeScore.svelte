@@ -14,6 +14,7 @@
     playingScene = null,
     sonificationCharactersData = null,
     sonificationLocationData = null,
+    handleClickOnScene,
   } = $props();
 
   let innerWidth = $state(1200);
@@ -67,6 +68,7 @@
     {isPlaying}
     {playingScene}
     {sonificationCharactersData}
+    {handleClickOnScene}
   />
   <div style="max-width: {innerWidth}px; overflow: scroll;">
     <Timeline
@@ -94,5 +96,6 @@
     {isPlaying}
     {playingScene}
     {sonificationLocationData}
+    {handleClickOnScene}
   />
 </div>
