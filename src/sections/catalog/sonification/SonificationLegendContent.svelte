@@ -13,6 +13,10 @@
     getLocationSoundFileName,
   } from '$lib/data/sonificationFilesMapping';
 
+  import SignalMin from '../../../icons/SignalMin.svelte';
+  import SignalMid from '../../../icons/SignalMid.svelte';
+  import SignalFull from '../../../icons/SignalFull.svelte';
+
   let { toggleSonificationLegend } = $props();
 
   const characters = $state([
@@ -87,6 +91,16 @@
     playLegend();
   };
 
+  const setCharLevel = (/** @type {string} */ id, /** @type {number} */ level) => {
+    const char = characters.find((char) => char.id === id);
+    // If clicking on an active level, turn it off; otherwise set to that level
+    char.currentLevel = char.currentLevel >= level ? 0 : level;
+
+    clearTimeout(playLegendTimeout);
+    soundtrack.stopAll();
+    playLegend();
+  };
+
   const handleClickOnLocation = (/** @type {string} */ id) => {
     const loc = locations.find((loc) => loc.id === id);
     if (loc.currentLevel === 1) {
@@ -94,6 +108,16 @@
     } else {
       loc.currentLevel += 1;
     }
+
+    clearTimeout(playLegendTimeout);
+    soundtrack.stopAll();
+    playLegend();
+  };
+
+  const setLocationLevel = (/** @type {string} */ id, /** @type {number} */ level) => {
+    const loc = locations.find((loc) => loc.id === id);
+    // If clicking on an active level, turn it off; otherwise set to that level
+    loc.currentLevel = loc.currentLevel >= level ? 0 : level;
 
     clearTimeout(playLegendTimeout);
     soundtrack.stopAll();
@@ -114,7 +138,7 @@
   });
 </script>
 
-<div class="flex justify-between items-center">
+<div class="flex justify-between items-center mb-4">
   <h6>Sonification Legend</h6>
   <button
     onclick={(e) => {
@@ -125,64 +149,92 @@
     <CloseIcon color="#F9F5F7" size={20} />
   </button>
 </div>
-<div class="flex items-center">
-  <HelpIcon />
-  <div class="small accent ml-2">
+<div class="flex">
+  <HelpIcon color="#F9F5F7" />
+  <div class="text-xs ml-2">
     <div>Click on a character or a location to listen to its sound.</div>
     <div>Click again to bump intensity or stop.</div>
   </div>
 </div>
-<div class="mt-2 flex justify-end">
-  <button class="btn btn-primary small clear-btn" disabled={!isSelection} onclick={clearAll}
-    >Clear selection</button
+<div class="mt-4 flex">
+  <button
+    class="btn text-xs clear-btn flex items-center gap-1 {isSelection
+      ? 'cursor-pointer'
+      : 'cursor-default'} p-0 {isSelection
+      ? 'opacity-100'
+      : 'opacity-60'} transition-opacity duration-200 ease-out"
+    onclick={clearAll}
   >
+    <CloseIcon color="#F9F5F7" size={12} />
+    <div>Clear selection</div>
+  </button>
 </div>
-<div class="mt-2 flex text-black">
-  <div class="pr-16">
-    <div class="mb-4">Characters</div>
+<div class="flex gap-12 mt-4">
+  <div>
+    <div class="mb-1 text-sm font-semibold">Characters</div>
     <ul>
+      <div class="flex justify-end gap-2 mr-[-2px]">
+        <SignalMin />
+        <SignalMid />
+        <SignalFull />
+      </div>
       {#each characters as char}
         <li class="mb-6 flex items-center">
           <button
             aria-label="toggle-sound"
-            class="image mr-4 h-16 w-16 rounded-full"
+            class="image mr-3 h-8 w-8 rounded-full"
             style="background-image: url({getCharacterImagePath(char.imageId)});"
             onclick={() => handleClickOnChar(char.id)}
           ></button>
-          <div class="flex">
-            <div
-              class="level-indicator mr-2"
-              style="background: {char.currentLevel > 0 ? '#E71D80' : '#BEBABC'};"
-            ></div>
-            <div
-              class="level-indicator mr-2"
-              style="background: {char.currentLevel > 1 ? '#E71D80' : '#BEBABC'};"
-            ></div>
-            <div
-              class="level-indicator"
-              style="background: {char.currentLevel > 2 ? '#E71D80' : '#BEBABC'};"
-            ></div>
+          <div class="flex gap-3 transition-opacity ease-out duration-200">
+            <button
+              aria-label="Set level 1"
+              class="level-indicator cursor-pointer"
+              style="background: #F9F5F7; opacity: {char.currentLevel > 0 ? 1 : 0.3};"
+              onclick={() => setCharLevel(char.id, 1)}
+            ></button>
+            <button
+              aria-label="Set level 2"
+              class="level-indicator cursor-pointer"
+              style="background: #F9F5F7; opacity: {char.currentLevel > 1 ? 1 : 0.3};"
+              onclick={() => setCharLevel(char.id, 2)}
+            ></button>
+            <button
+              aria-label="Set level 3"
+              class="level-indicator cursor-pointer"
+              style="background: #F9F5F7; opacity: {char.currentLevel > 2 ? 1 : 0.3};"
+              onclick={() => setCharLevel(char.id, 3)}
+            ></button>
           </div>
         </li>
       {/each}
     </ul>
   </div>
   <div>
-    <div class="mb-4">Locations</div>
+    <div class="mb-1 text-sm font-semibold">Locations</div>
+    <div class="flex justify-end mr-[10px]">
+      <SignalMid />
+    </div>
     <ul>
       {#each locations as loc}
         <li class="mb-6 flex items-center">
           <button
             aria-label="toggle-sound"
-            class="image image-location mr-4 h-16 w-16 rounded-full"
-            style="background-image: url({getLocationIconPath(loc.imageId)});"
+            class="image image-location mr-3 h-8 w-8 rounded-full"
+            style="
+              background-color: #12020A;
+              background-image: url({getLocationIconPath(loc.imageId)});
+              background-size: 28px;
+            "
             onclick={() => handleClickOnLocation(loc.id)}
           ></button>
-          <div class="flex">
-            <div
-              class="level-indicator mr-2"
-              style="background: {loc.currentLevel > 0 ? '#E71D80' : '#BEBABC'};"
-            ></div>
+          <div class="flex transition-opacity ease-out duration-200">
+            <button
+              aria-label="Set level 1"
+              class="level-indicator cursor-pointer"
+              style="background: #F9F5F7; opacity: {loc.currentLevel > 0 ? 1 : 0.3};"
+              onclick={() => setLocationLevel(loc.id, 1)}
+            ></button>
           </div>
         </li>
       {/each}
@@ -201,11 +253,8 @@
     background-size: 60px 60px;
   }
   .level-indicator {
-    width: 20px;
-    height: 20px;
+    width: 12px;
+    height: 12px;
     border-radius: 10px;
-  }
-  .clear-btn {
-    padding: 4px 8px;
   }
 </style>

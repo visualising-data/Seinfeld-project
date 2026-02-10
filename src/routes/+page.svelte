@@ -44,7 +44,7 @@
     });
   });
 
-  const showOnlyLatest = false;
+  const showOnlyLatest = true;
 </script>
 
 <main>
