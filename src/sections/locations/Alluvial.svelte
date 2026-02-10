@@ -3,6 +3,7 @@
   import { locationsAvgScreenTimePerSeason } from '$lib/data/locationsScreenTime';
   import { scaleLinear } from 'd3-scale';
   import { getLocationIconPath } from '../../utils/getLocationIconPath';
+  import ArrowDown from '../../icons/ArrowDown.svelte';
 
   let innerWidth = $state(1600);
   let innerHeight = $state(800);
@@ -11,7 +12,7 @@
 
   // Icon dimensions (defined early for margin calculation)
   const iconSize = 50;
-  const iconGap = 16;
+  const iconGap = 24;
 
   // Container padding (2rem on each side = 4rem total = 64px)
   const containerPadding = 64;
@@ -240,6 +241,14 @@
 
     <!-- Chart -->
     <div class="relative" style="overflow: visible;">
+      <!-- Top-right description -->
+      <div
+        class="absolute top-[-30px] right-[56px] leading-4 small accent"
+        style="max-width: 200px;"
+      >
+        The heigt of the bands at each season represents the average screen-time share
+      </div>
+
       <svg
         width={availableWidth}
         height={chartHeight + margin.top + margin.bottom}
@@ -253,6 +262,26 @@
         </defs>
 
         <g transform="translate({margin.left}, {margin.top})">
+          <!-- Vertical axis label -->
+          <g
+            class="axis-label transition-opacity duration-200 ease-out"
+            opacity={hoveredLocation === null ? 1 : 0}
+          >
+            <text
+              x={134}
+              y={chartHeight / 2 - 9}
+              transform="rotate(-90, {0}, {chartHeight / 2})"
+              text-anchor="middle"
+              class="small accent"
+            >
+              Rank of average screen-time share
+            </text>
+            <!-- Downward arrow -->
+            <g transform="translate(-16, 238)">
+              <ArrowDown />
+            </g>
+          </g>
+
           <!-- Ribbons -->
           <g class="ribbons">
             {#each ribbons as ribbon}
@@ -263,7 +292,7 @@
                   ? 0.6
                   : 0.15}
                 stroke="none"
-                class="transition-opacity duration-300"
+                class="transition-opacity duration-200 ease-out"
                 role="presentation"
                 onmouseenter={() => (hoveredLocation = ribbon.locationId)}
                 onmouseleave={() => (hoveredLocation = null)}
@@ -351,8 +380,11 @@
           </g>
 
           <!-- Hover labels showing percentages -->
-          {#if hoveredLocation !== null}
-            <g class="hover-labels">
+          <g
+            class="hover-labels transition-opacity duration-200 ease-out"
+            opacity={hoveredLocation !== null ? 1 : 0}
+          >
+            {#if hoveredLocation !== null}
               {#each nodes.filter((n) => n.locationId === hoveredLocation) as node}
                 {@const percentage = Math.round(node.value * 100)}
                 {@const labelX = xScale(node.season)}
@@ -378,8 +410,8 @@
                   {percentage}%
                 </text>
               {/each}
-            </g>
-          {/if}
+            {/if}
+          </g>
         </g>
       </svg>
     </div>
