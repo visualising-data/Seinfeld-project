@@ -293,7 +293,7 @@
           <g class="season-labels">
             {#each Array.from({ length: 9 }, (_, i) => i + 1) as season}
               <text x={xScale(season)} y={chartHeight + 30} text-anchor="middle" class="text-sm">
-                Season {season}
+                season {season}
               </text>
             {/each}
           </g>
@@ -349,6 +349,37 @@
               />
             {/each}
           </g>
+
+          <!-- Hover labels showing percentages -->
+          {#if hoveredLocation !== null}
+            <g class="hover-labels">
+              {#each nodes.filter((n) => n.locationId === hoveredLocation) as node}
+                {@const percentage = Math.round(node.value * 100)}
+                {@const labelX = xScale(node.season)}
+                {@const labelY = node.y + node.height / 2}
+                {@const circleRadius = 15}
+                <circle
+                  cx={labelX}
+                  cy={labelY}
+                  r={circleRadius}
+                  fill="#F9F5F7"
+                  stroke="#12020A"
+                  opacity="0.95"
+                />
+                <text
+                  x={labelX}
+                  y={labelY}
+                  dy="1px"
+                  text-anchor="middle"
+                  dominant-baseline="middle"
+                  class="text-xs font-semibold"
+                  fill="#12020A"
+                >
+                  {percentage}%
+                </text>
+              {/each}
+            </g>
+          {/if}
         </g>
       </svg>
     </div>
