@@ -38,9 +38,10 @@
 
 <section id="data-gathering" class="relative">
   <div class="w-screen">
-    <!-- <DataGatheringDetails {laughData} />
-				<Bridge /> -->
-    <!-- <EpisodeExample {episodeInfo} {episodeData} {laughData} {ScrollTrigger} /> -->
+    <DataGatheringDetails {laughData} />
+    <Bridge />
+    <EpisodeExample {episodeInfo} {episodeData} {laughData} {ScrollTrigger} />
+    <div class="h-screen"></div>
     {#await csv(sonificationCharactersDataUrl) then sonificationCharactersData}
       {#await csv(sonificationLocationDataUrl) then sonificationLocationData}
         <Catalog
