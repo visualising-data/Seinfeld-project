@@ -28,6 +28,8 @@
 
   const episodesDataUrl = 'https://amdufour.github.io/hosted-data/apis/episodes_laughs.min.json';
 
+  let episodesData = null;
+
   let soundAuthWasShown = false;
   const showSoundAuth = () => {
     if (!soundAuthWasShown) {
@@ -35,7 +37,10 @@
       soundAuthWasShown = true;
     }
   };
-  onMount(() => {
+  onMount(async () => {
+    // Fetch episodes data client-side only
+    episodesData = await json(episodesDataUrl);
+
     // Show sound auth
     ScrollTrigger.create({
       trigger: '#prologue-video',
@@ -50,12 +55,12 @@
 <main>
   <Navbar />
   {#if showOnlyLatest}
-    {#await json(episodesDataUrl) then episodesData}
+    {#if episodesData}
       <div class="bg-white text-black">
         <DataGathering {episodesData} {ScrollTrigger} />
         <IntroEnd />
       </div>
-    {/await}
+    {/if}
   {:else}
     <div
       class="text-white"
@@ -74,7 +79,7 @@
     </div>
     <div class="bg-white text-black">
       <Calendar {ScrollTrigger} />
-      {#await json(episodesDataUrl) then episodesData}
+      {#if episodesData}
         <DataGathering {episodesData} {ScrollTrigger} />
         <IntroEnd />
         <Quotes />
@@ -82,7 +87,7 @@
         <SupportingCharsSection {episodesData} />
         <LocationsSection {episodesData} />
         <LaughsExploration {episodesData} />
-      {/await}
+      {/if}
       <Quotes />
       <MethodologyAndCredits />
       <Footer />
