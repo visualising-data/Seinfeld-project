@@ -1,23 +1,25 @@
 <script>
   import { onMount } from 'svelte';
   import { gsap } from 'gsap/dist/gsap';
-  import { locations } from '$lib/data/locations';
-  import { getLocationIconPath } from '../../utils/getLocationIconPath';
+  import { characters } from '$lib/data/characters';
+  import { getCharacterImagePath } from '../../utils/getCharacterImagePath';
   import { forceSimulation, forceCollide, forceManyBody, forceX, forceY } from 'd3-force';
 
-  let locationPositions = $state(/** @type {{ top: number; left: number }[]} */ ([]));
+  const supportingChars = characters.slice(4, characters.length - 1);
+
+  let charPositions = $state(/** @type {{ top: number; left: number }[]} */ ([]));
   let iconsContainer = /** @type {HTMLDivElement} */ (/** @type {unknown} */ (null));
 
   onMount(() => {
-    gsap.set('#locations_screen_3 .supporting-char', { translateY: 100, opacity: 0 });
+    gsap.set('#supporting_chars_screen_3 .supporting-char', { translateY: 100, opacity: 0 });
 
     const tl3 = gsap.timeline({
       scrollTrigger: {
-        trigger: '#locations_screen_3',
+        trigger: '#supporting_chars_screen_3',
         start: 'top center',
       },
       onComplete: () => {
-        gsap.utils.toArray('#locations_screen_3 .supporting-char').forEach((el) => {
+        gsap.utils.toArray('#supporting_chars_screen_3 .supporting-char').forEach((el) => {
           gsap.to(el, {
             y: -(Math.random() * 3 + 3), // 3–6px upward
             duration: 2.5 + Math.random() * 1.5, // 2.5–4s per half-cycle
@@ -30,7 +32,7 @@
       },
     });
     tl3
-      .to('#locations_screen_3 p', {
+      .to('#supporting_chars_screen_3 p', {
         translateY: 0,
         opacity: 1,
         duration: 1,
@@ -38,7 +40,7 @@
         stagger: { each: 0.3 },
       })
       .to(
-        '#locations_screen_3 .highlight',
+        '#supporting_chars_screen_3 .highlight',
         {
           webkitTextFillColor: 'transparent',
           backgroundPosition: '200% center',
@@ -49,7 +51,7 @@
         '<-0.5',
       )
       .to(
-        '#locations_screen_3 .supporting-char',
+        '#supporting_chars_screen_3 .supporting-char',
         {
           translateY: 0,
           opacity: 1,
@@ -69,7 +71,7 @@
       const yMin = border + 37.5;
       const yMax = screenH - border - 67.5;
 
-      const textCol = iconsContainer.querySelector('.locations-text-col');
+      const textCol = iconsContainer.querySelector('.supporting-chars-text-col');
       const screenRect = iconsContainer.getBoundingClientRect();
       const textRect = textCol.getBoundingClientRect();
       const textZone = {
@@ -88,7 +90,7 @@
       const iconEls = Array.from(iconsContainer.querySelectorAll('.supporting-char'));
 
       // Seed nodes uniformly within the disc using polar coordinates
-      const nodes = locations.map((_, i) => {
+      const nodes = supportingChars.map((_, i) => {
         const el = /** @type {HTMLElement | undefined} */ (iconEls[i]);
         const w = el ? el.offsetWidth : 75;
         const h = el ? el.offsetHeight : 100;
@@ -113,13 +115,15 @@
             const dy = node.y - centerY;
             const d = Math.sqrt(dx * dx + dy * dy);
             if (d > r) {
-              const k = (d - r) / d * alpha * 2;
+              const k = ((d - r) / d) * alpha * 2;
               node.vx -= dx * k;
               node.vy -= dy * k;
             }
           }
         }
-        force.initialize = (/** @type {any[]} */ n) => { simNodes = n; };
+        force.initialize = (/** @type {any[]} */ n) => {
+          simNodes = n;
+        };
         return force;
       }
 
@@ -132,7 +136,7 @@
         .stop()
         .tick(400);
 
-      locationPositions = nodes.map((node) => ({
+      charPositions = nodes.map((node) => ({
         top: Math.max(border, Math.min(node.y - node.h / 2, screenH - node.h - border)),
         left: Math.max(border, Math.min(node.x - node.w / 2, screenW - node.w - border)),
       }));
@@ -200,34 +204,30 @@
   };
 </script>
 
-<div id="locations_screen_3" class="md:h-screen w-screen py-60 md:py-0 relative" bind:this={iconsContainer}>
+<div id="supporting_chars_screen_3" class="md:h-screen w-screen py-60 md:py-0 relative" bind:this={iconsContainer}>
   <div class="container">
     <div class="grid grid-cols-12 md:gap-20">
-      <div class="locations-text-col col-span-12 md:col-span-7 md:h-screen md:flex md:flex-col md:justify-center">
+      <div class="supporting-chars-text-col col-span-12 md:col-span-7 md:h-screen md:flex md:flex-col md:justify-center">
         <p>
-          As with the task of classifying characters, there were challenges with establishing a
-          robust taxonomy for distinguishing different types of locations. You don't want too many
-          distinct groups, but you want enough to capture the variety of different physical
-          settings.
+          The ultimate decision was to create categories for the four respective families of the
+          lead characters, as well as groupings for acquaintances - specifically, love interests,
+          friends, neighbours, colleagues - and then a final 'other persons' group to sweep up the
+          growing list of transient characters.
         </p>
         <p>
-          The final list of distinct locations would include the homes of the four leads, as well
-          as a further 'family home' to cover all and any family setting. The 'diner' was another
-          common hangout location, but separate from other 'places of leisure', which would
-          include other restaurants as well as cinemas and indoor sports venues. The lead
-          characters' 'workplace' would be a recurring setting, from Jerry doing his stand-up
-          routines to George working at Yankee Stadium. Scenes set in various forms of
-          'transport', like taxis, planes, or cars, were common, as were 'outside' locations like
-          visits to the Hamptons or when disputes arose about street-side parking. An 'other'
-          grouping would be necessary to organise together the many other residual additional
-          types of locations used.
+          When classifying supporting characters, it was <span class="highlight"
+            >their central purpose in that episode</span
+          > that informed their grouping, e.g. a friend of Elaine's who dates George would be considered
+          a love interest, rather than a friend. Some supporting characters were therefore alternated
+          into different groupings across the show (e.g. a former love interest may shift to become
+          a friend, and vice-versa).
         </p>
       </div>
       <div class="col-span-12 md:col-span-4">
-        {#each locations as location, i}
+        {#each supportingChars as char, i}
           <div
             class="icon-wrapper absolute cursor-pointer"
-            style="top: {locationPositions[i]?.top ?? 0}px; left: {locationPositions[i]?.left ?? 0}px;"
+            style="top: {charPositions[i]?.top ?? 0}px; left: {charPositions[i]?.left ?? 0}px;"
             role="button"
             tabindex="0"
             onmouseenter={() => handleIconEnter(i)}
@@ -236,11 +236,9 @@
             <div class="supporting-char flex flex-col items-center">
               <div
                 class="character rounded-full bg-contain bg-center"
-                style="background-color: #12020A; background-image: url('{getLocationIconPath(
-                  location.id,
-                )}'); width: 75px; height: 75px;"
+                style="background-image: url('{getCharacterImagePath(char.id)}'); width: 75px; height: 75px;"
               ></div>
-              <div class="mid pt-2">{location.label}</div>
+              <div class="mid pt-2 text-center">{char.label}</div>
             </div>
           </div>
         {/each}
