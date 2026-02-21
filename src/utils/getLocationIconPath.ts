@@ -1,14 +1,14 @@
-import JerryHome from "$lib/assets/locations/JerryHome.jpg"
-import GeorgeHome from "$lib/assets/locations/GeorgeHome.jpg";
-import ElaineHome from "$lib/assets/locations/ElaineHome.jpg";
-import KramerHome from "$lib/assets/locations/KramerHome.jpg";
-import FamilyHome from "$lib/assets/locations/FamilyHome.jpg";
-import Diner from "$lib/assets/locations/Diner.jpg";
-import PlaceOfLeisure from "$lib/assets/locations/PlaceOfLeisure.jpg";
-import Workplace from "$lib/assets/locations/Workplace.jpg";
-import Transport from "$lib/assets/locations/Transport.jpg";
-import Outside from "$lib/assets/locations/Outside.jpg";
-import OtherLocation from "$lib/assets/locations/OtherLocation.jpg";
+import JerryHome from '$lib/assets/locations/JerryHome.png';
+import GeorgeHome from '$lib/assets/locations/GeorgesHome.png';
+import ElaineHome from '$lib/assets/locations/ElaineHome.png';
+import KramerHome from '$lib/assets/locations/KramerHome.png';
+import FamilyHome from '$lib/assets/locations/OtherFamilyHome.png';
+import Diner from '$lib/assets/locations/Diner.png';
+import PlaceOfLeisure from '$lib/assets/locations/PlaceOfLeisure.png';
+import Workplace from '$lib/assets/locations/Workplace.png';
+import Transport from '$lib/assets/locations/Transport.png';
+import Outside from '$lib/assets/locations/Outside.png';
+import OtherLocation from '$lib/assets/locations/OtherLocation.png';
 
 export const getLocationIconPath = (id: string) => {
   switch (id) {
@@ -20,19 +20,19 @@ export const getLocationIconPath = (id: string) => {
       return ElaineHome;
     case "Kramer's home":
       return KramerHome;
-    case "Other family home":
+    case 'Other family home':
       return FamilyHome;
-    case "Diner":
+    case 'Diner':
       return Diner;
-    case "Place of leisure":
+    case 'Place of leisure':
       return PlaceOfLeisure;
-    case "Workplace":
+    case 'Workplace':
       return Workplace;
-    case "Transport":
+    case 'Transport':
       return Transport;
-    case "Outside":
+    case 'Outside':
       return Outside;
     default:
       return OtherLocation;
   }
-}
+};
