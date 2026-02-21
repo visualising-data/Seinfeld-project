@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import { json } from 'd3-fetch';
   import { onMount } from 'svelte';
   import { inview } from 'svelte-inview';
@@ -28,7 +28,7 @@
 
   const episodesDataUrl = 'https://amdufour.github.io/hosted-data/apis/episodes_laughs.min.json';
 
-  let episodesData = null;
+  let episodesData: any = null;
 
   let soundAuthWasShown = false;
   const showSoundAuth = () => {
