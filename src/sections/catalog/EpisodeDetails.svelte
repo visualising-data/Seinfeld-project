@@ -1,9 +1,15 @@
 <script>
+  import * as Tone from 'tone';
+
+  import { soundIsAuth } from '../../stores/soundAuthStore';
+  import { quotes } from '$lib/data/quotes';
+
   import StarIcon from '../../icons/StarIcon.svelte';
   import TvIcon from '../../icons/TvIcon.svelte';
   import MoreIcon from '../../icons/More.svelte';
   import LessIcon from '../../icons/Less.svelte';
   import EpisodeControls from './EpisodeControls.svelte';
+  import Quote from '../../icons/Quote.svelte';
 
   let {
     episodes = null,
@@ -12,11 +18,30 @@
     episodeInfo,
   } = $props();
 
+  $inspect(currentSeason, currentEpisode);
+
   let innerWidth = $state(1200);
   let showMore = $state(false);
 
   const toggleShowMore = () => {
     showMore = !showMore;
+  };
+
+  /**
+   * @type {Tone.Player}
+   */
+  let audio;
+  const playQuote = () => {
+    // @ts-ignore
+    audio = new Tone.Player().toDestination();
+    const quote = quotes.find((q) => q.season === currentSeason && q.episode === currentEpisode);
+    audio
+      .load(`https://amdufour.github.io/hosted-data/apis/audio_quotes/${quote.audio_clip_id}.m4a`)
+      .then(() => {
+        audio.fadeIn = 1;
+        audio.fadeOut = 1;
+        audio.start();
+      });
   };
 </script>
 
@@ -41,10 +66,7 @@
           season 5 episode 14
         </div>
       {/if}
-      <div
-        class="flex items-center justify-between"
-        style="margin-left: {innerWidth >= 1280 ? 16 : 0}px;"
-      >
+      <div class="flex items-center gap-8">
         <h2
           style="overflow: {showMore ? 'visible' : 'hidden'}; white-space: {showMore
             ? 'auto'
@@ -52,6 +74,17 @@
         >
           {episodeInfo.title}
         </h2>
+        <span class="quote-btn-wrap">
+          <button
+            class="flex justify-center items-center w-[42px] h-[42px] rounded-full {$soundIsAuth
+              ? 'bg-[#E71D80]'
+              : 'bg-[#BEBABC]'}"
+            disabled={!$soundIsAuth}
+            onclick={playQuote}
+          >
+            <Quote />
+          </button>
+        </span>
         {#if innerWidth < 1280}
           <button class="ml-4 mt-2" onclick={toggleShowMore}>
             {#if showMore}
@@ -156,6 +189,29 @@
   /* Accessibility: keyboard users can focus to reveal */
   .desc-clamp:focus {
     outline: none;
+  }
+  .quote-btn-wrap {
+    position: relative;
+  }
+  .quote-btn-wrap::after {
+    content: 'Play a famous quote from this episode';
+    position: absolute;
+    bottom: calc(100% + 4px);
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    background: #12020a;
+    color: #f9f5f7;
+    font-size: 0.875rem;
+    padding: 4px 8px;
+    border-radius: 8px;
+    pointer-events: none;
+    opacity: 0;
+    box-shadow: 0px 1px 15px 0px rgba(0, 0, 0, 0.15);
+    transition: opacity 120ms ease;
+  }
+  .quote-btn-wrap:hover::after {
+    opacity: 1;
   }
   h2 {
     line-height: 1.4;
