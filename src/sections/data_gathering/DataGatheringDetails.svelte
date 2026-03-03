@@ -329,7 +329,7 @@ function handleClickOnReplay() {
                         <Laugh isActive={isPlaying} />
                     </div>
                     <div class="replay-laugh" style="margin-left: {innerWidth >= 768 ? -20 : 0}px;">
-                        <ReplayButton {isPlaying} bind:handleClickOnReplay />
+                        <ReplayButton {isPlaying} {handleClickOnReplay} />
                     </div>
                 </div>
                 <div class="mask">

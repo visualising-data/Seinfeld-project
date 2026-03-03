@@ -3,7 +3,7 @@
   import PlayLineIcon from "../icons/PlayLineIcon.svelte";
   import StopLineIcon from "../icons/StopLineIcon.svelte";
 
-  let { isPlaying, handleClickOnReplay = $bindable() } = $props()
+  let { isPlaying, handleClickOnReplay } = $props()
 </script>
 
 <button 

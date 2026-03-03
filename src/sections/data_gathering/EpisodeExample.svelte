@@ -321,6 +321,6 @@
 
 	<!-- Scrolling Texts -->
 	<div class="z-1000 relative" style="pointer-events: none">
-		<EpisodeTexts bind:episodeStepChange />
+		<EpisodeTexts {episodeStepChange} />
 	</div>
 </div>

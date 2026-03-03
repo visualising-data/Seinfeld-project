@@ -6,7 +6,7 @@
     SCREEN_TIME: 'screenTime',
     LAUGHS: 'causesLaughs'
   }
-  let { switchFilter = $bindable(), activeFilter } = $props();
+  let { switchFilter, activeFilter } = $props();
 
   const selectScreenTime = () => {
     switchFilter(FILTER.SCREEN_TIME);

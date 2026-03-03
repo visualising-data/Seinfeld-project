@@ -74,7 +74,9 @@
   const updatePlayingFile = (/** @type {string} */ char) => {
     playingFile = getCharSoundFileName(char, '1');
   };
-  updatePlayingFile(activeCharacter);
+  $effect(() => {
+    updatePlayingFile(activeCharacter);
+  });
 
   const playRythm = () => {
     if ($soundIsAuth) {
@@ -744,7 +746,7 @@
 
         <div class="col-span-10 md:mt-1" bind:clientHeight={visualizationsContainerHeight}>
           <div class="flex gap-10">
-            <Toggle bind:switchFilter {activeFilter} />
+            <Toggle {switchFilter} {activeFilter} />
             <ScreenTimeVsLaughRateLegend {activeCharacter} {activeFilter} />
           </div>
 
