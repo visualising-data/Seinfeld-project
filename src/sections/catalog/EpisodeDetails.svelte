@@ -54,6 +54,9 @@
   {#if innerWidth >= 1280}
     <div class="shrink-0" style="width: 480px;">
       <img src={episodeInfo.img_src} alt="Episode cover" />
+      <div class="small mt-1 ml-1">
+        Photo source: <a href="https://www.imdb.com/title/tt0098904/" target="_blank">IMDb</a>
+      </div>
     </div>
   {/if}
   <div style="margin-top: {innerWidth > 540 ? 0 : 56}px;">
