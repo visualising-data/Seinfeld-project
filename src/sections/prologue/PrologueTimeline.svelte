@@ -31,16 +31,14 @@
 			const y1993 = /** @param {(year: number) => number} scale */ (scale) =>
 				(-(H - 120) / 3) * 2 + 60 + scale(1993);
 
-			if (innerWidth >= 768) {
-				ScrollTrigger.create({
-					trigger: '#timeline-container',
-					start: 'top top',
-					end: 'bottom top',
-					pin: '#timeline',
-					preventOverlaps: true,
-					invalidateOnRefresh: true
-				});
-			}
+			ScrollTrigger.create({
+				trigger: '#timeline-container',
+				start: 'top top',
+				end: 'bottom top',
+				pin: '#timeline',
+				preventOverlaps: true,
+				invalidateOnRefresh: true
+			});
 
 			// Initial states — same as original: gsap.set for date-us/date-uk,
 			// inline style="opacity:0" in HTML for all other hidden dates.
