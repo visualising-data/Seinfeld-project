@@ -12,7 +12,7 @@
 
 <section id="intro" class="bg-black">
   <PrologueLateArrival />
-  <!-- <PrologueTimeline {ScrollTrigger} /> -->
+  <PrologueTimeline {ScrollTrigger} />
   <!-- <PrologueVideo /> -->
   <!-- <PrologueTheShow /> -->
   <!-- <PrologueRythmAndTexture {ScrollTrigger} /> -->
