@@ -146,7 +146,7 @@
 <svelte:window bind:innerWidth bind:innerHeight />
 
 <div id="timeline-container" class="container mt-20 grid grid-cols-3 md:grid-cols-2">
-	<div class="col-span-2 px-4 md:col-span-1">
+	<div class="col-span-2 px-4 md:col-span-1 bg-black">
 		<div class="flex h-screen flex-col justify-center">
 			<p id="prologue-1">
 				Though the first episode was aired in the US in 1989, there would be a four-year delay until
@@ -248,6 +248,12 @@
 	#date-us,
 	#date-uk {
 		opacity: 0;
+	}
+	#prologue-1,
+	#prologue-2,
+	#prologue-3,
+	#prologue-4 {
+		background-color: #12020a;
 	}
 	.year {
 		margin-right: 12px;

@@ -11,7 +11,7 @@
     isTouchScreen = navigator.maxTouchPoints > 0;
     // Reveal first sentence and down icon
     const tl = gsap.timeline();
-    tl.to('#prologue-1', {
+    tl.to('#prologue-late-arrival', {
       translateY: -30,
       opacity: 1,
       ease: 'power3.out',
@@ -28,7 +28,7 @@
         },
         '-=1',
       )
-      .to('#prologue-1 .highlight', {
+      .to('#prologue-late-arrival .highlight', {
         webkitTextFillColor: 'transparent',
         backgroundPosition: '200% center',
         duration: 2,
@@ -57,16 +57,16 @@
 
 <svelte:window bind:innerWidth />
 
-<div id="prologue-container" class="relative flex h-screen items-center">
+<div id="prologue-container" class="relative flex h-screen items-center bg-black">
   <div class="container">
-    <div id="prologue-1">
+    <div id="prologue-late-arrival" class="bg-black">
       I was a late arrival to <span class="highlight">Seinfeld</span> fandom.
     </div>
   </div>
 
   <div
     id="down-icons"
-    class="down-icons-container flex justify-center gap-4 absolute bottom-4 number w-full"
+    class="down-icons-container flex justify-center gap-4 absolute bottom-4 number w-full bg-black"
   >
     {#if innerWidth >= 1024 && !isTouchScreen}
       <div class="flex flex-col items-center gap-4">
@@ -136,7 +136,7 @@
 </div>
 
 <style>
-  #prologue-1 {
+  #prologue-late-arrival {
     opacity: 0;
     transform: translateY(30px);
   }
