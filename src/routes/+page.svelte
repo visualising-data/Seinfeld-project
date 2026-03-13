@@ -71,13 +71,13 @@
       }}
     >
       <Prologue {ScrollTrigger} />
-      {#if $soundAuthModaleIsOpen}
+      <!-- {#if $soundAuthModaleIsOpen}
         <SoundAuthPopup />
-      {/if}
-      <Title />
-      <Warning />
+      {/if} -->
+      <!-- <Title /> -->
+      <!-- <Warning /> -->
     </div>
-    <div class="bg-white text-black">
+    <!-- <div class="bg-white text-black">
       <Calendar {ScrollTrigger} />
       {#if episodesData}
         <DataGathering {episodesData} {ScrollTrigger} />
@@ -91,6 +91,6 @@
       <Quotes />
       <MethodologyAndCredits />
       <Footer />
-    </div>
+    </div> -->
   {/if}
 </main>

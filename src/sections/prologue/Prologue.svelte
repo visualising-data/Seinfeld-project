@@ -1,21 +1,21 @@
 <script>
-	import PrologueLateArrival from './PrologueLateArrival.svelte';
-	import PrologueTimeline from './PrologueTimeline.svelte';
-	import PrologueTheShow from './PrologueTheShow.svelte';
-	import PrologueVideo from './PrologueVideo.svelte';
-	import PrologueRythmAndTexture from './PrologueRythmAndTexture.svelte';
-	import PrologueBook from './PrologueBook.svelte';
-	import PrologueEnd from './PrologueEnd.svelte';
+  import PrologueLateArrival from './PrologueLateArrival.svelte';
+  import PrologueTimeline from './PrologueTimeline.svelte';
+  import PrologueTheShow from './PrologueTheShow.svelte';
+  import PrologueVideo from './PrologueVideo.svelte';
+  import PrologueRythmAndTexture from './PrologueRythmAndTexture.svelte';
+  import PrologueBook from './PrologueBook.svelte';
+  import PrologueEnd from './PrologueEnd.svelte';
 
-	let { ScrollTrigger } = $props();
+  let { ScrollTrigger } = $props();
 </script>
 
 <section id="intro" class="bg-black">
-	<PrologueLateArrival />
-	<PrologueTimeline {ScrollTrigger} />
-	<PrologueVideo />
-	<PrologueTheShow />
-	<PrologueRythmAndTexture {ScrollTrigger} />
-	<PrologueBook {ScrollTrigger} />
-	<PrologueEnd />
+  <PrologueLateArrival />
+  <!-- <PrologueTimeline {ScrollTrigger} /> -->
+  <!-- <PrologueVideo /> -->
+  <!-- <PrologueTheShow /> -->
+  <!-- <PrologueRythmAndTexture {ScrollTrigger} /> -->
+  <!-- <PrologueBook {ScrollTrigger} /> -->
+  <!-- <PrologueEnd /> -->
 </section>
