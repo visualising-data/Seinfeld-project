@@ -3,8 +3,6 @@
 	import { gsap } from 'gsap/dist/gsap';
 	import { scaleLinear } from 'd3-scale';
 
-	let { ScrollTrigger } = $props();
-
 	/**
 	 * @type {number}
 	 */
@@ -31,14 +29,6 @@
 			const y1993 = /** @param {(year: number) => number} scale */ (scale) =>
 				(-(H - 120) / 3) * 2 + 60 + scale(1993);
 
-			ScrollTrigger.create({
-				trigger: '#timeline-container',
-				start: 'top top',
-				end: 'bottom top',
-				pin: '#timeline',
-				preventOverlaps: true,
-				invalidateOnRefresh: true
-			});
 
 			// Initial states — same as original: gsap.set for date-us/date-uk,
 			// inline style="opacity:0" in HTML for all other hidden dates.
@@ -173,7 +163,7 @@
 			</p>
 		</div>
 	</div>
-	<div id="timeline" class="relative col-span-1 px-4">
+	<div id="timeline" class="sticky top-0 h-screen self-start col-span-1 px-4">
 		<div
 			id="timeline-line"
 			class="absolute bg-white"

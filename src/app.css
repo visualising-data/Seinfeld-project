@@ -8,7 +8,7 @@
     font-family: 'new-science', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     box-sizing: border-box;
-    overflow-x: hidden;
+    overflow-x: clip;
   }
   body {
     margin: 0;
@@ -18,7 +18,7 @@
     color: #12020a;
     fill: #12020a;
     background: #12020a;
-    overflow-x: hidden;
+    overflow-x: clip;
   }
   .em {
     font-weight: 600;

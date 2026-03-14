@@ -1,5 +1,5 @@
 <script>
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import { gsap } from 'gsap/dist/gsap';
 
   import DownIcon from '../../icons/DownIcon.svelte';
@@ -7,51 +7,59 @@
   let innerWidth = $state(1600);
   let isTouchScreen = $state(false);
 
+  /** @type {gsap.Context | undefined} */
+  let ctx;
+
   onMount(() => {
     isTouchScreen = navigator.maxTouchPoints > 0;
-    // Reveal first sentence and down icon
-    const tl = gsap.timeline();
-    tl.to('#prologue-late-arrival', {
-      translateY: -30,
-      opacity: 1,
-      ease: 'power3.out',
-      duration: 2,
-      delay: 1,
-    })
-      .to(
-        '#down-icons',
-        {
-          translateY: 0,
-          opacity: 1,
-          duration: 2,
-          ease: 'power3.out',
-        },
-        '-=1',
-      )
-      .to('#prologue-late-arrival .highlight', {
-        webkitTextFillColor: 'transparent',
-        backgroundPosition: '200% center',
+    ctx = gsap.context(() => {
+      // Reveal first sentence and down icon
+      const tl = gsap.timeline();
+      tl.to('#prologue-late-arrival', {
+        translateY: -30,
+        opacity: 1,
+        ease: 'power3.out',
         duration: 2,
         delay: 1,
+      })
+        .to(
+          '#down-icons',
+          {
+            translateY: 0,
+            opacity: 1,
+            duration: 2,
+            ease: 'power3.out',
+          },
+          '-=1',
+        )
+        .to('#prologue-late-arrival .highlight', {
+          webkitTextFillColor: 'transparent',
+          backgroundPosition: '200% center',
+          duration: 2,
+          delay: 1,
+          ease: 'power3.out',
+        });
+
+      // Hide down icons
+      const tl2 = gsap.timeline({
+        scrollTrigger: {
+          trigger: '#prologue-container',
+          start: 'bottom center',
+          toggleActions: 'play none none reverse',
+          invalidateOnRefresh: true,
+        },
+      });
+      tl2.to('#down-icons', {
+        translateY: -40,
+        opacity: 0,
+        duration: 2,
         ease: 'power3.out',
       });
+    });
+  });
 
-    // Hide down icons
-    const tl2 = gsap.timeline({
-      scrollTrigger: {
-        trigger: '#prologue-container',
-        start: 'bottom center',
-        // end: 'bottom center',
-        // toggleActions: 'play reverse play reverse',
-        // markers: true
-      },
-    });
-    tl2.to('#down-icons', {
-      translateY: -40,
-      opacity: 0,
-      duration: 2,
-      ease: 'power3.out',
-    });
+  onDestroy(() => {
+    ctx?.revert();
   });
 </script>
 
