@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
-  import { gsap } from 'gsap';
+  // @ts-ignore
+  import { gsap } from 'gsap/dist/gsap';
 
   let ctx: gsap.Context;
 

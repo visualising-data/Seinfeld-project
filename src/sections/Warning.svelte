@@ -1,7 +1,9 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
-  import { gsap } from 'gsap';
-  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  // @ts-ignore
+  import { gsap } from 'gsap/dist/gsap';
+  // @ts-ignore
+  import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
   gsap.registerPlugin(ScrollTrigger);
 
   let ctx: gsap.Context;

@@ -1,6 +1,7 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
-  import { gsap } from 'gsap';
+  // @ts-ignore
+  import { gsap } from 'gsap/dist/gsap';
   import { scaleLinear } from 'd3-scale';
   import { max } from 'd3-array';
   import * as Tone from 'tone';

@@ -1,7 +1,9 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
-  import { gsap } from 'gsap';
-  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  // @ts-ignore
+  import { gsap } from 'gsap/dist/gsap';
+  // @ts-ignore
+  import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
   import { getCharacterImagePath } from '../../utils/getCharacterImagePath';
   import { getLocationIconPath } from '../../utils/getLocationIconPath';
   import tv_noise from '$lib/assets/tv_noise.png';
