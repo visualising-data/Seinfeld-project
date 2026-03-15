@@ -1,158 +1,152 @@
 <script>
-	import { onMount } from 'svelte';
-	import { gsap } from 'gsap/dist/gsap';
-	import Lenis from 'lenis';
+  import { onMount, onDestroy } from 'svelte';
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  import Lenis from 'lenis';
 
-	import BookCover from '$lib/assets/book/book_cover.jpg';
-	import BookIntro from '$lib/assets/book/book_intro.jpg';
-	import BookCalendar from '$lib/assets/book/book_calendar.jpg';
-	import BookLaughs from '$lib/assets/book/book_laughs.jpg';
-	import BookScatterplot from '$lib/assets/book/book_scatterplot.jpg';
-	import BookQuotes from '$lib/assets/book/book_quotes.jpg';
-	import BookCatalog1 from '$lib/assets/book/book_catalog1.png';
-	import BookCatalog2 from '$lib/assets/book/book_catalog2.png';
+  import BookCover from '$lib/assets/book/book_cover.jpg';
+  import BookIntro from '$lib/assets/book/book_intro.jpg';
+  import BookCalendar from '$lib/assets/book/book_calendar.jpg';
+  import BookLaughs from '$lib/assets/book/book_laughs.jpg';
+  import BookScatterplot from '$lib/assets/book/book_scatterplot.jpg';
+  import BookQuotes from '$lib/assets/book/book_quotes.jpg';
+  import BookCatalog1 from '$lib/assets/book/book_catalog1.png';
+  import BookCatalog2 from '$lib/assets/book/book_catalog2.png';
 
-	let { ScrollTrigger } = $props();
+  gsap.registerPlugin(ScrollTrigger);
 
-	let innerWidth = $state(1600);
-	let innerHeight = $state(800);
+  /** @type {Lenis | undefined} */
+  let lenis;
+  /** @type {((time: number) => void) | undefined} */
+  let lenisTicker;
+  /** @type {gsap.core.Timeline | undefined} */
+  let tl;
 
-	onMount(() => {
-		// Pin text and book cover
-		ScrollTrigger.create({
-			trigger: '#books-inner-container',
-			start: 'bottom bottom',
-			pin: '#book-cover-container',
-			preventOverlaps: true
-		});
+  onMount(() => {
+    const setup = () => {
+      const imgSlider = document.getElementById('books-inner-container');
+      const imgSliderMain = document.getElementById('books-outer-container');
 
-		// Handle horizontal scroll
-		let imgSlider = document.getElementById('books-inner-container');
-		let imgSliderMain = document.getElementById('books-outer-container');
+      if (!imgSlider || !imgSliderMain) return;
 
-		if (imgSlider) {
-			let calculateSliderX = 3000;
+      tl = gsap.timeline({ defaults: { ease: 'none' } });
+      tl.to(imgSlider, { x: () => -(imgSlider.scrollWidth - imgSliderMain.offsetWidth) });
+      tl.to('#book-cover', { scale: 1.08 }, 0);
+      tl.from('#accent-line', { width: 0 }, 0);
 
-			let imgSliderTimeline = gsap.timeline({
-				default: {
-					ease: 'none'
-				},
-				scrollTrigger: {
-					trigger: imgSliderMain,
-					pin: true,
-					start: 'bottom bottom',
-					scrub: 1
-				}
-			});
-			imgSliderTimeline
-				.to(imgSlider, {
-					x: -calculateSliderX
-				})
-				.to(
-					'#book-cover',
-					{
-						scale: 1.08
-					},
-					0
-				)
-				.from(
-					'#accent-line',
-					{
-						width: 0
-					},
-					0
-				);
-		}
+      ScrollTrigger.create({
+        trigger: '#book-scroll-wrapper',
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: 1,
+        animation: tl,
+        invalidateOnRefresh: true,
+      });
 
-		// Smooth scroll
-		const lenis = new Lenis();
+      ScrollTrigger.refresh();
+    };
 
-		/**
-		 * @param {number} time
-		 */
-		function raf(time) {
-			lenis.raf(time);
-			requestAnimationFrame(raf);
-		}
+    setTimeout(setup, 100);
+    window.addEventListener('load', () => ScrollTrigger.refresh(), { once: true });
 
-		requestAnimationFrame(raf);
-	});
+    lenis = new Lenis();
+    lenis.on('scroll', ScrollTrigger.update);
+    lenisTicker = (time) => lenis?.raf(time * 1000);
+    gsap.ticker.add(lenisTicker);
+    gsap.ticker.lagSmoothing(0);
+  });
+
+  onDestroy(() => {
+    tl?.kill();
+    ScrollTrigger.getAll().forEach((st) => st.kill());
+    lenis?.off('scroll', ScrollTrigger.update);
+    lenis?.destroy();
+    if (lenisTicker) gsap.ticker.remove(lenisTicker);
+  });
 </script>
 
-<svelte:window bind:innerWidth bind:innerHeight />
+<div id="book-images-section" class="bg-black">
 
-<div id="book-section-container" class="flex h-screen flex-col justify-between">
-	<div
-		id="book-cover-container"
-		class="container grid grid-cols-1 lg:grid-cols-2"
-		style="margin-top: {innerHeight / 6}px;"
-	>
-		<div class="col-span-1 flex h-full items-center px-4">
-			<div>
-				<p>
-					My curiosity transcended just <a
-						href="https://jenniferkarmstrong.com/books/seinfeldia/"
-						target="_blank">reading more about the show</a
-					>, it was now time to go deep. I decided to immerse myself in an entirely unnecessary,
-					self-motivated, long-running, data-driven exploration of every episode of Seinfeld. Why
-					not!
-				</p>
-				<p>
-					The first product of this work was my 2020 publishing of <a href="https://visualisingdata.com/work/#Seinfeld" target="_blank">The Seinfeld Chronicles</a>, a
-					limited-edition printed book presenting all my extensive analysis. With 176 copies
-					released, matching the number of written episodes, this reached a small but exclusive, passionate, and <a href="https://visualisingdata.com/2020/10/the-seinfeld-chronicles-prints-and-donations-update/" target="_blank">generous audience</a>.
-				</p>
-			</div>
-		</div>
-		<div class="col-span-1 px-4">
-			<img id="book-cover" src={BookCover} alt="Cover of the book The Seinfeld Chronicles." />
-		</div>
-	</div>
-	<div id="books-outer-container">
-		<div id="accent-line" class="mb-3 h-2 w-full" style="background-color: #E71D80;"></div>
-		<div id="books-inner-container" class="flex">
-			<img
-				class="mx-4"
-				style="height: {innerHeight / 3.5}px;"
-				src={BookIntro}
-				alt="Introduction of the book."
-			/>
-			<img
-				class="mx-4"
-				style="height: {innerHeight / 3.5}px;"
-				src={BookCalendar}
-				alt="Calendar of the nine seasons of Seinfeld."
-			/>
-			<img
-				class="mx-4"
-				style="height: {innerHeight / 3.5}px;"
-				src={BookLaughs}
-				alt="Data visualizations of the laughs caused by the four main characters."
-			/>
-			<img
-				class="mx-4"
-				style="height: {innerHeight / 3.5}px;"
-				src={BookScatterplot}
-				alt="Data visualizations of the peak performances of the four main characters."
-			/>
-			<img
-				class="mx-4"
-				style="height: {innerHeight / 3.5}px;"
-				src={BookQuotes}
-				alt="Famous quotes from each episode."
-			/>
-			<img
-				class="mx-4"
-				style="height: {innerHeight / 3.5}px;"
-				src={BookCatalog1}
-				alt="Data visualization of season 4 episode 11 'The Contest'."
-			/>
-			<img
-				class="mx-4"
-				style="height: {innerHeight / 3.5}px;"
-				src={BookCatalog2}
-				alt="Data visualization of season 7 episode 6 'The Soup Nazi'."
-			/>
-		</div>
-	</div>
+  <!-- Mobile: text scrolls normally above the sticky image strip -->
+  <div class="lg:hidden container px-4 py-8">
+    <p>
+      My curiosity transcended just <a
+        href="https://jenniferkarmstrong.com/books/seinfeldia/"
+        target="_blank">reading more about the show</a
+      >, it was now time to go deep. I decided to immerse myself in an entirely unnecessary,
+      self-motivated, long-running, data-driven exploration of every episode of Seinfeld. Why
+      not!
+    </p>
+    <p>
+      The first product of this work was my 2020 publishing of <a href="https://visualisingdata.com/work/#Seinfeld" target="_blank">The Seinfeld Chronicles</a>, a
+      limited-edition printed book presenting all my extensive analysis. With 176 copies
+      released, matching the number of written episodes, this reached a small but exclusive, passionate, and <a href="https://visualisingdata.com/2020/10/the-seinfeld-chronicles-prints-and-donations-update/" target="_blank">generous audience</a>.
+    </p>
+  </div>
+
+  <!-- Scroll-driven section: sticky image strip on mobile, full-screen on desktop -->
+  <div id="book-scroll-wrapper" class="relative">
+    <div class="sticky lg:top-0 bg-black overflow-x-clip lg:h-[100dvh] lg:flex lg:flex-col lg:justify-between book-strip-sticky">
+
+      <!-- Desktop only: text + book cover -->
+      <div
+        id="book-cover-container"
+        class="hidden lg:flex flex-1 items-center container"
+      >
+        <div class="flex-1 px-4">
+          <p>
+            My curiosity transcended just <a
+              href="https://jenniferkarmstrong.com/books/seinfeldia/"
+              target="_blank">reading more about the show</a
+            >, it was now time to go deep. I decided to immerse myself in an entirely unnecessary,
+            self-motivated, long-running, data-driven exploration of every episode of Seinfeld. Why
+            not!
+          </p>
+          <p>
+            The first product of this work was my 2020 publishing of <a href="https://visualisingdata.com/work/#Seinfeld" target="_blank">The Seinfeld Chronicles</a>, a
+            limited-edition printed book presenting all my extensive analysis. With 176 copies
+            released, matching the number of written episodes, this reached a small but exclusive, passionate, and <a href="https://visualisingdata.com/2020/10/the-seinfeld-chronicles-prints-and-donations-update/" target="_blank">generous audience</a>.
+          </p>
+        </div>
+        <div class="flex-1 px-4">
+          <img id="book-cover" src={BookCover} alt="Cover of the book The Seinfeld Chronicles." />
+        </div>
+      </div>
+
+      <!-- Image strip: GSAP-animated on both mobile and desktop -->
+      <div id="books-outer-container" class="lg:shrink-0">
+        <div id="accent-line" class="mb-3 h-2 w-full" style="background-color: #E71D80;"></div>
+        <div id="books-inner-container" class="flex">
+          <!-- Book cover as first image on mobile only -->
+          <img class="book-img mx-4 lg:hidden" src={BookCover} alt="Cover of the book The Seinfeld Chronicles." />
+          <img class="book-img mx-4" src={BookIntro} alt="Introduction of the book." />
+          <img class="book-img mx-4" src={BookCalendar} alt="Calendar of the nine seasons of Seinfeld." />
+          <img class="book-img mx-4" src={BookLaughs} alt="Data visualizations of the laughs caused by the four main characters." />
+          <img class="book-img mx-4" src={BookScatterplot} alt="Data visualizations of the peak performances of the four main characters." />
+          <img class="book-img mx-4" src={BookQuotes} alt="Famous quotes from each episode." />
+          <img class="book-img mx-4" src={BookCatalog1} alt="Data visualization of season 4 episode 11 'The Contest'." />
+          <img class="book-img mx-4" src={BookCatalog2} alt="Data visualization of season 7 episode 6 'The Soup Nazi'." />
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll spacer: provides scroll distance for the GSAP animation -->
+    <div class="h-[300vh]"></div>
+  </div>
+
 </div>
+
+<style>
+  .book-img {
+    height: calc(100dvh / 3.5);
+  }
+  @media (max-width: 1023px) {
+    .book-img {
+      height: 200px;
+    }
+    /* Pin strip so its bottom aligns with the viewport bottom */
+    .book-strip-sticky {
+      top: calc(100dvh - 228px);
+    }
+  }
+</style>

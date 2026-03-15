@@ -4,7 +4,6 @@
   import PrologueAfterTimeline from './PrologueAfterTimeline.svelte';
   import PrologueVideo from './PrologueVideo.svelte';
   import PrologueTheShow from './PrologueTheShow.svelte';
-  import PrologueRythmAndTexture from './PrologueRythmAndTexture.svelte';
   import PrologueBook from './PrologueBook.svelte';
   import PrologueEnd from './PrologueEnd.svelte';
 </script>
@@ -15,7 +14,6 @@
   <PrologueAfterTimeline />
   <PrologueVideo />
   <PrologueTheShow />
-  <!-- <PrologueRythmAndTexture {ScrollTrigger} /> -->
-  <!-- <PrologueBook {ScrollTrigger} /> -->
+  <PrologueBook />
   <!-- <PrologueEnd /> -->
 </section>
