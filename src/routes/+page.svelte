@@ -43,8 +43,8 @@
 
     // Show sound auth
     ScrollTrigger.create({
-      trigger: '#prologue-video',
-      start: 'top top',
+      trigger: '#prologue-end',
+      start: 'top bottom',
       onEnter: () => showSoundAuth(),
     });
   });
@@ -70,11 +70,11 @@
         $navBarColor = inView ? 'white' : 'pink';
       }}
     >
-      <Prologue {ScrollTrigger} />
-      <!-- {#if $soundAuthModaleIsOpen}
+      <Prologue />
+      {#if $soundAuthModaleIsOpen}
         <SoundAuthPopup />
-      {/if} -->
-      <!-- <Title /> -->
+      {/if}
+      <Title />
       <!-- <Warning /> -->
     </div>
     <!-- <div class="bg-white text-black">
