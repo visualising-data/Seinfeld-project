@@ -82,7 +82,7 @@
               <!-- Name and Image -->
               <g transform='translate({char.screenTimeWidth / 2 - imageHeight / 2 - 10}, {-chartMidPoint + (i % 2 == 0 ? 0 : imageHeight + 16)})'>
                 <foreignobject width={imageHeight + 20} height={2 * imageHeight}>
-                  <img src="{getLocationIconPath(char.id)}" alt={char.label} style="width: {imageHeight}px; height: {imageHeight}px; border-radius: 50%; margin: 0 auto;" />
+                  <img loading="lazy" src="{getLocationIconPath(char.id)}" alt={char.label} style="width: {imageHeight}px; height: {imageHeight}px; border-radius: 50%; margin: 0 auto;" />
                 </foreignobject>
               </g>
 

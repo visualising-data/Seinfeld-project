@@ -159,7 +159,7 @@
                 onmouseleave={handleVideoMouseLeave}
               >
                 <!-- svelte-ignore a11y_media_has_caption -->
-                <video playsinline autoplay loop bind:muted={video1IsMuted}>
+                <video playsinline autoplay loop preload="none" bind:muted={video1IsMuted}>
                   <source
                     src={`https://amdufour.github.io/hosted-data/apis/videos/${'17.Jerry_Newman'}.mp4`}
                     type="video/mp4"
@@ -184,7 +184,7 @@
                 onmouseleave={handleVideoMouseLeave}
               >
                 <!-- svelte-ignore a11y_media_has_caption -->
-                <video playsinline autoplay loop bind:muted={video2IsMuted}>
+                <video playsinline autoplay loop preload="none" bind:muted={video2IsMuted}>
                   <source
                     src={`https://amdufour.github.io/hosted-data/apis/videos/${'7a.Peterman'}.mp4`}
                     type="video/mp4"

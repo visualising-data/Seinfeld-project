@@ -14,16 +14,11 @@
   import Prologue from '../sections/prologue/Prologue.svelte';
   import SoundAuthPopup from '../UI/SoundAuthPopup.svelte';
   import Title from '../sections/Title.svelte';
-  import Calendar from '../sections/calendar/Calendar.svelte';
   import DataGathering from '../sections/data_gathering/DataGathering.svelte';
-  import Quotes from '../sections/quotes/Quotes.svelte';
   import IntroEnd from '../sections/IntroEnd.svelte';
-  import MainCharsSection from '../sections/main_characters/MainCharsSection.svelte';
-  import SupportingCharsSection from '../sections/supporting_characters/SupportingCharsSection.svelte';
-  import LocationsSection from '../sections/locations/locationsSection.svelte';
-  import LaughsExploration from '../sections/laughs-exploration/LaughsExploration.svelte';
-  import MethodologyAndCredits from '../sections/MethodologyAndCredits.svelte';
-  import Footer from '../sections/Footer.svelte';
+  // Other sections are commented out — re-add imports when re-enabling each one.
+  // Use dynamic imports + svelte-inview sentinel to lazy-load on scroll:
+  // e.g. Calendar = (await import('../sections/calendar/Calendar.svelte')).default
   import Warning from '../sections/Warning.svelte';
   import TitleTransition from '../sections/TitleTransition.svelte';
 

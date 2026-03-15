@@ -66,7 +66,7 @@
               <!-- Name and Image -->
               <g transform='translate({char.screenTimeWidth / 2 - imageHeight / 2}, {-chartHeight / 2})'>
                 <foreignobject width={imageHeight} height={imageHeight}>
-                  <img src="{getCharacterImagePath(char.id)}" alt={char.label} style="width: 100%; height: auto; border-radius: 50%;" />
+                  <img loading="lazy" src="{getCharacterImagePath(char.id)}" alt={char.label} style="width: 100%; height: auto; border-radius: 50%;" />
                 </foreignobject>
                 <text
                   x={imageHeight / 2}

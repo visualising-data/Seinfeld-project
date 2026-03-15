@@ -22,7 +22,7 @@
     <div class="mb-4">
       With episode scenes typically opening (up to Season 8) and closing (up to Season 6) with Jerry doing a <span class="highlight">short stand-up monologue</span>, his prolific on-screen presence marked him as the main protagonist.
     </div>
-    <img src="https://amdufour.github.io/hosted-data/apis/images/jerry_on_stage_3.jpg" alt="Jerry on stage delivering a monologue" />
+    <img loading="lazy" src="https://amdufour.github.io/hosted-data/apis/images/jerry_on_stage_3.jpg" alt="Jerry on stage delivering a monologue" />
     <div class="number text pt-2">Photo source: <a href="https://seinfeld-ism.com/2012/04/01/i-never-met-a-man-who-knew-so-much-about-nothing/" target="_blank">Seinfeld-ism</a></div>
   </div>
 </div>
@@ -33,7 +33,7 @@
     <div class="mb-4">
       Indeed, it is noticeable that across just <span class="highlight">0.2%</span> of the show's entire run-time would George, Elaine, and Kramer find themselves on screen together but without Jerry.
     </div>
-    <img src="https://amdufour.github.io/hosted-data/apis/images/george_elaine_kramer.jpg" alt="Jerry on stage delivering a monologue" />
+    <img loading="lazy" src="https://amdufour.github.io/hosted-data/apis/images/george_elaine_kramer.jpg" alt="Jerry on stage delivering a monologue" />
     <div class="number text pt-2">Photo source: <a href="https://www.imdb.com/de/news/ni64979962/" target="_blank">IMDb</a></div>
   </div>
 </div>

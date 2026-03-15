@@ -31,7 +31,7 @@
 <div id="elaine-text-3" class="flex h-screen w-screen items-center justify-end pr-6">
   <div class="text-overlay flex gap-4" style="max-width: 1000px;">
     <div class="shrink-0">
-      <img src="https://amdufour.github.io/hosted-data/apis/images/seinfeldia.jpg" alt="Cover of the book Seinfeldia by Jennifer Keishin Armstrong" style="height: 350px;" />
+      <img loading="lazy" src="https://amdufour.github.io/hosted-data/apis/images/seinfeldia.jpg" alt="Cover of the book Seinfeldia by Jennifer Keishin Armstrong" style="height: 350px;" />
       <div class="number text pt-2">Photo source: <a href="https://www.goodreads.com/book/show/27171845-seinfeldia" target="_blank">goodreads</a></div>
     </div>
     <div>
@@ -48,7 +48,7 @@
         Things changed in Season 5 when Carol Leifer joined the show as a writer and became responsible for pitching most of Elaine's subsequent stories and character development. Though her laughter share only <span class="highlight">rose gradually</span>, her laughter rates jumped from 13% in Season 1 to a peak of 24% by Season 8.
       </div>
       <div class="shrink-0">
-        <img src="https://amdufour.github.io/hosted-data/apis/images/Carol_Leifer.jpg" alt="Carol Leifer" style="height: 200px;" />
+        <img loading="lazy" src="https://amdufour.github.io/hosted-data/apis/images/Carol_Leifer.jpg" alt="Carol Leifer" style="height: 200px;" />
         <div class="number text pt-2">Photo source: <a href="https://en.wikipedia.org/wiki/Carol_Leifer" target="_blank">Wikipedia</a></div>
       </div>
     </div>

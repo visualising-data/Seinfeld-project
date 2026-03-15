@@ -138,7 +138,7 @@
         class="show-video-item relative overflow-hidden min-w-0"
         style="flex: 4 1 0%"
       >
-        <video playsinline autoplay muted loop class="h-full w-full object-cover">
+        <video playsinline autoplay muted loop preload="none" class="h-full w-full object-cover">
           <source
             src="https://amdufour.github.io/hosted-data/apis/videos/6c.ShowAboutNothing(CC).mp4"
             type="video/mp4"
@@ -182,7 +182,7 @@
         class="show-video-item relative overflow-hidden min-w-0"
         style="flex: 1 1 0%"
       >
-        <video playsinline autoplay muted loop class="h-full w-full object-cover">
+        <video playsinline autoplay muted loop preload="none" class="h-full w-full object-cover">
           <source
             src="https://amdufour.github.io/hosted-data/apis/videos/32.Minutiae(CC).mp4"
             type="video/mp4"
@@ -225,7 +225,7 @@
         class="show-video-item relative overflow-hidden min-w-0"
         style="flex: 1 1 0%"
       >
-        <video playsinline autoplay muted loop class="h-full w-full object-cover">
+        <video playsinline autoplay muted loop preload="none" class="h-full w-full object-cover">
           <source
             src="https://amdufour.github.io/hosted-data/apis/videos/KramerJeans2(CC).mp4"
             type="video/mp4"
@@ -268,7 +268,7 @@
         class="show-video-item relative overflow-hidden min-w-0"
         style="flex: 1 1 0%"
       >
-        <video playsinline autoplay muted loop class="h-full w-full object-cover">
+        <video playsinline autoplay muted loop preload="none" class="h-full w-full object-cover">
           <source
             src="https://amdufour.github.io/hosted-data/apis/videos/8.KramerCigarette(CC).mp4"
             type="video/mp4"
@@ -311,7 +311,7 @@
         class="show-video-item relative overflow-hidden min-w-0"
         style="flex: 1 1 0%"
       >
-        <video playsinline autoplay muted loop class="h-full w-full object-cover">
+        <video playsinline autoplay muted loop preload="none" class="h-full w-full object-cover">
           <source
             src="https://amdufour.github.io/hosted-data/apis/videos/14.ElaineDancing(CC).mp4"
             type="video/mp4"

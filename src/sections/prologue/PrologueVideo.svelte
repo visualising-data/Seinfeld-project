@@ -91,7 +91,7 @@
   >
     <!-- Video: top half on mobile, full screen on desktop -->
     <div class="relative h-[50vh] lg:absolute lg:inset-0 lg:h-auto">
-      <video playsinline autoplay muted loop>
+      <video playsinline autoplay muted loop preload="metadata">
         <source
           src="https://amdufour.github.io/hosted-data/apis/videos/1a.ElaineArrives(CC).mp4"
           type="video/mp4"

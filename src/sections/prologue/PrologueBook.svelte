@@ -109,7 +109,7 @@
           </p>
         </div>
         <div class="flex-1 px-4">
-          <img id="book-cover" src={BookCover} alt="Cover of the book The Seinfeld Chronicles." />
+          <img loading="lazy" id="book-cover" src={BookCover} alt="Cover of the book The Seinfeld Chronicles." />
         </div>
       </div>
 
@@ -118,14 +118,14 @@
         <div id="accent-line" class="mb-3 h-2 w-full" style="background-color: #E71D80;"></div>
         <div id="books-inner-container" class="flex">
           <!-- Book cover as first image on mobile only -->
-          <img class="book-img mx-4 lg:hidden" src={BookCover} alt="Cover of the book The Seinfeld Chronicles." />
-          <img class="book-img mx-4" src={BookIntro} alt="Introduction of the book." />
-          <img class="book-img mx-4" src={BookCalendar} alt="Calendar of the nine seasons of Seinfeld." />
-          <img class="book-img mx-4" src={BookLaughs} alt="Data visualizations of the laughs caused by the four main characters." />
-          <img class="book-img mx-4" src={BookScatterplot} alt="Data visualizations of the peak performances of the four main characters." />
-          <img class="book-img mx-4" src={BookQuotes} alt="Famous quotes from each episode." />
-          <img class="book-img mx-4" src={BookCatalog1} alt="Data visualization of season 4 episode 11 'The Contest'." />
-          <img class="book-img mx-4" src={BookCatalog2} alt="Data visualization of season 7 episode 6 'The Soup Nazi'." />
+          <img loading="lazy" class="book-img mx-4 lg:hidden" src={BookCover} alt="Cover of the book The Seinfeld Chronicles." />
+          <img loading="lazy" class="book-img mx-4" src={BookIntro} alt="Introduction of the book." />
+          <img loading="lazy" class="book-img mx-4" src={BookCalendar} alt="Calendar of the nine seasons of Seinfeld." />
+          <img loading="lazy" class="book-img mx-4" src={BookLaughs} alt="Data visualizations of the laughs caused by the four main characters." />
+          <img loading="lazy" class="book-img mx-4" src={BookScatterplot} alt="Data visualizations of the peak performances of the four main characters." />
+          <img loading="lazy" class="book-img mx-4" src={BookQuotes} alt="Famous quotes from each episode." />
+          <img loading="lazy" class="book-img mx-4" src={BookCatalog1} alt="Data visualization of season 4 episode 11 'The Contest'." />
+          <img loading="lazy" class="book-img mx-4" src={BookCatalog2} alt="Data visualization of season 7 episode 6 'The Soup Nazi'." />
         </div>
       </div>
     </div>

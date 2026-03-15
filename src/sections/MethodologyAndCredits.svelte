@@ -112,6 +112,7 @@
 								<a href={credit.url} target="_blank" class="credit-name font-semibold">{credit.name}</a>
 								<img
 									class="portrait"
+									loading="lazy"
 									alt="Portrait of {credit.name}"
 									src={credit.imgUrl}
 								/>

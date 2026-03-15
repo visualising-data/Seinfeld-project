@@ -49,6 +49,7 @@
         <img
           src="https://amdufour.github.io/hosted-data/apis/illustrations/coffee_cup.png"
           alt=""
+          loading="lazy"
           class="h-[60%] w-auto object-contain coffee-rotate"
         />
       </div>
@@ -56,6 +57,7 @@
         <img
           src="https://amdufour.github.io/hosted-data/apis/illustrations/couch.png"
           alt=""
+          loading="lazy"
           class="h-[55vh] w-auto max-w-none"
         />
       </div>

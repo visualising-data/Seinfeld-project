@@ -186,6 +186,7 @@
           <span class="portrait-ring" id="ring-andy">
             <img
               class="portrait"
+              loading="lazy"
               alt="Portrait of Andy Kirk"
               src="https://amdufour.github.io/hosted-data/apis/portraits/andy.jpg"
             />
@@ -198,6 +199,7 @@
           <span class="portrait-ring" id="ring-am">
             <img
               class="portrait"
+              loading="lazy"
               alt="Portrait of Anne-Marie Dufour"
               src="https://amdufour.github.io/hosted-data/apis/portraits/annemarie_square_closeup.jpg"
             />
@@ -209,6 +211,7 @@
           <span class="portrait-ring" id="ring-mq">
             <img
               class="portrait"
+              loading="lazy"
               alt="Portrait of Miriam Quick"
               src="https://amdufour.github.io/hosted-data/apis/portraits/miriam_quick.jpg"
             />
@@ -220,6 +223,7 @@
           <span class="portrait-ring" id="ring-dg">
             <img
               class="portrait"
+              loading="lazy"
               alt="Portrait of Duncan Geere"
               src="https://amdufour.github.io/hosted-data/apis/portraits/duncan_geere.jpeg"
             />
@@ -231,6 +235,7 @@
           <span class="portrait-ring" id="ring-ln">
             <img
               class="portrait"
+              loading="lazy"
               alt="Loud Numbers logo"
               src="https://amdufour.github.io/hosted-data/apis/portraits/loud_numbers.jpg"
             />

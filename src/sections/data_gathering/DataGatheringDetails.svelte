@@ -293,7 +293,8 @@ function handleClickOnReplay() {
                 >
                     <img 
                         bind:clientHeight={img1Height} 
-                        class="data-gathering-parallax block" 
+                        loading="lazy"
+                        class="data-gathering-parallax block"
                         src="https://amdufour.github.io/hosted-data/apis/images/data_gathering_1.jpg" 
                         alt="Data spreadsheet and tv during data gathering." />
                 </div>
@@ -308,7 +309,8 @@ function handleClickOnReplay() {
                 >
                     <img 
                         bind:clientHeight={img2Height}
-                        class="data-gathering-parallax block" 
+                        loading="lazy"
+                        class="data-gathering-parallax block"
                         src="https://amdufour.github.io/hosted-data/apis/images/audience.jpg" 
                         alt="Jerry Seinfeld talking with the audience during taping." />
                 </div>
@@ -341,7 +343,7 @@ function handleClickOnReplay() {
             <div class="lg:col-start-3 col-span-12 lg:col-span-8" style="margin-left: {innerWidth >= 768 ? 0 : -sideSpacing}px; margin-right: {innerWidth >= 768 ? 0 : -sideSpacing}px;">
                 <!-- svelte-ignore a11y_media_has_caption -->
 				 <div class="relative video-container w-full">
-					<video id="demo-video" playsinline controls bind:muted={isMuted} bind:clientWidth={videoWidth}>
+					<video id="demo-video" playsinline controls preload="none" bind:muted={isMuted} bind:clientWidth={videoWidth}>
 						<source
 							src="https://amdufour.github.io/hosted-data/apis/videos/MarineBiologist_edited.mp4"
 							type="video/mp4"
