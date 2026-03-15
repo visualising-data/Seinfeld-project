@@ -15,5 +15,5 @@
   <PrologueVideo />
   <PrologueTheShow />
   <PrologueBook />
-  <!-- <PrologueEnd /> -->
+  <PrologueEnd />
 </section>
