@@ -72,9 +72,14 @@
     line-height: 1.2;
   }
   .number {
-    font-size: 0.9375rem;
+    font-size: 0.75rem;
     line-height: 1.2;
     font-family: 'new-science-mono', system-ui, sans-serif;
+  }
+  @media (min-width: 1024px) {
+    .number {
+      font-size: 0.9375rem;
+    }
   }
   .accent {
     color: #e71d80;

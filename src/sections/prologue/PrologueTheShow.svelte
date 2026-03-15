@@ -1,327 +1,622 @@
 <script>
-	import { onMount } from 'svelte';
-	import { gsap } from 'gsap/dist/gsap';
-	import Lazy from 'svelte-lazy';
-	import { soundIsAuth } from '../../stores/soundAuthStore';
-	import tv_noise from '$lib/assets/tv_noise.png';
+  import { onMount, onDestroy } from 'svelte';
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  import { getCharacterImagePath } from '../../utils/getCharacterImagePath';
+  import { getLocationIconPath } from '../../utils/getLocationIconPath';
+  import tv_noise from '$lib/assets/tv_noise.png';
 
-	let innerWidth = $state(1600);
-	let sideSpacing = $derived(innerWidth >= 1536 ? (innerWidth - 1536) / 2 : 30);
-	let gridWidth = $state(1500);
-	let colWidth = $derived((gridWidth - 11 * 16) / 12);
+  gsap.registerPlugin(ScrollTrigger);
 
-	let isMouseOn1 = $state(false);
-	let isMouseOn2 = $state(false);
-	let isMouseOn3 = $state(false);
-	let isMouseOn4 = $state(false);
-	let isMouseOn5 = $state(false);
-	let isMuted1 = $state(true);
-	let isMuted2 = $state(true);
-	let isMuted3 = $state(true);
-	let isMuted4 = $state(true);
-	let isMuted5 = $state(true);
+  const jerryImg = getCharacterImagePath('JERRY');
+  const georgeImg = getCharacterImagePath('GEORGE');
+  const elaineImg = getCharacterImagePath('ELAINE');
+  const kramerImg = getCharacterImagePath('KRAMER');
+  const otherPersonImg = getCharacterImagePath('Other');
+  const jerrysHomeImg = getLocationIconPath("Jerry's home");
+  const dinerImg = getLocationIconPath('Diner');
+  const placeOfLeisureImg = getLocationIconPath('Place of leisure');
+  const otherLocationImg = getLocationIconPath('Other');
 
-	$effect(() => {
-		isMuted1 = !(isMouseOn1 && $soundIsAuth);
-		isMuted2 = !(isMouseOn2 && $soundIsAuth);
-		isMuted3 = !(isMouseOn3 && $soundIsAuth);
-		isMuted4 = !(isMouseOn4 && $soundIsAuth);
-		isMuted5 = !(isMouseOn5 && $soundIsAuth);
-	});
+  /** @type {gsap.Context | undefined} */
+  let ctx;
 
-	const handleMouseEnter = (/** @type {number} */ section) => {
-		switch (section) {
-			case 1:
-				isMouseOn1 = true;
-				return;
-			case 2:
-				isMouseOn2 = true;
-				return;
-			case 3:
-				isMouseOn3 = true;
-				return;
-			case 4:
-				isMouseOn4 = true;
-				return;
-			case 5:
-				isMouseOn5 = true;
-				return;
-		}
-	};
-	const handleMouseLeave = (/** @type {number} */ section) => {
-		switch (section) {
-			case 1:
-				isMouseOn1 = false;
-				return;
-			case 2:
-				isMouseOn2 = false;
-				return;
-			case 3:
-				isMouseOn3 = false;
-				return;
-			case 4:
-				isMouseOn4 = false;
-				return;
-			case 5:
-				isMouseOn5 = false;
-				return;
-		}
-	};
+  onMount(() => {
+    ctx = gsap.context(() => {
+      const mm = gsap.matchMedia();
 
-	onMount(() => {
-		const tl1 = gsap.timeline({
-			scrollTrigger: {
-				trigger: '#the-show-1',
-				start: 'bottom bottom',
-				end: 'top top'
-			}
-		});
-		const tl2 = gsap.timeline({
-			scrollTrigger: {
-				trigger: '#the-show-2',
-				start: 'bottom bottom',
-				end: 'top top'
-			}
-		});
-		const tl3 = gsap.timeline({
-			scrollTrigger: {
-				trigger: '#the-show-3',
-				start: 'top bottom-=20%',
-				end: 'top top-=20%'
-			}
-		});
-		const tl4 = gsap.timeline({
-			scrollTrigger: {
-				trigger: '#the-show-4',
-				start: 'bottom bottom',
-				end: 'top top-=20%'
-			}
-		});
-		const tl5 = gsap.timeline({
-			scrollTrigger: {
-				trigger: '#the-show-5',
-				start: 'top bottom',
-				end: 'bottom top-=20%'
-			}
-		});
+      /** @param {boolean} isMobile */
+      const buildAnimations = (isMobile) => {
+        const infoId = (/** @type {number} */ n) =>
+          isMobile ? `#show-info-mobile-${n}` : `#show-info-${n}`;
 
-		const videoTransform =  {
-                scaleY: 0,
-                ease: 'power3.out',
-                duration: 1
-            };
+        // Initial state
+        for (let j = 0; j < 5; j++) {
+          gsap.set(`#show-text-${j}`, { opacity: j === 0 ? 1 : 0 });
+          gsap.set(infoId(j), { opacity: j === 0 ? 1 : 0 });
+          if (isMobile) {
+            gsap.set(`#show-video-${j}`, { opacity: j === 0 ? 1 : 0 });
+          } else {
+            gsap.set(`#show-video-${j}`, { flexGrow: j === 0 ? 4 : 1 });
+          }
+        }
+        gsap.set(['#show-text-3 .highlight', '#show-text-4 .highlight'], {
+          webkitTextFillColor: 'currentColor',
+          backgroundPosition: '0% center',
+        });
 
-		tl1.from(["#the-show-1 .text, #the-show-1 h5"], {
-                xPercent: -140,
-                stagger: .1
-            })
-            .from('#the-show-1 .video-container', videoTransform, "-=.3")
-		tl2.from(["#the-show-2 .text, #the-show-2 h5"], {
-                xPercent: 140,
-                stagger: .1
-            })
-            .from('#the-show-2 .video-container', videoTransform, "-=.3")
-		tl3.from(["#the-show-3 .text, #the-show-3 h5"], {
-                yPercent: 140,
-                stagger: .1
-            })
-            .from('#the-show-3 .video-container', videoTransform, "-=.3")
-		tl4.from(["#the-show-4 .text, #the-show-4 h5"], {
-                xPercent: 140,
-                stagger: .1
-            })
-            .from('#the-show-4 .video-container', videoTransform, "-=.3")
-		tl5.from(["#the-show-5 .text, #the-show-5 h5"], {
-                yPercent: 140,
-                stagger: .1
-            })
-            .from('#the-show-5 .video-container', videoTransform, "-=.3")
-	});
+        /** @param {number} index */
+        const transitionTo = (index) => {
+          // Kill all in-progress transitions first
+          for (let j = 0; j < 5; j++) {
+            gsap.killTweensOf(`#show-text-${j}`);
+            gsap.killTweensOf(infoId(j));
+            gsap.killTweensOf(`#show-video-${j}`);
+          }
+          gsap.killTweensOf('#show-text-3 .highlight');
+          gsap.killTweensOf('#show-text-4 .highlight');
+
+          // Snap all texts/info to hidden, then fade in the target
+          for (let j = 0; j < 5; j++) {
+            gsap.set(`#show-text-${j}`, { opacity: 0 });
+            gsap.set(infoId(j), { opacity: 0 });
+          }
+          gsap.to(`#show-text-${index}`, { opacity: 1, duration: 0.3 });
+          gsap.to(infoId(index), { opacity: 1, duration: 0.3 });
+
+          // Videos
+          if (isMobile) {
+            for (let j = 0; j < 5; j++) gsap.set(`#show-video-${j}`, { opacity: 0 });
+            gsap.set(`#show-video-${index}`, { opacity: 1 });
+          } else {
+            for (let j = 0; j < 5; j++) {
+              gsap.to(`#show-video-${j}`, {
+                flexGrow: j === index ? 4 : 1,
+                duration: 0.3,
+                ease: 'power2.inOut',
+              });
+            }
+          }
+
+          // Highlight animations
+          gsap.set('#show-text-3 .highlight', {
+            webkitTextFillColor: 'currentColor',
+            backgroundPosition: '0% center',
+          });
+          gsap.set('#show-text-4 .highlight', {
+            webkitTextFillColor: 'currentColor',
+            backgroundPosition: '0% center',
+          });
+          if (index === 3) {
+            gsap.to('#show-text-3 .highlight', {
+              webkitTextFillColor: 'transparent',
+              backgroundPosition: '200% center',
+              duration: 1.5,
+              ease: 'power3.out',
+              delay: 0.3,
+            });
+          } else if (index === 4) {
+            gsap.to('#show-text-4 .highlight', {
+              webkitTextFillColor: 'transparent',
+              backgroundPosition: '200% center',
+              duration: 1.5,
+              stagger: 0.4,
+              ease: 'power3.out',
+              delay: 0.3,
+            });
+          }
+        };
+
+        for (let i = 0; i < 4; i++) {
+          ScrollTrigger.create({
+            trigger: `#show-step-${i + 1}`,
+            start: 'top top',
+            invalidateOnRefresh: true,
+            onEnter: () => transitionTo(i + 1),
+            onLeaveBack: () => transitionTo(i),
+          });
+        }
+      };
+
+      mm.add('(min-width: 1024px)', () => buildAnimations(false));
+      mm.add('(max-width: 1023px)', () => buildAnimations(true));
+    });
+  });
+
+  onDestroy(() => {
+    ctx?.revert();
+  });
 </script>
 
-<svelte:window bind:innerWidth />
+<div id="show-section" class="relative">
+  <!-- Sticky container -->
+  <div id="show-sticky" class="sticky top-0 h-screen self-start flex flex-col bg-black">
+    <!-- Video strip -->
+    <div class="show-video-strip flex w-full h-[40vh] lg:h-[65vh]">
+      <div
+        id="show-video-0"
+        class="show-video-item relative overflow-hidden min-w-0"
+        style="flex: 4 1 0%"
+      >
+        <video playsinline autoplay muted loop class="h-full w-full object-cover">
+          <source
+            src="https://amdufour.github.io/hosted-data/apis/videos/6c.ShowAboutNothing(CC).mp4"
+            type="video/mp4"
+          />
+        </video>
+        <div class="readable-layer z-1 absolute inset-0"></div>
+        <div class="absolute inset-0" style="background-image: url('{tv_noise}')"></div>
+        <!-- Desktop info overlay only -->
+        <div
+          id="show-info-0"
+          class="hidden lg:flex absolute bottom-0 left-0 right-0 px-4 pb-4 pt-12 bg-gradient-to-t from-black to-transparent items-end justify-between gap-4"
+        >
+          <div class="number">S4E3 - The Pitch</div>
+          <div class="flex items-start gap-2 shrink-0">
+            <div class="flex flex-col items-center gap-1">
+              <div
+                class="rounded-full bg-contain bg-center w-[40px] h-[40px]"
+                style="background-image: url({jerryImg})"
+              ></div>
+              <div class="w-[50px] text-xs text-center leading-tight">Jerry</div>
+            </div>
+            <div class="flex flex-col items-center gap-1">
+              <div
+                class="rounded-full bg-contain bg-center w-[40px] h-[40px]"
+                style="background-image: url({georgeImg})"
+              ></div>
+              <div class="w-[50px] text-xs text-center leading-tight">George</div>
+            </div>
+            <div class="flex flex-col items-center gap-1">
+              <div
+                class="rounded-full bg-contain bg-center w-[40px] h-[40px]"
+                style="background-image: url({dinerImg})"
+              ></div>
+              <div class="w-[50px] text-xs text-center leading-tight">Diner</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        id="show-video-1"
+        class="show-video-item relative overflow-hidden min-w-0"
+        style="flex: 1 1 0%"
+      >
+        <video playsinline autoplay muted loop class="h-full w-full object-cover">
+          <source
+            src="https://amdufour.github.io/hosted-data/apis/videos/32.Minutiae(CC).mp4"
+            type="video/mp4"
+          />
+        </video>
+        <div class="readable-layer z-1 absolute inset-0"></div>
+        <div class="absolute inset-0" style="background-image: url('{tv_noise}')"></div>
+        <div
+          id="show-info-1"
+          class="hidden lg:flex absolute bottom-0 left-0 right-0 px-4 pb-4 pt-12 bg-gradient-to-t from-black to-transparent items-end justify-between gap-4"
+        >
+          <div class="number">S8E3 - The Bizzaro Jerry</div>
+          <div class="flex items-start gap-2 shrink-0">
+            <div class="flex flex-col items-center gap-1">
+              <div
+                class="rounded-full bg-contain bg-center w-[40px] h-[40px]"
+                style="background-image: url({jerryImg})"
+              ></div>
+              <div class="w-[50px] text-xs text-center leading-tight">Jerry</div>
+            </div>
+            <div class="flex flex-col items-center gap-1">
+              <div
+                class="rounded-full bg-contain bg-center w-[40px] h-[40px]"
+                style="background-image: url({elaineImg})"
+              ></div>
+              <div class="w-[50px] text-xs text-center leading-tight">Elaine</div>
+            </div>
+            <div class="flex flex-col items-center gap-1">
+              <div
+                class="rounded-full bg-contain bg-center w-[40px] h-[40px]"
+                style="background-image: url({jerrysHomeImg})"
+              ></div>
+              <div class="w-[50px] text-xs text-center leading-tight">Jerry's home</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        id="show-video-2"
+        class="show-video-item relative overflow-hidden min-w-0"
+        style="flex: 1 1 0%"
+      >
+        <video playsinline autoplay muted loop class="h-full w-full object-cover">
+          <source
+            src="https://amdufour.github.io/hosted-data/apis/videos/KramerJeans2(CC).mp4"
+            type="video/mp4"
+          />
+        </video>
+        <div class="readable-layer z-1 absolute inset-0"></div>
+        <div class="absolute inset-0" style="background-image: url('{tv_noise}')"></div>
+        <div
+          id="show-info-2"
+          class="hidden lg:flex absolute bottom-0 left-0 right-0 px-4 pb-4 pt-12 bg-gradient-to-t from-black to-transparent items-end justify-between gap-4"
+        >
+          <div class="number">S7E3 - The Wait Out</div>
+          <div class="flex items-start gap-2 shrink-0">
+            <div class="flex flex-col items-center gap-1">
+              <div
+                class="rounded-full bg-contain bg-center w-[40px] h-[40px]"
+                style="background-image: url({jerryImg})"
+              ></div>
+              <div class="w-[50px] text-xs text-center leading-tight">Jerry</div>
+            </div>
+            <div class="flex flex-col items-center gap-1">
+              <div
+                class="rounded-full bg-contain bg-center w-[40px] h-[40px]"
+                style="background-image: url({kramerImg})"
+              ></div>
+              <div class="w-[50px] text-xs text-center leading-tight">Kramer</div>
+            </div>
+            <div class="flex flex-col items-center gap-1">
+              <div
+                class="rounded-full bg-contain bg-center w-[40px] h-[40px]"
+                style="background-image: url({jerrysHomeImg})"
+              ></div>
+              <div class="w-[50px] text-xs text-center leading-tight">Jerry's home</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        id="show-video-3"
+        class="show-video-item relative overflow-hidden min-w-0"
+        style="flex: 1 1 0%"
+      >
+        <video playsinline autoplay muted loop class="h-full w-full object-cover">
+          <source
+            src="https://amdufour.github.io/hosted-data/apis/videos/8.KramerCigarette(CC).mp4"
+            type="video/mp4"
+          />
+        </video>
+        <div class="readable-layer z-1 absolute inset-0"></div>
+        <div class="absolute inset-0" style="background-image: url('{tv_noise}')"></div>
+        <div
+          id="show-info-3"
+          class="hidden lg:flex absolute bottom-0 left-0 right-0 px-4 pb-4 pt-12 bg-gradient-to-t from-black to-transparent items-end justify-between gap-4"
+        >
+          <div class="number">S5E4 - The Sniffing Accountant</div>
+          <div class="flex items-start gap-2 shrink-0">
+            <div class="flex flex-col items-center gap-1">
+              <div
+                class="rounded-full bg-contain bg-center w-[40px] h-[40px]"
+                style="background-image: url({kramerImg})"
+              ></div>
+              <div class="w-[50px] text-xs text-center leading-tight">Kramer</div>
+            </div>
+            <div class="flex flex-col items-center gap-1">
+              <div
+                class="rounded-full bg-contain bg-center w-[40px] h-[40px]"
+                style="background-image: url({otherPersonImg})"
+              ></div>
+              <div class="w-[50px] text-xs text-center leading-tight">Other person</div>
+            </div>
+            <div class="flex flex-col items-center gap-1">
+              <div
+                class="rounded-full bg-contain bg-center w-[40px] h-[40px]"
+                style="background-image: url({placeOfLeisureImg})"
+              ></div>
+              <div class="w-[50px] text-xs text-center leading-tight">Place of leisure</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        id="show-video-4"
+        class="show-video-item relative overflow-hidden min-w-0"
+        style="flex: 1 1 0%"
+      >
+        <video playsinline autoplay muted loop class="h-full w-full object-cover">
+          <source
+            src="https://amdufour.github.io/hosted-data/apis/videos/14.ElaineDancing(CC).mp4"
+            type="video/mp4"
+          />
+        </video>
+        <div class="readable-layer z-1 absolute inset-0"></div>
+        <div class="absolute inset-0" style="background-image: url('{tv_noise}')"></div>
+        <div
+          id="show-info-4"
+          class="hidden lg:flex absolute bottom-0 left-0 right-0 px-4 pb-4 pt-12 bg-gradient-to-t from-black to-transparent items-end justify-between gap-4"
+        >
+          <div class="number">S8E4 - The Little Kicks</div>
+          <div class="flex items-start gap-2 shrink-0">
+            <div class="flex flex-col items-center gap-1">
+              <div
+                class="rounded-full bg-contain bg-center w-[40px] h-[40px]"
+                style="background-image: url({elaineImg})"
+              ></div>
+              <div class="w-[50px] text-xs text-center leading-tight">Elaine</div>
+            </div>
+            <div class="flex flex-col items-center gap-1">
+              <div
+                class="rounded-full bg-contain bg-center w-[40px] h-[40px]"
+                style="background-image: url({otherPersonImg})"
+              ></div>
+              <div class="w-[50px] text-xs text-center leading-tight">Other person</div>
+            </div>
+            <div class="flex flex-col items-center gap-1">
+              <div
+                class="rounded-full bg-contain bg-center w-[40px] h-[40px]"
+                style="background-image: url({otherLocationImg})"
+              ></div>
+              <div class="w-[50px] text-xs text-center leading-tight">Other location</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-<section id="the-show">
-	<div class="container pt-96">
-		<!-- The show about nothing -->
-		<div
-			id="the-show-1"
-			class="grid grid-cols-12 gap-4 mb-24" 
-			role="presentation"
-			bind:clientWidth={gridWidth}
-			onmouseenter={() => handleMouseEnter(1)}
-			onmouseleave={() => handleMouseLeave(1)}
-		>
-			<div class="col-span-7 md:col-span-4 mask">
-				<div class="text">It only took a handful of episodes for me to find myself completely hooked. Seinfeld was written in a different key, deviating from the traditional rules of sitcoms, focusing on - and amplifying - the minutiae of daily life, earning its reputation as <a href="https://www.latimes.com/archives/la-xpm-1993-03-04-ca-474-story.html" target="_blank">the show about nothing</a>.</div></div>
-			<div class="col-span-5">
-				<!-- svelte-ignore a11y_media_has_caption -->
-				 <div class="relative video-container">
-					<!-- <Lazy keep={true} height={340 * 5 * colWidth / 604} offset="100vh"> -->
-						<video playsinline autoplay bind:muted={isMuted1} loop>
-							<source
-								src="https://amdufour.github.io/hosted-data/apis/videos/6c.ShowAboutNothing.mp4"
-								type="video/mp4"
-							/>
-						</video>
-					<!-- </Lazy> -->
-					<div class="readable-layer z-1 absolute bottom-0 left-0 right-0 top-0"></div>
-					<div
-						class="absolute z-10 bottom-0 left-0 right-0 top-0"
-						style="background-image: url('{tv_noise}')"
-					></div>
-				</div>
-				<div class="mask">
-					<h5 class="mt-2">S4E3 - The Pitch</h5>
-				</div>
-			</div>
-		</div>
-		
-		<!--  Irreverent characters -->
-		<div 
-			id="the-show-2"
-			class="grid grid-cols-12 gap-4 mb-52" role="presentation"
-			style="margin-left: -{sideSpacing}px;"
-			onmouseenter={() => handleMouseEnter(2)}
-			onmouseleave={() => handleMouseLeave(2)}
-		>
-			<div class="col-span-5 md:col-span-7">
-				<!-- svelte-ignore a11y_media_has_caption -->
-				 <div class="relative video-container">
-					<!-- <Lazy keep={true} height={340 * 7 * colWidth / 604} offset="100vh"> -->
-						<video playsinline autoplay bind:muted={isMuted2} loop>
-							<source
-								src="https://amdufour.github.io/hosted-data/apis/videos/32.Minutiae.mp4"
-								type="video/mp4"
-							/>
-						</video>
-					<!-- </Lazy> -->
-					<div class="readable-layer z-1 absolute bottom-0 left-0 right-0 top-0"></div>
-					<div
-						class="absolute bottom-0 left-0 right-0 top-0"
-						style="background-image: url('{tv_noise}')"
-					></div>
-				</div>
-				<div class="mask">
-					<h5 class="mt-2">S8E3 - The Bizarro Jerry</h5>
-				</div>
-			</div>
-			<div class="col-span-7 md:col-span-3 mask">
-				<div class="text">I loved the irreverent characters, with their absurd obsessions and neurotic tendencies, and the hilariously avoidable situations they found themselves in.</div>
-			</div>
-		</div>
+    <!-- Mobile info bar: title + icons below video, hidden on desktop -->
+    <div class="lg:hidden shrink-0 border-t border-white/10">
+      <div class="grid">
+        <div
+          id="show-info-mobile-0"
+          class="col-start-1 row-start-1 px-4 py-3 flex items-start justify-between gap-4 text-[#f9f5f7]"
+        >
+          <div class="number">S4E3 - The Pitch</div>
+          <div class="flex items-start gap-2 shrink-0">
+            <div class="flex flex-col items-center gap-1">
+              <div
+                class="rounded-full bg-contain bg-center w-[32px] h-[32px]"
+                style="background-image: url({jerryImg})"
+              ></div>
+              <div class="w-[50px] text-xs text-center leading-tight">Jerry</div>
+            </div>
+            <div class="flex flex-col items-center gap-1">
+              <div
+                class="rounded-full bg-contain bg-center w-[32px] h-[32px]"
+                style="background-image: url({georgeImg})"
+              ></div>
+              <div class="w-[50px] text-xs text-center leading-tight">George</div>
+            </div>
+            <div class="flex flex-col items-center gap-1">
+              <div
+                class="rounded-full bg-contain bg-center w-[32px] h-[32px]"
+                style="background-image: url({dinerImg})"
+              ></div>
+              <div class="w-[50px] text-xs text-center leading-tight">Diner</div>
+            </div>
+          </div>
+        </div>
+        <div
+          id="show-info-mobile-1"
+          class="col-start-1 row-start-1 px-4 py-3 flex items-start justify-between gap-4 text-[#f9f5f7]"
+          style="opacity: 0"
+        >
+          <div class="number">S8E3 - The Bizzaro Jerry</div>
+          <div class="flex items-start gap-2 shrink-0">
+            <div class="flex flex-col items-center gap-1">
+              <div
+                class="rounded-full bg-contain bg-center w-[32px] h-[32px]"
+                style="background-image: url({jerryImg})"
+              ></div>
+              <div class="w-[50px] text-xs text-center leading-tight">Jerry</div>
+            </div>
+            <div class="flex flex-col items-center gap-1">
+              <div
+                class="rounded-full bg-contain bg-center w-[32px] h-[32px]"
+                style="background-image: url({elaineImg})"
+              ></div>
+              <div class="w-[50px] text-xs text-center leading-tight">Elaine</div>
+            </div>
+            <div class="flex flex-col items-center gap-1">
+              <div
+                class="rounded-full bg-contain bg-center w-[32px] h-[32px]"
+                style="background-image: url({jerrysHomeImg})"
+              ></div>
+              <div class="w-[50px] text-xs text-center leading-tight">Jerry's home</div>
+            </div>
+          </div>
+        </div>
+        <div
+          id="show-info-mobile-2"
+          class="col-start-1 row-start-1 px-4 py-3 flex items-start justify-between gap-4 text-[#f9f5f7]"
+          style="opacity: 0"
+        >
+          <div class="number">S7E3 - The Wait Out</div>
+          <div class="flex items-start gap-2 shrink-0">
+            <div class="flex flex-col items-center gap-1">
+              <div
+                class="rounded-full bg-contain bg-center w-[32px] h-[32px]"
+                style="background-image: url({jerryImg})"
+              ></div>
+              <div class="w-[50px] text-xs text-center leading-tight">Jerry</div>
+            </div>
+            <div class="flex flex-col items-center gap-1">
+              <div
+                class="rounded-full bg-contain bg-center w-[32px] h-[32px]"
+                style="background-image: url({kramerImg})"
+              ></div>
+              <div class="w-[50px] text-xs text-center leading-tight">Kramer</div>
+            </div>
+            <div class="flex flex-col items-center gap-1">
+              <div
+                class="rounded-full bg-contain bg-center w-[32px] h-[32px]"
+                style="background-image: url({jerrysHomeImg})"
+              ></div>
+              <div class="w-[50px] text-xs text-center leading-tight">Jerry's home</div>
+            </div>
+          </div>
+        </div>
+        <div
+          id="show-info-mobile-3"
+          class="col-start-1 row-start-1 px-4 py-3 flex items-start justify-between gap-4 text-[#f9f5f7]"
+          style="opacity: 0"
+        >
+          <div class="number">S5E4 - The Sniffing Accountant</div>
+          <div class="flex items-start gap-2 shrink-0">
+            <div class="flex flex-col items-center gap-1">
+              <div
+                class="rounded-full bg-contain bg-center w-[32px] h-[32px]"
+                style="background-image: url({kramerImg})"
+              ></div>
+              <div class="w-[50px] text-xs text-center leading-tight">Kramer</div>
+            </div>
+            <div class="flex flex-col items-center gap-1">
+              <div
+                class="rounded-full bg-contain bg-center w-[32px] h-[32px]"
+                style="background-image: url({otherPersonImg})"
+              ></div>
+              <div class="w-[50px] text-xs text-center leading-tight">Other person</div>
+            </div>
+            <div class="flex flex-col items-center gap-1">
+              <div
+                class="rounded-full bg-contain bg-center w-[32px] h-[32px]"
+                style="background-image: url({placeOfLeisureImg})"
+              ></div>
+              <div class="w-[50px] text-xs text-center leading-tight">Place of leisure</div>
+            </div>
+          </div>
+        </div>
+        <div
+          id="show-info-mobile-4"
+          class="col-start-1 row-start-1 px-4 py-3 flex items-start justify-between gap-4 text-[#f9f5f7]"
+          style="opacity: 0"
+        >
+          <div class="number">S8E4 - The Little Kicks</div>
+          <div class="flex items-start gap-2 shrink-0">
+            <div class="flex flex-col items-center gap-1">
+              <div
+                class="rounded-full bg-contain bg-center w-[32px] h-[32px]"
+                style="background-image: url({elaineImg})"
+              ></div>
+              <div class="w-[50px] text-xs text-center leading-tight">Elaine</div>
+            </div>
+            <div class="flex flex-col items-center gap-1">
+              <div
+                class="rounded-full bg-contain bg-center w-[32px] h-[32px]"
+                style="background-image: url({otherPersonImg})"
+              ></div>
+              <div class="w-[50px] text-xs text-center leading-tight">Other person</div>
+            </div>
+            <div class="flex flex-col items-center gap-1">
+              <div
+                class="rounded-full bg-contain bg-center w-[32px] h-[32px]"
+                style="background-image: url({otherLocationImg})"
+              ></div>
+              <div class="w-[50px] text-xs text-center leading-tight">Other location</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-		<!--  No hugging, no learning -->
-		<div 
-			id="the-show-3"
-			class="grid grid-cols-12 gap-4 mb-52" role="presentation"
-			style="margin-left: {innerWidth >= 768 ? -sideSpacing : 0}px;"
-			onmouseenter={() => handleMouseEnter(3)}
-			onmouseleave={() => handleMouseLeave(3)}
-		>
-			<div class="col-auto md:col-span-2"></div>
-			<div class="col-span-12 md:col-span-8">
-				<div class="mask">
-					<div class="text">
-						<div>It rejected the classic three-act story, sidestepping sentimentality and the pursuit of resolution. With its mantra of <a href="https://www.theguardian.com/tv-and-radio/2018/may/10/no-hugging-no-learning-20-years-on-seinfelds-mantra-still-looms-large" target="_blank">no hugging*, no learning</a> the lead characters were insecure and entertainingly flawed, lacking any desire and capability for personal growth.</div>
-						<div class="number mb-2 text-right">*the earlier clip notwithstanding!</div>
-					</div>
-				</div>
-				<div>
-					<!-- svelte-ignore a11y_media_has_caption -->
-					<div class="relative video-container">
-						<!-- <Lazy keep={true} height={340 * 8 * colWidth / 604} offset="100vh"> -->
-							<video playsinline autoplay bind:muted={isMuted3} loop>
-								<source
-									src="https://amdufour.github.io/hosted-data/apis/videos/11a.GoodSamaritan.mp4"
-									type="video/mp4"
-								/>
-							</video>
-						<!-- </Lazy> -->
-						<div class="readable-layer z-1 absolute bottom-0 left-0 right-0 top-0"></div>
-						<div
-							class="absolute bottom-0 left-0 right-0 top-0"
-							style="background-image: url('{tv_noise}')"
-						></div>
-					</div>
-					<div class="mask">
-						<h5 class="mt-2">S9E24 - The Good Samaritan Law</h5>
-					</div>
-				</div>
-			</div>
-		</div>
+    <!-- Text area -->
+    <div class="relative flex-1 bg-black overflow-hidden">
+      <!-- Text 0 -->
+      <div
+        id="show-text-0"
+        class="absolute inset-0 container py-6 flex flex-col justify-center overflow-y-auto"
+      >
+        <p>
+          Seinfeld is considered a unique sitcom in how it deviated from the traditional rules of
+          the time, rejecting the classic three-act story in favour of a faster-paced multi-story
+          structure.
+        </p>
+        <p>
+          It was essentially written in a different key, focusing on - and amplifying - the minutiae
+          of daily life, and earning its reputation as <a
+            href="https://www.latimes.com/archives/la-xpm-1993-03-04-ca-474-story.html"
+            target="_blank">the show about nothing</a
+          >.
+        </p>
+      </div>
 
-		<!-- Anti heroes -->
-		<div 
-			id="the-show-4"
-			class="grid grid-cols-12 gap-4 mb-44" role="presentation"
-			style="margin-right: {innerWidth >= 768 ? -sideSpacing : -sideSpacing}px;"
-			onmouseenter={() => handleMouseEnter(4)}
-			onmouseleave={() => handleMouseLeave(4)}
-		>
-			<div class="col-span-1 md:col-span-2"></div>
-			<div class="col-span-6 md:col-span-5 mask">
-				<div class="text">As with any shows from its time, as <a href="https://www.theguardian.com/culture/2024/oct/16/jerry-seinfeld-tom-papa-breaking-bad-podcast-interview-politics-comedy-extreme-left-pc-crap-#:~:text=%E2%80%9CDoes%20culture%20change,my%20skiing%20analogy.%E2%80%9D" target="_blank">culture and society evolve</a> a contemporary lens exposes negative stereotypes and flashes of chauvinism and sizeism, to name but two isms. The amoral instincts of these anti-heroes was most on-show in their romantic encounters and when faced with the slightest adversity or irrational annoyance.</div>
-			</div>
-			<div class="col-span-5">
-				<!-- svelte-ignore a11y_media_has_caption -->
-				 <div class="relative video-container">
-					<!-- <Lazy keep={true} height={340 * 5 * colWidth / 604} offset="100vh"> -->
-						<video playsinline autoplay bind:muted={isMuted4} loop>
-							<source
-								src="https://amdufour.github.io/hosted-data/apis/videos/13a.TheNose.mp4"
-								type="video/mp4"
-							/>
-						</video>
-					<!-- </Lazy> -->
-					<div class="readable-layer z-1 absolute bottom-0 left-0 right-0 top-0"></div>
-					<div
-						class="absolute bottom-0 left-0 right-0 top-0"
-						style="background-image: url('{tv_noise}')"
-					></div>
-				</div>
-				<div class="mask">
-					<h5 class="mt-2">S3E9 - The Nose Job</h5>
-				</div>
-			</div>
-		</div>
+      <!-- Text 1 -->
+      <div
+        id="show-text-1"
+        class="absolute inset-0 container py-6 flex flex-col justify-center overflow-y-auto"
+        style="opacity: 0"
+      >
+        <p>
+          Seinfeld sidestepped sentimentality as well as the pursuit of resolution. With its mantra
+          of <a
+            href="https://www.theguardian.com/tv-and-radio/2018/may/10/no-hugging-no-learning-20-years-on-seinfelds-mantra-still-looms-large"
+            target="_blank">no hugging*, no learning</a
+          >
+          the lead characters were insecure and entertainingly flawed, lacking any desire or capability
+          for personal growth when faced with the slightest adversity or annoyance, and especially in
+          their romantic encounters.
+        </p>
+        <p class="number">*the first clip notwithstanding!</p>
+      </div>
 
+      <!-- Text 2 -->
+      <div
+        id="show-text-2"
+        class="absolute inset-0 container py-6 flex flex-col justify-center overflow-y-auto"
+        style="opacity: 0"
+      >
+        <p>
+          Despite their flaws, I loved the irreverent characters, with their absurd obsessions and
+          neurotic tendencies, and the hilariously avoidable situations they found themselves in.
+        </p>
+      </div>
 
-		<!--  The dancing -->
-		<div 
-			id="the-show-5"
-			class="grid grid-cols-12 gap-4 pb-52" role="presentation"
-			style="margin-left: {innerWidth >= 768 ? -sideSpacing : 0}px;"
-			onmouseenter={() => handleMouseEnter(5)}
-			onmouseleave={() => handleMouseLeave(5)}
-		>
-			<div class="col-auto md:col-span-2"></div>
-			<div class="col-span-12 md:col-span-10">
-				<div class="mb-2 mask">
-					<div class="text">And then there’s the dancing.</div>
-				</div>
-				<div>
-					<!-- svelte-ignore a11y_media_has_caption -->
-					<div class="relative video-container">
-						<!-- <Lazy keep={true} height={340 * 10 * colWidth / 604} offset="100vh"> -->
-							<video playsinline autoplay bind:muted={isMuted5} loop>
-								<source
-									src="https://amdufour.github.io/hosted-data/apis/videos/14.ElaineDancing.mp4"
-									type="video/mp4"
-								/>
-							</video>
-						<!-- </Lazy> -->
-						<div class="readable-layer z-1 absolute bottom-0 left-0 right-0 top-0"></div>
-						<div
-							class="absolute bottom-0 left-0 right-0 top-0"
-							style="background-image: url('{tv_noise}')"
-						></div>
-					</div>
-					<div class="mask">
-						<h5 class="mt-2">S8E4 - The Little Kicks</h5>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</section>
+      <!-- Text 3 -->
+      <div
+        id="show-text-3"
+        class="absolute inset-0 container py-6 flex flex-col justify-center overflow-y-auto"
+        style="opacity: 0"
+      >
+        <p>
+          As I progressed through the episodes my fascination with the creative process behind the
+          show grew. It was the <span class="highlight">musicality</span> of the show I found particularly
+          intriguing, orchestrated by the comedic talents of co-creators Jerry Seinfeld and Larry David.
+        </p>
+      </div>
+
+      <!-- Text 4 -->
+      <div
+        id="show-text-4"
+        class="absolute inset-0 container py-6 flex flex-col justify-center overflow-y-auto"
+        style="opacity: 0"
+      >
+        <p>
+          Like music, situation comedy has rhythm and it has texture: <span class="highlight"
+            >rhythm</span
+          >
+          is shaped by a show's timing, its scene-structures, and its pacing;
+          <span class="highlight">textures</span> are created by the 'instruments' of characters and their
+          locations, which amalgamate to create the situations from which the comedy manifests.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Spacers as scroll triggers (one per transition = 4 total) -->
+  <div id="show-step-1" class="h-[150vh]"></div>
+  <div id="show-step-2" class="h-[150vh]"></div>
+  <div id="show-step-3" class="h-[150vh]"></div>
+  <div id="show-step-4" class="h-[150vh]"></div>
+  <!-- Extra spacer so the last video/text has reading time before sticky releases -->
+  <div class="h-[150vh]"></div>
+</div>
+
+<style>
+  @media (min-width: 1024px) {
+    #show-section p {
+      max-width: 900px;
+    }
+  }
+
+  @media (max-width: 1023px) {
+    .show-video-strip {
+      position: relative;
+    }
+    .show-video-item {
+      position: absolute;
+      inset: 0;
+      width: 100% !important;
+    }
+    #show-text-0 p,
+    #show-text-1 p {
+      margin: 0.5rem 0;
+    }
+  }
+</style>
