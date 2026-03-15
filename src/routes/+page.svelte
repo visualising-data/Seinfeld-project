@@ -25,6 +25,7 @@
   import MethodologyAndCredits from '../sections/MethodologyAndCredits.svelte';
   import Footer from '../sections/Footer.svelte';
   import Warning from '../sections/Warning.svelte';
+  import TitleTransition from '../sections/TitleTransition.svelte';
 
   const episodesDataUrl = 'https://amdufour.github.io/hosted-data/apis/episodes_laughs.min.json';
 
@@ -75,8 +76,11 @@
         <SoundAuthPopup />
       {/if}
       <Title />
-      <!-- <Warning /> -->
+      <TitleTransition>
+        <Warning />
+      </TitleTransition>
     </div>
+    <div style="background: #F9F5F7; min-height: 100dvh;"></div>
     <!-- <div class="bg-white text-black">
       <Calendar {ScrollTrigger} />
       {#if episodesData}

@@ -1,110 +1,99 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-  import { gsap } from 'gsap/dist/gsap';
+  import { onMount, onDestroy } from 'svelte';
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  gsap.registerPlugin(ScrollTrigger);
 
-  let coffeeWidth = $state() as number
-  let couchWidth = $state() as number
+  let ctx: gsap.Context;
 
   onMount(() => {
-    const tlCoffee = gsap.timeline({
-			scrollTrigger: {
-				trigger: '#warning .coffee-container',
-				start: 'top center',
-        end: 'bottom top',
-				toggleActions: 'play reverse play reverse'
-			}
-		});
-    const tlCouch = gsap.timeline({
-			scrollTrigger: {
-				trigger: '#warning .couch-container',
-				start: 'top center',
-        end: 'bottom top',
-				toggleActions: 'play reverse play reverse'
-			}
-		});
-    const tlTextEnd = gsap.timeline({
-			scrollTrigger: {
-				trigger: '#warning .text-end',
-				start: 'top center',
-        end: 'bottom top',
-				toggleActions: 'play reverse play reverse'
-			}
-		});
+    ctx = gsap.context(() => {
+      // Single timeline covers entry (0→0.5) and exit (0.5→1)
+      // Trigger spans the full wrapper: top bottom → bottom top
+      const tl = gsap.timeline({ defaults: { ease: 'none' } });
+      tl
+        // Entry: coffee from left, couch from right
+        .from('#warning-coffee-bg', { xPercent: -110 }, 0)
+        .from('#warning-couch-bg', { xPercent: 110 }, 0)
+        // Exit: coffee exits right, couch exits left
+        .to('#warning-coffee-bg', { xPercent: 110 }, 0.5)
+        .to('#warning-couch-bg', { xPercent: -110 }, 0.5)
+        // Text fades out after images are gone
+        .to('.warning-text-item', { opacity: 0, duration: 0.1 }, 0.8)
+        // Background reveals #F9F5F7
+        .to('#warning-bg-fill', { opacity: 1, duration: 0.1 }, 0.9);
 
-    tlCoffee
-      .from('#warning .coffee-bg-container', {
-        y: 50,
-        opacity: 0,
-        duration: 1
-      })
-      .from('#warning .coffee-text', {
-        y: 50,
-        opacity: 0,
-        duration: 1
-      }, "-=0.7")
-    tlCouch
-      .from('#warning .couch-bg-container', {
-        y: 50,
-        opacity: 0,
-        duration: 1
-      })
-      .from('#warning .couch-text', {
-        y: 50,
-        opacity: 0,
-        duration: 1
-      }, "-=0.7")
-    tlTextEnd
-      .from('#warning .text-end', {
-        y: 50,
-        opacity: 0,
-        duration: 1
-      })
-  })
+      ScrollTrigger.create({
+        trigger: '.warning-wrapper',
+        start: 'top bottom',
+        end: 'bottom bottom',
+        scrub: 1.5,
+        animation: tl,
+        invalidateOnRefresh: true,
+      });
+    });
+  });
+
+  onDestroy(() => ctx?.revert());
 </script>
 
-<div id="warning">
-  <div class="container grid grid-cols-12 gap-4 py-80">
-    <!-- Coffee cup -->
-    <div class="col-span-12 col-start-2 coffee-container">
-      <div class="grid grid-cols-12 gap-4 items-center">
-        <div class="coffee-bg-container col-span-4 md:col-span-2">
-          <div 
-            bind:clientWidth={coffeeWidth} 
-            class="bg-image bg-image-coffee float-and-rotate" 
-            style="height: {1.58 * coffeeWidth}px;"></div>
-        </div>
-        <div class="col-span-8 md:col-span-7 pl-4 coffee-text">Grab a coffee</div>
+<!-- Outer wrapper: sticky inner + scroll spacer provide entry and exit scroll distance -->
+<div class="warning-wrapper relative">
+  <div
+    id="warning"
+    class="sticky top-0 h-dvh overflow-hidden flex flex-col justify-between py-16 text-black"
+  >
+    <!-- Background: huge illustrations -->
+    <div class="absolute inset-0 flex pointer-events-none">
+      <div id="warning-coffee-bg" class="relative z-[1] w-1/2 h-full flex items-start justify-end pr-8 pt-8">
+        <img
+          src="https://amdufour.github.io/hosted-data/apis/illustrations/coffee_cup.png"
+          alt=""
+          class="h-[60%] w-auto object-contain coffee-rotate"
+        />
+      </div>
+      <div id="warning-couch-bg" class="w-1/2 h-full flex items-center justify-start pl-4">
+        <img
+          src="https://amdufour.github.io/hosted-data/apis/illustrations/couch.png"
+          alt=""
+          class="h-[55vh] w-auto max-w-none"
+        />
       </div>
     </div>
 
-    <!-- Couch -->
-    <div class="col-span-12 pt-40 couch-container">
-      <div class="grid grid-cols-12 gap-4 items-center">
-        <div class="col-span-5 col-start-2 md:col-span-2 md:col-start-2 couch-text">Take a seat</div>
-        <div class="couch-bg-container col-span-6 md:col-span-8">
-          <div 
-            bind:clientWidth={couchWidth} 
-            class="bg-image bg-image-couch float" 
-            style="height: {0.4 * couchWidth}px;"></div>
-        </div>
-      </div>
+    <!-- Background fill for exit transition to #F9F5F7 -->
+    <div
+      id="warning-bg-fill"
+      class="absolute inset-0 opacity-0 pointer-events-none"
+      style="background: #F9F5F7; z-index: 5;"
+    ></div>
+
+    <!-- Top: 2 column labels -->
+    <div class="warning-text-item relative z-10 grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-0 w-full px-8 md:px-16 mt-12">
+      <div class="warning-label">Grab a coffee</div>
+      <div class="warning-label">Take a seat</div>
     </div>
 
-    <div class="col-span-12 flex justify-center pt-40 text-end">We have a lot to get through!</div>
+    <!-- Bottom: full-width text over 2 lines -->
+    <div class="warning-text-item relative text-center z-10 w-full px-2 leading-[0.85] warning-end-text">
+      <div>We have a lot</div>
+      <div>to get through!</div>
+    </div>
   </div>
+
+  <!-- Scroll spacer: gives the exit animation its scroll distance -->
+  <div class="h-dvh"></div>
 </div>
 
 <style>
-  .bg-image {
-    background-repeat: no-repeat;
-    background-size: 100% auto;
-    background-position: center;
+  .warning-label {
+    font-size: clamp(1.5rem, 3.5vw, 3.2rem);
   }
-  .bg-image-coffee {
+  .warning-end-text {
+    font-size: 11.5vw;
+    font-weight: 700;
+  }
+  .coffee-rotate {
     transform: rotate(30deg);
-    background-image: url("https://amdufour.github.io/hosted-data/apis/illustrations/coffee_cup.png");
-  }
-  .bg-image-couch {
-    background-image: url("https://amdufour.github.io/hosted-data/apis/illustrations/couch.png");
   }
 </style>
