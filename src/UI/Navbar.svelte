@@ -18,14 +18,15 @@
 		showMenu = !showMenu;
 	};
 
-	let color = $derived($navBarColor === 'white' ? '#F9F5F7' : '#E71D80');
+	let color = $derived($catalogIsInView ? '#F9F5F7' : $navBarColor === 'white' ? '#F9F5F7' : '#E71D80');
+	let navBg = $derived($catalogIsInView && innerWidth < 768 ? '#E71D80' : 'transparent');
 </script>
 
 <svelte:window bind:innerWidth />
 
 <div
-	class="fixed right-6 top-0 flex h-14 items-center"
-	style="height: 56px; z-index: {catalogIsInView && innerWidth <= 539 ? 0 : 10};"
+	class="fixed inset-x-0 top-0 flex h-14 items-center justify-end px-6"
+	style="height: 56px; z-index: 10; background: {navBg}; transition: background 0.3s ease;"
 >
 	<div class="flex">
 		<button onclick={toggleSound}>

@@ -11,6 +11,8 @@
 		"strict": true,
 		"moduleResolution": "bundler",
 		"paths": {
+			"$lib": ["./src/lib"],
+			"$lib/*": ["./src/lib/*"],
 			"gsap/dist/gsap": ["./node_modules/gsap/types/index.d.ts"]
 		}
 	}

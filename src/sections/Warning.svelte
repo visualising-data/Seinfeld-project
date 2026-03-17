@@ -5,6 +5,7 @@
   // @ts-ignore
   import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
   gsap.registerPlugin(ScrollTrigger);
+  import { navBarColor } from '../stores/navbarColor';
 
   let ctx: gsap.Context;
 
@@ -32,6 +33,9 @@
         scrub: 1.5,
         animation: tl,
         invalidateOnRefresh: true,
+        onUpdate: (self: { progress: number }) => {
+          navBarColor.set(self.progress >= 0.9 ? 'pink' : 'white');
+        },
       });
     });
   });

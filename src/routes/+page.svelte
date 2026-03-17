@@ -16,10 +16,10 @@
   import Title from '../sections/Title.svelte';
   import DataGathering from '../sections/data_gathering/DataGathering.svelte';
   import IntroEnd from '../sections/IntroEnd.svelte';
-  // Other sections are commented out — re-add imports when re-enabling each one.
-  // Use dynamic imports + svelte-inview sentinel to lazy-load on scroll:
-  // e.g. Calendar = (await import('../sections/calendar/Calendar.svelte')).default
   import Warning from '../sections/Warning.svelte';
+
+  // Lazy-loaded sections — imported dynamically when sentinel enters viewport
+  let Calendar: any = null;
   import TitleTransition from '../sections/TitleTransition.svelte';
 
   const episodesDataUrl = 'https://amdufour.github.io/hosted-data/apis/episodes_laughs.min.json';
@@ -75,10 +75,20 @@
         <Warning />
       </TitleTransition>
     </div>
-    <div style="background: #F9F5F7; min-height: 100dvh;"></div>
-    <!-- <div class="bg-white text-black">
-      <Calendar {ScrollTrigger} />
-      {#if episodesData}
+    <div
+      style="background: #F9F5F7; min-height: 100dvh;"
+      use:inview={{ rootMargin: '500px' }}
+      oninview_change={async (/** @type {{ detail: { inView: any; }; }} */ event) => {
+        if (event.detail.inView && !Calendar) {
+          Calendar = (await import('../sections/calendar/Calendar.svelte')).default;
+        }
+      }}
+    ></div>
+    <div class="text-black" style="background: #F9F5F7;">
+      {#if Calendar}
+        <svelte:component this={Calendar} {ScrollTrigger} />
+      {/if}
+      <!-- {#if episodesData}
         <DataGathering {episodesData} {ScrollTrigger} />
         <IntroEnd />
         <Quotes />
@@ -86,10 +96,10 @@
         <SupportingCharsSection {episodesData} />
         <LocationsSection {episodesData} />
         <LaughsExploration {episodesData} />
-      {/if}
-      <Quotes />
-      <MethodologyAndCredits />
-      <Footer />
-    </div> -->
+      {/if} -->
+      <!-- <Quotes /> -->
+      <!-- <MethodologyAndCredits /> -->
+      <!-- <Footer /> -->
+    </div>
   {/if}
 </main>
