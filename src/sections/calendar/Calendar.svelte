@@ -8,6 +8,7 @@
     'https://amdufour.github.io/hosted-data/apis/sonification/20250925_Seinfeld_Intro_Plip.mp3';
   import { soundIsAuth } from '../../stores/soundAuthStore';
   import { catalogIsInView } from '../../stores/catalogIsInView';
+  import { navBarColor } from '../../stores/navbarColor';
 
   import { seasons } from '$lib/data/seasons';
   import { episodesInfo } from '$lib/data/episodesInfo';
@@ -27,7 +28,7 @@
   let screenSize = $derived({ width: innerWidth, height: innerHeight });
   let seasonsWidth = $derived(innerWidth >= 793 ? 130 : 54);
   let headersHeight = $derived(innerWidth >= 768 ? 80 : 40);
-  let navbarHeight = $derived(innerWidth < 768 ? 56 : 0);
+  let navbarHeight = $derived(innerWidth < 1024 ? 56 : 0);
   let episodeRadius = $derived(innerWidth >= 1400 ? 15 : innerWidth > 540 ? 12 : 10);
 
   const tvSeasons = [
@@ -406,9 +407,11 @@
         },
         onLeave: () => {
           $catalogIsInView = false;
+          $navBarColor = 'white';
         },
         onEnterBack: () => {
           $catalogIsInView = true;
+          $navBarColor = 'pink';
         },
         onLeaveBack: () => {
           $catalogIsInView = false;
@@ -489,7 +492,9 @@
   <div
     id="intro-calendar"
     class="absolute flex h-screen w-screen"
-    style="padding-top: {navbarHeight}px; background: {navbarHeight > 0 ? `linear-gradient(#E71D80 ${navbarHeight}px, transparent ${navbarHeight}px)` : 'rgb(231 29 128 / 0.05)'};"
+    style="padding-top: {navbarHeight}px; background: {navbarHeight > 0
+      ? `linear-gradient(#E71D80 ${navbarHeight}px, transparent ${navbarHeight}px)`
+      : 'rgb(231 29 128 / 0.05)'};"
   >
     <!-- Seasons -->
     <div class="flex flex-col" style="width: {seasonsWidth}px;">
@@ -526,12 +531,13 @@
       {#each tvSeasons as tvSeason, i}
         <!-- Season labels -->
         <text
+          class="text-sm md:text-[22px] leading-none"
           x={i === 0
             ? timeScale(new Date('November 1 1989'))
             : i === 1
               ? timeScale(new Date('March 1 1990'))
               : timeScale(new Date('July 1 1990'))}
-          y={26}
+          y={innerWidth >= 793 ? 26 : 18}
           text-anchor="middle"
           dominant-baseline="middle"
           fill="white"

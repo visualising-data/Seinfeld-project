@@ -18,8 +18,8 @@
 		showMenu = !showMenu;
 	};
 
-	let color = $derived($catalogIsInView ? '#F9F5F7' : $navBarColor === 'white' ? '#F9F5F7' : '#E71D80');
-	let navBg = $derived($catalogIsInView && innerWidth < 768 ? '#E71D80' : 'transparent');
+	let color = $derived(navBg !== 'transparent' || $catalogIsInView || $navBarColor === 'white' ? '#F9F5F7' : '#E71D80');
+	let navBg = $derived($catalogIsInView && innerWidth < 1024 ? '#E71D80' : 'transparent');
 </script>
 
 <svelte:window bind:innerWidth />
