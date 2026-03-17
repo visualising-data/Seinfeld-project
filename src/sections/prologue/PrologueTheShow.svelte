@@ -14,6 +14,7 @@
   const georgeImg = getCharacterImagePath('GEORGE');
   const elaineImg = getCharacterImagePath('ELAINE');
   const kramerImg = getCharacterImagePath('KRAMER');
+  const colleagueImg = getCharacterImagePath('Work colleague');
   const otherPersonImg = getCharacterImagePath('Other');
   const jerrysHomeImg = getLocationIconPath("Jerry's home");
   const dinerImg = getLocationIconPath('Diner');
@@ -160,21 +161,21 @@
                 class="rounded-full bg-contain bg-center w-[40px] h-[40px]"
                 style="background-image: url({jerryImg})"
               ></div>
-              <div class="w-[50px] text-xs text-center leading-tight">Jerry</div>
+              <div class="w-[60px] text-xs text-center leading-tight">Jerry</div>
             </div>
             <div class="flex flex-col items-center gap-1">
               <div
                 class="rounded-full bg-contain bg-center w-[40px] h-[40px]"
                 style="background-image: url({georgeImg})"
               ></div>
-              <div class="w-[50px] text-xs text-center leading-tight">George</div>
+              <div class="w-[60px] text-xs text-center leading-tight">George</div>
             </div>
             <div class="flex flex-col items-center gap-1">
               <div
                 class="rounded-full bg-contain bg-center w-[40px] h-[40px]"
                 style="background-image: url({dinerImg})"
               ></div>
-              <div class="w-[50px] text-xs text-center leading-tight">Diner</div>
+              <div class="w-[60px] text-xs text-center leading-tight">Diner</div>
             </div>
           </div>
         </div>
@@ -203,21 +204,21 @@
                 class="rounded-full bg-contain bg-center w-[40px] h-[40px]"
                 style="background-image: url({jerryImg})"
               ></div>
-              <div class="w-[50px] text-xs text-center leading-tight">Jerry</div>
+              <div class="w-[60px] text-xs text-center leading-tight">Jerry</div>
             </div>
             <div class="flex flex-col items-center gap-1">
               <div
                 class="rounded-full bg-contain bg-center w-[40px] h-[40px]"
                 style="background-image: url({elaineImg})"
               ></div>
-              <div class="w-[50px] text-xs text-center leading-tight">Elaine</div>
+              <div class="w-[60px] text-xs text-center leading-tight">Elaine</div>
             </div>
             <div class="flex flex-col items-center gap-1">
               <div
                 class="rounded-full bg-contain bg-center w-[40px] h-[40px]"
                 style="background-image: url({jerrysHomeImg})"
               ></div>
-              <div class="w-[50px] text-xs text-center leading-tight">Jerry's home</div>
+              <div class="w-[60px] text-xs text-center leading-tight">Jerry's home</div>
             </div>
           </div>
         </div>
@@ -246,21 +247,21 @@
                 class="rounded-full bg-contain bg-center w-[40px] h-[40px]"
                 style="background-image: url({jerryImg})"
               ></div>
-              <div class="w-[50px] text-xs text-center leading-tight">Jerry</div>
+              <div class="w-[60px] text-xs text-center leading-tight">Jerry</div>
             </div>
             <div class="flex flex-col items-center gap-1">
               <div
                 class="rounded-full bg-contain bg-center w-[40px] h-[40px]"
                 style="background-image: url({kramerImg})"
               ></div>
-              <div class="w-[50px] text-xs text-center leading-tight">Kramer</div>
+              <div class="w-[60px] text-xs text-center leading-tight">Kramer</div>
             </div>
             <div class="flex flex-col items-center gap-1">
               <div
                 class="rounded-full bg-contain bg-center w-[40px] h-[40px]"
                 style="background-image: url({jerrysHomeImg})"
               ></div>
-              <div class="w-[50px] text-xs text-center leading-tight">Jerry's home</div>
+              <div class="w-[60px] text-xs text-center leading-tight">Jerry's home</div>
             </div>
           </div>
         </div>
@@ -289,21 +290,21 @@
                 class="rounded-full bg-contain bg-center w-[40px] h-[40px]"
                 style="background-image: url({kramerImg})"
               ></div>
-              <div class="w-[50px] text-xs text-center leading-tight">Kramer</div>
+              <div class="w-[60px] text-xs text-center leading-tight">Kramer</div>
             </div>
             <div class="flex flex-col items-center gap-1">
               <div
                 class="rounded-full bg-contain bg-center w-[40px] h-[40px]"
-                style="background-image: url({otherPersonImg})"
+                style="background-image: url({colleagueImg})"
               ></div>
-              <div class="w-[50px] text-xs text-center leading-tight">Other person</div>
+              <div class="w-[60px] text-xs text-center leading-tight">Colleague</div>
             </div>
             <div class="flex flex-col items-center gap-1">
               <div
                 class="rounded-full bg-contain bg-center w-[40px] h-[40px]"
                 style="background-image: url({placeOfLeisureImg})"
               ></div>
-              <div class="w-[50px] text-xs text-center leading-tight">Place of leisure</div>
+              <div class="w-[60px] text-xs text-center leading-tight">Place of leisure</div>
             </div>
           </div>
         </div>
@@ -332,21 +333,28 @@
                 class="rounded-full bg-contain bg-center w-[40px] h-[40px]"
                 style="background-image: url({elaineImg})"
               ></div>
-              <div class="w-[50px] text-xs text-center leading-tight">Elaine</div>
+              <div class="w-[60px] text-xs text-center leading-tight">Elaine</div>
+            </div>
+            <div class="flex flex-col items-center gap-1">
+              <div
+                class="rounded-full bg-contain bg-center w-[40px] h-[40px]"
+                style="background-image: url({georgeImg})"
+              ></div>
+              <div class="w-[60px] text-xs text-center leading-tight">George</div>
             </div>
             <div class="flex flex-col items-center gap-1">
               <div
                 class="rounded-full bg-contain bg-center w-[40px] h-[40px]"
                 style="background-image: url({otherPersonImg})"
               ></div>
-              <div class="w-[50px] text-xs text-center leading-tight">Other person</div>
+              <div class="w-[60px] text-xs text-center leading-tight">Other person</div>
             </div>
             <div class="flex flex-col items-center gap-1">
               <div
                 class="rounded-full bg-contain bg-center w-[40px] h-[40px]"
                 style="background-image: url({otherLocationImg})"
               ></div>
-              <div class="w-[50px] text-xs text-center leading-tight">Other location</div>
+              <div class="w-[60px] text-xs text-center leading-tight">Other location</div>
             </div>
           </div>
         </div>
@@ -361,27 +369,27 @@
           class="col-start-1 row-start-1 px-4 py-3 flex items-start justify-between gap-4 text-[#f9f5f7]"
         >
           <div class="number">S4E3 - The Pitch</div>
-          <div class="flex items-start gap-2 shrink-0">
+          <div class="flex items-start gap-0 shrink-0">
             <div class="flex flex-col items-center gap-1">
               <div
                 class="rounded-full bg-contain bg-center w-[32px] h-[32px]"
                 style="background-image: url({jerryImg})"
               ></div>
-              <div class="w-[50px] text-xs text-center leading-tight">Jerry</div>
+              <div class="w-[60px] text-xs text-center leading-tight">Jerry</div>
             </div>
             <div class="flex flex-col items-center gap-1">
               <div
                 class="rounded-full bg-contain bg-center w-[32px] h-[32px]"
                 style="background-image: url({georgeImg})"
               ></div>
-              <div class="w-[50px] text-xs text-center leading-tight">George</div>
+              <div class="w-[60px] text-xs text-center leading-tight">George</div>
             </div>
             <div class="flex flex-col items-center gap-1">
               <div
                 class="rounded-full bg-contain bg-center w-[32px] h-[32px]"
                 style="background-image: url({dinerImg})"
               ></div>
-              <div class="w-[50px] text-xs text-center leading-tight">Diner</div>
+              <div class="w-[60px] text-xs text-center leading-tight">Diner</div>
             </div>
           </div>
         </div>
@@ -391,27 +399,27 @@
           style="opacity: 0"
         >
           <div class="number">S8E3 - The Bizzaro Jerry</div>
-          <div class="flex items-start gap-2 shrink-0">
+          <div class="flex items-start gap-0 shrink-0">
             <div class="flex flex-col items-center gap-1">
               <div
                 class="rounded-full bg-contain bg-center w-[32px] h-[32px]"
                 style="background-image: url({jerryImg})"
               ></div>
-              <div class="w-[50px] text-xs text-center leading-tight">Jerry</div>
+              <div class="w-[60px] text-xs text-center leading-tight">Jerry</div>
             </div>
             <div class="flex flex-col items-center gap-1">
               <div
                 class="rounded-full bg-contain bg-center w-[32px] h-[32px]"
                 style="background-image: url({elaineImg})"
               ></div>
-              <div class="w-[50px] text-xs text-center leading-tight">Elaine</div>
+              <div class="w-[60px] text-xs text-center leading-tight">Elaine</div>
             </div>
             <div class="flex flex-col items-center gap-1">
               <div
                 class="rounded-full bg-contain bg-center w-[32px] h-[32px]"
                 style="background-image: url({jerrysHomeImg})"
               ></div>
-              <div class="w-[50px] text-xs text-center leading-tight">Jerry's home</div>
+              <div class="w-[60px] text-xs text-center leading-tight">Jerry's home</div>
             </div>
           </div>
         </div>
@@ -421,27 +429,27 @@
           style="opacity: 0"
         >
           <div class="number">S7E3 - The Wait Out</div>
-          <div class="flex items-start gap-2 shrink-0">
+          <div class="flex items-start gap-0 shrink-0">
             <div class="flex flex-col items-center gap-1">
               <div
                 class="rounded-full bg-contain bg-center w-[32px] h-[32px]"
                 style="background-image: url({jerryImg})"
               ></div>
-              <div class="w-[50px] text-xs text-center leading-tight">Jerry</div>
+              <div class="w-[60px] text-xs text-center leading-tight">Jerry</div>
             </div>
             <div class="flex flex-col items-center gap-1">
               <div
                 class="rounded-full bg-contain bg-center w-[32px] h-[32px]"
                 style="background-image: url({kramerImg})"
               ></div>
-              <div class="w-[50px] text-xs text-center leading-tight">Kramer</div>
+              <div class="w-[60px] text-xs text-center leading-tight">Kramer</div>
             </div>
             <div class="flex flex-col items-center gap-1">
               <div
                 class="rounded-full bg-contain bg-center w-[32px] h-[32px]"
                 style="background-image: url({jerrysHomeImg})"
               ></div>
-              <div class="w-[50px] text-xs text-center leading-tight">Jerry's home</div>
+              <div class="w-[60px] text-xs text-center leading-tight">Jerry's home</div>
             </div>
           </div>
         </div>
@@ -451,27 +459,27 @@
           style="opacity: 0"
         >
           <div class="number">S5E4 - The Sniffing Accountant</div>
-          <div class="flex items-start gap-2 shrink-0">
+          <div class="flex items-start gap-0 shrink-0">
             <div class="flex flex-col items-center gap-1">
               <div
                 class="rounded-full bg-contain bg-center w-[32px] h-[32px]"
                 style="background-image: url({kramerImg})"
               ></div>
-              <div class="w-[50px] text-xs text-center leading-tight">Kramer</div>
+              <div class="w-[60px] text-xs text-center leading-tight">Kramer</div>
             </div>
             <div class="flex flex-col items-center gap-1">
               <div
                 class="rounded-full bg-contain bg-center w-[32px] h-[32px]"
-                style="background-image: url({otherPersonImg})"
+                style="background-image: url({colleagueImg})"
               ></div>
-              <div class="w-[50px] text-xs text-center leading-tight">Other person</div>
+              <div class="w-[60px] text-xs text-center leading-tight">Colleague</div>
             </div>
             <div class="flex flex-col items-center gap-1">
               <div
                 class="rounded-full bg-contain bg-center w-[32px] h-[32px]"
                 style="background-image: url({placeOfLeisureImg})"
               ></div>
-              <div class="w-[50px] text-xs text-center leading-tight">Place of leisure</div>
+              <div class="w-[60px] text-xs text-center leading-tight">Place of leisure</div>
             </div>
           </div>
         </div>
@@ -481,27 +489,34 @@
           style="opacity: 0"
         >
           <div class="number">S8E4 - The Little Kicks</div>
-          <div class="flex items-start gap-2 shrink-0">
+          <div class="flex items-start gap-0 shrink-0">
             <div class="flex flex-col items-center gap-1">
               <div
                 class="rounded-full bg-contain bg-center w-[32px] h-[32px]"
                 style="background-image: url({elaineImg})"
               ></div>
-              <div class="w-[50px] text-xs text-center leading-tight">Elaine</div>
+              <div class="w-[60px] text-xs text-center leading-tight">Elaine</div>
+            </div>
+            <div class="flex flex-col items-center gap-1">
+              <div
+                class="rounded-full bg-contain bg-center w-[32px] h-[32px]"
+                style="background-image: url({georgeImg})"
+              ></div>
+              <div class="w-[60px] text-xs text-center leading-tight">George</div>
             </div>
             <div class="flex flex-col items-center gap-1">
               <div
                 class="rounded-full bg-contain bg-center w-[32px] h-[32px]"
                 style="background-image: url({otherPersonImg})"
               ></div>
-              <div class="w-[50px] text-xs text-center leading-tight">Other person</div>
+              <div class="w-[60px] text-xs text-center leading-tight">Other person</div>
             </div>
             <div class="flex flex-col items-center gap-1">
               <div
                 class="rounded-full bg-contain bg-center w-[32px] h-[32px]"
                 style="background-image: url({otherLocationImg})"
               ></div>
-              <div class="w-[50px] text-xs text-center leading-tight">Other location</div>
+              <div class="w-[60px] text-xs text-center leading-tight">Other location</div>
             </div>
           </div>
         </div>

@@ -68,33 +68,36 @@
 </script>
 
 <div id="book-images-section" class="bg-black">
-
   <!-- Mobile: text scrolls normally above the sticky image strip -->
-  <div class="lg:hidden container px-4 py-8">
+  <div class="lg:hidden container py-8">
     <p>
       My curiosity transcended just <a
         href="https://jenniferkarmstrong.com/books/seinfeldia/"
         target="_blank">reading more about the show</a
       >, it was now time to go deep. I decided to immerse myself in an entirely unnecessary,
-      self-motivated, long-running, data-driven exploration of every episode of Seinfeld. Why
-      not!
+      self-motivated, long-running, data-driven exploration of every episode of Seinfeld. Why not!
     </p>
     <p>
-      The first product of this work was my 2020 publishing of <a href="https://visualisingdata.com/work/#Seinfeld" target="_blank">The Seinfeld Chronicles</a>, a
-      limited-edition printed book presenting all my extensive analysis. With 176 copies
-      released, matching the number of written episodes, this reached a small but exclusive, passionate, and <a href="https://visualisingdata.com/2020/10/the-seinfeld-chronicles-prints-and-donations-update/" target="_blank">generous audience</a>.
+      The first product of this work was my 2020 publishing of <a
+        href="https://visualisingdata.com/work/#Seinfeld"
+        target="_blank">The Seinfeld Chronicles</a
+      >, a limited-edition printed book presenting all my extensive analysis. With 176 copies
+      released, matching the number of written episodes, this reached a small but exclusive,
+      passionate, and
+      <a
+        href="https://visualisingdata.com/2020/10/the-seinfeld-chronicles-prints-and-donations-update/"
+        target="_blank">generous audience</a
+      >.
     </p>
   </div>
 
   <!-- Scroll-driven section: sticky image strip on mobile, full-screen on desktop -->
   <div id="book-scroll-wrapper" class="relative">
-    <div class="sticky lg:top-0 bg-black overflow-x-clip lg:h-[100dvh] lg:flex lg:flex-col lg:justify-between book-strip-sticky">
-
+    <div
+      class="sticky lg:top-0 bg-black overflow-x-clip lg:h-[100dvh] lg:flex lg:flex-col lg:justify-between book-strip-sticky"
+    >
       <!-- Desktop only: text + book cover -->
-      <div
-        id="book-cover-container"
-        class="hidden lg:flex flex-1 items-center container"
-      >
+      <div id="book-cover-container" class="hidden lg:flex flex-1 items-center container">
         <div class="flex-1 px-4">
           <p>
             My curiosity transcended just <a
@@ -105,13 +108,25 @@
             not!
           </p>
           <p>
-            The first product of this work was my 2020 publishing of <a href="https://visualisingdata.com/work/#Seinfeld" target="_blank">The Seinfeld Chronicles</a>, a
-            limited-edition printed book presenting all my extensive analysis. With 176 copies
-            released, matching the number of written episodes, this reached a small but exclusive, passionate, and <a href="https://visualisingdata.com/2020/10/the-seinfeld-chronicles-prints-and-donations-update/" target="_blank">generous audience</a>.
+            The first product of this work was my 2020 publishing of <a
+              href="https://visualisingdata.com/work/#Seinfeld"
+              target="_blank">The Seinfeld Chronicles</a
+            >, a limited-edition printed book presenting all my extensive analysis. With 176 copies
+            released, matching the number of written episodes, this reached a small but exclusive,
+            passionate, and
+            <a
+              href="https://visualisingdata.com/2020/10/the-seinfeld-chronicles-prints-and-donations-update/"
+              target="_blank">generous audience</a
+            >.
           </p>
         </div>
         <div class="flex-1 px-4">
-          <img loading="lazy" id="book-cover" src={BookCover} alt="Cover of the book The Seinfeld Chronicles." />
+          <img
+            loading="lazy"
+            id="book-cover"
+            src={BookCover}
+            alt="Cover of the book The Seinfeld Chronicles."
+          />
         </div>
       </div>
 
@@ -120,14 +135,54 @@
         <div id="accent-line" class="mb-3 h-2 w-full" style="background-color: #E71D80;"></div>
         <div id="books-inner-container" class="flex">
           <!-- Book cover as first image on mobile only -->
-          <img loading="lazy" class="book-img mx-4 lg:hidden" src={BookCover} alt="Cover of the book The Seinfeld Chronicles." />
-          <img loading="lazy" class="book-img mx-4" src={BookIntro} alt="Introduction of the book." />
-          <img loading="lazy" class="book-img mx-4" src={BookCalendar} alt="Calendar of the nine seasons of Seinfeld." />
-          <img loading="lazy" class="book-img mx-4" src={BookLaughs} alt="Data visualizations of the laughs caused by the four main characters." />
-          <img loading="lazy" class="book-img mx-4" src={BookScatterplot} alt="Data visualizations of the peak performances of the four main characters." />
-          <img loading="lazy" class="book-img mx-4" src={BookQuotes} alt="Famous quotes from each episode." />
-          <img loading="lazy" class="book-img mx-4" src={BookCatalog1} alt="Data visualization of season 4 episode 11 'The Contest'." />
-          <img loading="lazy" class="book-img mx-4" src={BookCatalog2} alt="Data visualization of season 7 episode 6 'The Soup Nazi'." />
+          <img
+            loading="lazy"
+            class="book-img mx-4 lg:hidden"
+            src={BookCover}
+            alt="Cover of the book The Seinfeld Chronicles."
+          />
+          <img
+            loading="lazy"
+            class="book-img mx-4"
+            src={BookIntro}
+            alt="Introduction of the book."
+          />
+          <img
+            loading="lazy"
+            class="book-img mx-4"
+            src={BookCalendar}
+            alt="Calendar of the nine seasons of Seinfeld."
+          />
+          <img
+            loading="lazy"
+            class="book-img mx-4"
+            src={BookLaughs}
+            alt="Data visualizations of the laughs caused by the four main characters."
+          />
+          <img
+            loading="lazy"
+            class="book-img mx-4"
+            src={BookScatterplot}
+            alt="Data visualizations of the peak performances of the four main characters."
+          />
+          <img
+            loading="lazy"
+            class="book-img mx-4"
+            src={BookQuotes}
+            alt="Famous quotes from each episode."
+          />
+          <img
+            loading="lazy"
+            class="book-img mx-4"
+            src={BookCatalog1}
+            alt="Data visualization of season 4 episode 11 'The Contest'."
+          />
+          <img
+            loading="lazy"
+            class="book-img mx-4"
+            src={BookCatalog2}
+            alt="Data visualization of season 7 episode 6 'The Soup Nazi'."
+          />
         </div>
       </div>
     </div>
@@ -135,7 +190,6 @@
     <!-- Scroll spacer: provides scroll distance for the GSAP animation -->
     <div class="h-[300vh]"></div>
   </div>
-
 </div>
 
 <style>
