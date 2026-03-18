@@ -35,8 +35,13 @@
               href="#{menuItem.anchor}"
               aria-label="Go to {menuItem.label}"
               onclick={(e) => {
+                e.preventDefault();
                 e.stopPropagation();
                 toggleMenu();
+                const target = document.getElementById(menuItem.anchor);
+                if (target) {
+                  target.scrollIntoView({ behavior: 'instant' });
+                }
               }}
             >
               {menuItem.label}

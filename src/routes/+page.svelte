@@ -14,13 +14,14 @@
   import Prologue from '../sections/prologue/Prologue.svelte';
   import SoundAuthPopup from '../UI/SoundAuthPopup.svelte';
   import Title from '../sections/Title.svelte';
-  import DataGathering from '../sections/data_gathering/DataGathering.svelte';
-  import IntroEnd from '../sections/IntroEnd.svelte';
   import Warning from '../sections/Warning.svelte';
+  import TitleTransition from '../sections/TitleTransition.svelte';
+  // @ts-ignore
+  import Calendar from '../sections/calendar/Calendar.svelte';
 
   // Lazy-loaded sections — imported dynamically when sentinel enters viewport
-  let Calendar: any = null;
-  import TitleTransition from '../sections/TitleTransition.svelte';
+  let DataGathering: any = null;
+  let IntroEnd: any = null;
 
   const episodesDataUrl = 'https://amdufour.github.io/hosted-data/apis/episodes_laughs.min.json';
 
@@ -51,10 +52,10 @@
 <main>
   <Navbar />
   {#if showOnlyLatest}
-    {#if episodesData}
+    {#if episodesData && DataGathering && IntroEnd}
       <div class="bg-white text-black">
-        <DataGathering {episodesData} {ScrollTrigger} />
-        <IntroEnd />
+        <svelte:component this={DataGathering} {episodesData} {ScrollTrigger} />
+        <svelte:component this={IntroEnd} />
       </div>
     {/if}
   {:else}
@@ -75,28 +76,29 @@
         <Warning />
       </TitleTransition>
     </div>
-    <div
-      style="background: #F9F5F7; min-height: 100dvh;"
-      use:inview={{ rootMargin: '500px' }}
-      oninview_change={async (/** @type {{ detail: { inView: any; }; }} */ event) => {
-        if (event.detail.inView && !Calendar) {
-          Calendar = (await import('../sections/calendar/Calendar.svelte')).default;
-        }
-      }}
-    ></div>
+    <div style="background: #F9F5F7; min-height: 100dvh;"></div>
     <div class="text-black" style="background: #F9F5F7;">
-      {#if Calendar}
-        <svelte:component this={Calendar} {ScrollTrigger} />
-      {/if}
-      <!-- {#if episodesData}
-        <DataGathering {episodesData} {ScrollTrigger} />
-        <IntroEnd />
-        <Quotes />
+      <Calendar {ScrollTrigger} />
+      <div
+        use:inview={{ rootMargin: '500px' }}
+        oninview_change={async (/** @type {{ detail: { inView: any; }; }} */ event) => {
+          if (event.detail.inView && !DataGathering) {
+            [DataGathering, IntroEnd] = await Promise.all([
+              import('../sections/data_gathering/DataGathering.svelte').then((m) => m.default),
+              import('../sections/IntroEnd.svelte').then((m) => m.default),
+            ]);
+          }
+        }}
+      ></div>
+      {#if episodesData && DataGathering && IntroEnd}
+        <svelte:component this={DataGathering} {episodesData} {ScrollTrigger} />
+        <svelte:component this={IntroEnd} />
+        <!-- <Quotes />
         <MainCharsSection {episodesData} />
         <SupportingCharsSection {episodesData} />
         <LocationsSection {episodesData} />
-        <LaughsExploration {episodesData} />
-      {/if} -->
+        <LaughsExploration {episodesData} /> -->
+      {/if}
       <!-- <Quotes /> -->
       <!-- <MethodologyAndCredits /> -->
       <!-- <Footer /> -->
