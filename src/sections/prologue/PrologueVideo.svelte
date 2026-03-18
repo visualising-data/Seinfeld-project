@@ -31,7 +31,11 @@
       tl2
         .to('#video-text-1', { opacity: 0, duration: 0.3 })
         .to('#video-text-2', { opacity: 1, duration: 0.3 }, '<')
-        .to('#video-text-2 .color-jerry', { color: '#5FA8D3', duration: 0.6, ease: 'back.out(1.7)' })
+        .to('#video-text-2 .color-jerry', {
+          color: '#5FA8D3',
+          duration: 0.6,
+          ease: 'back.out(1.7)',
+        })
         .to('#icon-jerry', { opacity: 1, translateY: 0, duration: 0.4, ease: 'power3.out' }, '<')
         .to(
           '#video-text-2 .color-george',
@@ -93,7 +97,7 @@
     <div class="relative h-[50vh] lg:absolute lg:inset-0 lg:h-auto">
       <video playsinline autoplay muted loop preload="metadata">
         <source
-          src="https://amdufour.github.io/hosted-data/apis/videos/1a.ElaineArrives(CC).mp4"
+          src="https://amdufour.github.io/hosted-data/apis/videos/1a.ElaineArrives.mp4"
           type="video/mp4"
         />
       </video>

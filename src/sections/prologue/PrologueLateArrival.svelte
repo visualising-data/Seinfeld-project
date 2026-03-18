@@ -32,13 +32,16 @@
           },
           '-=1',
         )
-        .to('#prologue-late-arrival .highlight', {
-          webkitTextFillColor: 'transparent',
-          backgroundPosition: '200% center',
-          duration: 2,
-          delay: 1,
-          ease: 'power3.out',
-        });
+        .to(
+          '#prologue-late-arrival .highlight',
+          {
+            webkitTextFillColor: 'transparent',
+            backgroundPosition: '200% center',
+            duration: 2,
+            ease: 'power3.out',
+          },
+          '-=1',
+        );
 
       // Hide down icons
       const tl2 = gsap.timeline({

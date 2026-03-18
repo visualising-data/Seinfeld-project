@@ -24,6 +24,30 @@
   /** @type {gsap.Context | undefined} */
   let ctx;
 
+  const baseVideoUrl = 'https://amdufour.github.io/hosted-data/apis/videos/';
+  const videoFiles = [
+    '6c.ShowAboutNothing',
+    '32.Minutiae',
+    'KramerJeans2',
+    '8.KramerCigarette',
+    '14.ElaineDancing',
+  ];
+
+  /** @param {number} index @param {boolean} useCC */
+  const setVideoSrc = (index, useCC) => {
+    const container = document.querySelector(`#show-video-${index}`);
+    if (!container) return;
+    const video = /** @type {HTMLVideoElement} */ (container.querySelector('video'));
+    if (!video) return;
+    const source = /** @type {HTMLSourceElement} */ (video.querySelector('source'));
+    if (!source) return;
+    const newSrc = baseVideoUrl + videoFiles[index] + (useCC ? '(CC).mp4' : '.mp4');
+    if (source.getAttribute('src') !== newSrc) {
+      source.setAttribute('src', newSrc);
+      video.load();
+    }
+  };
+
   onMount(() => {
     ctx = gsap.context(() => {
       const mm = gsap.matchMedia();
@@ -41,6 +65,8 @@
             gsap.set(`#show-video-${j}`, { opacity: j === 0 ? 1 : 0 });
           } else {
             gsap.set(`#show-video-${j}`, { flexGrow: j === 0 ? 4 : 1 });
+            // Desktop: non-focused videos start with plain (no captions) version
+            if (j > 0) setVideoSrc(j, false);
           }
         }
         gsap.set(['#show-text-3 .highlight', '#show-text-4 .highlight'], {
@@ -73,6 +99,7 @@
             gsap.set(`#show-video-${index}`, { opacity: 1 });
           } else {
             for (let j = 0; j < 5; j++) {
+              setVideoSrc(j, j === index);
               gsap.to(`#show-video-${j}`, {
                 flexGrow: j === index ? 4 : 1,
                 duration: 0.3,
