@@ -92,7 +92,7 @@
       ></div>
       {#if episodesData && DataGathering && IntroEnd}
         <svelte:component this={DataGathering} {episodesData} {ScrollTrigger} />
-        <svelte:component this={IntroEnd} />
+        <!-- <svelte:component this={IntroEnd} /> -->
         <!-- <Quotes />
         <MainCharsSection {episodesData} />
         <SupportingCharsSection {episodesData} />

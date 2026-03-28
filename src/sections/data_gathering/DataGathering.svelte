@@ -1,6 +1,7 @@
 <script lang="ts">
   import { csv } from 'd3-fetch';
 
+  import Laughs from './Laughs.svelte';
   import DataGatheringDetails from './DataGatheringDetails.svelte';
   import EpisodeExample from './EpisodeExample.svelte';
   import type { Episode } from '$lib/types/episode';
@@ -38,8 +39,9 @@
 
 <section id="data-gathering" class="relative">
   <div class="w-screen">
-    <DataGatheringDetails {laughData} />
-    <Bridge />
+    <Laughs />
+    <!-- <DataGatheringDetails {laughData} />
+    <Bridge /> -->
     <!-- <EpisodeExample {episodeInfo} {episodeData} {laughData} {ScrollTrigger} />
     <div class="h-screen"></div>
     {#await csv(sonificationCharactersDataUrl) then sonificationCharactersData}

@@ -17,7 +17,15 @@
 
   onMount(() => {
     ctx = gsap.context(() => {
+      const wrapper = document.querySelector('#video-text-wrapper');
+      const heights = [1, 2, 3].map((i) => {
+        const el = document.querySelector(`#video-text-${i}`);
+        return el ? /** @type {HTMLElement} */ (el).scrollHeight : 0;
+      });
+
       gsap.set('.video-char-icon', { opacity: 0, translateY: 20 });
+      gsap.set('#video-text-2', { opacity: 0 });
+      gsap.set('#video-text-3', { opacity: 0 });
 
       // text-2 replaces text-1 when step-2 enters the viewport
       const tl2 = gsap.timeline({
@@ -78,6 +86,13 @@
       tl3
         .to('#video-text-2', { opacity: 0, duration: 0.5 })
         .to('#video-text-3', { opacity: 1, duration: 0.5 }, '<');
+
+      // Height animation on desktop only (mobile uses flex-1 to fill remaining space)
+      const mm = gsap.matchMedia();
+      mm.add('(min-width: 1024px)', () => {
+        tl2.to(wrapper, { height: heights[1], duration: 0.3, ease: 'power2.inOut' }, 0);
+        tl3.to(wrapper, { height: heights[2], duration: 0.3, ease: 'power2.inOut' }, 0);
+      });
     });
   });
 
@@ -107,25 +122,27 @@
 
     <!-- Text panels: below video on mobile, overlaid at bottom on desktop -->
     <div
-      class="flex-1 bg-black lg:flex-none lg:absolute lg:bottom-0 lg:left-0 lg:right-0 lg:bg-black/50"
+      class="flex-1 bg-black lg:flex-none lg:absolute lg:bottom-0 lg:left-0 lg:right-0 lg:bg-black/50 lg:overflow-hidden"
     >
-      <div class="grid">
-        <div id="video-text-1" class="col-start-1 row-start-1 container py-12">
+      <div id="video-text-wrapper" class="relative container">
+        <!-- Text 1: in normal flow — sets natural wrapper height -->
+        <div id="video-text-1" class="py-12">
           <div class="md:w-[620px]">
-            There’s a good chance you’ve seen this popular gif. It shows a clip taken from episode 4
-            of season 4, titled <span class="em">’The Wallet’</span>.
+            There's a good chance you've seen this popular gif. It shows a clip taken from episode 4
+            of season 4, titled <span class="em">'The Wallet'</span>.
           </div>
         </div>
-        <div id="video-text-2" class="col-start-1 row-start-1 container py-12" style="opacity: 0">
+        <!-- Texts 2-3: absolutely positioned so scrollHeight reflects real content height -->
+        <div id="video-text-2" class="absolute inset-x-0 top-0 py-12">
           <div class="flex flex-col lg:flex-row lg:justify-between gap-4 lg:gap-8">
             <div style="max-width: 820px;">
               Here we see the four lead characters: <span class="color color-jerry">Jerry</span>
-              - the show’s eponymous character - his friends
+              - the show's eponymous character - his friends
               <span class="color color-george">George</span>
               and <span class="color color-elaine">Elaine</span>, plus next-door neighbour,
               <span class="color color-kramer">Kramer</span>. They are in
-              <span class="jerrys-apartment em">Jerry’s apartment</span>, set in New York City,
-              which acts as the main location base for lots of the show’s stories.
+              <span class="jerrys-apartment em">Jerry's apartment</span>, set in New York City,
+              which acts as the main location base for lots of the show's stories.
             </div>
             <div class="flex items-start gap-4 md:gap-8">
               <div
@@ -176,14 +193,14 @@
                   class="rounded-full bg-contain bg-center w-[50px] h-[50px] lg:w-[80px] lg:h-[80px]"
                   style="background-image: url({jerrysHomeImg})"
                 ></div>
-                <div class="w-[50px] lg:w-[80px] text-center leading-tight">Jerry’s home</div>
+                <div class="w-[50px] lg:w-[80px] text-center leading-tight">Jerry's home</div>
               </div>
             </div>
           </div>
         </div>
-        <div id="video-text-3" class="col-start-1 row-start-1 container py-12" style="opacity: 0">
+        <div id="video-text-3" class="absolute inset-x-0 top-0 py-12">
           <div class="md:w-[620px]">
-            We’ll learn a lot more about all the characters and locations later.
+            We'll learn a lot more about all the characters and locations later.
           </div>
         </div>
       </div>
