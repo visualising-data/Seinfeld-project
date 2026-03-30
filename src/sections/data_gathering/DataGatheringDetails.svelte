@@ -2,16 +2,12 @@
   // @ts-nocheck
 
   import { onMount } from 'svelte';
-  import * as Tone from 'tone';
   import { gsap } from 'gsap/dist/gsap';
-  import { scaleLinear } from 'd3-scale';
-  import { flatGroup, range } from 'd3-array';
+  import { range } from 'd3-array';
 
   import Laugh from '../../icons/Laugh.svelte';
   import tv_noise from '$lib/assets/tv_noise.png';
-  import ReplayButton from '../../UI/ReplayButton.svelte';
   import { soundIsAuth } from '../../stores/soundAuthStore';
-  import { laughterFiles, getRandomLaughterFile } from '$lib/data/laughterFiles';
   import { getCharacterImagePath } from '../../utils/getCharacterImagePath';
   import { characters as charactersAll } from '$lib/data/characters';
   import { formatTimeLabel } from '../../utils/formatTime';
@@ -19,6 +15,8 @@
   let { laughData } = $props();
 
   const characters = charactersAll.slice(0, 4);
+  // Must match laugh.eventAttribute values and the order of characters[]
+  const charKeys = ['JERRY', 'GEORGE', 'ELAINE', 'KRAMER'];
 
   const videoStartTime = 18 * 60 + 35; // 18:35
   const videoEndTime = 20 * 60 + 35; // 20:35
@@ -27,179 +25,35 @@
       +d.eventTimeSeconds >= videoStartTime && +d.eventTimeSeconds <= videoEndTime,
   );
   const videoDuration = videoEndTime - videoStartTime;
-  const fiveSecondsArray = range(videoStartTime - 5, videoEndTime + 5, 5);
+
+  // 24 five-second slots: 18:35 → 20:30
+  const timeSlots = range(videoStartTime, videoEndTime, 5);
+
+  // O(1) lookup: "JERRY-1115", "GEORGE-1125", etc.
+  const laughsByCharTime = new Set(
+    videoLaughs.map((d) => `${d.eventAttribute}-${d.eventTimeSeconds}`),
+  );
 
   let innerWidth = $state(1600);
-  let videoWidth = $state(800);
-  let sideSpacing = $derived(innerWidth >= 1280 ? (innerWidth - 1280) / 2 + 16 + 25 : 32);
+
+  // On mobile, fixed-width columns make the grid wider than the viewport.
+  // On desktop, 1fr fills the container naturally.
+  let colWidth = $derived(innerWidth >= 1024 ? '1fr' : '44px');
 
   let isMuted = $state(true);
   $effect(() => {
     isMuted = !$soundIsAuth;
   });
 
-  let laughsBarScale = $derived(
-    scaleLinear()
-      .domain([videoStartTime, videoEndTime + 1])
-      .range([0, videoWidth]),
-  );
-  let laughWidth = $derived(laughsBarScale(videoStartTime + 5) - 8);
-
-  /** @type {Tone.Players} */
-  let laughTracks;
-
-  const preloadLaughs = async () => {
-    await Tone.start(); // ensure browser gesture permission
-    await Tone.loaded();
-    laughTracks = new Tone.Players(laughterFiles).toDestination();
-    laughTracks.fadeIn = 1;
-    laughTracks.fadeOut = 1;
-  };
-
-  // ✅ manage playback safely with internal state + debounce
-  let isPlaying = $state(false);
-  let debounceTimer;
-
-  // safe wrappers
-  function safePlayLaughs() {
-    clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(playLaughs, 50);
-  }
-
-  function safeStopLaughs() {
-    clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(stopLaughs, 50);
-  }
-
-  function playLaughs() {
-    if (!laughTracks || isPlaying || !$soundIsAuth) return;
-
-    const file = getRandomLaughterFile();
-    const player = laughTracks.player(file);
-
-    player.onstop = () => {
-      isPlaying = false;
-    };
-    player.start();
-    isPlaying = true;
-  }
-
-  function stopLaughs() {
-    if (!laughTracks || !isPlaying) return;
-    laughTracks.stopAll();
-    isPlaying = false;
-  }
-
-  function handleClickOnReplay() {
-    if (isPlaying) stopLaughs();
-    else playLaughs();
-  }
+  /** @type {HTMLElement} */
+  let gridContainer;
+  /** @type {HTMLElement} */
+  let gridScrollInner;
 
   let tlVideo;
   onMount(() => {
-    preloadLaughs();
+    const laughIconReveal = { opacity: 0, yPercent: 50, duration: 1, ease: 'power3.out' };
 
-    const assetTransform = {
-      scaleY: 0,
-      ease: 'power3.out',
-      duration: 1,
-    };
-
-    const tl1 = gsap.timeline({
-      scrollTrigger: {
-        trigger: '#data-gathering-1',
-        start: 'top center',
-        end: 'bottom top',
-        onEnter: () => safePlayLaughs(),
-        onEnterBack: () => safePlayLaughs(),
-        onLeave: () => safeStopLaughs(),
-        onLeaveBack: () => safeStopLaughs(),
-      },
-    });
-    const tl2 = gsap.timeline({
-      scrollTrigger: {
-        trigger: '#data-gathering-2',
-        start: 'top center',
-      },
-    });
-    const tl3 = gsap.timeline({
-      scrollTrigger: {
-        trigger: '#data-gathering-3',
-        start: 'top center',
-      },
-    });
-
-    tl1
-      .from(['#data-gathering-1 .text'], {
-        xPercent: -140,
-        stagger: 0.1,
-      })
-      .from('#data-gathering-1 img', assetTransform, '-=.3')
-      .to(
-        '#data-gathering-1 .highlight-reverse',
-        {
-          webkitTextFillColor: 'transparent',
-          backgroundPosition: '200% center',
-          duration: 2,
-          delay: 1,
-          ease: 'power3.out',
-        },
-        '<0.5',
-      )
-      .from(
-        ['#data-gathering-1 .laugh-icon-large svg'],
-        {
-          yPercent: 140,
-          opacity: 0,
-          duration: 1,
-          ease: 'bounce.out',
-        },
-        0.5,
-      )
-      .from(
-        ['#data-gathering-1 .replay-laugh'],
-        {
-          opacity: 0,
-          duration: 0.5,
-        },
-        '-=0.5',
-      );
-
-    tl2
-      .from(['#data-gathering-2 .text'], {
-        xPercent: 140,
-        stagger: 0.1,
-      })
-      .from('#data-gathering-2 img', assetTransform, '-=.3')
-      .to(
-        '#data-gathering-2 .highlight-reverse',
-        {
-          webkitTextFillColor: 'transparent',
-          backgroundPosition: '200% center',
-          duration: 2,
-          delay: 1,
-          ease: 'power3.out',
-        },
-        '-=2',
-      );
-
-    tl3
-      .from(['#data-gathering-3 .text'], {
-        xPercent: -140,
-        stagger: 0.1,
-      })
-      .from('#data-gathering-3 .video-container', assetTransform, '-=.3')
-      .to(
-        '#data-gathering-3 .highlight-reverse',
-        {
-          webkitTextFillColor: 'transparent',
-          backgroundPosition: '200% center',
-          duration: 2,
-          delay: 1,
-          ease: 'power3.out',
-        },
-        '-=2',
-      );
     tlVideo = gsap.timeline({
       scrollTrigger: {
         trigger: '#data-gathering-3',
@@ -212,17 +66,18 @@
         onLeaveBack: () => pauseVideo(),
       },
     });
-    const laughIconReveal = { opacity: 0, yPercent: 50, duration: 1, ease: 'power3.out' };
 
+    // Defer GSAP setup so the DOM has been measured
     setTimeout(() => {
-      laughsBarScale.range([0, videoWidth]);
+      // Distance the inner content needs to travel so that the last column
+      // aligns with the right edge of the container at the end of the video.
+      const maxTranslate = Math.max(0, gridScrollInner.scrollWidth - gridContainer.clientWidth);
 
       tlVideo
-        .to('#data-gathering-3 circle', {
-          cx: laughsBarScale(videoEndTime),
-          ease: 'none',
-          duration: videoDuration,
-        })
+        // Playhead sweeps from left:0 to left:100% of the visible container
+        .to('#viz-playhead', { left: '100%', ease: 'none', duration: videoDuration })
+        // Inner content slides left in sync, revealing future columns
+        .to(gridScrollInner, { x: -maxTranslate, ease: 'none', duration: videoDuration }, 0)
         .from('.laugh-icon-1115', laughIconReveal, 1115 - videoStartTime)
         .from('.laugh-icon-1125', laughIconReveal, 1125 - videoStartTime)
         .from('.laugh-icon-1130', laughIconReveal, 1130 - videoStartTime)
@@ -267,246 +122,125 @@
         video.currentTime = 0;
         tlVideo.pause();
       });
-
-    // Add parallax effect to images
-    let images = gsap.utils.toArray('.data-gathering-parallax');
-    images.forEach((img) => {
-      gsap.to(img, {
-        yPercent: -5,
-        scrollTrigger: {
-          trigger: img,
-          scrub: 0.15,
-          ease: 'none',
-        },
-      });
-    });
   });
-
-  const getLaughVerticalIndex = (char) => {
-    switch (char) {
-      case 'JERRY':
-        return 0;
-      case 'GEORGE':
-        return 1;
-      case 'ELAINE':
-        return 2;
-      case 'KRAMER':
-        return 3;
-    }
-  };
-
-  let img1Height = $state();
-  let img2Height = $state();
 </script>
 
 <svelte:window bind:innerWidth />
 
-<div>
-  <div class="container pt-40 pb-96">
-    <div id="data-gathering-1" class="grid grid-cols-12 mb-48">
-      <div class="col-span-12 md:col-span-6 relative">
-        <div class="mask">
-          <p class="text">
-            We gathered all the data for this project <span class="highlight-reverse">manually</span
-            >, by watching every one of the 176 written episodes of Seinfeld using a detailed
-            spreadsheet template to record observations about the show’s rhythm and texture.
-          </p>
-        </div>
-      </div>
-      <div class="col-span-2 md:col-span-6"></div>
-      <div class="col-span-2 md:col-span-4"></div>
-      <div
-        class="col-span-12 md:col-span-8"
-        style="margin-left: {innerWidth >= 768
-          ? 0
-          : -sideSpacing}px; margin-right: -{sideSpacing}px;"
+<div id="data-gathering-3" class="relative">
+  <div class="sticky top-0 h-screen flex flex-col bg-[#000]">
+    <!-- Video area: fills remaining height above the overlay -->
+    <div class="flex-1 relative flex items-center min-h-0 overflow-hidden">
+      <!-- svelte-ignore a11y_media_has_caption -->
+      <video
+        id="demo-video"
+        class="w-full h-auto"
+        playsinline
+        controls={false}
+        preload="none"
+        bind:muted={isMuted}
       >
-        <div class="img-container overflow-hidden" style="height: {img1Height - 100}px;">
-          <img
-            bind:clientHeight={img1Height}
-            loading="lazy"
-            class="data-gathering-parallax block"
-            src="https://amdufour.github.io/hosted-data/apis/images/data_gathering_1.jpg"
-            alt="Data spreadsheet and tv during data gathering."
-          />
-        </div>
-      </div>
+        <source
+          src="https://amdufour.github.io/hosted-data/apis/videos/MarineBiologist_edited(CC).mp4"
+          type="video/mp4"
+        />
+      </video>
+
+      <!-- Dark tint -->
+      <div
+        class="absolute inset-0 pointer-events-none"
+        style="background: rgba(18, 2, 10, 0.3)"
+      ></div>
+
+      <!-- TV noise -->
+      <div
+        class="absolute inset-0 pointer-events-none"
+        style="background-image: url('{tv_noise}')"
+      ></div>
     </div>
 
-    <div id="data-gathering-2" class="grid grid-cols-12 mb-48">
-      <div
-        class="col-span-12 md:col-span-8 mt-8"
-        style="margin-left: {innerWidth >= 768 ? 0 : -sideSpacing}px; margin-right: {innerWidth >=
-        768
-          ? 0
-          : -sideSpacing}px;"
-      >
-        <div class="img-container overflow-hidden" style="height: {img2Height - 100}px;">
-          <img
-            bind:clientHeight={img2Height}
-            loading="lazy"
-            class="data-gathering-parallax block"
-            src="https://amdufour.github.io/hosted-data/apis/images/audience.jpg"
-            alt="Jerry Seinfeld talking with the audience during taping."
-          />
-        </div>
-        <div
-          class="number text pt-2 pl-2 lg:pl-0"
-          style="background-color: rgba(249, 245, 247, 0.6);"
-        >
-          Photo source: <a
-            href="https://www.facebook.com/story.php?story_fbid=539096318663826&id=100076903884453"
-            target="_blank">The Seinfeld World</a
-          >
-        </div>
-      </div>
-      <div class="col-span-2 md:col-span-4"></div>
-      <div class="col-span-12 md:col-span-6 md:col-start-6 relative">
-        <div class="mask">
-          <p class="text">
-            It doesn’t take a genius to recognise the main goal of a sitcom is to offer situational
-            comedy. It also stands to reason that a reliable indicator of a situation comedy being
-            funny is to measure the reaction of an audience’s laughter through the laugh track.
-            These days it is rare to find laugh tracks on modern sitcoms, but Seinfeld had one and
-            with the show always being filmed in front of a <span class="highlight-reverse pl-1"
-              >live studio audience</span
-            > (any scenes filmed outside were played back in the studio) so the laughter heard is authentic.
-          </p>
-        </div>
-      </div>
-    </div>
-
-    <div id="data-gathering-3" class="grid grid-cols-12">
-      <div class="col-span-12 md:col-start-3 md:col-span-8 relative">
-        <div
-          class="absolute flex items-end"
-          style="top:-68px; right: {innerWidth >= 768 ? -144 : -80}px;"
-        >
-          <div class="laugh-icon-large w-20 md:w-36 h-20 md:h-32">
-            <Laugh isActive={isPlaying} />
-          </div>
-          <div class="replay-laugh" style="margin-left: {innerWidth >= 768 ? -20 : 0}px;">
-            <ReplayButton {isPlaying} {handleClickOnReplay} />
-          </div>
-        </div>
-        <div class="mask">
-          <p class="text">
-            Laughter has a spectrum of levels, from the subtle smile characteristic of ‘inner’
-            laughter, through to more external titters, chuckles, chortles, and through to belly
-            laughs or howls. To establish a standard measurement any laughter heard during the
-            episodes counted as a "laughter moment", regardless of whether it was loud or fleeting.
-          </p>
-          <p class="text">
-            For consistency, each observed laughter moment was recorded against an associated <span
-              class="highlight-reverse">5-second</span
-            > block of time. When testing out the data collection approach over three sample episodes,
-            the 5-second duration proved to be the most reliable and representative ‘average’ duration,
-            from the gag’s delivery to the audience’s laughter subsiding.
-          </p>
-          <p class="text">
-            Occasionally, laughter would run for longer than 5 seconds, sometimes persisting for 10
-            and even 15 seconds. In these rare cases, each 5-second unit would count as a laughter
-            moment.
-          </p>
-        </div>
-      </div>
-      <div
-        class="lg:col-start-3 col-span-12 lg:col-span-8"
-        style="margin-left: {innerWidth >= 768 ? 0 : -sideSpacing}px; margin-right: {innerWidth >=
-        768
-          ? 0
-          : -sideSpacing}px;"
-      >
-        <!-- svelte-ignore a11y_media_has_caption -->
-        <div class="relative video-container w-full">
-          <video
-            id="demo-video"
-            playsinline
-            controls
-            preload="none"
-            bind:muted={isMuted}
-            bind:clientWidth={videoWidth}
-          >
-            <source
-              src="https://amdufour.github.io/hosted-data/apis/videos/MarineBiologist_edited(CC).mp4"
-              type="video/mp4"
-            />
-          </video>
-          <div
-            class="z-1 absolute bottom-0 left-0 right-0 top-0 pointer-events-none"
-            style="background: rgba(18, 2, 10, 0.3); width: {videoWidth}px;"
-          ></div>
-          <div
-            class="absolute z-10 bottom-0 left-0 right-0 top-0 pointer-events-none"
-            style="background-image: url('{tv_noise}'); width: {videoWidth}px;"
-          ></div>
-        </div>
-      </div>
-      <div class="col-start-1 col-span-2">
-        <ul class="relative z-10 shrink-0 pt-8 pr-4" style="margin-top: 14px;">
-          {#each characters as char, i}
-            <li class="mask w-full my-4">
-              <div class="episode-example-character-label flex justify-end">
-                {#if innerWidth >= 1280}
-                  <div class="small flex items-center justify-end pr-2">{char.label}</div>
-                {/if}
-                <div
-                  class="image h-8 w-8 rounded-full"
-                  style="background-image: url({getCharacterImagePath(char.id)});"
-                ></div>
-              </div>
-            </li>
+    <!-- Visualization overlay -->
+    <div class="py-8 text-white overflow-hidden">
+      <div class="w-full max-w-[1800px] mx-auto px-6 flex items-stretch">
+        <!-- Character labels: outside the grid, stays put while grid animates -->
+        <div class="shrink-0 w-6.5 ml-[-12px] xl:w-20 xl:ml-0">
+          <div class="h-9"></div>
+          {#each characters as char}
+            <div class="flex items-center justify-end gap-2 pr-3 h-12">
+              {#if innerWidth >= 1280}
+                <div class="small">{char.label}</div>
+              {/if}
+              <div
+                class="image h-7 w-7 rounded-full shrink-0"
+                style="background-image: url({getCharacterImagePath(char.id)});"
+              ></div>
+            </div>
           {/each}
-        </ul>
-      </div>
-      <div class="col-span-8">
-        <svg class="mt-8" width={videoWidth + 50} height={220} style="margin-left: {-25}px">
-          <g transform="translate(25, 10)">
-            <line x1={-6} y1={12} x2={videoWidth + 6} y2={12} stroke="#928D90" />
+        </div>
 
-            {#each characters as char, i}
-              <line
-                x1={-6}
-                y1={(i + 1) * 48 + 12}
-                x2={videoWidth + 6}
-                y2={(i + 1) * 48 + 12}
-                stroke="#928D90"
-              />
-            {/each}
+        <!-- Time grid: clips the overflowing inner content -->
+        <div
+          class="flex-1 border border-white/40 relative overflow-hidden min-w-0"
+          bind:this={gridContainer}
+        >
+          <!-- Playhead: positioned in the container's coordinate space,
+               independent of the inner content's translateX -->
+          <div
+            id="viz-playhead"
+            class="absolute top-0 bottom-0 w-0.5 bg-[#E71D80] z-10 pointer-events-none"
+            style="left: 0"
+          ></div>
 
-            {#each fiveSecondsArray as fiveSeconds, i}
-              <g transform={`translate(${laughsBarScale(fiveSeconds)}, 0)`}>
-                <line x1={0} y1={6} x2={0} y2={220} stroke="#928D90" />
-                {#if innerWidth >= 768 ? i % 2 !== 0 : i % 5 === 0}
-                  <text
-                    class="number"
-                    y={2}
-                    text-anchor="middle"
-                    fill="#928D90"
-                    style="font-size: {innerWidth >= 758 ? 15 : 13}px;"
-                  >
-                    {formatTimeLabel(fiveSeconds)}
-                  </text>
-                {/if}
-              </g>
-            {/each}
+          <!-- Inner content: GSAP slides this left on mobile -->
+          <div class="w-fit" bind:this={gridScrollInner}>
+            <!-- Time header row -->
+            <div
+              class="grid border-b border-white/40"
+              style="grid-template-columns: repeat({timeSlots.length}, {colWidth})"
+            >
+              {#each timeSlots as slot, i}
+                <div
+                  class="h-9 flex items-center justify-center border-white/40"
+                  class:border-r={i < timeSlots.length - 1}
+                >
+                  <span class="number text-white/70">
+                    {formatTimeLabel(slot)}
+                  </span>
+                </div>
+              {/each}
+            </div>
 
-            {#each videoLaughs as laugh}
-              <g
-                transform={`translate(${laughsBarScale(+laugh.eventTimeSeconds) + 4}, ${getLaughVerticalIndex(laugh.eventAttribute) * 48 + 20})`}
+            <!-- One row per character -->
+            {#each range(characters.length) as ri}
+              <div
+                class="grid border-white/40"
+                class:border-b={ri < characters.length - 1}
+                style="grid-template-columns: repeat({timeSlots.length}, {colWidth})"
               >
-                <g class={`laugh-icon laugh-icon-${laugh.eventTimeSeconds}`}>
-                  <Laugh width={laughWidth} height={laughWidth} />
-                </g>
-              </g>
+                {#each timeSlots as slot, i}
+                  <div
+                    class="h-12 flex items-center justify-center border-white/40"
+                    class:border-r={i < timeSlots.length - 1}
+                  >
+                    {#if laughsByCharTime.has(`${charKeys[ri]}-${slot}`)}
+                      <div class="laugh-icon laugh-icon-{slot}">
+                        <Laugh width={32} height={32} color="white" />
+                      </div>
+                    {/if}
+                  </div>
+                {/each}
+              </div>
             {/each}
-
-            <circle cx={0} cy={12} r={8} fill="#E71D80" />
-          </g>
-        </svg>
+          </div>
+        </div>
       </div>
     </div>
   </div>
+
+  <!-- Scroll spacers: keep section pinned long enough to watch the clip -->
+  <div class="h-screen"></div>
+  <div class="h-screen"></div>
+  <div class="h-screen"></div>
 </div>
 
 <style>
@@ -514,5 +248,13 @@
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
+  }
+
+  #demo-video {
+    background-color: #12020a;
+    /* Zoom in to crop embedded pillarbox bars (4:3 content in 16:9 file).
+       Scale = 1 / (1 - 2 * bar_fraction). Adjust if bars are a different size. */
+    transform: scale(1.334);
+    transform-origin: center;
   }
 </style>

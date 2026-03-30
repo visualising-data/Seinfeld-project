@@ -177,6 +177,13 @@
     debounceTimer3 = setTimeout(stopLaugh3Sequence, 50);
   }
 
+  function stopAllLaughsAudio() {
+    stopLaugh();
+    stopLaugh3Sequence();
+    try { guffaw2Player?.stop(); } catch (e) { console.warn(e); }
+    try { chuckle2Player?.stop(); } catch (e) { console.warn(e); }
+  }
+
   // ── laughs-text-5 audio ────────────────────────────────────────────────────
   /** @type {Tone.Player | undefined} */
   let guffaw2Player;
@@ -233,6 +240,14 @@
     preloadLaughs3();
     preloadGuffaw2();
     preloadChuckle2();
+
+    ScrollTrigger.create({
+      trigger: '#laughs-scroll-container',
+      start: 'top top',
+      end: 'bottom top',
+      onLeave: stopAllLaughsAudio,
+      onLeaveBack: stopAllLaughsAudio,
+    });
 
     ctx = gsap.context(() => {
       const wrapper = document.querySelector('#laughs-text-wrapper');
