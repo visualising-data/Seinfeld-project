@@ -191,8 +191,8 @@
             style="left: 0"
           ></div>
 
-          <!-- Inner content: GSAP slides this left on mobile -->
-          <div class="w-fit" bind:this={gridScrollInner}>
+          <!-- Inner content: desktop fills full width (1fr works); mobile is w-fit for GSAP translate -->
+          <div class={innerWidth >= 1024 ? 'w-full' : 'w-fit'} bind:this={gridScrollInner}>
             <!-- Time header row -->
             <div
               class="grid border-b border-white/40"
@@ -252,6 +252,8 @@
 
   #demo-video {
     background-color: #12020a;
+    /* Constrain to available flex height without distorting aspect ratio */
+    max-height: 100%;
     /* Zoom in to crop embedded pillarbox bars (4:3 content in 16:9 file).
        Scale = 1 / (1 - 2 * bar_fraction). Adjust if bars are a different size. */
     transform: scale(1.334);

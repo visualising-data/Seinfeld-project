@@ -173,7 +173,7 @@
       {/if}
     </svg>
   </div>
-  {#if innerWidth >= 1280 && statsWidth > 0}
+  {#if innerWidth >= 1280}
     <CharactersStats
       width={statsWidth}
       height={vizHeight}

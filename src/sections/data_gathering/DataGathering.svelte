@@ -42,7 +42,7 @@
     <Laughs />
     <DataGatheringDetails {laughData} />
     <Bridge />
-    <!-- <EpisodeExample {episodeInfo} {episodeData} {laughData} {ScrollTrigger} />
+    <EpisodeExample {episodeInfo} {episodeData} {laughData} {ScrollTrigger} />
     <div class="h-screen"></div>
     {#await csv(sonificationCharactersDataUrl) then sonificationCharactersData}
       {#await csv(sonificationLocationDataUrl) then sonificationLocationData}
@@ -53,6 +53,6 @@
           {ScrollTrigger}
         />
       {/await}
-    {/await} -->
+    {/await}
   </div>
 </section>
