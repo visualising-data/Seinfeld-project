@@ -70,23 +70,31 @@
       label: 'Chuckle',
       desc: 'Quiet or soft laugh, expressing amusement',
       size: 50,
+      mobileSize: 35,
       playDiameter: 20,
+      mobilePlayDiameter: 16,
     },
     {
       url: 'https://amdufour.github.io/hosted-data/apis/laughter/L2-Chortle(1).m4a',
       label: 'Chortle',
       desc: 'Joyful laugh that shows gleeful pleasure',
       size: 100,
+      mobileSize: 70,
       playDiameter: 28,
+      mobilePlayDiameter: 22,
     },
     {
       url: 'https://amdufour.github.io/hosted-data/apis/laughter/L3-Guffaw(1).m4a',
       label: 'Guffaw',
       desc: 'Loud or boisterous "belly laugh" often prolonged in duration',
       size: 142,
+      mobileSize: 100,
       playDiameter: 32,
+      mobilePlayDiameter: 26,
     },
   ];
+
+  let isMobile = $state(false);
 
   /** @type {Tone.Player[]} */
   let laugh3Players = [];
@@ -179,7 +187,9 @@
     const player = new Tone.Player().toDestination();
     guffaw2ReadyPromise = player
       .load('https://amdufour.github.io/hosted-data/apis/laughter/L3-Guffaw(2).m4a')
-      .then(() => { guffaw2Player = player; });
+      .then(() => {
+        guffaw2Player = player;
+      });
   };
 
   function playGuffaw2() {
@@ -187,7 +197,9 @@
     try {
       if (guffaw2Player.state === 'started') guffaw2Player.stop();
       guffaw2Player.start();
-    } catch (e) { console.warn(e); }
+    } catch (e) {
+      console.warn(e);
+    }
   }
 
   // ── laughs-text-4 audio ────────────────────────────────────────────────────
@@ -216,6 +228,7 @@
   }
 
   onMount(() => {
+    isMobile = window.innerWidth < 1024;
     preloadLaughs();
     preloadLaughs3();
     preloadGuffaw2();
@@ -235,7 +248,9 @@
         gsap.set(`#laughs-text-${i}`, { opacity: 0, pointerEvents: 'none' });
       }
       gsap.set('#text4-laugh-icon', { opacity: 0 });
-      gsap.set(['#text5-icon-1', '#text5-icon-2', '#text5-icon-3', '#text5-icon-4'], { opacity: 0 });
+      gsap.set(['#text5-icon-1', '#text5-icon-2', '#text5-icon-3', '#text5-icon-4'], {
+        opacity: 0,
+      });
       gsap.set(
         ['#laughs-text-1 .highlight', '#laughs-text-2 .highlight', '#laughs-text-4 .highlight'],
         {
@@ -402,33 +417,28 @@
               fleeting.
             </div>
             <!-- Icons -->
-            <div class="flex flex-row items-end gap-16 shrink-0">
+            <div
+              class="w-full px-4 flex flex-row justify-between items-end gap-4 lg:gap-16 shrink-0"
+            >
               {#each laugh3Data as item, i}
-                <div
-                  class="flex flex-col items-center gap-1 text-center"
-                  style="width: {item.size}px"
-                >
+                {@const s = isMobile ? item.mobileSize : item.size}
+                {@const pd = isMobile ? item.mobilePlayDiameter : item.playDiameter}
+                <div class="flex flex-col items-center gap-1 text-center" style="width: {s}px">
                   <div
                     class="relative shrink-0 flex items-end mb-2"
-                    style="width: {item.size}px; height: 142px"
+                    style="width: {s}px; height: {isMobile ? 100 : 142}px"
                   >
-                    <Laugh
-                      width={item.size}
-                      height={item.size}
-                      color="white"
-                      isActive={activeIcon3 === i + 1}
-                    />
+                    <Laugh width={s} height={s} color="white" isActive={activeIcon3 === i + 1} />
                     <button
                       class="absolute bottom-[-10px] right-[-10px] transition-opacity disabled:opacity-30 disabled:cursor-not-allowed"
                       disabled={activeIcon3 > 0 || !$soundIsAuth}
                       onclick={() => playLaugh3(i)}
                       aria-label="Play {item.label}"
                     >
-                      <PlayIcon color="white" diameter={item.playDiameter} />
+                      <PlayIcon color="white" diameter={pd} />
                     </button>
                   </div>
                   <span class="mid font-semibold">{item.label}</span>
-                  <span class="small w-[142px]">{item.desc}</span>
                 </div>
               {/each}
             </div>
@@ -490,7 +500,9 @@
                     class="px-4 py-2 number text-center text-white/70 {ti < 4
                       ? 'border-r border-white/40'
                       : ''}"
-                  >{time}</div>
+                  >
+                    {time}
+                  </div>
                 {/each}
               </div>
               <!-- Laugh row -->
