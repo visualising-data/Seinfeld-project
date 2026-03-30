@@ -1,5 +1,6 @@
 <script>
   import { onMount } from 'svelte';
+  import { gsap } from 'gsap/dist/gsap';
 
   import { episodesInfo } from '$lib/data/episodesInfo';
   import { formatTime } from '../../utils/formatTime';
@@ -102,6 +103,69 @@
       pin: '#catalog #seasons-strip',
       preventOverlaps: true,
     });
+
+    // Crossfade: catalog-section becomes a solid fixed backdrop only when the
+    // crossfade zone begins (episode-example-container bottom hits viewport bottom).
+    // This prevents it from covering sections above (Laughs, EpisodeExample).
+    gsap.set('#catalog-inner', { opacity: 0 });
+    gsap.to('#catalog-inner', {
+      opacity: 1,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: '#episode-example-container',
+        start: 'bottom bottom',
+        end: 'bottom top',
+        scrub: true,
+        onEnter: () =>
+          gsap.set('#catalog-section', {
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100%',
+            zIndex: 10,
+            pointerEvents: 'none',
+          }),
+        // onLeave intentionally omitted: stay-zone trigger handles the release
+        onEnterBack: () =>
+          gsap.set('#catalog-section', {
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100%',
+            zIndex: 10,
+            pointerEvents: 'none',
+          }),
+        onLeaveBack: () =>
+          gsap.set('#catalog-section', {
+            clearProps: 'position,top,left,width,zIndex,pointerEvents',
+          }),
+      },
+    });
+
+    // Stay zone: keep catalog pinned for one viewport after the crossfade ends,
+    // then release it into normal flow with the highest z-index so it's fully interactive.
+    ScrollTrigger.create({
+      trigger: '#episode-example-container',
+      start: 'bottom top',
+      end: () => `bottom top+=${window.innerHeight * 2}`,
+      onEnter: () => gsap.set('#catalog-section', { pointerEvents: 'auto' }),
+      onLeave: () => {
+        gsap.set('#catalog-section', {
+          clearProps: 'position,top,left,width,zIndex,pointerEvents',
+        });
+        gsap.set('#catalog-section', { position: 'relative', zIndex: 1000 });
+      },
+      onEnterBack: () =>
+        gsap.set('#catalog-section', {
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100%',
+          zIndex: 10,
+          pointerEvents: 'auto',
+        }),
+      onLeaveBack: () => gsap.set('#catalog-section', { pointerEvents: 'none' }),
+    });
   });
 
   let externallyClickedScene = $state();
@@ -116,60 +180,69 @@
 
 <svelte:window bind:innerWidth bind:innerHeight />
 
-<section id="catalog-section">
-  <div id="catalog" class="relative flex w-screen pb-12">
-    <div>
-      <!-- Episode details and controls -->
-      <EpisodeDetails
-        episodes={episodesInfo}
-        bind:currentSeason
-        bind:currentEpisode
-        episodeInfo={currentEpisodeInfo}
-      />
+<section id="catalog-section" style="background: #F9F5F7;">
+  <div id="catalog-inner">
+    <div id="catalog" class="relative flex w-screen">
+      <div class="flex flex-col h-full">
+        <!-- Episode details and controls -->
+        <EpisodeDetails
+          episodes={episodesInfo}
+          bind:currentSeason
+          bind:currentEpisode
+          episodeInfo={currentEpisodeInfo}
+        />
 
-      <!-- Sonification player -->
-      <SonificationPlayer
-        {labelsWidth}
-        {scenesWidth}
-        {scenes}
-        {xScale}
-        sonificationCharactersData={currentEpisodeSonificationCharactersData}
-        sonificationLocationData={currentEpisodeSonificationLocationData}
-        {isPlaying}
-        {playingScene}
-        {externallyClickedScene}
-        {toggleSonificationLegend}
-        {updatePlayingData}
-      />
+        <!-- Sonification player -->
+        <SonificationPlayer
+          {labelsWidth}
+          {scenesWidth}
+          {scenes}
+          {xScale}
+          sonificationCharactersData={currentEpisodeSonificationCharactersData}
+          sonificationLocationData={currentEpisodeSonificationLocationData}
+          {isPlaying}
+          {playingScene}
+          {externallyClickedScene}
+          {toggleSonificationLegend}
+          {updatePlayingData}
+        />
 
-      <!-- Episode data -->
-      <div class="score-wrapper">
-        <div style="padding-bottom: 20px;">
-          <EpisodeScore
-            episodeData={currentEpisodeData}
-            width={scenesWidth}
-            {labelsWidth}
-            {statsWidth}
-            {scenes}
-            {xScale}
-            sonificationCharactersData={currentEpisodeSonificationCharactersData}
-            sonificationLocationData={currentEpisodeSonificationLocationData}
-            {isPlaying}
-            {playingScene}
-            {handleClickOnScene}
-          />
+        <!-- Episode data -->
+        <div class="score-wrapper">
+          <div style="padding-bottom: 20px;">
+            <EpisodeScore
+              episodeData={currentEpisodeData}
+              width={scenesWidth}
+              {labelsWidth}
+              {statsWidth}
+              {scenes}
+              {xScale}
+              sonificationCharactersData={currentEpisodeSonificationCharactersData}
+              sonificationLocationData={currentEpisodeSonificationLocationData}
+              {isPlaying}
+              {playingScene}
+              {handleClickOnScene}
+            />
+          </div>
         </div>
       </div>
-    </div>
 
-    {#if sonificationLegendIsVisible}
-      <SonificationLegend top={detailsHeight} width={statsWidth + 50} {toggleSonificationLegend} />
-    {/if}
+      {#if sonificationLegendIsVisible}
+        <SonificationLegend
+          top={detailsHeight}
+          width={statsWidth + 50}
+          {toggleSonificationLegend}
+        />
+      {/if}
+    </div>
   </div>
 </section>
 
 <style>
   .score-wrapper {
     position: relative;
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
   }
 </style>

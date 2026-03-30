@@ -70,7 +70,7 @@
     {sonificationCharactersData}
     {handleClickOnScene}
   />
-  <div style="max-width: {innerWidth}px; overflow: scroll;">
+  <div style="max-width: {innerWidth}px;">
     <Timeline
       {labelsWidth}
       {xScale}

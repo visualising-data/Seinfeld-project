@@ -127,8 +127,8 @@
 
 <svelte:window bind:innerWidth />
 
-<div id="data-gathering-3" class="relative">
-  <div class="sticky top-0 h-screen flex flex-col bg-[#000]">
+<div id="data-gathering-3" class="relative bg-[#000]">
+  <div class="sticky top-0 h-screen flex flex-col">
     <!-- Video area: fills remaining height above the overlay -->
     <div class="flex-1 relative flex items-center min-h-0 overflow-hidden">
       <!-- svelte-ignore a11y_media_has_caption -->

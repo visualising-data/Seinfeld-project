@@ -55,13 +55,31 @@
   );
 
   onMount(() => {
-    // Pin Episode viz
+    // Ensure episode-example sits above the catalog backdrop (z-10) during the crossfade.
+    gsap.set('#episode-example', { zIndex: 20 });
+
+    // Pin Episode viz — extended by one extra viewport so catalog naturally
+    // arrives at the top of the screen exactly when the pin ends.
     ScrollTrigger.create({
       trigger: '#episode-example-container',
       start: 'top top',
-      end: 'bottom bottom',
+      end: 'bottom top',
       pin: '#episode-example',
       preventOverlaps: true,
+    });
+
+    // Scrub fade-out during the crossfade zone (the extra 100vh after all text is done).
+    gsap.to('#episode-example', {
+      opacity: 0,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: '#episode-example-container',
+        start: 'bottom bottom',
+        end: 'bottom top',
+        scrub: true,
+        onLeave: () => gsap.set('#episode-example', { pointerEvents: 'none' }),
+        onEnterBack: () => gsap.set('#episode-example', { pointerEvents: 'auto' }),
+      },
     });
 
     gsap.set('#episode-detail-container', {
@@ -387,13 +405,9 @@
 
 <svelte:window bind:innerWidth bind:innerHeight />
 
-<div
-  id="episode-example-container"
-  class="relative"
-  style="width: calc(100vw - 25px); height: auto;"
->
+<div id="episode-example-container" class="relative">
   <div id="episode-example" class="absolute w-full">
-    <div class="relative">
+    <div class="relative flex flex-col overflow-hidden" style="height: {innerHeight}px;">
       <!-- Episode details -->
       <div class="mask self-start">
         <div id="episode-detail-container">
@@ -404,8 +418,8 @@
       <!-- Episode duration and laughs -->
       <div
         id="duration-example"
-        class="flex items-center justify-center"
-        style="width: {innerWidth - 25}px; height: {innerHeight - 254}px; opacity: 0;"
+        class="flex flex-1 items-center justify-center"
+        style="width: {innerWidth - 25}px; opacity: 0;"
       >
         <svg width={innerWidth > 793 ? innerWidth - 225 : innerWidth - 50} height="140">
           <g transform="translate(0, 40)">
@@ -463,7 +477,10 @@
       </div>
 
       <!-- Episode data -->
-      <div class="score-wrapper absolute left-0" style="top: 280px;">
+      <div
+        class="score-wrapper w-full absolute top-[280px] mt-[40px]"
+        style="max-height: {innerHeight - 320}px;"
+      >
         <EpisodeScore
           {statsWidth}
           {episodeData}
@@ -477,7 +494,7 @@
   </div>
 
   <!-- Scrolling Texts -->
-  <div class="z-1000 relative" style="pointer-events: none">
+  <div class="relative" style="pointer-events: none; z-index: 30;">
     <EpisodeTexts {episodeStepChange} {episodeStepLeave} />
   </div>
 </div>
