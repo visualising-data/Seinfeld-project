@@ -26,7 +26,7 @@
 
 <div
 	class="fixed inset-x-0 top-0 flex h-14 items-center justify-end px-6"
-	style="height: 56px; z-index: 10; background: {navBg}; transition: background 0.3s ease;"
+	style="height: 56px; z-index: 2000; background: {navBg}; transition: background 0.3s ease;"
 >
 	<div class="flex">
 		<button onclick={toggleSound}>

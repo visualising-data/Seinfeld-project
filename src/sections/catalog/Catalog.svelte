@@ -148,7 +148,10 @@
       trigger: '#episode-example-container',
       start: 'bottom top',
       end: () => `bottom top+=${window.innerHeight * 2}`,
-      onEnter: () => gsap.set('#catalog-section', { pointerEvents: 'auto' }),
+      onEnter: () => {
+          gsap.set('#catalog-section', { pointerEvents: 'auto' });
+          gsap.set('#episode-example', { pointerEvents: 'none' });
+        },
       onLeave: () => {
         gsap.set('#catalog-section', {
           clearProps: 'position,top,left,width,zIndex,pointerEvents',
@@ -164,7 +167,10 @@
           zIndex: 10,
           pointerEvents: 'auto',
         }),
-      onLeaveBack: () => gsap.set('#catalog-section', { pointerEvents: 'none' }),
+      onLeaveBack: () => {
+          gsap.set('#catalog-section', { pointerEvents: 'none' });
+          gsap.set('#episode-example', { pointerEvents: 'auto' });
+        },
     });
   });
 
@@ -226,16 +232,11 @@
           </div>
         </div>
       </div>
-
-      {#if sonificationLegendIsVisible}
-        <SonificationLegend
-          top={detailsHeight}
-          width={statsWidth + 50}
-          {toggleSonificationLegend}
-        />
-      {/if}
     </div>
   </div>
+  {#if sonificationLegendIsVisible}
+    <SonificationLegend top={detailsHeight} width={statsWidth + 50} {toggleSonificationLegend} />
+  {/if}
 </section>
 
 <style>

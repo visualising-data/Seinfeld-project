@@ -77,17 +77,19 @@
         >
           {episodeInfo.title}
         </h2>
-        <span class="quote-btn-wrap">
-          <button
-            class="flex justify-center items-center w-[42px] h-[42px] rounded-full {$soundIsAuth
-              ? 'bg-[#E71D80]'
-              : 'bg-[#BEBABC]'}"
-            disabled={!$soundIsAuth}
-            onclick={playQuote}
-          >
-            <Quote />
-          </button>
-        </span>
+        {#if episodes}
+          <span class="quote-btn-wrap">
+            <button
+              class="flex justify-center items-center w-[42px] h-[42px] rounded-full {$soundIsAuth
+                ? 'bg-[#E71D80]'
+                : 'bg-[#BEBABC]'}"
+              disabled={!$soundIsAuth}
+              onclick={playQuote}
+            >
+              <Quote />
+            </button>
+          </span>
+        {/if}
         {#if innerWidth < 1280}
           <button class="ml-4 mt-2" onclick={toggleShowMore}>
             {#if showMore}

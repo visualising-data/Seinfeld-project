@@ -19,7 +19,13 @@
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- svelte-ignore a11y_no_static_element_interactions -->
-<div in:fade={{ duration: 250 }} out:fade={{ duration: 250 }} class="backdrop" onclick={toggleMenu}>
+<div
+  in:fade={{ duration: 250 }}
+  out:fade={{ duration: 250 }}
+  class="backdrop"
+  style="z-index: 3000;"
+  onclick={toggleMenu}
+>
   <div
     in:fly={{ duration: 250, x: 500 }}
     out:fly={{ duration: 250, x: 500 }}

@@ -406,7 +406,7 @@
 <svelte:window bind:innerWidth bind:innerHeight />
 
 <div id="episode-example-container" class="relative">
-  <div id="episode-example" class="absolute w-full">
+  <div id="episode-example" class="absolute w-full" style="z-index: 5;">
     <div class="relative flex flex-col overflow-hidden" style="height: {innerHeight}px;">
       <!-- Episode details -->
       <div class="mask self-start">

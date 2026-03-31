@@ -19,6 +19,9 @@
   // @ts-ignore
   import Calendar from '../sections/calendar/Calendar.svelte';
   import Quotes from '../sections/quotes/Quotes.svelte';
+  import MainCharsSection from '../sections/main_characters/MainCharsSection.svelte';
+  import SupportingCharsSection from '../sections/supporting_characters/SupportingCharsSection.svelte';
+  import LocationsSection from '../sections/locations/locationsSection.svelte';
 
   // Lazy-loaded sections — imported dynamically when sentinel enters viewport
   let DataGathering: any = null;
@@ -95,10 +98,10 @@
         <svelte:component this={DataGathering} {episodesData} {ScrollTrigger} />
         <svelte:component this={IntroEnd} />
         <Quotes />
-        <!-- <MainCharsSection {episodesData} />
+        <MainCharsSection {episodesData} />
         <SupportingCharsSection {episodesData} />
         <LocationsSection {episodesData} />
-        <LaughsExploration {episodesData} /> -->
+        <!-- <LaughsExploration {episodesData} /> -->
       {/if}
       <!-- <Quotes /> -->
       <!-- <MethodologyAndCredits /> -->
