@@ -28,7 +28,7 @@
 
   let visualizationsWidth = $state(800);
   const episodesOverviewWidth = 150;
-  const marginEnd = 25;
+  const marginEnd = $derived(isMobile ? 10 : 25);
   let episodeDetailsWidth = $derived(
     isMobile ? visualizationsWidth : visualizationsWidth - episodesOverviewWidth,
   );
@@ -36,7 +36,7 @@
 
   let margin = $derived(
     isMobile
-      ? { top: 30, right: 20, bottom: 34, left: 14 + 25 }
+      ? { top: 30, right: 0, bottom: 34, left: 30 }
       : { top: 30, right: 100, bottom: 34, left: 14 + 25 },
   );
   let episodeDetailsInnerWidth = $derived(episodeDetailsWidth - margin.left - margin.right);

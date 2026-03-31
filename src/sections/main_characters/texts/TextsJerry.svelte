@@ -5,6 +5,7 @@
   let { charData } = $props();
 
   let sparklinesContainerWidth = $state(1000);
+  const sparklineWidth = $derived(Math.min(160, Math.max(80, Math.floor((sparklinesContainerWidth + 102) / 4))));
 
   const color = characters.find((char) => char.id === 'JERRY')?.color;
 </script>
@@ -108,20 +109,18 @@
 
 <!-- Text 8 -->
 <div id="jerry-text-8" class="flex h-screen w-screen items-center justify-end md:pr-6">
-  <div class="text-overlay flex flex-col">
+  <div class="text-overlay flex flex-col" style="min-width: 0;">
     <div class="mb-4">
       Perhaps this came about as the <span class="highlight"
         >other lead characters found their voice</span
       > and the supporting cast grew. There was an up-tick during Season 9, as seen across almost all
       character groups.
     </div>
-    <div>
+    <div bind:clientWidth={sparklinesContainerWidth} style="height: 0; overflow: hidden;"></div>
+    <div style="overflow: hidden;">
       <div class="small mb-2">Average screen-time per season</div>
       <div class="relative">
-        <div
-          bind:clientWidth={sparklinesContainerWidth}
-          class="absolute top-0 left-0 w-full overflow-hidden"
-        >
+        <div class="absolute top-0 left-0 w-full overflow-hidden">
           <Sparkline onlyAxes={true} containerWidth={sparklinesContainerWidth} />
         </div>
         <div class="flex items-end gap-3">
@@ -130,34 +129,35 @@
             showCharBadge={true}
             showLabels={true}
             charId="JERRY"
+            containerWidth={sparklineWidth}
           />
           <Sparkline
             charData={charData.GEORGE}
             showMax={false}
             showCharBadge={true}
             charId="GEORGE"
+            containerWidth={sparklineWidth}
           />
           <Sparkline
             charData={charData.ELAINE}
             showMax={false}
             showCharBadge={true}
             charId="ELAINE"
+            containerWidth={sparklineWidth}
           />
           <Sparkline
             charData={charData.KRAMER}
             showMax={false}
             showCharBadge={true}
             charId="KRAMER"
+            containerWidth={sparklineWidth}
           />
         </div>
       </div>
       <div class="mt-8">
         <div class="small mb-2">Average laughter share per season</div>
         <div class="relative">
-          <div
-            bind:clientWidth={sparklinesContainerWidth}
-            class="absolute top-0 left-0 w-full overflow-hidden"
-          >
+          <div class="absolute top-0 left-0 w-full overflow-hidden">
             <Sparkline onlyAxes={true} showMax={false} containerWidth={sparklinesContainerWidth} />
           </div>
           <div class="flex items-end gap-3">
@@ -168,6 +168,7 @@
               showCharBadge={true}
               showMax={false}
               charId="JERRY"
+              containerWidth={sparklineWidth}
             />
             <Sparkline
               charData={charData.GEORGE}
@@ -175,6 +176,7 @@
               showCharBadge={true}
               showMax={false}
               charId="GEORGE"
+              containerWidth={sparklineWidth}
             />
             <Sparkline
               charData={charData.ELAINE}
@@ -182,6 +184,7 @@
               showCharBadge={true}
               showMax={false}
               charId="ELAINE"
+              containerWidth={sparklineWidth}
             />
             <Sparkline
               charData={charData.KRAMER}
@@ -189,6 +192,7 @@
               showCharBadge={true}
               showMax={false}
               charId="KRAMER"
+              containerWidth={sparklineWidth}
             />
           </div>
         </div>
