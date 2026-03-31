@@ -48,6 +48,17 @@
 
   let activeFilter = $state(FILTER.SCREEN_TIME);
 
+  const charBgColors = {
+    JERRY: 'rgba(95, 168, 211, 0.4)',
+    GEORGE: 'rgba(235, 100, 71, 0.4)',
+    ELAINE: 'rgba(251, 186, 58, 0.4)',
+    KRAMER: 'rgba(131, 200, 195, 0.4)',
+  };
+
+  let bgColor = $derived(
+    isTextOver ? (charBgColors[activeCharacter] ?? 'transparent') : 'transparent',
+  );
+
   /**
    * @type {Tone.Players}
    */
@@ -148,6 +159,28 @@
     switchFilter(FILTER.SCREEN_TIME);
   };
 
+  /**
+   * @param {any[]} events
+   * @returns {{ start: number; duration: number; }[]}
+   */
+  function aggregateTimeEvents(events) {
+    const result = [];
+    let start, currentTime;
+    events.forEach((d, i) => {
+      if (start === undefined && currentTime === undefined) {
+        start = +d.eventTimeSeconds;
+        currentTime = +d.eventTimeSeconds;
+      } else if (+d.eventTimeSeconds > currentTime + 5 || i === events.length - 1) {
+        result.push({ start: start - 5, duration: currentTime - start });
+        start = +d.eventTimeSeconds;
+        currentTime = +d.eventTimeSeconds;
+      } else if (+d.eventTimeSeconds === currentTime + 5) {
+        currentTime = +d.eventTimeSeconds;
+      }
+    });
+    return result;
+  }
+
   // TODO: Those data manipulation don't need to happen live
   let charData = $derived.by(() => {
     const mainCharsData = {};
@@ -170,38 +203,12 @@
            * @type {any[]}
            */
           const onScreenAtWork = [];
-          /**
-           * @type {{ start: number; duration: number; }[]}
-           */
-          const aggregatedScreenTime = [];
-          /**
-           * @type {{ start: number; duration: number; }[]}
-           */
-          const aggregatedScreenTimeAtWork = [];
-          /**
-           * @type {any[]}
-           */
+          /** @type {any[]} */
           const causesLaughs = [];
-          /**
-           * @type {{ start: number; duration: number; }[]}
-           */
-          const aggregatedLaughs = [];
-          /**
-           * @type {any[]}
-           */
+          /** @type {any[]} */
           const withoutJerry = [];
-          /**
-           * @type {{ start: number; duration: number; }[]}
-           */
-          const aggregatedWithoutJerry = [];
-          /**
-           * @type {any[]}
-           */
+          /** @type {any[]} */
           const firstSceneWithoutJerry = [];
-          /**
-           * @type {{ start: number; duration: number; }[]}
-           */
-          const aggregatedFirstSceneWithoutJerry = [];
 
           episode.data.forEach((d) => {
             // Main characters
@@ -282,117 +289,18 @@
             }
           });
 
-          /**
-           * @type {number | undefined}
-           */
-          let start;
-          /**
-           * @type {number | undefined}
-           */
-          let currentTime;
-          onScreen.forEach((d, i) => {
-            if (!start && !currentTime) {
-              start = +d.eventTimeSeconds;
-              currentTime = +d.eventTimeSeconds;
-            } else if (+d.eventTimeSeconds > currentTime + 5 || i === onScreen.length - 1) {
-              aggregatedScreenTime.push({
-                start: start - 5,
-                duration: currentTime - start,
-              });
-              start = +d.eventTimeSeconds;
-              currentTime = +d.eventTimeSeconds;
-            } else if (+d.eventTimeSeconds === currentTime + 5) {
-              currentTime = +d.eventTimeSeconds;
-            }
-          });
-
-          start = undefined;
-          currentTime = undefined;
-          onScreenAtWork.forEach((d, i) => {
-            if (!start && !currentTime) {
-              start = +d.eventTimeSeconds;
-              currentTime = +d.eventTimeSeconds;
-            } else if (+d.eventTimeSeconds > currentTime + 5 || i === onScreenAtWork.length - 1) {
-              aggregatedScreenTimeAtWork.push({
-                start: start - 5,
-                duration: currentTime - start,
-              });
-              start = +d.eventTimeSeconds;
-              currentTime = +d.eventTimeSeconds;
-            } else if (+d.eventTimeSeconds === currentTime + 5) {
-              currentTime = +d.eventTimeSeconds;
-            }
-          });
-
-          start = undefined;
-          currentTime = undefined;
-          withoutJerry.forEach((d, i) => {
-            if (!start && !currentTime) {
-              start = +d.eventTimeSeconds;
-              currentTime = +d.eventTimeSeconds;
-            } else if (+d.eventTimeSeconds > currentTime + 5 || i === withoutJerry.length - 1) {
-              aggregatedWithoutJerry.push({
-                start: start - 5,
-                duration: currentTime - start,
-              });
-              start = +d.eventTimeSeconds;
-              currentTime = +d.eventTimeSeconds;
-            } else if (+d.eventTimeSeconds === currentTime + 5) {
-              currentTime = +d.eventTimeSeconds;
-            }
-          });
-
-          start = undefined;
-          currentTime = undefined;
-          firstSceneWithoutJerry.forEach((d, i) => {
-            if (!start && !currentTime) {
-              start = +d.eventTimeSeconds;
-              currentTime = +d.eventTimeSeconds;
-            } else if (
-              +d.eventTimeSeconds > currentTime + 5 ||
-              i === firstSceneWithoutJerry.length - 1
-            ) {
-              aggregatedFirstSceneWithoutJerry.push({
-                start: start - 5,
-                duration: currentTime - start,
-              });
-              start = +d.eventTimeSeconds;
-              currentTime = +d.eventTimeSeconds;
-            } else if (+d.eventTimeSeconds === currentTime + 5) {
-              currentTime = +d.eventTimeSeconds;
-            }
-          });
-
-          start = undefined;
-          currentTime = undefined;
-          causesLaughs.forEach((d, i) => {
-            if (!start && !currentTime) {
-              start = +d.eventTimeSeconds;
-              currentTime = +d.eventTimeSeconds;
-            } else if (+d.eventTimeSeconds > currentTime + 5 || i === onScreenAtWork.length - 1) {
-              aggregatedLaughs.push({
-                start: start - 5,
-                duration: currentTime - start,
-              });
-              start = +d.eventTimeSeconds;
-              currentTime = +d.eventTimeSeconds;
-            } else if (+d.eventTimeSeconds === currentTime + 5) {
-              currentTime = +d.eventTimeSeconds;
-            }
-          });
-
           breakdown.push({
             season: episode.season,
             episode: episode.episode,
             duration: episode.duration,
             onScreen: onScreen,
-            aggregatedOnScreen: aggregatedScreenTime,
-            onScreenAtWork: aggregatedScreenTimeAtWork,
+            aggregatedOnScreen: aggregateTimeEvents(onScreen),
+            onScreenAtWork: aggregateTimeEvents(onScreenAtWork),
             causesLaughs: causesLaughs,
             episodeLaughs: episode.laughs,
-            aggregatedLaughs: aggregatedLaughs,
-            withoutJerry: aggregatedWithoutJerry,
-            firstSceneWithoutJerry: aggregatedFirstSceneWithoutJerry,
+            aggregatedLaughs: aggregateTimeEvents(causesLaughs),
+            withoutJerry: aggregateTimeEvents(withoutJerry),
+            firstSceneWithoutJerry: aggregateTimeEvents(firstSceneWithoutJerry),
           });
         },
       );
@@ -402,8 +310,6 @@
 
     return mainCharsData;
   });
-  $inspect('charData', charData);
-
   onMount(() => {
     // Preload audio files
     preload();
@@ -665,7 +571,7 @@
           },
         },
       });
-      tlElaineText4.to('#elaine-text-3 .highlight', highlightAnimation, '<-0.7');
+      tlElaineText4.to('#elaine-text-4 .highlight', highlightAnimation, '<-0.7');
 
       // Kramer
       const tlKramerText1 = gsap.timeline({
@@ -722,7 +628,9 @@
 <div
   id="{currentSection}-episodes-container"
   class="relative mt-20 mb-52"
-  style="padding-bottom: {currentSection === 'main_chars' ? '250vh' : '150vh'};"
+  style="padding-bottom: {currentSection === 'main_chars'
+    ? '250vh'
+    : '150vh'}; background-color: {bgColor}; transition: background-color 1s ease;"
 >
   <div
     id="lead-chars-episodes"

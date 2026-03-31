@@ -172,6 +172,12 @@
           gsap.set('#episode-example', { pointerEvents: 'auto' });
         },
     });
+
+    // Catalog is the last async-mounted section (loaded after CSV fetches inside
+    // DataGathering). Its content shifts every ScrollTrigger registered earlier
+    // (EpisodeExample pin/fade, IntroEnd, Quotes, MainChars, etc.) downward.
+    // Refreshing here recalculates all positions with the final DOM layout.
+    ScrollTrigger.refresh();
   });
 
   let externallyClickedScene = $state();
