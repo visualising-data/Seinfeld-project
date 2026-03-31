@@ -21,6 +21,7 @@ export const getLocationIconPath = (id: string) => {
     case "Kramer's home":
       return KramerHome;
     case 'Other family home':
+    case 'Family home':
       return FamilyHome;
     case 'Diner':
       return Diner;

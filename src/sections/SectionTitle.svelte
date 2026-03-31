@@ -1,16 +1,22 @@
 <script>
   import { onMount } from 'svelte';
   import { gsap } from 'gsap/dist/gsap';
+  import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 
   import { supportingCharacterTiles, characters, mainCharacterTiles } from '$lib/data/characters';
   import { locationsTiles } from '$lib/data/locations';
   import { getRandom } from '../utils/getRandom';
-  import tv_noise from '$lib/assets/tv_noise.png';
+  import { getCharacterImagePath } from '../utils/getCharacterImagePath';
+  import { getLocationIconPath } from '../utils/getLocationIconPath';
+
+  gsap.registerPlugin(ScrollTrigger);
 
   let { section, title } = $props();
 
   let innerWidth = $state(1600);
   let innerHeight = $state(800);
+  const TARGET_TILE_RATIO = 1.2; // tile width/height ratio matching desktop layout
+
   const numColumns = $derived.by(() => {
     switch (true) {
       case innerWidth >= 1024:
@@ -21,18 +27,26 @@
         return 2;
     }
   });
-  const numRows = $derived.by(() => {
-    switch (true) {
-      case innerHeight >= 800:
-        return 3;
-      case innerHeight >= 600:
-        return 2;
-      default:
-        return 2;
-    }
-  });
+  const numRows = $derived(
+    Math.min(
+      Math.max(2, Math.ceil((TARGET_TILE_RATIO * numColumns * innerHeight) / innerWidth)),
+      Math.floor(12 / numColumns),
+    ),
+  );
 
   const numTiles = $derived(numColumns * numRows);
+  const tileWidth = $derived(`calc(100vw / ${numColumns})`);
+  const tileHeight = $derived(`calc(100vh / ${numRows})`);
+  const titleTop = $derived.by(() => {
+    switch (true) {
+      case innerWidth >= 1024:
+        return `calc(100vh / ${numRows} - 154px)`;
+      case innerWidth >= 768:
+        return '160px';
+      default:
+        return '120px';
+    }
+  });
   const tilesData = $derived.by(() => {
     switch (section) {
       case 'supp_char':
@@ -45,9 +59,27 @@
   });
 
   // @ts-ignore
-  const tiles = $derived(getRandom(tilesData, numTiles));
-  const tilesWidth = $derived(innerWidth / numColumns - 1);
-  const tilesHeight = $derived(innerHeight / numRows - 1);
+  const tiles = $derived.by(() => {
+    if (numTiles <= tilesData.length) return getRandom(tilesData, numTiles);
+    const repeated = Array.from(
+      { length: Math.ceil(numTiles / tilesData.length) },
+      () => tilesData,
+    ).flat();
+    return getRandom(repeated, numTiles);
+  });
+
+  let introComplete = false;
+  let activeTileId = $state(null);
+
+  const handleTileClick = (/** @type {string} */ tileId) => {
+    const isClosing = activeTileId === tileId;
+    activeTileId = isClosing ? null : tileId;
+    if (isClosing) {
+      handleMouseLeave();
+    } else {
+      handleMouseEnter();
+    }
+  };
 
   onMount(() => {
     // Reveal section title
@@ -55,7 +87,9 @@
       scrollTrigger: {
         trigger: `#tiles-container-${section}`,
         start: 'top center',
-        preventOverlaps: true,
+      },
+      onComplete: () => {
+        introComplete = true;
       },
     });
     tl.from(`.tile-container-${section}`, {
@@ -77,7 +111,29 @@
       },
       '-=1',
     );
+
+    return () => tl.kill();
   });
+
+  const handleMouseEnter = () => {
+    if (!introComplete) return;
+    gsap.to(`#section-title-${section} h2`, {
+      translateY: 100,
+      opacity: 0,
+      ease: 'power3.out',
+      duration: 0.4,
+    });
+  };
+
+  const handleMouseLeave = () => {
+    if (!introComplete) return;
+    gsap.to(`#section-title-${section} h2`, {
+      translateY: 0,
+      opacity: 1,
+      ease: 'power3.out',
+      duration: 0.4,
+    });
+  };
 
   const getOverlayColor = (/** @type {{ category: string; name: string }} */ tile) => {
     switch (section) {
@@ -99,23 +155,19 @@
 >
   <div class="tiles absolute z-0 flex flex-wrap">
     {#each tiles as tile}
-      <div id={tile.id} class={`tile-container tile-container-${section} relative`} role="group">
+      <div
+        id={tile.id}
+        class={`tile-container tile-container-${section} relative${activeTileId === tile.id ? ' active' : ''}`}
+        role="button"
+        tabindex="0"
+        onmouseenter={handleMouseEnter}
+        onmouseleave={handleMouseLeave}
+        onclick={() => handleTileClick(tile.id)}
+        onkeydown={(e) => e.key === 'Enter' && handleTileClick(tile.id)}
+      >
         <div
           class="tile relative z-10"
-          style="width: {tilesWidth}px; height: {tilesHeight}px; background-image: url('https://amdufour.github.io/hosted-data/apis/thumbnails/{tile.thumbnail}');"
-        ></div>
-        <img
-          src="https://amdufour.github.io/hosted-data/apis/thumbnails/{tile.thumbnail}"
-          alt="Scene {tile.thumbnail}"
-          style="width: {tilesWidth}px; height: {tilesHeight}px;"
-        />
-        <div
-          class="z-1 absolute bottom-0 left-0 right-0 top-0"
-          style="background: rgba(18, 2, 10, 0.3); width: {tilesWidth}px;"
-        ></div>
-        <div
-          class="absolute z-10 bottom-0 left-0 right-0 top-0"
-          style="background-image: url('{tv_noise}'); width: {tilesWidth}px;"
+          style="width: {tileWidth}; height: {tileHeight}; background-image: url('https://amdufour.github.io/hosted-data/apis/thumbnails/{tile.thumbnail}');"
         ></div>
         <div class="info absolute bottom-0 left-0 right-0 z-20">
           <div
@@ -124,13 +176,27 @@
               ? '#F9F5F7'
               : '#12020A'}; background-color: {getOverlayColor(tile)};"
           >
-            <div>
-              <span class="name">{tile.name}</span>
-              {#if tile.category}
-                <span class="category small">{tile.category}</span>
-              {/if}
+            <div class="flex items-center gap-2">
+              <div
+                class="character grow-0 shrink-0 rounded-full bg-contain bg-center border-2 border-black w-12 h-12 bg-no-repeat"
+                style="background-image: url('{section === 'locations'
+                  ? getLocationIconPath(tile.name)
+                  : getCharacterImagePath(tile.icon)}');"
+              ></div>
+              <div>
+                <div>
+                  <span class="name font-semibold text-[16px] md:text-[18px] leading-none"
+                    >{tile.name}</span
+                  >
+                  {#if tile.category}
+                    <span class="category small text-[12px] md:text-[14px]">{tile.category}</span>
+                  {/if}
+                </div>
+                <div class="small text-[12px] md:text-[14px]">
+                  {`s${tile.season}e${tile.episode} ${tile.episodeTitle}`}
+                </div>
+              </div>
             </div>
-            <div class="small">{`s${tile.season}e${tile.episode} ${tile.episodeTitle}`}</div>
           </div>
         </div>
         <div class="overlay absolute left-0 right-0 top-0 z-30">
@@ -149,10 +215,10 @@
   <div
     id={`section-title-${section}`}
     class="section-title absolute left-0 right-0 z-10 flex items-center"
-    style="top: {tilesHeight - 146}px;"
+    style="top: {titleTop};"
   >
     <div class="container">
-      <h2 class="mask">{title}</h2>
+      <h2>{title}</h2>
     </div>
   </div>
 </div>
@@ -161,8 +227,7 @@
   /* Tiles */
   .tile,
   .overlay,
-  .info .details,
-  .section-title {
+  .info .details {
     transition: all 300ms ease-out;
   }
   .tile {
@@ -190,19 +255,25 @@
     font-size: 1.125rem;
     line-height: 1.1;
   }
-  .info .details .name {
-    font-weight: 600;
+  @media (hover: hover) {
+    .tile-container:hover .overlay {
+      max-height: 0;
+    }
+    .tile-container:hover .info .details {
+      padding-top: 8px;
+      padding-bottom: 8px;
+      max-height: 100px;
+    }
   }
-  .tile-container:hover .tile {
-    opacity: 0;
-  }
-  .tile-container:hover .overlay {
-    max-height: 0;
-  }
-  .tile-container:hover .info .details {
-    padding-top: 8px;
-    padding-bottom: 8px;
-    max-height: 54px;
+  @media (hover: none) {
+    .tile-container.active .overlay {
+      max-height: 0;
+    }
+    .tile-container.active .info .details {
+      padding-top: 8px;
+      padding-bottom: 8px;
+      max-height: 100px;
+    }
   }
 
   /* Title */
@@ -218,14 +289,5 @@
       rgba(18, 2, 10, 0) 100%
     );
     pointer-events: none;
-    transform: translateY(0);
-    opacity: 1;
-  }
-  .section-title.hide-title {
-    transform: translateY(50px);
-    opacity: 0;
-  }
-  .section-title h2 {
-    line-height: 1.2;
   }
 </style>

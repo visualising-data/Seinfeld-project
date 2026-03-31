@@ -24,6 +24,7 @@ export const mainCharacterTiles = [
     season: 5,
     episode: 18,
     episodeTitle: 'The Raincoats',
+    icon: 'JERRY',
   },
   {
     id: 'main_char_2',
@@ -33,6 +34,7 @@ export const mainCharacterTiles = [
     season: 5,
     episode: 2,
     episodeTitle: 'The Puffy Shirt',
+    icon: 'JERRY',
   },
   {
     id: 'main_char_3',
@@ -42,6 +44,7 @@ export const mainCharacterTiles = [
     season: 1,
     episode: 5,
     episodeTitle: 'Stock Tip',
+    icon: 'JERRY',
   },
   {
     id: 'main_char_4',
@@ -51,6 +54,7 @@ export const mainCharacterTiles = [
     season: 7,
     episode: 20,
     episodeTitle: 'The Bottle Deposit',
+    icon: 'GEORGE',
   },
   {
     id: 'main_char_5',
@@ -60,6 +64,7 @@ export const mainCharacterTiles = [
     season: 8,
     episode: 22,
     episodeTitle: 'The Summer of George',
+    icon: 'GEORGE',
   },
   {
     id: 'main_char_6',
@@ -69,6 +74,7 @@ export const mainCharacterTiles = [
     season: 7,
     episode: 16,
     episodeTitle: 'The Doll',
+    icon: 'GEORGE',
   },
   {
     id: 'main_char_7',
@@ -78,6 +84,7 @@ export const mainCharacterTiles = [
     season: 2,
     episode: 5,
     episodeTitle: 'The Apartment',
+    icon: 'ELAINE',
   },
   {
     id: 'main_char_8',
@@ -87,6 +94,7 @@ export const mainCharacterTiles = [
     season: 4,
     episode: 10,
     episodeTitle: 'The Contest',
+    icon: 'ELAINE',
   },
   {
     id: 'main_char_9',
@@ -96,6 +104,7 @@ export const mainCharacterTiles = [
     season: 2,
     episode: 3,
     episodeTitle: 'The Jacket',
+    icon: 'ELAINE',
   },
   {
     id: 'main_char_10',
@@ -105,6 +114,7 @@ export const mainCharacterTiles = [
     season: 4,
     episode: 3,
     episodeTitle: 'The Pitch',
+    icon: 'KRAMER',
   },
   {
     id: 'main_char_11',
@@ -114,6 +124,7 @@ export const mainCharacterTiles = [
     season: 8,
     episode: 8,
     episodeTitle: 'Chicken Roaster',
+    icon: 'KRAMER',
   },
   {
     id: 'main_char_12',
@@ -123,6 +134,7 @@ export const mainCharacterTiles = [
     season: 5,
     episode: 19,
     episodeTitle: 'The Fire',
+    icon: 'KRAMER',
   },
 ];
 
@@ -136,6 +148,7 @@ export const supportingCharacterTiles = [
     season: 7,
     episode: 22,
     episodeTitle: 'The Invitations',
+    icon: 'Love interest',
   },
   {
     id: 'supp_char_2',
@@ -146,6 +159,7 @@ export const supportingCharacterTiles = [
     season: 6,
     episode: 22,
     episodeTitle: 'The Face Painter',
+    icon: 'Love interest',
   },
   {
     id: 'supp_char_3',
@@ -156,16 +170,18 @@ export const supportingCharacterTiles = [
     season: 8,
     episode: 2,
     episodeTitle: 'The Soul Mate',
+    icon: 'Friend/Acquaintance',
   },
   {
     id: 'supp_char_4',
-    name: 'Bryan Cranston',
+    name: 'Tim Whatley',
     category: 'Friend',
     thumbnail: '28.FriendTimWhatley.jpg',
     video: '28.FriendTimWhatley.mp4',
     season: 6,
     episode: 8,
     episodeTitle: 'The Mom and Pop Store',
+    icon: 'Friend/Acquaintance',
   },
   {
     id: 'supp_char_5',
@@ -176,6 +192,7 @@ export const supportingCharacterTiles = [
     season: 4,
     episode: 3,
     episodeTitle: 'The Pitch',
+    icon: 'Neighbour',
   },
   {
     id: 'supp_char_6',
@@ -186,6 +203,7 @@ export const supportingCharacterTiles = [
     season: 6,
     episode: 8,
     episodeTitle: 'The Mom and Pop Store',
+    icon: 'Work colleague',
   },
   {
     id: 'supp_char_7',
@@ -196,6 +214,7 @@ export const supportingCharacterTiles = [
     season: 6,
     episode: 7,
     episodeTitle: 'The Soup',
+    icon: 'Work colleague',
   },
   {
     id: 'supp_char_8',
@@ -206,6 +225,7 @@ export const supportingCharacterTiles = [
     season: 9,
     episode: 15,
     episodeTitle: 'The Wizard',
+    icon: "Jerry's family",
   },
   {
     id: 'supp_char_9',
@@ -216,6 +236,7 @@ export const supportingCharacterTiles = [
     season: 2,
     episode: 2,
     episodeTitle: 'The Pony Remark',
+    icon: "Jerry's family",
   },
   {
     id: 'supp_char_10',
@@ -226,6 +247,7 @@ export const supportingCharacterTiles = [
     season: 5,
     episode: 18,
     episodeTitle: 'The Raincoats',
+    icon: "George's family",
   },
   {
     id: 'supp_char_11',
@@ -236,6 +258,7 @@ export const supportingCharacterTiles = [
     season: 7,
     episode: 6,
     episodeTitle: 'The Soup Nazi',
+    icon: 'Other',
   },
   {
     id: 'supp_char_12',
@@ -246,5 +269,6 @@ export const supportingCharacterTiles = [
     season: 9,
     episode: 23,
     episodeTitle: 'The Finale',
+    icon: 'Other',
   },
 ];
