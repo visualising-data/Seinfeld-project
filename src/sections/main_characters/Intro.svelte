@@ -147,11 +147,9 @@
                   data-speed={i % 2 === 0 ? 3 : 0.5}
                 >
                   <div
-                    class="relative character rounded-full bg-contain bg-center shadow-md"
+                    class="relative character rounded-full bg-contain bg-center shadow-md w-[60px] h-[60px] md:w-[100px] md:h-[100px]"
                     style="
-                        background-image: url('{getCharacterImagePath(char.id)}'); 
-                        width: 100px; 
-                        height: 100px;
+                        background-image: url('{getCharacterImagePath(char.id)}');
                       "
                   ></div>
                   <div style="background-color: rgba(18, 2, 10, 0.8);">{char.label}</div>
