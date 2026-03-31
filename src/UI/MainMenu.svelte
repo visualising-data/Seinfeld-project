@@ -2,6 +2,7 @@
   import { fade, fly } from 'svelte/transition';
   import CloseIcon from '../icons/CloseIcon.svelte';
   import ArrowRight from '../icons/ArrowRight.svelte';
+  import { pendingScrollAnchor, isScrollLoading } from '../stores/scrollAnchor';
 
   let { toggleMenu } = $props();
 
@@ -44,9 +45,12 @@
                 e.preventDefault();
                 e.stopPropagation();
                 toggleMenu();
-                const target = document.getElementById(menuItem.anchor);
-                if (target) {
-                  target.scrollIntoView({ behavior: 'instant' });
+                pendingScrollAnchor.set(menuItem.anchor);
+                // If element not yet in DOM (lazy loading), show loader and trigger load
+                if (!document.getElementById(menuItem.anchor)) {
+                  isScrollLoading.set(true);
+                  const sentinel = document.getElementById('lazy-load-sentinel');
+                  if (sentinel) sentinel.scrollIntoView({ behavior: 'instant' });
                 }
               }}
             >

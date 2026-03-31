@@ -56,7 +56,7 @@
   };
 
   let bgColor = $derived(
-    isTextOver ? (charBgColors[activeCharacter] ?? 'transparent') : 'transparent',
+    (isTextOver || isMouseOver) ? (charBgColors[/** @type {keyof typeof charBgColors} */ (activeCharacter)] ?? 'transparent') : 'transparent',
   );
 
   /**
@@ -131,6 +131,8 @@
 
   const handleCharacterClick = (/** @type {string} */ char) => {
     if (char !== activeCharacter) {
+      isMouseOver = true;
+
       if ($soundIsAuth && soundtrackCanPlay && soundtrack?.state === 'started') {
         soundtrack.player(playingFile).stop();
         clearTimeout(playCharTimeout);
@@ -619,6 +621,30 @@
         },
       });
       tlKramerText3.to('#kramer-text-3 .highlight', highlightAnimation, '<-0.7');
+    } else {
+      gsap.timeline({
+        scrollTrigger: {
+          trigger: `#${currentSection}-episodes-container`,
+          start: 'top bottom',
+          end: 'bottom top',
+          onEnter: () => {
+            soundtrackCanPlay = true;
+            playAudio();
+          },
+          onEnterBack: () => {
+            soundtrackCanPlay = true;
+            playAudio();
+          },
+          onLeave: () => {
+            soundtrackCanPlay = false;
+            stopAudio();
+          },
+          onLeaveBack: () => {
+            soundtrackCanPlay = false;
+            stopAudio();
+          },
+        },
+      });
     }
   });
 </script>
