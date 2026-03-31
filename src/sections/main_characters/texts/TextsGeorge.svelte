@@ -28,8 +28,8 @@
       charData={charData.GEORGE}
       showLabels={true}
       charId="GEORGE"
-      showMax={true}
-      yAxisLabels={[0, 1]}
+      showMax={false}
+      yAxisLabels={[0, 0.5, 1]}
     />
   </div>
 </div>
@@ -47,7 +47,7 @@
       charId="GEORGE"
       showMax={true}
       isScreenTime={false}
-      yAxisLabels={[0, 1]}
+      yAxisLabels={[0, 0.5, 1]}
     />
   </div>
 </div>

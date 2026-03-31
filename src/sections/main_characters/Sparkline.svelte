@@ -18,10 +18,20 @@
     seasons.forEach(s => {
       const episodes = charData?.filter(d => d.season === s.seasonNum)
 
-      const onScreenTimePerEpisode = episodes?.map(e => e.onScreen.length * 5 / e.duration)
+      const onScreenTimePerEpisode = episodes?.map(e => {
+        const times = new Set()
+        for (const d of e.onScreen) times.add(d.eventTimeSeconds)
+        return times.size * 5 / e.duration
+      })
       const avgOnScreenTime = mean(onScreenTimePerEpisode)
 
-      const laughsSharePerEpisode = episodes?.map(e => e.causesLaughs.length / e.episodeLaughs.length)
+      const laughsSharePerEpisode = episodes?.map(e => {
+        const causedTimes = new Set()
+        for (const d of e.causesLaughs) causedTimes.add(d.eventTimeSeconds)
+        const totalTimes = new Set()
+        for (const d of e.episodeLaughs) totalTimes.add(d.eventTimeSeconds)
+        return causedTimes.size / totalTimes.size
+      })
       const avgLaughShare = mean(laughsSharePerEpisode)
 
       averagePerSeason.push({

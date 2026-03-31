@@ -82,7 +82,7 @@
       showLabels={true}
       charId="JERRY"
       showMax={true}
-      yAxisLabels={[0, 0.5]}
+      yAxisLabels={[0, 0.5, 1]}
     />
   </div>
 </div>
@@ -100,8 +100,8 @@
       isScreenTime={false}
       showLabels={true}
       charId="JERRY"
-      showMax={true}
-      yAxisLabels={[0, 1]}
+      showMax={false}
+      yAxisLabels={[0, 0.5, 1]}
     />
   </div>
 </div>
@@ -131,9 +131,24 @@
             showLabels={true}
             charId="JERRY"
           />
-          <Sparkline charData={charData.GEORGE} showCharBadge={true} charId="GEORGE" />
-          <Sparkline charData={charData.ELAINE} showCharBadge={true} charId="ELAINE" />
-          <Sparkline charData={charData.KRAMER} showCharBadge={true} charId="KRAMER" />
+          <Sparkline
+            charData={charData.GEORGE}
+            showMax={false}
+            showCharBadge={true}
+            charId="GEORGE"
+          />
+          <Sparkline
+            charData={charData.ELAINE}
+            showMax={false}
+            showCharBadge={true}
+            charId="ELAINE"
+          />
+          <Sparkline
+            charData={charData.KRAMER}
+            showMax={false}
+            showCharBadge={true}
+            charId="KRAMER"
+          />
         </div>
       </div>
       <div class="mt-8">
@@ -143,7 +158,7 @@
             bind:clientWidth={sparklinesContainerWidth}
             class="absolute top-0 left-0 w-full overflow-hidden"
           >
-            <Sparkline onlyAxes={true} containerWidth={sparklinesContainerWidth} />
+            <Sparkline onlyAxes={true} showMax={false} containerWidth={sparklinesContainerWidth} />
           </div>
           <div class="flex items-end gap-3">
             <Sparkline
@@ -151,24 +166,28 @@
               isScreenTime={false}
               showLabels={true}
               showCharBadge={true}
+              showMax={false}
               charId="JERRY"
             />
             <Sparkline
               charData={charData.GEORGE}
               isScreenTime={false}
               showCharBadge={true}
+              showMax={false}
               charId="GEORGE"
             />
             <Sparkline
               charData={charData.ELAINE}
               isScreenTime={false}
               showCharBadge={true}
+              showMax={false}
               charId="ELAINE"
             />
             <Sparkline
               charData={charData.KRAMER}
               isScreenTime={false}
               showCharBadge={true}
+              showMax={false}
               charId="KRAMER"
             />
           </div>

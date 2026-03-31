@@ -260,6 +260,7 @@
 
             // Locations
             if (
+              char.id === activeCharacter &&
               (currentSection === 'locations'
                 ? d.eventCategory === 'LOCATION'
                 : d.eventCategory === 'CHARACTERS') &&
@@ -283,6 +284,7 @@
             }
 
             if (
+              char.id === activeCharacter &&
               currentSection !== 'locations' &&
               d.eventCategory === 'CAUSES THE LAUGH' &&
               d.eventAttribute.includes(activeCharacter)

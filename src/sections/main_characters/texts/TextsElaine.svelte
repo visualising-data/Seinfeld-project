@@ -20,8 +20,8 @@
       charData={charData.ELAINE}
       showLabels={true}
       charId="GEORGE"
-      showMax={true}
-      yAxisLabels={[0, 1]}
+      showMax={false}
+      yAxisLabels={[0, 0.5, 1]}
     />
   </div>
 </div>
@@ -40,15 +40,15 @@
 <!-- Text 3 -->
 <div id="elaine-text-3" class="flex h-screen w-screen items-center justify-end pr-6">
   <div class="text-overlay" style="max-width: 800px;">
-    In <a href="https://jenniferkarmstrong.com/books/seinfeldia/" target="_blank"
-      >the book 'Seinfeldia'</a
-    >, author Jennifer Keishin Armstrong reports that, at the start of Season 3, Julia Louis-Dreyfus
-    (who played Elaine) was unhappy with her lack of quality screen time - being on-screen and being
-    funny. In the absence of women writers, this was perhaps an unsurprising effect of there being a
-    male-dominated staff, but it was also a consequence of the grounded role her character played
-    within the group of leads, considering Jerry's omnipresence as the gag-man, George's with his
-    neuroticism and Kramer bringing the slapstick. Elaine, as arguably the strongest actor, took on
-    more of the role <span class="highlight">holding the main stories together</span>.
+    In the book Seinfeldia, author Jennifer Keishin Armstrong reports that, at the start of Season
+    3, Julia Louis-Dreyfus (who played Elaine) was unhappy with her lack of quality screen time -
+    being on-screen and being funny. In the absence of women writers, this was perhaps an
+    unsurprising effect of there being a male-dominated staff, but it was also a consequence of the
+    grounded role her character played within the group of leads, considering Jerry's omnipresence
+    as the gag-man, George's with his neuroticism and Kramer bringing the slapstick. Elaine, as
+    arguably the strongest actor, took on more of the role <span class="highlight"
+      >holding the main stories together</span
+    >.
   </div>
 </div>
 
@@ -66,7 +66,7 @@
       charId="GEORGE"
       showMax={true}
       isScreenTime={false}
-      yAxisLabels={[0, 1]}
+      yAxisLabels={[0, 0.5, 1]}
     />
   </div>
 </div>

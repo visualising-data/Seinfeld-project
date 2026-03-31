@@ -30,8 +30,8 @@
       charData={charData.KRAMER}
       showLabels={true}
       charId="KRAMER"
-      showMax={true}
-      yAxisLabels={[0, 1]}
+      showMax={false}
+      yAxisLabels={[0, 0.5, 1]}
     />
   </div>
 </div>
@@ -57,8 +57,8 @@
       showLabels={true}
       isScreenTime={false}
       charId="KRAMER"
-      showMax={true}
-      yAxisLabels={[0, 1]}
+      showMax={false}
+      yAxisLabels={[0, 0.5, 1]}
     />
   </div>
 </div>
