@@ -184,7 +184,7 @@
     background-color: #eeeced;
   }
   .text-overlay {
-    width: 80%;
+    margin: 0 16px;
     max-width: 600px;
     padding: 24px 32px;
     color: #f9f5f7;

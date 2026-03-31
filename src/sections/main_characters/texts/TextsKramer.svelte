@@ -8,7 +8,7 @@
 </script>
 
 <!-- Text 1 -->
-<div id="kramer-text-1" class="flex h-screen w-screen items-center justify-end pr-6">
+<div id="kramer-text-1" class="flex h-screen w-screen items-center justify-end md:pr-6">
   <div class="text-overlay" style="max-width: 800px;">
     <span class="em" style="color: {color};">Cosmo Kramer</span>, based on Kenny Kramer, the
     real-life friend of Larry David, was Jerry's friend and neighbour and the fourth lead character.
@@ -18,7 +18,7 @@
 </div>
 
 <!-- Text 2 -->
-<div id="kramer-text-2" class="flex h-screen w-screen items-center justify-end pr-6">
+<div id="kramer-text-2" class="flex h-screen w-screen items-center justify-end md:pr-6">
   <div class="text-overlay flex flex-col">
     <div class="mb-4">
       As one of the most popular characters amongst fans and critics alike, you can see his scene
@@ -37,7 +37,7 @@
 </div>
 
 <!-- Text 3 -->
-<div id="kramer-text-3" class="flex h-screen w-screen items-center justify-end pr-6">
+<div id="kramer-text-3" class="flex h-screen w-screen items-center justify-end md:pr-6">
   <div class="text-overlay flex flex-col" style="max-width: 800px;">
     <div class="mb-4">
       Also, as the most naturally slapstick physical comedian, Kramer often got the most wacky gags,

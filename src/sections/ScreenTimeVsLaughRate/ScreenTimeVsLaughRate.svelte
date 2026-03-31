@@ -22,6 +22,7 @@
   let innerWidth = $state(1600);
   let innerHeight = $state(800);
   let headerHeight = $state(200);
+  let isMobile = $derived(innerWidth < 793);
   let visualizationsContainerHeight = $state(800);
 
   let currentChars = $derived.by(() => {
@@ -49,14 +50,16 @@
   let activeFilter = $state(FILTER.SCREEN_TIME);
 
   const charBgColors = {
-    JERRY: 'rgba(95, 168, 211, 0.4)',
-    GEORGE: 'rgba(235, 100, 71, 0.4)',
-    ELAINE: 'rgba(251, 186, 58, 0.4)',
-    KRAMER: 'rgba(131, 200, 195, 0.4)',
+    JERRY: 'rgba(95, 168, 211, 0.3)',
+    GEORGE: 'rgba(235, 100, 71, 0.3)',
+    ELAINE: 'rgba(251, 186, 58, 0.3)',
+    KRAMER: 'rgba(131, 200, 195, 0.3)',
   };
 
   let bgColor = $derived(
-    (isTextOver || isMouseOver) ? (charBgColors[/** @type {keyof typeof charBgColors} */ (activeCharacter)] ?? 'transparent') : 'transparent',
+    isTextOver || isMouseOver
+      ? (charBgColors[/** @type {keyof typeof charBgColors} */ (activeCharacter)] ?? 'transparent')
+      : 'transparent',
   );
 
   /**
@@ -670,20 +673,23 @@
       <Header bind:headerHeight />
 
       <!-- Visualization -->
-      <div id="lead-chars-episodes-viz" class="grid grid-cols-12 md:gap-8">
-        <div class="col-span-2 flex flex-col items-center relative">
+      <div id="lead-chars-episodes-viz" class="flex flex-col md:grid md:grid-cols-12 md:gap-8">
+        <div class="md:col-span-2 md:flex md:flex-col md:items-center md:relative">
           <Selectors
             {currentSection}
             selectors={currentChars}
             activeSelector={activeCharacter}
             {handleCharacterClick}
+            {isMobile}
           />
         </div>
 
-        <div class="col-span-10 md:mt-1" bind:clientHeight={visualizationsContainerHeight}>
+        <div class="md:col-span-10 md:mt-1" bind:clientHeight={visualizationsContainerHeight}>
           <div class="flex gap-10">
-            <Toggle {switchFilter} {activeFilter} />
-            <ScreenTimeVsLaughRateLegend {activeCharacter} {activeFilter} />
+            <Toggle {switchFilter} {activeFilter} {isMobile} />
+            {#if !isMobile}
+              <ScreenTimeVsLaughRateLegend {activeCharacter} {activeFilter} />
+            {/if}
           </div>
 
           <VisualizationContainer
@@ -693,6 +699,7 @@
             {activeFilter}
             {isMouseOver}
             {isTextOver}
+            {innerWidth}
           />
         </div>
       </div>
