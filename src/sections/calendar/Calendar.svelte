@@ -390,6 +390,18 @@
           transformOrigin: 'center',
           pointerEvents: 'none',
         });
+        // Restore visible episodes when reloading mid-scroll: ScrollTrigger already
+        // fired onEnter before nodes existed in the DOM, so manually re-show any
+        // batches whose trigger is already past the viewport bottom.
+        for (let i = 1; i <= 5; i++) {
+          const el = document.querySelector(`#calendar-text-overlay-${i}`);
+          if (el) {
+            const rect = el.getBoundingClientRect();
+            if (rect.top + rect.height / 2 < window.innerHeight) {
+              showEpisodes(i);
+            }
+          }
+        }
       }
     });
 
