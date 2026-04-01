@@ -473,7 +473,7 @@
             <!-- Text -->
             <div class="max-w-[984px]">
               For consistency, each observed laughter moment was recorded against an associated
-              <span class="highlight">5-second</span> block of time. When testing out the data collection
+              <span class="highlight">5&#8209;second</span> block of time. When testing out the data collection
               approach over three sample episodes, the 5-second duration proved to be the most reliable
               and representative 'average' duration, from the gag's delivery to the audience's laughter
               subsiding.

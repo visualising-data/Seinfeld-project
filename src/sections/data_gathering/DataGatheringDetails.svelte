@@ -45,12 +45,15 @@
     isMuted = !$soundIsAuth;
   });
 
+  let isVideoLoading = $state(false);
+
   /** @type {HTMLElement} */
   let gridContainer;
   /** @type {HTMLElement} */
   let gridScrollInner;
 
   let tlVideo;
+  let pendingCanPlay = null;
   onMount(() => {
     const laughIconReveal = { opacity: 0, yPercent: 50, duration: 1, ease: 'power3.out' };
 
@@ -109,14 +112,29 @@
     const playVideo = () =>
       debouncePlayPause(() => {
         if (!video.paused) return;
+        isVideoLoading = true;
+
+        if (pendingCanPlay) video.removeEventListener('canplay', pendingCanPlay);
+        pendingCanPlay = () => {
+          isVideoLoading = false;
+          tlVideo.restart();
+          pendingCanPlay = null;
+        };
+        video.addEventListener('canplay', pendingCanPlay, { once: true });
+
         video.play().catch((err) => {
           if (err.name !== 'AbortError') console.warn('Video play failed:', err);
+          isVideoLoading = false;
         });
-        tlVideo.restart();
       });
 
     const pauseVideo = () =>
       debouncePlayPause(() => {
+        isVideoLoading = false;
+        if (pendingCanPlay) {
+          video.removeEventListener('canplay', pendingCanPlay);
+          pendingCanPlay = null;
+        }
         if (video.paused) return;
         video.pause();
         video.currentTime = 0;
@@ -157,6 +175,13 @@
         class="absolute inset-0 pointer-events-none"
         style="background-image: url('{tv_noise}')"
       ></div>
+
+      <!-- Loading spinner -->
+      {#if isVideoLoading}
+        <div class="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
+          <div class="video-loader"></div>
+        </div>
+      {/if}
     </div>
 
     <!-- Visualization overlay -->
@@ -248,6 +273,21 @@
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
+  }
+
+  .video-loader {
+    width: 48px;
+    height: 48px;
+    border: 3px solid rgba(255, 255, 255, 0.25);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
   }
 
   #demo-video {
