@@ -76,7 +76,6 @@
         trigger: el,
         start: 'top center',
         onEnter: () => episodeStepChange(step),
-        onEnterBack: () => episodeStepChange(step),
         onLeaveBack: () => episodeStepLeave(step),
       });
     });
