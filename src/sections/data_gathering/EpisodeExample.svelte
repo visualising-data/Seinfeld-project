@@ -55,8 +55,8 @@
   );
 
   onMount(() => {
-    // Ensure episode-example sits above the catalog backdrop (z-10) during the crossfade.
-    gsap.set('#episode-example', { zIndex: 20 });
+    // Keep episode-example below the catalog backdrop (z-10) so catalog is always clickable.
+    gsap.set('#episode-example', { zIndex: 5 });
 
     // Pin Episode viz — extended by one extra viewport so catalog naturally
     // arrives at the top of the screen exactly when the pin ends.
@@ -77,8 +77,10 @@
         start: 'bottom bottom',
         end: 'bottom top',
         scrub: true,
+        onEnter: () => gsap.set('#episode-example', { pointerEvents: 'none' }),
         onLeave: () => gsap.set('#episode-example', { pointerEvents: 'none' }),
-        onEnterBack: () => gsap.set('#episode-example', { pointerEvents: 'auto' }),
+        onEnterBack: () => gsap.set('#episode-example', { pointerEvents: 'none' }),
+        onLeaveBack: () => gsap.set('#episode-example', { pointerEvents: 'auto' }),
       },
     });
 
@@ -405,7 +407,7 @@
 
 <svelte:window bind:innerWidth bind:innerHeight />
 
-<div id="episode-example-container" class="relative">
+<div id="episode-example-container" class="relative pointer-events-none">
   <div id="episode-example" class="absolute w-full" style="z-index: 5;">
     <div class="relative flex flex-col overflow-hidden" style="height: {innerHeight}px;">
       <!-- Episode details -->

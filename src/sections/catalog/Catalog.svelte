@@ -123,7 +123,7 @@
             left: 0,
             width: '100%',
             zIndex: 10,
-            pointerEvents: 'none',
+            pointerEvents: 'auto',
           }),
         // onLeave intentionally omitted: stay-zone trigger handles the release
         onEnterBack: () =>
@@ -133,7 +133,7 @@
             left: 0,
             width: '100%',
             zIndex: 10,
-            pointerEvents: 'none',
+            pointerEvents: 'auto',
           }),
         onLeaveBack: () =>
           gsap.set('#catalog-section', {
