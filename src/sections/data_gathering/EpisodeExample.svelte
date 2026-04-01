@@ -68,6 +68,19 @@
       preventOverlaps: true,
     });
 
+    // ScrollTrigger-based step callbacks (replaces svelte-inview for reliability).
+    [1, 2, 3, 4, 5, 6, 7, 8].forEach((step) => {
+      const el = document.getElementById(`episode-example-text-${step}`);
+      if (!el) return;
+      ScrollTrigger.create({
+        trigger: el,
+        start: 'top center',
+        onEnter: () => episodeStepChange(step),
+        onEnterBack: () => episodeStepChange(step),
+        onLeaveBack: () => episodeStepLeave(step),
+      });
+    });
+
     // Scrub fade-out during the crossfade zone (the extra 100vh after all text is done).
     gsap.to('#episode-example', {
       opacity: 0,
@@ -98,6 +111,10 @@
         translateX: -30,
         opacity: 0,
       },
+    );
+    gsap.set(
+      '#episode-example-container .catalog-character-stats, #episode-example-container .catalog-location-stats',
+      { translateX: -30, opacity: 0 },
     );
     gsap.set('#duration-example .episode-start-end', {
       translateY: 20,
@@ -199,6 +216,13 @@
       ease: 'power3.out',
       duration: 1,
     });
+    gsap.to('#episode-example-container .catalog-character-stats', {
+      translateX: 0,
+      opacity: 1,
+      ease: 'power3.out',
+      duration: 1,
+      delay: 0.3,
+    });
   };
 
   const reveal6 = () => {
@@ -224,6 +248,13 @@
       opacity: 1,
       ease: 'power3.out',
       duration: 0.3,
+    });
+    gsap.to('#episode-example-container .catalog-location-stats', {
+      translateX: 0,
+      opacity: 1,
+      ease: 'power3.out',
+      duration: 1,
+      delay: 0.3,
     });
   };
 
@@ -347,6 +378,12 @@
       ease: 'power3.in',
       duration: 0.5,
     });
+    gsap.to('#episode-example-container .catalog-character-stats', {
+      translateX: -30,
+      opacity: 0,
+      ease: 'power3.in',
+      duration: 0.5,
+    });
   };
 
   const undo6 = () => {
@@ -370,6 +407,12 @@
       opacity: 0,
       ease: 'power3.in',
       duration: 0.3,
+    });
+    gsap.to('#episode-example-container .catalog-location-stats', {
+      translateX: -30,
+      opacity: 0,
+      ease: 'power3.in',
+      duration: 0.5,
     });
   };
 
@@ -497,6 +540,6 @@
 
   <!-- Scrolling Texts -->
   <div class="relative" style="pointer-events: none; z-index: 30;">
-    <EpisodeTexts {episodeStepChange} {episodeStepLeave} />
+    <EpisodeTexts />
   </div>
 </div>

@@ -8,7 +8,7 @@
 	const xScale = $derived(scaleLinear().domain([0, 1]).range([0, columnWidth]));
 </script>
 
-<div class="flex pl-6" style="width: {width}px;">
+<div class="catalog-location-stats flex pl-6" style="width: {width}px;">
 	<div class="mr-4" style="width: {columnWidth}px;">
 		<svg width={columnWidth} {height}>
 			{#each locationsOnScreen as location}

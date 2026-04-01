@@ -11,7 +11,7 @@
 	const numLaughs = $derived(sum(charactersCausedLaughs, (d) => d.causedLaughs.length));
 </script>
 
-<div class="flex pl-6" style="width: {width}px;">
+<div class="catalog-character-stats flex pl-6" style="width: {width}px;">
 	<div class="relative mr-4" style="width: {columnWidth}px;">
 		<div class="small accent absolute" style="width: {columnWidth}px;">
 			% of episode appeared in
