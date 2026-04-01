@@ -8,6 +8,7 @@
   let {
     charData = undefined,
     isScreenTime = true,
+    isLaughRate = false,
     showLabels = false,
     yAxisLabels = [],
     showCharBadge = false,
@@ -45,18 +46,24 @@
       });
       const avgLaughShare = mean(laughsSharePerEpisode);
 
+      const laughRatePerEpisode = episodes?.map((e) => e.causesLaughs.length / e.onScreen.length);
+      const avgLaughRate = mean(laughRatePerEpisode);
+
       averagePerSeason.push({
         season: s.seasonNum,
         onScreen: avgOnScreenTime,
         laughShare: avgLaughShare,
+        laughRate: avgLaughRate,
       });
     });
   }
 
   const maxOnScreenTime = max(averagePerSeason, (d) => d.onScreen);
   const maxLaughShare = max(averagePerSeason, (d) => d.laughShare);
+  const maxLaughRate = max(averagePerSeason, (d) => d.laughRate);
   const maxSeasonScreenTime = averagePerSeason?.find((s) => s.onScreen === maxOnScreenTime)?.season;
   const maxSeasonLaughShare = averagePerSeason?.find((s) => s.laughShare === maxLaughShare)?.season;
+  const maxSeasonLaughRate = averagePerSeason?.find((s) => s.laughRate === maxLaughRate)?.season;
 
   const percentageScale = scaleLinear().domain([0, 1]).range([innerHeight, 0]);
   const seasonsScale = $derived(
@@ -65,15 +72,20 @@
       .range([0, innerWidth]),
   );
 
+  const getValue = $derived(
+    /** @param {any} d */
+    (d) => (isScreenTime ? d.onScreen : isLaughRate ? d.laughRate : d.laughShare),
+  );
+
   const lineGenerator = $derived(
     line()
       .x((d) => seasonsScale(`season-${d.season}`))
-      .y((d) => percentageScale(isScreenTime ? d.onScreen : d.laughShare)),
+      .y((d) => percentageScale(getValue(d))),
   );
   const areaGenerator = $derived(
     area()
       .x((d) => seasonsScale(`season-${d.season}`))
-      .y1((d) => percentageScale(isScreenTime ? d.onScreen : d.laughShare))
+      .y1((d) => percentageScale(getValue(d)))
       .y0(percentageScale(0)),
   );
 </script>
@@ -178,21 +190,23 @@
         />
 
         {#if showMax}
+          {@const maxVal = isScreenTime ? maxOnScreenTime : isLaughRate ? maxLaughRate : maxLaughShare}
+          {@const maxSeason = isScreenTime ? maxSeasonScreenTime : isLaughRate ? maxSeasonLaughRate : maxSeasonLaughShare}
           <text
             class="number"
             x={-8}
-            y={percentageScale(isScreenTime ? maxOnScreenTime : maxLaughShare)}
+            y={percentageScale(maxVal)}
             fill="#F9F5F7"
             text-anchor="end"
             dominant-baseline="middle"
           >
-            {`${isScreenTime ? Math.round(maxOnScreenTime * 100) : Math.round(maxLaughShare * 100)}%`}
+            {`${Math.round(maxVal * 100)}%`}
           </text>
           <line
             x1={-4}
-            y1={percentageScale(isScreenTime ? maxOnScreenTime : maxLaughShare)}
-            x2={seasonsScale(`season-${isScreenTime ? maxSeasonScreenTime : maxSeasonLaughShare}`)}
-            y2={percentageScale(isScreenTime ? maxOnScreenTime : maxLaughShare)}
+            y1={percentageScale(maxVal)}
+            x2={seasonsScale(`season-${maxSeason}`)}
+            y2={percentageScale(maxVal)}
             stroke="#F9F5F7"
             stroke-linecap="round"
           />
