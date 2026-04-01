@@ -420,6 +420,7 @@
         onLeave: () => {
           $catalogIsInView = false;
           $navBarColor = 'white';
+          isTooltipVisible = false;
         },
         onEnterBack: () => {
           $catalogIsInView = true;
@@ -427,6 +428,7 @@
         },
         onLeaveBack: () => {
           $catalogIsInView = false;
+          isTooltipVisible = false;
         },
       });
 
