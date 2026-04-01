@@ -5,7 +5,9 @@
   let { charData } = $props();
 
   let sparklinesContainerWidth = $state(1000);
-  const sparklineWidth = $derived(Math.min(160, Math.max(80, Math.floor((sparklinesContainerWidth + 102) / 4))));
+  const sparklineWidth = $derived(
+    Math.min(160, Math.max(80, Math.floor((sparklinesContainerWidth + 102) / 4))),
+  );
 
   const color = characters.find((char) => char.id === 'JERRY')?.color;
 </script>
