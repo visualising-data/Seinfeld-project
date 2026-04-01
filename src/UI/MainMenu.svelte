@@ -38,7 +38,7 @@
         {#each menuLinks as menuItem}
           <li class="py-5">
             <a
-              class="no-underline text-white uppercase flex justify-between items-center"
+              class="no-underline text-white uppercase flex justify-between items-center font-normal md:text-[20px]"
               href="#{menuItem.anchor}"
               aria-label="Go to {menuItem.label}"
               onclick={(e) => {
@@ -94,10 +94,6 @@
   }
   #menu-links li:first-of-type {
     border-top: 1px solid #f9f5f7;
-  }
-  #menu-links a {
-    font-size: 20px;
-    font-weight: 400;
   }
   #menu-links .menu-arrow-right {
     transform: translateX(-20px);
