@@ -1,5 +1,5 @@
 <script>
-  import { onMount, onDestroy } from 'svelte';
+  import { onMount, onDestroy, tick } from 'svelte';
   import * as Tone from 'tone';
   // @ts-ignore
   import { gsap } from 'gsap/dist/gsap';
@@ -180,8 +180,16 @@
   function stopAllLaughsAudio() {
     stopLaugh();
     stopLaugh3Sequence();
-    try { guffaw2Player?.stop(); } catch (e) { console.warn(e); }
-    try { chuckle2Player?.stop(); } catch (e) { console.warn(e); }
+    try {
+      guffaw2Player?.stop();
+    } catch (e) {
+      console.warn(e);
+    }
+    try {
+      chuckle2Player?.stop();
+    } catch (e) {
+      console.warn(e);
+    }
   }
 
   // ── laughs-text-5 audio ────────────────────────────────────────────────────
@@ -234,8 +242,9 @@
     }
   }
 
-  onMount(() => {
+  onMount(async () => {
     isMobile = window.innerWidth < 1024;
+    await tick();
     preloadLaughs();
     preloadLaughs3();
     preloadGuffaw2();
@@ -386,12 +395,9 @@
     <div class="absolute bottom-0 left-0 right-0 bg-black/70 text-white overflow-hidden">
       <!-- wrapper: text 1 in flow sets natural height; texts 2-5 are absolute -->
       <div id="laughs-text-wrapper" class="relative container">
-        <div
-          id="laughs-text-1"
-          class="px-6 md:px-12 py-8 md:py-12 max-w-[840px] pointer-events-none"
-        >
+        <div id="laughs-text-1" class="py-8 md:py-12 max-w-[840px] pointer-events-none">
           We gathered all the data for this project manually, by watching every one of the <span
-            class="highlight">176 written episodes</span
+            class="highlight">176&nbsp;written episodes</span
           > of Seinfeld using a detailed spreadsheet template to record observations about the show's
           rhythm and texture.
         </div>
@@ -433,15 +439,15 @@
             </div>
             <!-- Icons -->
             <div
-              class="w-full px-4 flex flex-row justify-between items-end gap-4 lg:gap-16 shrink-0"
+              class="w-full px-4 flex flex-row justify-between items-end gap-4 lg:gap-10 shrink-0"
             >
               {#each laugh3Data as item, i}
                 {@const s = isMobile ? item.mobileSize : item.size}
                 {@const pd = isMobile ? item.mobilePlayDiameter : item.playDiameter}
-                <div class="flex flex-col items-center gap-1 text-center" style="width: {s}px">
+                <div class="flex flex-col items-center gap-1 text-center w-[142px]">
                   <div
                     class="relative shrink-0 flex items-end mb-2"
-                    style="width: {s}px; height: {isMobile ? 100 : 142}px"
+                    style="height: {isMobile ? 100 : 142}px"
                   >
                     <Laugh width={s} height={s} color="white" isActive={activeIcon3 === i + 1} />
                     <button
@@ -453,7 +459,10 @@
                       <PlayIcon color="white" diameter={pd} />
                     </button>
                   </div>
-                  <span class="mid font-semibold">{item.label}</span>
+                  <div class="font-semibold">{item.label}</div>
+                  {#if !isMobile}
+                    <div class="small leading-normal">{item.desc}</div>
+                  {/if}
                 </div>
               {/each}
             </div>
