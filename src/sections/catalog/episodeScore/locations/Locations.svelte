@@ -3,7 +3,7 @@
 
   import { scaleBand } from 'd3-scale';
   import { locations } from '$lib/data/locations';
-  import { getLocationId } from '../../../../utils/sonificationToIds';
+
   import Scenes from '../Scenes.svelte';
   import LocationsList from './LocationsList.svelte';
   import LocationsOnScreen from './LocationsOnScreen.svelte';
@@ -22,7 +22,6 @@
     hoveredTime,
     isPlaying,
     playingScene,
-    sonificationLocationData,
     handleClickOnScene,
   } = $props();
 
@@ -31,27 +30,27 @@
   const locationsData = $derived(episodeData.filter((e) => e.eventCategory === 'LOCATION'));
   const locationsOnScreen = $derived.by(() => {
     const locationsArray = locations.map((c) => {
-      return { id: c.id, label: c.label, timesOnScreen: [] };
+      return { id: c.id, label: c.label, timesOnScreen: [], sceneNumbers: new Set() };
     });
     locationsData.forEach((d) => {
-      locationsArray.find((c) => c.id === d.eventAttribute).timesOnScreen.push(+d.eventTimeSeconds);
+      const loc = locationsArray.find((c) => c.id === d.eventAttribute);
+      const t = +d.eventTimeSeconds;
+      loc.timesOnScreen.push(t);
+      const scene = scenes.find((s) => t >= s.startTime && t < s.endTime);
+      if (scene) loc.sceneNumbers.add(scene.sceneNum);
     });
 
-    const locationsOnScreen = locationsArray.filter((c) => c.timesOnScreen.length > 0);
-
-    return locationsOnScreen;
+    return locationsArray.filter((c) => c.timesOnScreen.length > 0);
   });
 
   const hoveredLocations = $derived.by(() => {
     let hoveredLocationsArray = [];
 
     if (isPlaying) {
-      const playingLocations = sonificationLocationData
-        .filter((d) => +d.SceneNumber === playingScene)
-        .map((d) => d.Location);
-      playingLocations.forEach((loc) => {
-        const ids = getLocationId(loc);
-        hoveredLocationsArray = hoveredLocationsArray.concat(ids);
+      locationsOnScreen.forEach((location) => {
+        if (location.sceneNumbers.has(playingScene)) {
+          hoveredLocationsArray.push(location.id);
+        }
       });
     } else {
       const time = Math.floor(hoveredTime / 5) * 5;
@@ -138,6 +137,9 @@
       {yScale}
       {locationsOnScreen}
       {episodeDuration}
+      {isHover}
+      {isPlaying}
+      {hoveredLocations}
     />
   {/if}
 </div>
