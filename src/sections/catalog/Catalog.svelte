@@ -10,7 +10,6 @@
   import EpisodeDetails from './EpisodeDetails.svelte';
   import SonificationPlayer from './sonification/SonificationPlayer.svelte';
   import EpisodeScore from './episodeScore/EpisodeScore.svelte';
-  import SonificationLegend from './sonification/SonificationLegend.svelte';
 
   let { episodesData, sonificationCharactersData, sonificationLocationData, ScrollTrigger } =
     $props();
@@ -26,14 +25,6 @@
       : Math.max(innerWidth - extraPadding, 1000),
   );
   let scenesWidth = $derived(vizWidth - labelsWidth);
-  let sonificationLegendIsVisible = $state(false);
-
-  const navHeight = $derived(innerWidth > 540 ? 0 : 56);
-  const detailsHeight = $derived(innerWidth >= 1280 ? 254 : 230 - navHeight);
-  // const sonificationPlayerHeight = 100;
-  // const vizHeight = $derived(
-  //   innerHeight - detailsHeight - sonificationPlayerHeight - 40 + (innerWidth <= 539 ? 56 : 0),
-  // );
 
   let isPlaying = $state(false);
   let playingScene = $state(0);
@@ -149,9 +140,9 @@
       start: 'bottom top',
       end: () => `bottom top+=${window.innerHeight * 2}`,
       onEnter: () => {
-          gsap.set('#catalog-section', { pointerEvents: 'auto' });
-          gsap.set('#episode-example', { pointerEvents: 'none' });
-        },
+        gsap.set('#catalog-section', { pointerEvents: 'auto' });
+        gsap.set('#episode-example', { pointerEvents: 'none' });
+      },
       onLeave: () => {
         gsap.set('#catalog-section', {
           clearProps: 'position,top,left,width,zIndex,pointerEvents',
@@ -168,9 +159,9 @@
           pointerEvents: 'auto',
         }),
       onLeaveBack: () => {
-          gsap.set('#catalog-section', { pointerEvents: 'none' });
-          gsap.set('#episode-example', { pointerEvents: 'auto' });
-        },
+        gsap.set('#catalog-section', { pointerEvents: 'none' });
+        gsap.set('#episode-example', { pointerEvents: 'auto' });
+      },
     });
 
     // Catalog is the last async-mounted section (loaded after CSV fetches inside
@@ -183,10 +174,6 @@
   let externallyClickedScene = $state();
   const handleClickOnScene = (/** @type {number} */ scene) => {
     externallyClickedScene = scene;
-  };
-
-  const toggleSonificationLegend = () => {
-    sonificationLegendIsVisible = !sonificationLegendIsVisible;
   };
 </script>
 
@@ -215,7 +202,6 @@
           {isPlaying}
           {playingScene}
           {externallyClickedScene}
-          {toggleSonificationLegend}
           {updatePlayingData}
         />
 
@@ -240,9 +226,6 @@
       </div>
     </div>
   </div>
-  {#if sonificationLegendIsVisible}
-    <SonificationLegend top={detailsHeight} width={statsWidth + 50} {toggleSonificationLegend} />
-  {/if}
 </section>
 
 <style>

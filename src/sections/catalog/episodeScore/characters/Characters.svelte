@@ -65,6 +65,27 @@
     return charactersArray.filter((c) => c.causedLaughs.length > 0);
   });
 
+  const playingCharLaughLevels = $derived.by(() => {
+    let sceneNum = null;
+    if (isPlaying) {
+      sceneNum = playingScene;
+    } else if (isHover) {
+      const scene = scenes.find((s) => hoveredTime >= s.startTime && hoveredTime <= s.endTime);
+      sceneNum = scene?.sceneNum ?? null;
+    }
+    if (sceneNum === null) return {};
+    const result = {};
+    const sceneChars = sonificationCharactersData.filter((d) => +d.SceneNumber === sceneNum);
+    sceneChars.forEach((charData) => {
+      const ids = getCharacterId(charData.Character);
+      const idArray = Array.isArray(ids) ? ids : [ids];
+      idArray.forEach((id) => {
+        result[id] = charData.laughBinFull;
+      });
+    });
+    return result;
+  });
+
   const hoveredCharacters = $derived.by(() => {
     let hoveredCharactersArray = [];
 
@@ -181,6 +202,10 @@
       {charactersOnScreen}
       {charactersCausedLaughs}
       {episodeDuration}
+      {isHover}
+      {isPlaying}
+      {hoveredCharacters}
+      {playingCharLaughLevels}
     />
   {/if}
 </div>

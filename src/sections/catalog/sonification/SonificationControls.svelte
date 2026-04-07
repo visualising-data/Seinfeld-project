@@ -5,18 +5,10 @@
   import Next from '../../../icons/Next.svelte';
   import InfoIcon from '../../../icons/Info.svelte';
   import { soundIsAuth } from '../../../stores/soundAuthStore';
+  import { catalogLegendIsVisible } from '../../../stores/catalogLegendIsVisible';
 
-  let {
-    scenesWidth,
-    isPlaying,
-    playingScene,
-    numScenes,
-    play,
-    playNext,
-    playPrev,
-    stop,
-    toggleSonificationLegend,
-  } = $props();
+  let { scenesWidth, isPlaying, playingScene, numScenes, play, playNext, playPrev, stop } =
+    $props();
 
   let innerWidth = $state(1200);
 </script>
@@ -86,7 +78,8 @@
       class="rounded-full"
       style="background-color: {$soundIsAuth ? '#E71D80' : '#BEBABC'};"
       disabled={!$soundIsAuth}
-      onclick={toggleSonificationLegend}><InfoIcon color="#F9F5F7" /></button
+      onclick={() => ($catalogLegendIsVisible = !$catalogLegendIsVisible)}
+      ><InfoIcon color="#F9F5F7" /></button
     >
   </div>
 </div>
