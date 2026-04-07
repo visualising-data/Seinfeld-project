@@ -1,6 +1,7 @@
 <script>
   import { onMount } from 'svelte';
   import { gsap } from 'gsap/dist/gsap';
+  import { sharedScrollLeft } from '../../stores/scrollStore';
 
   import { episodesInfo } from '$lib/data/episodesInfo';
   import { formatTime } from '../../utils/formatTime';
@@ -169,6 +170,23 @@
     // (EpisodeExample pin/fade, IntroEnd, Quotes, MainChars, etc.) downward.
     // Refreshing here recalculates all positions with the final DOM layout.
     ScrollTrigger.refresh();
+  });
+
+  // Reset scroll when episode changes
+  $effect(() => {
+    currentEpisode;
+    currentSeason;
+    sharedScrollLeft.set(0);
+  });
+
+  // Scroll to keep the playing scene near the left edge
+  $effect(() => {
+    if (isPlaying && playingScene > 0 && scenes.length > 0) {
+      const scene = scenes.find((s) => s.sceneNum === playingScene);
+      if (scene) {
+        sharedScrollLeft.set(Math.max(0, xScale(scene.startTime) - 20));
+      }
+    }
   });
 
   let externallyClickedScene = $state();

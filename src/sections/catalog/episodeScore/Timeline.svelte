@@ -1,6 +1,7 @@
 <script>
   import { range } from 'd3-array';
   import { formatTimeLabel } from '../../../utils/formatTime';
+  import { sharedScrollLeft } from '../../../stores/scrollStore';
 
   let {
     labelsWidth,
@@ -27,12 +28,7 @@
 <svg
   width={xScale(numMinutes * 60) + labelsWidth + 100}
   {height}
-  style="transform: translateX({playingScene && innerWidth <= 1000
-    ? xScale(
-        scenes.find((/** @type {{ sceneNum: number; }} */ s) => s.sceneNum === playingScene)
-          .startTime,
-      ) * -1
-    : 0}px);"
+  style="transform: translateX({-$sharedScrollLeft}px);"
 >
   <g transform="translate(35, 20)">
     <text class="small accent" alignment-baseline="middle">Episode time</text>

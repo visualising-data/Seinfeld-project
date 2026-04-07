@@ -11,6 +11,7 @@
     getLocationSoundFileName,
   } from '$lib/data/sonificationFilesMapping';
   import { soundIsAuth } from '../../../stores/soundAuthStore';
+  import { sharedScrollLeft } from '../../../stores/scrollStore';
 
   let {
     labelsWidth,
@@ -27,6 +28,23 @@
 
   let innerWidth = $state(1200);
   let showSoundDisabledPopup = $state(false);
+
+  let scrollEl = $state(null);
+  let lastSyncedLeft = -1;
+
+  const handleScrollEl = () => {
+    if (scrollEl && scrollEl.scrollLeft !== lastSyncedLeft) {
+      sharedScrollLeft.set(scrollEl.scrollLeft);
+    }
+  };
+
+  $effect(() => {
+    const sl = $sharedScrollLeft;
+    if (scrollEl) {
+      lastSyncedLeft = sl;
+      scrollEl.scrollLeft = sl;
+    }
+  });
   let popupWasShown = $state(false);
   let hoveredPosition = $state({ x: 0, y: 0 });
 
@@ -190,7 +208,7 @@
   onmouseenter={handleMouseEnter}
   onmouseleave={handleMouseLeave}
 >
-  <div style="max-width: {innerWidth - 63}px; overflow: scroll;">
+  <div bind:this={scrollEl} onscroll={handleScrollEl} style="max-width: {innerWidth - 63}px; overflow: scroll;">
     <SonificationTrack {scenesWidth} {scenes} {xScale} {playingScene} {handleClickOnScene} />
   </div>
   <SonificationControls

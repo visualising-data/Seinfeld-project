@@ -3,6 +3,7 @@
 
   import { scaleBand } from 'd3-scale';
   import { characters } from '$lib/data/characters';
+  import { sharedScrollLeft } from '../../../../stores/scrollStore';
   import { getCharacterId } from '../../../../utils/sonificationToIds';
   import CharactersList from './CharactersList.svelte';
   import Scenes from '../Scenes.svelte';
@@ -28,6 +29,23 @@
   } = $props();
 
   let innerWidth = $state(1200);
+
+  let scrollEl = $state(null);
+  let lastSyncedLeft = -1;
+
+  const handleScrollEl = () => {
+    if (scrollEl && scrollEl.scrollLeft !== lastSyncedLeft) {
+      sharedScrollLeft.set(scrollEl.scrollLeft);
+    }
+  };
+
+  $effect(() => {
+    const sl = $sharedScrollLeft;
+    if (scrollEl) {
+      lastSyncedLeft = sl;
+      scrollEl.scrollLeft = sl;
+    }
+  });
 
   const charactersOnScreen = $derived.by(() => {
     const data = episodeData.filter((e) => e.eventCategory === 'CHARACTERS');
@@ -139,6 +157,8 @@
     {hoveredCharacters}
   />
   <div
+    bind:this={scrollEl}
+    onscroll={handleScrollEl}
     class="flex-col flex-shrink-0"
     style="max-width: {innerWidth >= 1280
       ? width
@@ -152,13 +172,7 @@
         </g>
       </g>
     </svg>
-    <svg
-      {width}
-      height={vizHeight}
-      style="transform: translateX({playingScene && innerWidth <= 1000
-        ? xScale(scenes.find((s) => s.sceneNum === playingScene).startTime) * -1
-        : 0}px);"
-    >
+    <svg {width} height={vizHeight}>
       <Scenes
         {scenes}
         {xScale}

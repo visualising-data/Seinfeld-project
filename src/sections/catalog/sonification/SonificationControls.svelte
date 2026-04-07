@@ -73,13 +73,15 @@
       Listen to this episode's data
     </div>
   </div>
-  <div class="absolute right-0 top-1">
-    <button
-      class="rounded-full"
-      style="background-color: {$soundIsAuth ? '#E71D80' : '#BEBABC'};"
-      disabled={!$soundIsAuth}
-      onclick={() => ($catalogLegendIsVisible = !$catalogLegendIsVisible)}
-      ><InfoIcon color="#F9F5F7" /></button
-    >
-  </div>
+  {#if innerWidth >= 1280}
+    <div class="absolute right-0 top-1">
+      <button
+        class="rounded-full"
+        style="background-color: {$soundIsAuth ? '#E71D80' : '#BEBABC'};"
+        disabled={!$soundIsAuth}
+        onclick={() => ($catalogLegendIsVisible = !$catalogLegendIsVisible)}
+        ><InfoIcon color="#F9F5F7" /></button
+      >
+    </div>
+  {/if}
 </div>
