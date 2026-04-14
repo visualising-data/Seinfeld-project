@@ -27,9 +27,7 @@
   let showLeadChars = $state(false);
 
   let filteredCharsScreenTime = $derived(
-    showLeadChars
-      ? charsScreenTime
-      : charsScreenTime.filter((c) => !LEAD_CHAR_IDS.includes(c.id)),
+    showLeadChars ? charsScreenTime : charsScreenTime.filter((c) => !LEAD_CHAR_IDS.includes(c.id)),
   );
 
   let hoveredChar = $state<string | null>(null);
@@ -38,9 +36,7 @@
   let totalBarsScreenTime = $derived(
     filteredCharsScreenTime.reduce((acc, char) => acc + char.screenTime, 0),
   );
-  let widthCoverage = $derived(
-    chartWidth - 110 - (filteredCharsScreenTime.length - 1) * 50,
-  );
+  let widthCoverage = $derived(chartWidth - 110 - (filteredCharsScreenTime.length - 1) * 50);
 
   let screenTimeScale = $derived(
     scaleLinear().domain([0, totalBarsScreenTime]).range([0, widthCoverage]),
@@ -68,9 +64,7 @@
     array.forEach((char, i) => {
       char.screenTimeWidth = screenTimeScale(char.screenTime);
       char.paddingLeft =
-        i === 0
-          ? 0
-          : array.slice(0, i).reduce((acc, c) => acc + c.screenTimeWidth + 50, 0);
+        i === 0 ? 0 : array.slice(0, i).reduce((acc, c) => acc + c.screenTimeWidth + 50, 0);
       char.laughsWidth = laughsScale(char.causeLaughsWhileOnScreen);
       char.noLaughsWidth = laughsScale(char.onScreenWithoutLaughs);
     });
@@ -268,7 +262,16 @@
 
           <!-- Accent labels: always full opacity, outside the dimming group -->
           {#if charsData.length > 0}
-            <text class="small accent" x={0} y={-firstLaughsWidth - 12}>Relative screen time</text>
+            {#if showLeadChars}
+              <text class="small accent" x={0} y={-firstLaughsWidth - 12}>Relative screen time</text
+              >
+            {:else}
+              <rect x={-3} y={-firstLaughsWidth - 42} width={90} height={33} fill="#F9F5F7" />
+              <text class="small accent" x={0} y={-firstLaughsWidth - 26}>
+                <tspan x={0} dy="0">Relative</tspan>
+                <tspan x={0} dy="14">screen time</tspan>
+              </text>
+            {/if}
             <text
               class="small accent"
               text-anchor="middle"
@@ -332,7 +335,9 @@
     border-radius: 999px;
     border: 1.5px solid #12020a;
     color: #12020a;
-    transition: background-color 200ms ease-out, color 200ms ease-out;
+    transition:
+      background-color 200ms ease-out,
+      color 200ms ease-out;
     white-space: nowrap;
   }
 
