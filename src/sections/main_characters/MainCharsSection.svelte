@@ -13,6 +13,6 @@
   </div>
   <Intro />
   <ScreenTimeVsLaughRate {episodesData} currentSection="main_chars" />
-  <!-- <Marimekko />
-	<PeakPerformances /> -->
+  <Marimekko />
+  <PeakPerformances />
 </section>

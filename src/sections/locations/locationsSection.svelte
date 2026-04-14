@@ -75,6 +75,6 @@
   </div>
   <!-- <Intro />
   <ScreenTimeVsLaughRate {episodesData} currentSection="locations" />
-  <Marimekko />
-  <Alluvial /> -->
+  <Marimekko /> -->
+  <Alluvial />
 </section>
