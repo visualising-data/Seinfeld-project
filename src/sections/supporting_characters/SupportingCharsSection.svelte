@@ -12,7 +12,7 @@
   <div class="bg-black">
     <SectionTitle section="supp_char" title="Supporting Characters" />
   </div>
-  <!-- <Intro />
-	<ScreenTimeVsLaughRate {episodesData} currentSection="supporting_chars" />
-	<Marimekko /> -->
+  <Intro />
+  <ScreenTimeVsLaughRate {episodesData} currentSection="supporting_chars" />
+  <Marimekko />
 </section>

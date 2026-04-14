@@ -73,8 +73,8 @@
   <div class="bg-black">
     <SectionTitle section="locations" title="Locations" />
   </div>
-  <!-- <Intro />
-  <ScreenTimeVsLaughRate {episodesData} currentSection="locations" />
-  <Marimekko /> -->
+  <!-- <Intro /> -->
+  <!-- <ScreenTimeVsLaughRate {episodesData} currentSection="locations" /> -->
+  <Marimekko />
   <Alluvial />
 </section>
