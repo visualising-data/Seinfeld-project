@@ -537,6 +537,15 @@
     transition: opacity 200ms ease-out;
   }
 
+  @media (max-width: 639px) {
+    .char-avatars {
+      gap: 0;
+    }
+    .char-avatar + .char-avatar {
+      margin-left: -10px;
+    }
+  }
+
   .lead-chars-toggle:hover .char-avatar {
     opacity: 0.55;
   }
