@@ -158,9 +158,34 @@
       {#if isMobile}
         <svg width={chartWidth} height={mobileChartHeight}>
           <!-- Axis labels -->
-          <text class="small accent" x={0} y={20}>Screen time</text>
-          <text class="small accent" text-anchor="end" x={mobileMidX - 4} y={20}>Laughter</text>
-          <text class="small accent" x={mobileMidX + 4} y={20}>Non-laughter</text>
+          <text class="small accent" x={mobileBarsStart - 50} y={10}>Relative screen time</text>
+          <text class="small accent" text-anchor="end" x={mobileMidX - 4} y={30}>Laughter</text>
+          <text class="small accent" x={mobileMidX + 4} y={30}>Non-laughter</text>
+
+          {#if mobileCharsData.length > 0}
+            {@const firstBar = mobileCharsData[0]}
+            {@const annotX = mobileBarsStart - 20}
+            {@const annotEndY = MOBILE_TOP_PADDING + firstBar.barY + firstBar.barHeight / 2}
+            {@const barLeftEdge = mobileMidX - firstBar.mobileLaughsWidth}
+            <line
+              x1={annotX}
+              y1={16}
+              x2={annotX}
+              y2={annotEndY}
+              stroke="#E71D80"
+              stroke-opacity="0.4"
+              stroke-width="1"
+            />
+            <line
+              x1={annotX}
+              y1={annotEndY}
+              x2={barLeftEdge - 8}
+              y2={annotEndY}
+              stroke="#E71D80"
+              stroke-opacity="0.4"
+              stroke-width="1"
+            />
+          {/if}
 
           <g transform="translate(0, {MOBILE_TOP_PADDING})">
             <!-- Center guideline -->
@@ -231,41 +256,6 @@
                   fill={char.color}
                   fill-opacity="0.5"
                 />
-
-                <!-- Annotation lines for first bar only -->
-                {#if i === 0}
-                  <line
-                    x1={mobileMidX - char.mobileLaughsWidth - 6}
-                    y1={char.barY}
-                    x2={mobileMidX - char.mobileLaughsWidth - 6}
-                    y2={char.barY + char.barHeight}
-                    stroke={char.id === filteredCharsScreenTime[0]?.id ? '#E71D80' : '#12020A'}
-                  />
-                  <line
-                    x1={mobileMidX - char.mobileLaughsWidth - 12}
-                    y1={char.barY}
-                    x2={mobileMidX - char.mobileLaughsWidth - 6}
-                    y2={char.barY}
-                    stroke={char.id === filteredCharsScreenTime[0]?.id ? '#E71D80' : '#12020A'}
-                  />
-                  <g
-                    transform="translate({mobileMidX - char.mobileLaughsWidth - 11.5}, {char.barY +
-                      char.barHeight -
-                      7}) rotate(90)"
-                  >
-                    <ArrowHead
-                      color={char.id === filteredCharsScreenTime[0]?.id ? '#E71D80' : '#12020A'}
-                    />
-                  </g>
-                  <g
-                    transform="translate({mobileMidX - char.mobileLaughsWidth - 11.5}, {char.barY +
-                      7}) rotate(-90)"
-                  >
-                    <ArrowHead
-                      color={char.id === filteredCharsScreenTime[0]?.id ? '#E71D80' : '#12020A'}
-                    />
-                  </g>
-                {/if}
 
                 <!-- Percentage labels on hover/tap -->
                 <g
