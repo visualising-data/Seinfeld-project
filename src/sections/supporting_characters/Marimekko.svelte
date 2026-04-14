@@ -17,36 +17,62 @@
   );
   let imageHeight = 60;
 
-  // Calculate the total width of the Marimekko bars
-  let totalBarsScreenTime = $derived(
-    charsScreenTime.reduce((acc, char) => acc + char.screenTime, 0),
-  );
-  let widthCoverage = $derived(chartWidth - 110 - 12 * 50);
-
-  let screenTimeScale = $derived(
-    scaleLinear().domain([0, totalBarsScreenTime]).range([0, widthCoverage]),
-  );
-
   const laughsScale = $derived(
     scaleLinear()
       .domain([0, Math.max(...charsScreenTime.map((char) => char.onScreenWithoutLaughs))])
       .range([0, chartHeight / 2 - 8]),
   );
 
+  const LEAD_CHAR_IDS = ['JERRY', 'GEORGE', 'ELAINE', 'KRAMER'];
+  let showLeadChars = $state(false);
+
+  let filteredCharsScreenTime = $derived(
+    showLeadChars
+      ? charsScreenTime
+      : charsScreenTime.filter((c) => !LEAD_CHAR_IDS.includes(c.id)),
+  );
+
   let hoveredChar = $state<string | null>(null);
   const LABEL_CIRCLE_R = 16;
-  let firstLaughsWidth = $derived(laughsScale(charsScreenTime[0].causeLaughsWhileOnScreen));
+
+  let totalBarsScreenTime = $derived(
+    filteredCharsScreenTime.reduce((acc, char) => acc + char.screenTime, 0),
+  );
+  let widthCoverage = $derived(
+    chartWidth - 110 - (filteredCharsScreenTime.length - 1) * 50,
+  );
+
+  let screenTimeScale = $derived(
+    scaleLinear().domain([0, totalBarsScreenTime]).range([0, widthCoverage]),
+  );
+
+  let firstLaughsWidth = $derived(
+    laughsScale(filteredCharsScreenTime[0]?.causeLaughsWhileOnScreen ?? 0),
+  );
+
+  type ChartChar = (typeof charsScreenTime)[number] & {
+    screenTimeWidth: number;
+    paddingLeft: number;
+    laughsWidth: number;
+    noLaughsWidth: number;
+  };
 
   const charsData = $derived.by(() => {
-    const array = charsScreenTime;
+    const array: ChartChar[] = filteredCharsScreenTime.map((char) => ({
+      ...char,
+      screenTimeWidth: 0,
+      paddingLeft: 0,
+      laughsWidth: 0,
+      noLaughsWidth: 0,
+    }));
     array.forEach((char, i) => {
-      char['screenTimeWidth'] = screenTimeScale(char.screenTime);
-      char['paddingLeft'] =
+      char.screenTimeWidth = screenTimeScale(char.screenTime);
+      char.paddingLeft =
         i === 0
           ? 0
-          : charsScreenTime.slice(0, i).reduce((acc, c) => acc + c.screenTimeWidth + 50, 0);
-      char['laughsWidth'] = laughsScale(char.causeLaughsWhileOnScreen);
-      char['noLaughsWidth'] = laughsScale(char.onScreenWithoutLaughs);
+          : array.slice(0, i).reduce((acc, c) => acc + c.screenTimeWidth + 50, 0);
+      char.laughsWidth = laughsScale(char.causeLaughsWhileOnScreen);
+      char.noLaughsWidth = laughsScale(char.onScreenWithoutLaughs);
     });
 
     return array;
@@ -63,6 +89,22 @@
       <div style="max-width: 900px;">
         If we compare the relative screen time of each of the four lead characters with how much of
         that screen time they generated laughs we can draw a few conclusions.
+      </div>
+      <div class="mt-4 flex items-center gap-3">
+        <span class="small">Include lead characters</span>
+        <button
+          class="lead-chars-toggle flex items-center gap-2"
+          class:active={showLeadChars}
+          onclick={() => (showLeadChars = !showLeadChars)}
+          aria-pressed={showLeadChars}
+        >
+          <div class="char-avatars flex items-center gap-1">
+            {#each LEAD_CHAR_IDS as id}
+              <img src={getCharacterImagePath(id)} alt={id} class="char-avatar" />
+            {/each}
+          </div>
+          <span class="pill">{showLeadChars ? '× remove' : '+ add'}</span>
+        </button>
       </div>
     </div>
 
@@ -247,3 +289,55 @@
     </div>
   </div>
 </div>
+
+<style>
+  button {
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+    color: inherit;
+  }
+
+  .lead-chars-toggle {
+    cursor: pointer;
+  }
+
+  .char-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: block;
+    opacity: 0.25;
+    transition: opacity 200ms ease-out;
+  }
+
+  .lead-chars-toggle:hover .char-avatar {
+    opacity: 0.55;
+  }
+
+  .lead-chars-toggle.active .char-avatar {
+    opacity: 1;
+  }
+
+  .lead-chars-toggle.active:hover .char-avatar {
+    opacity: 0.75;
+  }
+
+  .pill {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    padding: 2px 8px;
+    border-radius: 999px;
+    border: 1.5px solid #12020a;
+    color: #12020a;
+    transition: background-color 200ms ease-out, color 200ms ease-out;
+    white-space: nowrap;
+  }
+
+  .lead-chars-toggle.active .pill {
+    background-color: #12020a;
+    color: #f9f5f7;
+  }
+</style>
