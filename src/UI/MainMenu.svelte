@@ -3,6 +3,7 @@
   import CloseIcon from '../icons/CloseIcon.svelte';
   import ArrowRight from '../icons/ArrowRight.svelte';
   import { pendingScrollAnchor, isScrollLoading } from '../stores/scrollAnchor';
+  import { lazyLoadAll } from '../stores/lazyLoadTrigger';
 
   let { toggleMenu } = $props();
 
@@ -49,6 +50,7 @@
                 // If element not yet in DOM (lazy loading), show loader and trigger load
                 if (!document.getElementById(menuItem.anchor)) {
                   isScrollLoading.set(true);
+                  lazyLoadAll.set(true);
                   const sentinel = document.getElementById('lazy-load-sentinel');
                   if (sentinel) sentinel.scrollIntoView({ behavior: 'instant' });
                 }

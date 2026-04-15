@@ -10,7 +10,9 @@
 
   import { navBarColor } from '../stores/navbarColor';
   import { pendingScrollAnchor, isScrollLoading } from '../stores/scrollAnchor';
+  import { lazyLoadAll } from '../stores/lazyLoadTrigger';
   import ScrollLoader from '../UI/ScrollLoader.svelte';
+  import SectionProgressBar from '../UI/SectionProgressBar.svelte';
   import { soundAuthModaleIsOpen } from '../stores/soundAuthStore';
   import Navbar from '../UI/Navbar.svelte';
   import Prologue from '../sections/prologue/Prologue.svelte';
@@ -21,16 +23,19 @@
   // @ts-ignore
   import Calendar from '../sections/calendar/Calendar.svelte';
   import Quotes from '../sections/quotes/Quotes.svelte';
-  import MainCharsSection from '../sections/main_characters/MainCharsSection.svelte';
-  import SupportingCharsSection from '../sections/supporting_characters/SupportingCharsSection.svelte';
-  import LocationsSection from '../sections/locations/locationsSection.svelte';
-  import LaughsExploration from '../sections/laughs-exploration/LaughsExploration.svelte';
   import MethodologyAndCredits from '../sections/MethodologyAndCredits.svelte';
   import Footer from '../sections/Footer.svelte';
 
-  // Lazy-loaded sections — imported dynamically when sentinel enters viewport
+  // ── Lazy-loaded sections ──────────────────────────────────────────────────
+  // Wave 1: loaded when the sentinel after Calendar enters viewport
   let DataGathering: any = null;
   let IntroEnd: any = null;
+  // Wave 2: loaded when the sentinel after IntroEnd enters viewport
+  let MainCharsSection: any = null;
+  let SupportingCharsSection: any = null;
+  // Wave 3: loaded when the sentinel after SupportingCharsSection enters viewport
+  let LocationsSection: any = null;
+  let LaughsExploration: any = null;
 
   const episodesDataUrl = 'https://amdufour.github.io/hosted-data/apis/episodes_laughs.min.json';
 
@@ -44,6 +49,30 @@
     }
   };
   const EPISODES_CACHE_KEY = 'seinfeld_episodes_v1';
+
+  async function loadWave1() {
+    if (DataGathering) return;
+    [DataGathering, IntroEnd] = await Promise.all([
+      import('../sections/data_gathering/DataGathering.svelte').then((m) => m.default),
+      import('../sections/IntroEnd.svelte').then((m) => m.default),
+    ]);
+  }
+
+  async function loadWave2() {
+    if (MainCharsSection) return;
+    [MainCharsSection, SupportingCharsSection] = await Promise.all([
+      import('../sections/main_characters/MainCharsSection.svelte').then((m) => m.default),
+      import('../sections/supporting_characters/SupportingCharsSection.svelte').then((m) => m.default),
+    ]);
+  }
+
+  async function loadWave3() {
+    if (LocationsSection) return;
+    [LocationsSection, LaughsExploration] = await Promise.all([
+      import('../sections/locations/locationsSection.svelte').then((m) => m.default),
+      import('../sections/laughs-exploration/LaughsExploration.svelte').then((m) => m.default),
+    ]);
+  }
 
   onMount(() => {
     // Load episodes data — use localStorage cache for instant repeat visits
@@ -73,6 +102,13 @@
       onEnter: () => showSoundAuth(),
     });
 
+    // Force-load all waves immediately when triggered by menu/sidebar navigation
+    const unsubLazy = lazyLoadAll.subscribe(async (shouldLoad) => {
+      if (!shouldLoad) return;
+      await loadWave1();
+      await Promise.all([loadWave2(), loadWave3()]);
+    });
+
     // Poll for pending scroll target — works across async child mounts
     let scrollPollId: ReturnType<typeof setInterval> | null = null;
     const unsubscribe = pendingScrollAnchor.subscribe((anchor) => {
@@ -97,70 +133,84 @@
 
     return () => {
       unsubscribe();
+      unsubLazy();
       if (scrollPollId !== null) clearInterval(scrollPollId);
     };
   });
-
-  const showOnlyLatest = false;
 </script>
 
 <main>
   <Navbar />
+  <SectionProgressBar />
   {#if $isScrollLoading}
     <ScrollLoader />
   {/if}
-  {#if showOnlyLatest}
-    {#if episodesData && DataGathering && IntroEnd}
-      <div class="bg-white text-black">
-        <svelte:component this={DataGathering} {episodesData} {ScrollTrigger} />
-        <svelte:component this={IntroEnd} />
-      </div>
+  <div
+    class="text-white"
+    use:inview={{}}
+    oninview_change={(/** @type {{ detail: { inView: any; }; }} */ event) => {
+      const { inView } = event.detail;
+      $navBarColor = inView ? 'white' : 'pink';
+    }}
+  >
+    <Prologue />
+    {#if $soundAuthModaleIsOpen}
+      <SoundAuthPopup />
     {/if}
-  {:else}
+    <Title />
+    <TitleTransition>
+      <Warning />
+    </TitleTransition>
+  </div>
+  <div style="background: #F9F5F7; min-height: 100dvh;"></div>
+  <div class="text-black" style="background: #F9F5F7;">
+    <Calendar {ScrollTrigger} />
+
+    <!-- Wave 1 sentinel: triggers DataGathering + IntroEnd -->
     <div
-      class="text-white"
-      use:inview={{}}
-      oninview_change={(/** @type {{ detail: { inView: any; }; }} */ event) => {
-        const { inView } = event.detail;
-        $navBarColor = inView ? 'white' : 'pink';
+      id="lazy-load-sentinel"
+      use:inview={{ rootMargin: '500px' }}
+      oninview_change={async (/** @type {{ detail: { inView: any; }; }} */ event) => {
+        if (event.detail.inView) await loadWave1();
       }}
-    >
-      <Prologue />
-      {#if $soundAuthModaleIsOpen}
-        <SoundAuthPopup />
-      {/if}
-      <Title />
-      <TitleTransition>
-        <Warning />
-      </TitleTransition>
-    </div>
-    <div style="background: #F9F5F7; min-height: 100dvh;"></div>
-    <div class="text-black" style="background: #F9F5F7;">
-      <Calendar {ScrollTrigger} />
+    ></div>
+
+    {#if episodesData && DataGathering && IntroEnd}
+      <svelte:component this={DataGathering} {episodesData} {ScrollTrigger} />
+      <svelte:component this={IntroEnd} />
+      <Quotes />
+
+      <!-- Wave 2 sentinel: triggers MainCharsSection + SupportingCharsSection -->
       <div
-        id="lazy-load-sentinel"
+        id="lazy-load-sentinel-2"
         use:inview={{ rootMargin: '500px' }}
         oninview_change={async (/** @type {{ detail: { inView: any; }; }} */ event) => {
-          if (event.detail.inView && !DataGathering) {
-            [DataGathering, IntroEnd] = await Promise.all([
-              import('../sections/data_gathering/DataGathering.svelte').then((m) => m.default),
-              import('../sections/IntroEnd.svelte').then((m) => m.default),
-            ]);
-          }
+          if (event.detail.inView) await loadWave2();
         }}
       ></div>
-      {#if episodesData && DataGathering && IntroEnd}
-        <svelte:component this={DataGathering} {episodesData} {ScrollTrigger} />
-        <svelte:component this={IntroEnd} />
-        <Quotes />
-        <MainCharsSection {episodesData} />
-        <SupportingCharsSection {episodesData} />
-        <LocationsSection {episodesData} />
-        <LaughsExploration {episodesData} />
+
+      {#if MainCharsSection && SupportingCharsSection}
+        <svelte:component this={MainCharsSection} {episodesData} />
+        <svelte:component this={SupportingCharsSection} {episodesData} />
+
+        <!-- Wave 3 sentinel: triggers LocationsSection + LaughsExploration -->
+        <div
+          id="lazy-load-sentinel-3"
+          use:inview={{ rootMargin: '500px' }}
+          oninview_change={async (/** @type {{ detail: { inView: any; }; }} */ event) => {
+            if (event.detail.inView) await loadWave3();
+          }}
+        ></div>
+
+        {#if LocationsSection && LaughsExploration}
+          <svelte:component this={LocationsSection} {episodesData} />
+          <svelte:component this={LaughsExploration} {episodesData} />
+        {/if}
       {/if}
-      <Quotes />
-      <MethodologyAndCredits />
-      <Footer />
-    </div>
-  {/if}
+    {/if}
+
+    <Quotes />
+    <MethodologyAndCredits />
+    <Footer />
+  </div>
 </main>
