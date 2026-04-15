@@ -4,7 +4,7 @@
   let { quote } = $props();
 </script>
 
-<li class="flex mx-6 whitespace-nowrap quote quote-${quote.audio_clip_id}">
+<li class="flex mx-3 md:mx-6 whitespace-nowrap quote quote-${quote.audio_clip_id}">
   <div
     class={`quote quote-${quote.audio_clip_id} relative inline`}
     style={`color: ${seasons.find((s) => s.seasonNum === quote.season)?.accessibleOverDarkColor}`}

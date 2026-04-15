@@ -14,10 +14,10 @@
 </script>
 
 <div class="bg-black text-white py-80">
-  <div class="flex h-screen items-center overflow-x-auto">
+  <div class="flex h-screen items-center overflow-x-hidden">
     <div>
       <!-- Season 1 -->
-      <ul class="quotes-list flex flex-nowrap">
+      <div class="quotes-list flex flex-nowrap">
         <div
           bind:clientWidth={widthQuotesSeason1}
           class="flex scrolling-text-right"
@@ -36,10 +36,10 @@
             <Quote {quote} />
           {/each}
         </div>
-      </ul>
+      </div>
 
       <!-- Season 2 -->
-      <ul class="quotes-list flex flex-nowrap">
+      <div class="quotes-list flex flex-nowrap">
         <div
           bind:clientWidth={widthQuotesSeason2}
           class="flex scrolling-text-left"
@@ -58,10 +58,10 @@
             <Quote {quote} />
           {/each}
         </div>
-      </ul>
+      </div>
 
       <!-- Season 3 -->
-      <ul class="quotes-list flex flex-nowrap">
+      <div class="quotes-list flex flex-nowrap">
         <div
           bind:clientWidth={widthQuotesSeason3}
           class="flex scrolling-text-right"
@@ -80,10 +80,10 @@
             <Quote {quote} />
           {/each}
         </div>
-      </ul>
+      </div>
 
       <!-- Season 4 -->
-      <ul class="quotes-list flex flex-nowrap">
+      <div class="quotes-list flex flex-nowrap">
         <div
           bind:clientWidth={widthQuotesSeason4}
           class="flex scrolling-text-left"
@@ -102,10 +102,10 @@
             <Quote {quote} />
           {/each}
         </div>
-      </ul>
+      </div>
 
       <!-- Season 5 -->
-      <ul class="quotes-list flex flex-nowrap">
+      <div class="quotes-list flex flex-nowrap">
         <div
           bind:clientWidth={widthQuotesSeason5}
           class="flex scrolling-text-right"
@@ -124,10 +124,10 @@
             <Quote {quote} />
           {/each}
         </div>
-      </ul>
+      </div>
 
       <!-- Season 6 -->
-      <ul class="quotes-list flex flex-nowrap">
+      <div class="quotes-list flex flex-nowrap">
         <div
           bind:clientWidth={widthQuotesSeason6}
           class="flex scrolling-text-left"
@@ -146,10 +146,10 @@
             <Quote {quote} />
           {/each}
         </div>
-      </ul>
+      </div>
 
       <!-- Season 7 -->
-      <ul class="quotes-list flex flex-nowrap">
+      <div class="quotes-list flex flex-nowrap">
         <div
           bind:clientWidth={widthQuotesSeason7}
           class="flex scrolling-text-right"
@@ -168,10 +168,10 @@
             <Quote {quote} />
           {/each}
         </div>
-      </ul>
+      </div>
 
       <!-- Season 8 -->
-      <ul class="quotes-list flex flex-nowrap">
+      <div class="quotes-list flex flex-nowrap">
         <div
           bind:clientWidth={widthQuotesSeason8}
           class="flex scrolling-text-left"
@@ -190,10 +190,10 @@
             <Quote {quote} />
           {/each}
         </div>
-      </ul>
+      </div>
 
       <!-- Season 9 -->
-      <ul class="quotes-list flex flex-nowrap">
+      <div class="quotes-list flex flex-nowrap">
         <div
           bind:clientWidth={widthQuotesSeason9}
           class="flex scrolling-text-right"
@@ -212,7 +212,7 @@
             <Quote {quote} />
           {/each}
         </div>
-      </ul>
+      </div>
     </div>
   </div>
 </div>
