@@ -222,11 +222,22 @@
           grouping would be necessary to organise together the many other residual additional
           types of locations used.
         </p>
+        <div class="md:hidden flex flex-wrap justify-center gap-4 mt-10">
+          {#each locations as location}
+            <div class="flex flex-col items-center">
+              <div
+                class="character rounded-full bg-contain bg-center"
+                style="background-color: #12020A; background-image: url('{getLocationIconPath(location.id)}'); width: 60px; height: 60px;"
+              ></div>
+              <div class="mid pt-1 text-center text-sm">{location.label}</div>
+            </div>
+          {/each}
+        </div>
       </div>
       <div class="col-span-12 md:col-span-4">
         {#each locations as location, i}
           <div
-            class="icon-wrapper absolute cursor-pointer"
+            class="icon-wrapper hidden md:absolute cursor-pointer"
             style="top: {locationPositions[i]?.top ?? 0}px; left: {locationPositions[i]?.left ?? 0}px;"
             role="button"
             tabindex="0"

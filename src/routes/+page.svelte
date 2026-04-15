@@ -24,6 +24,9 @@
   import MainCharsSection from '../sections/main_characters/MainCharsSection.svelte';
   import SupportingCharsSection from '../sections/supporting_characters/SupportingCharsSection.svelte';
   import LocationsSection from '../sections/locations/locationsSection.svelte';
+  import LaughsExploration from '../sections/laughs-exploration/LaughsExploration.svelte';
+  import MethodologyAndCredits from '../sections/MethodologyAndCredits.svelte';
+  import Footer from '../sections/Footer.svelte';
 
   // Lazy-loaded sections — imported dynamically when sentinel enters viewport
   let DataGathering: any = null;
@@ -153,11 +156,11 @@
         <MainCharsSection {episodesData} />
         <SupportingCharsSection {episodesData} />
         <LocationsSection {episodesData} />
-        <!-- <LaughsExploration {episodesData} /> -->
+        <LaughsExploration {episodesData} />
       {/if}
-      <!-- <Quotes /> -->
-      <!-- <MethodologyAndCredits /> -->
-      <!-- <Footer /> -->
+      <Quotes />
+      <MethodologyAndCredits />
+      <Footer />
     </div>
   {/if}
 </main>

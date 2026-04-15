@@ -43,6 +43,9 @@
   let hoveredEpisodeData = $state();
   let hoveredChar = $state('');
   let mousePosition = $state();
+  let hoveredCharData = $derived(
+    hoveredEpisodeData?.charsBreakdown.find((c) => c.id === hoveredChar),
+  );
   const handleMouseEnter = (
     /** @type {MouseEvent & { currentTarget: EventTarget & SVGGElement; }} */ e,
     /** @type {any} */ episode,
@@ -99,7 +102,7 @@
     <div class="flex flex-col md:flex-row md:items-stretch">
       <!-- Character Selector -->
       <div class="flex flex-col shrink-0 md:items-center md:mr-8 mb-4 md:mb-0">
-        <div class="small flex items-center gap-2" style="max-width: 220px;">
+        <div class="small flex items-center gap-2 md:max-w-[220px]">
           <span class="shrink"><HelpIcon color="#E71D80" /></span>
           <span class="relative top-1">Select a character to reveal their performances.</span>
         </div>
@@ -129,9 +132,12 @@
       <!-- Scatterplot -->
       <svg
         class="shrink-0"
+        role="img"
+        aria-label="Scatterplot of character peak performances"
         width={isMobile ? chartWidth + marginLeft : chartWidth + 32}
         height={chartHeight + 32}
         style={isMobile ? `margin-left: -${marginLeft}px` : ''}
+        onmousemove={(e) => (mousePosition = [e.clientX, e.clientY])}
       >
         <g transform="translate(30, 1)">
           <rect
@@ -162,21 +168,16 @@
           </g>
 
           <g>
-            {#each orderedChars as char}
-              {#each performances as episode}
+            {#each orderedChars as char (char.id)}
+              {#each performances as episode (`${episode.seasonNum}-${episode.episode}`)}
+                {@const ep = episode.charsBreakdown.find((c) => c.id === char.id)}
                 <circle
                   class="performance performance-{char.id} {char.isActive
                     ? 'active'
                     : ''} {isTooltipVisible ? 'faded' : ''}"
-                  cx={charLaughterRateScale(
-                    episode.charsBreakdown.find((c) => c.id === char.id).laughterRate,
-                  )}
-                  cy={charShareLaughScale(
-                    episode.charsBreakdown.find((c) => c.id === char.id).shareOfLaughs,
-                  )}
-                  r={relativeScreenTimeRateScale(
-                    episode.charsBreakdown.find((c) => c.id === char.id).relativeScreenTime,
-                  )}
+                  cx={charLaughterRateScale(ep.laughterRate)}
+                  cy={charShareLaughScale(ep.shareOfLaughs)}
+                  r={relativeScreenTimeRateScale(ep.relativeScreenTime)}
                   fill={'#DDDBDC'}
                   role="document"
                   onmouseenter={(e) => handleMouseEnter(e, episode, char.id)}
@@ -190,41 +191,26 @@
           {#if isTooltipVisible && hoveredEpisode}
             <g class="pointer-events-none">
               <line
-                x1={charLaughterRateScale(
-                  hoveredEpisodeData.charsBreakdown.find((c) => c.id === hoveredChar).laughterRate,
-                )}
+                x1={charLaughterRateScale(hoveredCharData.laughterRate)}
                 y1={0}
-                x2={charLaughterRateScale(
-                  hoveredEpisodeData.charsBreakdown.find((c) => c.id === hoveredChar).laughterRate,
-                )}
+                x2={charLaughterRateScale(hoveredCharData.laughterRate)}
                 y2={chartHeight}
                 stroke="#12020A"
                 stroke-dasharray="5 5"
               />
               <line
                 x1={0}
-                y1={charShareLaughScale(
-                  hoveredEpisodeData.charsBreakdown.find((c) => c.id === hoveredChar).shareOfLaughs,
-                )}
+                y1={charShareLaughScale(hoveredCharData.shareOfLaughs)}
                 x2={chartWidth}
-                y2={charShareLaughScale(
-                  hoveredEpisodeData.charsBreakdown.find((c) => c.id === hoveredChar).shareOfLaughs,
-                )}
+                y2={charShareLaughScale(hoveredCharData.shareOfLaughs)}
                 stroke="#12020A"
                 stroke-dasharray="5 5"
               />
               <circle
                 class="performance performance-{hoveredChar} active"
-                cx={charLaughterRateScale(
-                  hoveredEpisodeData.charsBreakdown.find((c) => c.id === hoveredChar).laughterRate,
-                )}
-                cy={charShareLaughScale(
-                  hoveredEpisodeData.charsBreakdown.find((c) => c.id === hoveredChar).shareOfLaughs,
-                )}
-                r={relativeScreenTimeRateScale(
-                  hoveredEpisodeData.charsBreakdown.find((c) => c.id === hoveredChar)
-                    .relativeScreenTime,
-                )}
+                cx={charLaughterRateScale(hoveredCharData.laughterRate)}
+                cy={charShareLaughScale(hoveredCharData.shareOfLaughs)}
+                r={relativeScreenTimeRateScale(hoveredCharData.relativeScreenTime)}
                 fill={'#DDDBDC'}
                 role="document"
               />
@@ -278,14 +264,12 @@
             <div class="small">Episode laughter rate</div>
             <svg width={statWidth} height={statHeight + 18}>
               <text class="number baselin" dominant-baseline="hanging">
-                {`${Math.floor(hoveredEpisodeData.charsBreakdown.find((c) => c.id === hoveredChar).laughterRate * 100)}%`}
+                {`${Math.floor(hoveredCharData.laughterRate * 100)}%`}
               </text>
               <rect y={18} width={statWidth} height={statHeight} fill="#EEECED" />
               <rect
                 y={18}
-                width={statScale(
-                  hoveredEpisodeData.charsBreakdown.find((c) => c.id === hoveredChar).laughterRate,
-                )}
+                width={statScale(hoveredCharData.laughterRate)}
                 height={statHeight}
                 fill={mainChars.find((c) => c.id === hoveredChar).color}
               />
@@ -297,14 +281,12 @@
             <div class="small">Share of episode laughs</div>
             <svg width={statWidth} height={statHeight + 18}>
               <text class="number baselin" dominant-baseline="hanging">
-                {`${Math.floor(hoveredEpisodeData.charsBreakdown.find((c) => c.id === hoveredChar).shareOfLaughs * 100)}%`}
+                {`${Math.floor(hoveredCharData.shareOfLaughs * 100)}%`}
               </text>
               <rect y={18} width={statWidth} height={statHeight} fill="#EEECED" />
               <rect
                 y={18}
-                width={statScale(
-                  hoveredEpisodeData.charsBreakdown.find((c) => c.id === hoveredChar).shareOfLaughs,
-                )}
+                width={statScale(hoveredCharData.shareOfLaughs)}
                 height={statHeight}
                 fill={mainChars.find((c) => c.id === hoveredChar).color}
               />
@@ -316,15 +298,12 @@
             <div class="small">Screen time</div>
             <svg width={statWidth} height={statHeight + 18}>
               <text class="number" dominant-baseline="hanging">
-                {`${Math.floor(hoveredEpisodeData.charsBreakdown.find((c) => c.id === hoveredChar).relativeScreenTime * 100)}%`}
+                {`${Math.floor(hoveredCharData.relativeScreenTime * 100)}%`}
               </text>
               <rect y={18} width={statWidth} height={statHeight} fill="#EEECED" />
               <rect
                 y={18}
-                width={statScale(
-                  hoveredEpisodeData.charsBreakdown.find((c) => c.id === hoveredChar)
-                    .relativeScreenTime,
-                )}
+                width={statScale(hoveredCharData.relativeScreenTime)}
                 height={statHeight}
                 fill={mainChars.find((c) => c.id === hoveredChar).color}
               />
@@ -336,7 +315,7 @@
   </div>
 
   <!-- Tooltip -->
-  {#if isTooltipVisible && innerWidth >= 793}
+  {#if isTooltipVisible && !isMobile}
     <div class="fixed z-20 top-0 left-0 right-0 bottom-0 pointer-events-none">
       <EpisodeTooltip episode={hoveredEpisode} position={mousePosition} />
     </div>

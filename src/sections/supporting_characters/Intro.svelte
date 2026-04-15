@@ -1,10 +1,14 @@
 <script>
   import { onMount } from 'svelte';
   import { gsap } from 'gsap/dist/gsap';
+  import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
   import Lenis from 'lenis';
-  import { soundIsAuth } from '../../stores/soundAuthStore';
-  import tv_noise from '$lib/assets/tv_noise.png';
   import SupportingCharsScreen3 from './SupportingCharsScreen3.svelte';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const screen1 = '#supporting_chars_screen_1';
+  const screen2 = '#supporting_chars_screen_2';
 
   onMount(() => {
     gsap.set('#supporting_chars p', {
@@ -14,12 +18,12 @@
 
     const tl1 = gsap.timeline({
       scrollTrigger: {
-        trigger: '#supporting_chars_screen_1',
+        trigger: screen1,
         start: 'top center',
       },
     });
     tl1
-      .to('#supporting_chars_screen_1 p', {
+      .to(`${screen1} p`, {
         translateY: 0,
         opacity: 1,
         duration: 1,
@@ -27,7 +31,7 @@
         stagger: { each: 0.3 },
       })
       .to(
-        '#supporting_chars_screen_1 .highlight',
+        `${screen1} .highlight`,
         {
           webkitTextFillColor: 'transparent',
           backgroundPosition: '200% center',
@@ -40,19 +44,19 @@
 
     const tl2 = gsap.timeline({
       scrollTrigger: {
-        trigger: '#supporting_chars_screen_2',
+        trigger: screen2,
         start: 'top top<20%',
       },
     });
     tl2
-      .to('#supporting_chars_screen_2 p', {
+      .to(`${screen2} p`, {
         translateY: 0,
         opacity: 1,
         duration: 1,
         ease: 'power3.out',
       })
       .to(
-        '#supporting_chars_screen_2 .highlight',
+        `${screen2} .highlight`,
         {
           webkitTextFillColor: 'transparent',
           backgroundPosition: '200% center',
@@ -63,47 +67,25 @@
         '<-0.5',
       );
 
-    // Add parallax effect to videos
-    let videos = gsap.utils.toArray('.parallax');
-    videos.forEach((video) => {
-      const speed = video.dataset.speed;
-      gsap.to(video, {
-        yPercent: speed * 50,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: video,
-          start: 'top bottom',
-          scrub: true,
-        },
-      });
-    });
-
     // Smooth scroll
     const lenis = new Lenis();
+    let rafId = 0;
 
     /**
      * @param {number} time
      */
     function raf(time) {
       lenis.raf(time);
-      requestAnimationFrame(raf);
+      rafId = requestAnimationFrame(raf);
     }
 
-    requestAnimationFrame(raf);
+    rafId = requestAnimationFrame(raf);
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      lenis.destroy();
+    };
   });
-
-  let video1IsMuted = $state(true);
-  let video2IsMuted = $state(true);
-  const handleVideoMouseEnter = (/** @type {number} */ video) => {
-    if ($soundIsAuth) {
-      video1IsMuted = video === 1 ? false : true;
-      video2IsMuted = video === 2 ? false : true;
-    }
-  };
-  const handleVideoMouseLeave = (/** @type {{ target: any; }} */ e) => {
-    video1IsMuted = true;
-    video2IsMuted = true;
-  };
 </script>
 
 <div id="supporting_chars" class="bg-black text-white">
@@ -148,58 +130,6 @@
             to mark them out as distinct individual characters.
           </p>
         </div>
-        <div class="col-span-12 md:col-span-5">
-          <div class="grid grid-cols-5 mt-16">
-            <div class="col-span-3">
-              <div
-                class={`parallax`}
-                data-speed={0.5}
-                role="presentation"
-                onmouseenter={() => handleVideoMouseEnter(1)}
-                onmouseleave={handleVideoMouseLeave}
-              >
-                <!-- svelte-ignore a11y_media_has_caption -->
-                <video playsinline autoplay loop preload="none" bind:muted={video1IsMuted}>
-                  <source
-                    src={`https://amdufour.github.io/hosted-data/apis/videos/${'17.Jerry_Newman'}.mp4`}
-                    type="video/mp4"
-                  />
-                </video>
-                <div class="readable-layer z-1 absolute bottom-0 left-0 right-0 top-0"></div>
-                <div
-                  class="absolute z-10 bottom-0 left-0 right-0 top-0"
-                  style="background-image: url('{tv_noise}')"
-                ></div>
-                <div class="episode">S8E2 - The Soulmate</div>
-              </div>
-            </div>
-            <div class="col-span-2"></div>
-            <div class="col-span-1"></div>
-            <div class="col-span-4 mt-16">
-              <div
-                class={`parallax`}
-                data-speed={-1.2}
-                role="presentation"
-                onmouseenter={() => handleVideoMouseEnter(2)}
-                onmouseleave={handleVideoMouseLeave}
-              >
-                <!-- svelte-ignore a11y_media_has_caption -->
-                <video playsinline autoplay loop preload="none" bind:muted={video2IsMuted}>
-                  <source
-                    src={`https://amdufour.github.io/hosted-data/apis/videos/${'7a.Peterman'}.mp4`}
-                    type="video/mp4"
-                  />
-                </video>
-                <div class="readable-layer z-1 absolute bottom-0 left-0 right-0 top-0"></div>
-                <div
-                  class="absolute z-10 bottom-0 left-0 right-0 top-0"
-                  style="background-image: url('{tv_noise}')"
-                ></div>
-                <div class="episode">S9E18 - The Frogger</div>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   </div>
@@ -207,25 +137,3 @@
   <!-- Screen 3 -->
   <SupportingCharsScreen3 />
 </div>
-
-<style>
-  .parallax {
-    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
-  }
-  .episode {
-    position: absolute;
-    z-index: 2;
-    left: 5px;
-    bottom: 0;
-    font-size: 1.125rem;
-    line-height: 1.2;
-    font-weight: 600;
-    transform: translateY(15px);
-    opacity: 0;
-    transition: all 350ms cubic-bezier(0.165, 0.84, 0.44, 1);
-  }
-  .parallax:hover .episode {
-    transform: translateY(0);
-    opacity: 1;
-  }
-</style>

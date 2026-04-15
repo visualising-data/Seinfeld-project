@@ -11,21 +11,18 @@
   let headerHeight = $state(100);
 
   // Icon dimensions (defined early for margin calculation)
-  const iconSize = 50;
-  const iconGap = 24;
-
-  // Container padding (2rem on each side = 4rem total = 64px)
-  const containerPadding = 64;
+  const iconSize = $derived(innerWidth < 640 ? 28 : 50);
+  const iconGap = $derived(innerWidth < 640 ? 8 : 24);
 
   // Chart dimensions
-  const margin = {
-    top: 20,
-    right: iconSize + iconGap,
+  const margin = $derived({
+    top: innerWidth < 640 ? 0 : 20,
+    right: 0,
     bottom: 60,
-    left: iconSize + iconGap,
-  };
+    left: 0,
+  });
 
-  let availableWidth = $derived(containerWidth - containerPadding);
+  let availableWidth = $derived(innerWidth < 640 ? containerWidth - 96 : containerWidth - 64);
   let chartWidth = $derived(availableWidth - margin.left - margin.right);
   let chartHeight = $derived.by(() => {
     const availableHeight = innerHeight - headerHeight - 200;
@@ -239,11 +236,17 @@
       </div>
     </div>
 
+    <!-- Axis label (mobile only) -->
+    <div class="sm:hidden -mb-7 flex gap-1">
+      <ArrowDown />
+      <div class="mb-2 small accent">Rank of average screen-time share</div>
+    </div>
+
     <!-- Chart -->
     <div class="relative" style="overflow: visible;">
-      <!-- Top-right description -->
+      <!-- Top-right description (desktop only) -->
       <div
-        class="absolute top-[-30px] right-[56px] leading-4 small accent"
+        class="hidden sm:block absolute top-[-30px] right-[56px] leading-4 small accent"
         style="max-width: 200px;"
       >
         The heigt of the bands at each season represents the average screen-time share
@@ -252,7 +255,7 @@
       <svg
         width={availableWidth}
         height={chartHeight + margin.top + margin.bottom}
-        style="display: block; max-width: 100%;"
+        style="display: block; max-width: 100%; overflow: visible; margin: 0 auto;"
       >
         <defs>
           <!-- Circular clip path for icons -->
@@ -262,10 +265,10 @@
         </defs>
 
         <g transform="translate({margin.left}, {margin.top})">
-          <!-- Vertical axis label -->
+          <!-- Vertical axis label (desktop only) -->
           <g
             class="axis-label transition-opacity duration-200 ease-out"
-            opacity={hoveredLocation === null ? 1 : 0}
+            opacity={hoveredLocation === null ? (innerWidth < 640 ? 0 : 1) : 0}
           >
             <text
               x={134}
@@ -322,7 +325,11 @@
           <g class="season-labels">
             {#each Array.from({ length: 9 }, (_, i) => i + 1) as season}
               <text x={xScale(season)} y={chartHeight + 30} text-anchor="middle" class="text-sm">
-                season {season}
+                {#if innerWidth < 640}
+                  S{season}
+                {:else}
+                  season {season}
+                {/if}
               </text>
             {/each}
           </g>
@@ -381,7 +388,7 @@
 
           <!-- Hover labels showing percentages -->
           <g
-            class="hover-labels transition-opacity duration-200 ease-out"
+            class="hover-labels transition-opacity duration-200 ease-out pointer-events-none"
             opacity={hoveredLocation !== null ? 1 : 0}
           >
             {#if hoveredLocation !== null}
@@ -414,6 +421,11 @@
           </g>
         </g>
       </svg>
+    </div>
+
+    <!-- Bottom description (mobile only) -->
+    <div class="sm:hidden -mt-3 leading-4 small accent">
+      The heigt of the bands at each season represents the average screen-time share
     </div>
   </div>
 </div>

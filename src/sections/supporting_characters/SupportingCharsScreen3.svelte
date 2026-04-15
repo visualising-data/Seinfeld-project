@@ -222,11 +222,22 @@
           into different groupings across the show (e.g. a former love interest may shift to become
           a friend, and vice-versa).
         </p>
+        <div class="md:hidden flex flex-wrap justify-center gap-4 mt-10">
+          {#each supportingChars as char}
+            <div class="flex flex-col items-center">
+              <div
+                class="character rounded-full bg-contain bg-center"
+                style="background-image: url('{getCharacterImagePath(char.id)}'); width: 60px; height: 60px;"
+              ></div>
+              <div class="mid pt-1 text-center text-sm">{char.label}</div>
+            </div>
+          {/each}
+        </div>
       </div>
       <div class="col-span-12 md:col-span-4">
         {#each supportingChars as char, i}
           <div
-            class="icon-wrapper absolute cursor-pointer"
+            class="icon-wrapper hidden md:absolute cursor-pointer"
             style="top: {charPositions[i]?.top ?? 0}px; left: {charPositions[i]?.left ?? 0}px;"
             role="button"
             tabindex="0"
