@@ -5,6 +5,8 @@
   import { seasons } from '$lib/data/seasons';
   import type { EpisodeResult } from '../../utils/getCombinationScenes';
 
+  import ArrowDown from '../../icons/ArrowDown.svelte';
+
   let {
     combinationScenes,
     width = 600,
@@ -15,7 +17,7 @@
     height: number;
   } = $props();
 
-  const margin = { top: 16, right: 20, bottom: 24, left: 44 };
+  const margin = { top: 16, right: 20, bottom: 40, left: 60 };
   let innerWidth = $derived(width - margin.left - margin.right);
   let innerHeight = $derived(height - margin.top - margin.bottom);
 
@@ -82,7 +84,12 @@
     const sim = forceSimulation(simNodes)
       .force('x', forceX<SimNode>((d) => xScale(d.laughRate)).strength(1))
       .force('y', forceY<SimNode>(innerHeight / 2).strength(0.1))
-      .force('collide', forceCollide<SimNode>((d) => d.r + 1).strength(1).iterations(4))
+      .force(
+        'collide',
+        forceCollide<SimNode>((d) => d.r + 1)
+          .strength(1)
+          .iterations(4),
+      )
       .stop();
 
     for (let i = 0; i < 300; i++) {
@@ -103,35 +110,24 @@
   <g transform="translate({margin.left}, {margin.top})">
     <!-- Axis -->
     {#each ticks as t}
-      <line
-        x1={xScale(t)}
-        y1={0}
-        x2={xScale(t)}
-        y2={innerHeight}
-        stroke="#928D90"
-        stroke-width="0.5"
-        opacity="0.4"
-      />
+      <line x1={xScale(t)} y1={0} x2={xScale(t)} y2={innerHeight} stroke="#DDDBDC" />
       <text
         class="number"
         x={xScale(t)}
-        y={innerHeight + 14}
+        y={innerHeight + 16}
         text-anchor="middle"
-        fill="#928D90"
+        fill="#12020A"
         font-size="10">{Math.round(t * 100)}%</text
       >
     {/each}
 
-    <text
-      class="number"
-      x={0}
-      y={innerHeight + 14}
-      text-anchor="start"
-      fill="#928D90"
-      font-size="10"
-    >
-      laugh rate →
-    </text>
+    <!-- Bottom axis label -->
+    <g transform="translate(0, {innerHeight + 44})">
+      <text y={-10} class="small accent">Laugh rate</text>
+      <g transform="translate(78, -11) rotate(-90)">
+        <ArrowDown />
+      </g>
+    </g>
 
     <!-- Circles -->
     {#each nodes as node (node.id)}

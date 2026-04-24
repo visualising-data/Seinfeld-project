@@ -4,6 +4,8 @@
   import { seasons } from '$lib/data/seasons';
   import type { EpisodeResult } from '../../utils/getCombinationScenes';
 
+  import ArrowDown from '../../icons/ArrowDown.svelte';
+
   let {
     episodesData,
     combinationScenes,
@@ -16,15 +18,19 @@
     height: number;
   } = $props();
 
-  const margin = { top: 16, right: 20, bottom: 16, left: 44 };
+  $inspect(combinationScenes);
+
+  const margin = { top: 16, right: 20, bottom: 16, left: 60 };
   const midBand = 12; // height of the season label strip between sections
+  const gap = 5; // px between bar tips and the middle strip
 
   let innerWidth = $derived(width - margin.left - margin.right);
   let innerHeight = $derived(height - margin.top - margin.bottom);
   let sectionHeight = $derived((innerHeight - midBand) / 2);
 
-  // Build a lookup: "season-episode" → aggregated stats
-  let combinationByEpisode = $derived.by(() => {
+  // All episodes in order, merged with combination stats
+  let allEpisodes = $derived.by(() => {
+    // Build lookup directly from combinationScenes so Svelte tracks it as a dependency
     const map = new Map<
       string,
       { totalDuration: number; laughDuration: number; laughRate: number }
@@ -39,14 +45,9 @@
         laughRate: totalDuration > 0 ? laughDuration / totalDuration : 0,
       });
     });
-    return map;
-  });
-
-  // All episodes in order, merged with combination stats
-  let allEpisodes = $derived(
-    episodesData.map((ep: any) => {
+    return episodesData.map((ep: any) => {
       const key = `${ep.season}-${ep.episode}`;
-      const combo = combinationByEpisode.get(key);
+      const combo = map.get(key);
       return {
         key,
         season: ep.season,
@@ -55,8 +56,8 @@
         laughDuration: combo?.laughDuration ?? 0,
         laughRate: combo?.laughRate ?? 0,
       };
-    }),
-  );
+    });
+  });
 
   let xScale = $derived(
     scaleBand()
@@ -65,11 +66,19 @@
       .padding(0.1),
   );
 
-  let maxDuration = $derived(max(allEpisodes, (ep) => ep.totalDuration) ?? 60);
+  let maxDuration = $derived(max(allEpisodes, (ep) => ep.totalDuration) || 60);
 
   // Both sections share the same pixel height (sectionHeight)
-  let yScaleTop = $derived(scaleLinear().domain([0, maxDuration]).range([0, sectionHeight]));
-  let yScaleBottom = $derived(scaleLinear().domain([0, 1]).range([0, sectionHeight]));
+  let yScaleTop = $derived(
+    scaleLinear()
+      .domain([0, maxDuration])
+      .range([0, sectionHeight - gap]),
+  );
+  let yScaleBottom = $derived(
+    scaleLinear()
+      .domain([0, 1])
+      .range([0, sectionHeight - gap]),
+  );
 
   // Season bars for middle strip: extend by half the inter-band gap so bars tile with no gaps
   let seasonBars = $derived.by(() => {
@@ -91,17 +100,22 @@
       .filter((d) => d !== null);
   });
 
-  const axisColor = '#928D90';
+  const axisColor = '#DDDBDC';
+  const labelColor = '#12020A';
   const BAR_COLOR = '#12020A';
+
+  const formatDuration = (seconds: number) =>
+    seconds < 60 ? `${Math.round(seconds)}sec` : `${Math.round(seconds / 60)}min`;
 
   // Top section: grid at half and max
   let topGridTicks = $derived([
-    { value: maxDuration / 2, label: `${Math.round(maxDuration / 2 / 60)}min` },
-    { value: maxDuration, label: `${Math.round(maxDuration / 60)}min` },
+    { value: maxDuration / 2, label: formatDuration(maxDuration / 2) },
+    { value: maxDuration, label: formatDuration(maxDuration) },
   ]);
 
   // Bottom section: grid at 50% and 100%
   const bottomGridTicks = [
+    { value: 0, label: '0' },
     { value: 0.5, label: '50%' },
     { value: 1, label: '100%' },
   ];
@@ -113,21 +127,13 @@
 
     <!-- Grid lines + y-axis labels (top section) -->
     {#each topGridTicks as tick}
-      {@const y = sectionHeight - yScaleTop(tick.value)}
-      <line
-        x1={0}
-        y1={y}
-        x2={innerWidth}
-        y2={y}
-        stroke={axisColor}
-        stroke-width="0.5"
-        opacity="0.3"
-      />
+      {@const y = sectionHeight - gap - yScaleTop(tick.value)}
+      <line x1={0} y1={y} x2={innerWidth} y2={y} stroke={axisColor} />
       <text
         class="number"
         x={-6}
         {y}
-        fill={axisColor}
+        fill={labelColor}
         font-size="10"
         text-anchor="end"
         dominant-baseline="middle">{tick.label}</text
@@ -137,29 +143,35 @@
     <!-- Baseline (0) for top section -->
     <line
       x1={0}
-      y1={sectionHeight}
+      y1={sectionHeight - gap}
       x2={innerWidth}
-      y2={sectionHeight}
+      y2={sectionHeight - gap}
       stroke={axisColor}
-      stroke-width="0.5"
-      opacity="0.4"
     />
     <text
       class="number"
       x={-6}
-      y={sectionHeight}
-      fill={axisColor}
+      y={sectionHeight - gap}
+      fill={labelColor}
       font-size="10"
       text-anchor="end"
       dominant-baseline="middle">0</text
     >
+
+    <!-- Top axis label -->
+    <g transform="translate(-20, {yScaleTop.range()[1]})">
+      <text y={-10} class="small accent" style="transform: rotate(-90deg);">Duration</text>
+      <g transform="rotate(180)">
+        <ArrowDown />
+      </g>
+    </g>
 
     <!-- Top bars: total duration (bg) and laugh duration (fg) -->
     {#each allEpisodes as ep}
       {#if ep.totalDuration > 0}
         <rect
           x={xScale(ep.key)}
-          y={sectionHeight - yScaleTop(ep.totalDuration)}
+          y={sectionHeight - gap - yScaleTop(ep.totalDuration)}
           width={xScale.bandwidth()}
           height={yScaleTop(ep.totalDuration)}
           fill={BAR_COLOR}
@@ -168,7 +180,7 @@
         {#if ep.laughDuration > 0}
           <rect
             x={xScale(ep.key)}
-            y={sectionHeight - yScaleTop(ep.laughDuration)}
+            y={sectionHeight - gap - yScaleTop(ep.laughDuration)}
             width={xScale.bandwidth()}
             height={yScaleTop(ep.laughDuration)}
             fill={BAR_COLOR}
@@ -186,42 +198,33 @@
 
     <!-- ── Bottom section: laugh rate bars ─────────────────────── -->
 
-    <!-- Baseline (0%) for bottom section -->
-    <line
-      x1={0}
-      y1={sectionHeight + midBand}
-      x2={innerWidth}
-      y2={sectionHeight + midBand}
-      stroke={axisColor}
-      stroke-width="0.5"
-      opacity="0.4"
-    />
-
     <!-- Grid lines + y-axis labels (bottom section) -->
     {#each bottomGridTicks as tick}
-      {@const y = sectionHeight + midBand + yScaleBottom(tick.value)}
-      <line
-        x1={0}
-        y1={y}
-        x2={innerWidth}
-        y2={y}
-        stroke={axisColor}
-        stroke-width="0.5"
-        opacity="0.3"
-      />
+      {@const y = sectionHeight + midBand + gap + yScaleBottom(tick.value)}
+      <line x1={0} y1={y} x2={innerWidth} y2={y} stroke={axisColor} />
       <text
         class="number"
         x={-6}
         {y}
-        fill={axisColor}
+        fill={labelColor}
         font-size="10"
         text-anchor="end"
         dominant-baseline="middle">{tick.label}</text
       >
     {/each}
 
+    <!-- Bottom axis label -->
+    <g transform="translate(-20, {yScaleTop.range()[1] + 22})">
+      <text y={-10} class="small accent" style="transform: rotate(-90deg);" text-anchor="end"
+        >Laugh rate</text
+      >
+      <g transform="translate(-6, 0)">
+        <ArrowDown />
+      </g>
+    </g>
+
     <!-- Bottom bars: laugh rate -->
-    <g transform="translate(0, {sectionHeight + midBand})">
+    <g transform="translate(0, {sectionHeight + midBand + gap})">
       {#each allEpisodes as ep}
         {#if ep.laughRate > 0}
           <rect
@@ -230,7 +233,6 @@
             width={xScale.bandwidth()}
             height={yScaleBottom(ep.laughRate)}
             fill={BAR_COLOR}
-            opacity="0.6"
           />
         {/if}
       {/each}
