@@ -88,7 +88,7 @@
 
       <!-- Right column: visualizations -->
       <div
-        class="md:col-span-7 flex flex-col h-full relative"
+        class="md:col-span-8 flex flex-col h-full relative"
         style="gap: 48px;"
         bind:clientWidth={vizWidth}
       >
@@ -110,7 +110,11 @@
             height={viz1Height}
           />
         </div>
-        <div class="flex-1 overflow-hidden" class:opacity-30={isLoading} bind:clientHeight={viz2Height}>
+        <div
+          class="flex-1 overflow-hidden"
+          class:opacity-30={isLoading}
+          bind:clientHeight={viz2Height}
+        >
           <ScenesBeeswarm {combinationScenes} width={vizWidth} height={viz2Height} />
         </div>
       </div>

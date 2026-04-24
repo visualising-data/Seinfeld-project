@@ -20,7 +20,7 @@
 
   $inspect(combinationScenes);
 
-  const margin = { top: 16, right: 20, bottom: 16, left: 60 };
+  const margin = { top: 36, right: 20, bottom: 16, left: 60 };
   const midBand = 12; // height of the season label strip between sections
   const gap = 5; // px between bar tips and the middle strip
 
@@ -188,6 +188,56 @@
         {/if}
       {/if}
     {/each}
+
+    <!-- ── Legend annotations on first bar ───────────────────────── -->
+    {#if allEpisodes.length > 0}
+      {@const firstEp = allEpisodes.find((ep) => ep.totalDuration > 0)}
+      {#if firstEp}
+        {@const barLeft = xScale(firstEp.key) ?? 0}
+        {@const barRight = barLeft + xScale.bandwidth()}
+        {@const isRightHalf = barLeft > innerWidth / 2}
+        {@const anchorX = isRightHalf ? barLeft : barRight}
+        {@const dir = isRightHalf ? -1 : 1}
+        {@const lineLen = 28}
+        {@const totalTop = sectionHeight - gap - yScaleTop(firstEp.totalDuration)}
+        {@const laughTop = sectionHeight - gap - yScaleTop(firstEp.laughDuration)}
+        {@const textAnchor = isRightHalf ? 'end' : 'start'}
+
+        <!-- Total duration: "Time on screen" -->
+        <line
+          x1={anchorX - dir * 3}
+          y1={totalTop - 4}
+          x2={anchorX + dir * lineLen}
+          y2={-28}
+          stroke="#E71D80"
+          stroke-width="1"
+        />
+        <text
+          x={anchorX + dir * (lineLen + 4)}
+          y={-28}
+          class="small accent"
+          dominant-baseline="middle"
+          text-anchor={textAnchor}>Time on screen</text
+        >
+
+        <!-- Laugh duration: "Time causing laughs" -->
+        <line
+          x1={anchorX - dir * 3}
+          y1={laughTop - 4}
+          x2={anchorX + dir * (lineLen + 16)}
+          y2={-10}
+          stroke="#E71D80"
+          stroke-width="1"
+        />
+        <text
+          x={anchorX + dir * (lineLen + 20)}
+          y={-10}
+          class="small accent"
+          dominant-baseline="middle"
+          text-anchor={textAnchor}>Time causing laughs</text
+        >
+      {/if}
+    {/if}
 
     <!-- ── Middle strip: season labels ─────────────────────────── -->
     <g transform="translate(0, {sectionHeight})">

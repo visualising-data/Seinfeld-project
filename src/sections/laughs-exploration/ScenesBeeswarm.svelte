@@ -104,6 +104,14 @@
   });
 
   const ticks = [0, 0.25, 0.5, 0.75, 1];
+
+  let legendSizes = $derived([
+    { r: rScale(30), label: '30s' },
+    { r: rScale(120), label: '2min' },
+    { r: rScale(300), label: '5min' },
+  ]);
+  let legendRMax = $derived(rScale(300));
+  const legendLineLen = 20;
 </script>
 
 <svg {width} {height}>
@@ -137,6 +145,37 @@
         r={node.r}
         fill={seasonColorMap.get(node.season) ?? '#928D90'}
       />
+    {/each}
+
+    <!-- ── Size legend (concentric circles) ─────────────────────── -->
+    {#each [...legendSizes].reverse() as size}
+      <circle
+        cx={innerWidth - legendRMax - 30}
+        cy={legendRMax * 2 + 4 - size.r}
+        r={size.r}
+        fill="#BEBABC"
+        fill-opacity="0.2"
+        stroke="#BEBABC"
+      />
+    {/each}
+    {#each legendSizes as size, i}
+      {@const lx = innerWidth - legendRMax - 30}
+      {@const topY = legendRMax * 2 + 4 - size.r * 2}
+      <line
+        x1={lx}
+        y1={topY}
+        x2={lx + legendLineLen}
+        y2={topY + (i === 0 ? 4 : i === legendSizes.length - 1 ? -4 : 0)}
+        stroke="#E71D80"
+        stroke-width="1"
+      />
+      <text
+        x={lx + legendLineLen + 4}
+        y={topY + (i === 0 ? 6 : i === legendSizes.length - 1 ? -4 : 0)}
+        class="small accent"
+        dominant-baseline="middle"
+        text-anchor="start">{size.label}</text
+      >
     {/each}
 
     {#if flatScenes.length === 0}
