@@ -56,7 +56,7 @@
             onclick={() => onMainCharClick(char.id)}
           >
             <div
-              class="selector rounded-full bg-contain bg-center opacity-50"
+              class="selector rounded-full bg-contain bg-center opacity-20"
               style="background-image: url('{getCharacterImagePath(
                 char.id,
               )}'); width: 60px; height: 60px;"
@@ -85,7 +85,7 @@
             onclick={() => onSuppCharClick(char.id)}
           >
             <div
-              class="selector rounded-full bg-contain bg-center opacity-50"
+              class="selector rounded-full bg-contain bg-center opacity-20"
               style="background-image: url('{getCharacterImagePath(
                 char.id,
               )}'); width: 60px; height: 60px;"
@@ -114,7 +114,7 @@
             onclick={() => onLocationClick(loc.id)}
           >
             <div
-              class="selector rounded-full bg-contain bg-center opacity-50"
+              class="selector rounded-full bg-contain bg-center opacity-20"
               style="background-image: url('{getLocationIconPath(
                 loc.id,
               )}'); width: 60px; height: 60px;"

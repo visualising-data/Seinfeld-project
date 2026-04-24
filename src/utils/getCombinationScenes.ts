@@ -16,7 +16,9 @@ export type EpisodeResult = {
  * find all scenes across all episodes where at least one of each selected group appears
  * within the same scene. Empty arrays / null location means "no filter on that dimension".
  *
- * A scene can have more characters/locations than the selected ones — we match inclusively.
+ * Character matching is exclusive: a scene must contain exactly the selected characters — all of
+ * them must appear, and no others. Location matching is inclusive: the scene just needs to include
+ * the selected location (it may have others).
  * Scene duration = all unique time points in the scene × 5s (each event is a 5-second window).
  * Laugh duration = unique time points in the scene with a CAUSES THE LAUGH event × 5s.
  */
@@ -40,18 +42,24 @@ export function getCombinationScenes(
     const scenes: SceneResult[] = [];
 
     sceneEvents.forEach((events, sceneNumber) => {
-      if (leadChars.length > 0) {
-        const hasLead = leadChars.some((lc) =>
-          events.some((e) => e.eventCategory === 'CHARACTERS' && e.eventAttribute === lc),
-        );
-        if (!hasLead) return;
-      }
+      const selectedChars = new Set([...leadChars, ...suppChars]);
 
-      if (suppChars.length > 0) {
-        const hasSupp = suppChars.some((sc) =>
-          events.some((e) => e.eventCategory === 'CHARACTERS' && e.eventAttribute === sc),
+      if (selectedChars.size > 0) {
+        const sceneChars = new Set(
+          events
+            .filter((e) => e.eventCategory === 'CHARACTERS')
+            .map((e) => e.eventAttribute as string),
         );
-        if (!hasSupp) return;
+
+        // All selected characters must be present
+        for (const char of selectedChars) {
+          if (!sceneChars.has(char)) return;
+        }
+
+        // No characters beyond the selected ones may appear
+        for (const char of sceneChars) {
+          if (!selectedChars.has(char)) return;
+        }
       }
 
       if (location !== null) {
