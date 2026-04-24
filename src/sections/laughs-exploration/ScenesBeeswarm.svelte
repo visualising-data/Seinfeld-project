@@ -7,14 +7,29 @@
 
   import ArrowDown from '../../icons/ArrowDown.svelte';
 
+  export type HoveredScene = {
+    season: number;
+    episode: number;
+    sceneNumber: number;
+    duration: number;
+    laughDuration: number;
+    laughRate: number;
+  };
+
   let {
     combinationScenes,
     width = 600,
     height = 160,
+    hoveredEpisodeKey = null,
+    onEpisodeHover = () => {},
+    onSceneHover = () => {},
   }: {
     combinationScenes: EpisodeResult[];
     width: number;
     height: number;
+    hoveredEpisodeKey?: string | null;
+    onEpisodeHover?: (key: string | null) => void;
+    onSceneHover?: (scene: HoveredScene | null) => void;
   } = $props();
 
   const margin = { top: 16, right: 20, bottom: 40, left: 60 };
@@ -27,6 +42,7 @@
     episode: number;
     sceneNumber: number;
     duration: number;
+    laughDuration: number;
     laughRate: number;
     r: number;
     x: number;
@@ -43,6 +59,7 @@
           episode: ep.episode,
           sceneNumber: sc.sceneNumber,
           duration: sc.duration,
+          laughDuration: sc.laughDuration,
           laughRate: sc.laughRate,
           r: 0,
           x: 0,
@@ -105,12 +122,13 @@
 
   const ticks = [0, 0.25, 0.5, 0.75, 1];
 
-  let legendSizes = $derived([
-    { r: rScale(30), label: '30s' },
-    { r: rScale(120), label: '2min' },
-    { r: rScale(300), label: '5min' },
-  ]);
-  let legendRMax = $derived(rScale(300));
+  const legendRScale = scaleSqrt().domain([0, 300]).range([2, 18]);
+  const legendSizes = [
+    { r: legendRScale(30), label: '30s' },
+    { r: legendRScale(120), label: '2min' },
+    { r: legendRScale(300), label: '5min' },
+  ];
+  const legendRMax = legendRScale(300);
   const legendLineLen = 20;
 </script>
 
@@ -139,11 +157,17 @@
 
     <!-- Circles -->
     {#each nodes as node (node.id)}
+      {@const epKey = `${node.season}-${node.episode}`}
       <circle
         cx={node.cx}
         cy={node.cy}
         r={node.r}
         fill={seasonColorMap.get(node.season) ?? '#928D90'}
+        opacity={hoveredEpisodeKey !== null && hoveredEpisodeKey !== epKey ? 0.2 : 1}
+        role="presentation"
+        onmouseenter={() => { onEpisodeHover(epKey); onSceneHover({ season: node.season, episode: node.episode, sceneNumber: node.sceneNumber, duration: node.duration, laughDuration: node.laughDuration, laughRate: node.laughRate }); }}
+        onmouseleave={() => { onEpisodeHover(null); onSceneHover(null); }}
+        style="cursor: pointer"
       />
     {/each}
 
@@ -162,7 +186,7 @@
       {@const lx = innerWidth - legendRMax - 30}
       {@const topY = legendRMax * 2 + 4 - size.r * 2}
       <line
-        x1={lx}
+        x1={lx + 4}
         y1={topY}
         x2={lx + legendLineLen}
         y2={topY + (i === 0 ? 4 : i === legendSizes.length - 1 ? -4 : 0)}

@@ -3,6 +3,7 @@
   import { scaleBand, scaleLinear } from 'd3-scale';
   import { seasons } from '$lib/data/seasons';
   import type { EpisodeResult } from '../../utils/getCombinationScenes';
+  import type { HoveredScene } from './ScenesBeeswarm.svelte';
 
   import ArrowDown from '../../icons/ArrowDown.svelte';
 
@@ -11,12 +12,25 @@
     combinationScenes,
     width = 600,
     height = 184,
+    hoveredEpisodeKey = null,
+    onEpisodeHover = () => {},
+    onSceneHover = () => {},
   }: {
     episodesData: any[];
     combinationScenes: EpisodeResult[];
     width: number;
     height: number;
+    hoveredEpisodeKey?: string | null;
+    onEpisodeHover?: (key: string | null) => void;
+    onSceneHover?: (scene: HoveredScene | null) => void;
   } = $props();
+
+  function getFirstScene(season: number, episode: number): HoveredScene | null {
+    const ep = combinationScenes.find((e) => e.season === season && e.episode === episode);
+    if (!ep || ep.scenes.length === 0) return null;
+    const sc = ep.scenes[0];
+    return { season, episode, sceneNumber: sc.sceneNumber, duration: sc.duration, laughDuration: sc.laughDuration, laughRate: sc.laughRate };
+  }
 
   $inspect(combinationScenes);
 
@@ -169,23 +183,31 @@
     <!-- Top bars: total duration (bg) and laugh duration (fg) -->
     {#each allEpisodes as ep}
       {#if ep.totalDuration > 0}
-        <rect
-          x={xScale(ep.key)}
-          y={sectionHeight - gap - yScaleTop(ep.totalDuration)}
-          width={xScale.bandwidth()}
-          height={yScaleTop(ep.totalDuration)}
-          fill={BAR_COLOR}
-          opacity="0.3"
-        />
-        {#if ep.laughDuration > 0}
+        <g
+          role="presentation"
+          opacity={hoveredEpisodeKey !== null && hoveredEpisodeKey !== ep.key ? 0.2 : 1}
+          onmouseenter={() => { onEpisodeHover(ep.key); onSceneHover(getFirstScene(ep.season, ep.episode)); }}
+          onmouseleave={() => { onEpisodeHover(null); onSceneHover(null); }}
+          style="cursor: pointer"
+        >
           <rect
             x={xScale(ep.key)}
-            y={sectionHeight - gap - yScaleTop(ep.laughDuration)}
+            y={sectionHeight - gap - yScaleTop(ep.totalDuration)}
             width={xScale.bandwidth()}
-            height={yScaleTop(ep.laughDuration)}
+            height={yScaleTop(ep.totalDuration)}
             fill={BAR_COLOR}
+            opacity="0.3"
           />
-        {/if}
+          {#if ep.laughDuration > 0}
+            <rect
+              x={xScale(ep.key)}
+              y={sectionHeight - gap - yScaleTop(ep.laughDuration)}
+              width={xScale.bandwidth()}
+              height={yScaleTop(ep.laughDuration)}
+              fill={BAR_COLOR}
+            />
+          {/if}
+        </g>
       {/if}
     {/each}
 
@@ -283,6 +305,11 @@
             width={xScale.bandwidth()}
             height={yScaleBottom(ep.laughRate)}
             fill={BAR_COLOR}
+            opacity={hoveredEpisodeKey !== null && hoveredEpisodeKey !== ep.key ? 0.2 : 1}
+            role="presentation"
+            onmouseenter={() => { onEpisodeHover(ep.key); onSceneHover(getFirstScene(ep.season, ep.episode)); }}
+            onmouseleave={() => { onEpisodeHover(null); onSceneHover(null); }}
+            style="cursor: pointer"
           />
         {/if}
       {/each}
