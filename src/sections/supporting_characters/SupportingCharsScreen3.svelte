@@ -237,7 +237,7 @@
       <div class="col-span-12 md:col-span-4">
         {#each supportingChars as char, i}
           <div
-            class="icon-wrapper hidden md:absolute cursor-pointer"
+            class="icon-wrapper hidden md:block md:absolute cursor-pointer"
             style="top: {charPositions[i]?.top ?? 0}px; left: {charPositions[i]?.left ?? 0}px;"
             role="button"
             tabindex="0"

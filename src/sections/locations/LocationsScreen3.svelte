@@ -237,7 +237,7 @@
       <div class="col-span-12 md:col-span-4">
         {#each locations as location, i}
           <div
-            class="icon-wrapper hidden md:absolute cursor-pointer"
+            class="icon-wrapper hidden md:block md:absolute cursor-pointer"
             style="top: {locationPositions[i]?.top ?? 0}px; left: {locationPositions[i]?.left ?? 0}px;"
             role="button"
             tabindex="0"
