@@ -397,7 +397,7 @@
 </script>
 
 <div id="laughs-scroll-container" class="relative">
-  <div class="sticky top-0 h-screen self-start">
+  <div class="sticky top-0 h-[100dvh] self-start">
     <!-- Background image -->
     <div
       class="absolute inset-0 bg-cover bg-center"
@@ -566,10 +566,10 @@
   </div>
 
   <!-- Scroll spacers: extra reading time + one per transition + extra at end -->
-  <div class="h-screen"></div>
-  <div id="laughs-step-2" class="h-screen"></div>
-  <div id="laughs-step-3" class="h-screen"></div>
-  <div id="laughs-step-4" class="h-screen"></div>
-  <div id="laughs-step-5" class="h-screen"></div>
-  <div class="h-screen"></div>
+  <div class="h-[100dvh]"></div>
+  <div id="laughs-step-2" class="h-[100dvh]"></div>
+  <div id="laughs-step-3" class="h-[100dvh]"></div>
+  <div id="laughs-step-4" class="h-[100dvh]"></div>
+  <div id="laughs-step-5" class="h-[100dvh]"></div>
+  <div class="h-[100dvh]"></div>
 </div>

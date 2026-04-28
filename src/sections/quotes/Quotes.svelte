@@ -51,7 +51,7 @@
 {/if}
 
 <div class="bg-black text-white py-80">
-  <div class="flex h-screen items-center overflow-x-hidden">
+  <div class="flex h-[100dvh] items-center overflow-x-hidden">
     <div>
       <!-- Season 1 -->
       <div class="quotes-list flex flex-nowrap">

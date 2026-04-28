@@ -105,11 +105,11 @@
   <!-- Sticky full-screen video + text overlay -->
   <div
     id="video-sticky"
-    class="sticky top-0 h-screen self-start flex flex-col lg:block"
+    class="sticky top-0 h-[100dvh] self-start flex flex-col lg:block"
     role="presentation"
   >
     <!-- Video: top half on mobile, full screen on desktop -->
-    <div class="relative h-[50vh] lg:absolute lg:inset-0 lg:h-auto">
+    <div class="relative h-[50dvh] lg:absolute lg:inset-0 lg:h-auto">
       <video playsinline autoplay muted loop preload="metadata">
         <source
           src="https://amdufour.github.io/hosted-data/apis/videos/1a.ElaineArrives.mp4"
@@ -209,11 +209,11 @@
 
   <!-- Scroll spacers — provide scroll distance and act as GSAP triggers -->
   <!-- Extra spacer so text-1 has 2 viewports of reading time -->
-  <div class="h-screen"></div>
-  <div id="video-step-2" class="h-screen"></div>
-  <div id="video-step-3" class="h-screen"></div>
+  <div class="h-[100dvh]"></div>
+  <div id="video-step-2" class="h-[100dvh]"></div>
+  <div id="video-step-3" class="h-[100dvh]"></div>
   <!-- Extra spacer so text-3 has a full viewport of reading time before sticky releases -->
-  <div class="h-screen"></div>
+  <div class="h-[100dvh]"></div>
 </div>
 
 <style>

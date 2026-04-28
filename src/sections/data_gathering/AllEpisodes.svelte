@@ -163,7 +163,7 @@
 <svelte:window bind:innerWidth />
 
 <div id="all-episodes" class="relative mt-96 mb-0 pb-80" style="width: calc(100vw - 25px);">
-    <div id="all-episodes-visualizations" class="h-screen flex absolute top-0 left-0" style="width: calc(100vw - 25);">
+    <div id="all-episodes-visualizations" class="h-[100dvh] flex absolute top-0 left-0" style="width: calc(100vw - 25);">
         <EpisodeBars 
             {episodesData} 
             barsHeight={stripHeight} 
@@ -202,7 +202,7 @@
 
     <!-- Tooltip -->
 	{#if isTooltipVisible && innerWidth >= 793}
-        <div class="fixed top-0 z-20 h-screen" style="width: calc(100vw - 25px); left: 25px; pointer-events: none;">
+        <div class="fixed top-0 z-20 h-[100dvh]" style="width: calc(100vw - 25px); left: 25px; pointer-events: none;">
 		    <EpisodeTooltip episode={hoveredEpisode} position={mousePosition} />
         </div>
 	{/if}

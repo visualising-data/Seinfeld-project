@@ -13,7 +13,7 @@
 </script>
 
 <!-- Text 1 -->
-<div id="jerry-text-1" class="flex h-screen w-screen items-center justify-end md:pr-6">
+<div id="jerry-text-1" class="flex h-[100dvh] w-screen items-center justify-end md:pr-6">
   <div class="text-overlay">
     When you are the co-creator of a show, it is named after you, and you play a semi-fictionalised
     version of yourself, it is no surprise that <span class="em" style="color: {color};"
@@ -24,7 +24,7 @@
 </div>
 
 <!-- Text 2 -->
-<div id="jerry-text-2" class="flex h-screen w-screen items-center justify-end md:pr-6">
+<div id="jerry-text-2" class="flex h-[100dvh] w-screen items-center justify-end md:pr-6">
   <div class="text-overlay flex flex-col">
     <div class="mb-4">
       With episode scenes typically opening (up to Season 8) and closing (up to Season 6) with Jerry
@@ -35,7 +35,7 @@
 </div>
 
 <!-- Text 3 -->
-<div id="jerry-text-3" class="flex h-screen w-screen items-center justify-end md:pr-6">
+<div id="jerry-text-3" class="flex h-[100dvh] w-screen items-center justify-end md:pr-6">
   <div class="text-overlay flex flex-col">
     <div class="mb-4">
       Indeed, it is noticeable that across just <span class="highlight">0.2%</span> of the show's entire
@@ -45,7 +45,7 @@
 </div>
 
 <!-- Text 4 -->
-<div id="jerry-text-4" class="flex h-screen w-screen items-center justify-end md:pr-6">
+<div id="jerry-text-4" class="flex h-[100dvh] w-screen items-center justify-end md:pr-6">
   <div class="text-overlay flex flex-col items-center">
     <div class="mb-4">
       Perhaps inevitably Jerry appeared in all scenes and <span class="highlight"
@@ -57,7 +57,7 @@
 </div>
 
 <!-- Text 5 -->
-<div id="jerry-text-5" class="flex h-screen w-screen items-center justify-end md:pr-6">
+<div id="jerry-text-5" class="flex h-[100dvh] w-screen items-center justify-end md:pr-6">
   <div class="text-overlay flex flex-col items-center">
     <div class="mb-4">
       Other than in S3E18 "The Boyfriend (Part 2)", which was the second episode of a two-part
@@ -72,7 +72,7 @@
 </div>
 
 <!-- Text 6 -->
-<div id="jerry-text-6" class="flex h-screen w-screen items-center justify-end md:pr-6">
+<div id="jerry-text-6" class="flex h-[100dvh] w-screen items-center justify-end md:pr-6">
   <div class="text-overlay flex flex-col">
     <div class="mb-4">
       Although his absolute screen-time levels continued to be high, you can see a <span
@@ -91,7 +91,7 @@
 </div>
 
 <!-- Text 7 -->
-<div id="jerry-text-7" class="flex h-screen w-screen items-center justify-end md:pr-6">
+<div id="jerry-text-7" class="flex h-[100dvh] w-screen items-center justify-end md:pr-6">
   <div class="text-overlay flex flex-col">
     <div class="mb-4">
       This is mirrored in the trends for his share of <span class="highlight">episode laughs</span>,
@@ -110,7 +110,7 @@
 </div>
 
 <!-- Text 8 -->
-<div id="jerry-text-8" class="flex h-screen w-screen items-center justify-end md:pr-6">
+<div id="jerry-text-8" class="flex h-[100dvh] w-screen items-center justify-end md:pr-6">
   <div class="text-overlay flex flex-col" style="min-width: 0;">
     <div class="mb-4">
       Perhaps this came about as the <span class="highlight"

@@ -158,27 +158,27 @@
 
 <div id="timeline-container" class="container mt-20 grid grid-cols-3 md:grid-cols-2">
   <div class="col-span-2 px-4 md:col-span-1 bg-black">
-    <div class="flex h-screen flex-col justify-center">
+    <div class="flex h-[100dvh] flex-col justify-center">
       <p id="prologue-1">
         Though the first episode was aired in the US in 1989, there would be a four-year delay until
         it was broadcast in the UK. As a teenager, and with the show lurking in the shadows of BBC's
         late-night schedules, it passed me by.
       </p>
     </div>
-    <div class="flex h-screen flex-col justify-center">
+    <div class="flex h-[100dvh] flex-col justify-center">
       <p id="prologue-2">
         It wasn't until the 2010s when Seinfeld reappeared on UK TV in a prime-time slot. Fully
         aware of the show's standing in the canon of popular culture, this was my opportunity to
         tune in.
       </p>
     </div>
-    <div class="flex h-screen flex-col justify-center">
+    <div class="flex h-[100dvh] flex-col justify-center">
       <p id="prologue-3">
         During the 2010s Seinfeld was also shown on cable networks, like Comedy Central, and then
         from 2015 became available on-demand in the USA on Hulu.
       </p>
     </div>
-    <div class="flex h-screen flex-col justify-center">
+    <div class="flex h-[100dvh] flex-col justify-center">
       <p id="prologue-4">
         In 2019, Netflix spent over $500 million for the global streaming rights to broadcast
         Seinfeld from 2021 through to 2026. This propelled the show to a whole new generation of
@@ -186,7 +186,7 @@
       </p>
     </div>
   </div>
-  <div id="timeline" class="sticky top-0 h-screen self-start col-span-1 px-4">
+  <div id="timeline" class="sticky top-0 h-[100dvh] self-start col-span-1 px-4">
     <div
       id="timeline-line"
       class="absolute bg-white"

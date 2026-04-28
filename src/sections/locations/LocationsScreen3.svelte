@@ -200,10 +200,10 @@
   };
 </script>
 
-<div id="locations_screen_3" class="md:h-screen w-screen py-60 md:py-0 relative" bind:this={iconsContainer}>
+<div id="locations_screen_3" class="md:h-[100dvh] w-screen py-60 md:py-0 relative" bind:this={iconsContainer}>
   <div class="container">
     <div class="grid grid-cols-12 md:gap-20">
-      <div class="locations-text-col col-span-12 md:col-span-7 md:h-screen md:flex md:flex-col md:justify-center">
+      <div class="locations-text-col col-span-12 md:col-span-7 md:h-[100dvh] md:flex md:flex-col md:justify-center">
         <p>
           As with the task of classifying characters, there were challenges with establishing a
           robust taxonomy for distinguishing different types of locations. You don't want too many

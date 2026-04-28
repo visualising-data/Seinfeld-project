@@ -90,10 +90,10 @@
 
 <div id="supporting_chars" class="bg-black text-white">
   <!-- Screen 1 -->
-  <div id="supporting_chars_screen_1" class="md:h-screen w-screen py-60 md:py-0">
+  <div id="supporting_chars_screen_1" class="md:h-[100dvh] w-screen py-60 md:py-0">
     <div class="container">
       <div class="grid grid-cols-12 gap-4">
-        <div class="col-span-12 md:col-span-7 h-screen flex flex-col justify-center">
+        <div class="col-span-12 md:col-span-7 h-[100dvh] flex flex-col justify-center">
           <p>
             As a show grows, it is inevitable that so does the universe of different characters. And
             as the list of potential characters grows, so too does the temptation to use them more
@@ -117,10 +117,10 @@
   </div>
 
   <!-- Screen 2 -->
-  <div id="supporting_chars_screen_2" class="md:h-screen w-screen py-30 md:py-0">
+  <div id="supporting_chars_screen_2" class="md:h-[100dvh] w-screen py-30 md:py-0">
     <div class="container">
       <div class="grid grid-cols-12 gap-4">
-        <div class="col-span-12 md:col-span-7 md:h-screen flex flex-col justify-center">
+        <div class="col-span-12 md:col-span-7 md:h-[100dvh] flex flex-col justify-center">
           <p>
             The main struggle was to strike a balance between creating enough distinct character
             categories, with sufficient individuality for those who warrant it, but not carving out

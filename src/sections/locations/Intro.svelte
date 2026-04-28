@@ -75,10 +75,10 @@
 
 <div id="locations" class="bg-black text-white">
   <!-- Screen 1 -->
-  <div id="locations_screen_1" class="md:h-screen w-screen py-60 md:py-0">
+  <div id="locations_screen_1" class="md:h-[100dvh] w-screen py-60 md:py-0">
     <div class="container">
       <div class="grid grid-cols-12 gap-4">
-        <div class="col-span-12 md:col-span-7 h-screen flex flex-col justify-center">
+        <div class="col-span-12 md:col-span-7 h-[100dvh] flex flex-col justify-center">
           <p>
             After examining the use of lead and supporting characters - <span class="highlight"
               >the who</span
@@ -98,10 +98,10 @@
   </div>
 
   <!-- Screen 2 -->
-  <div id="locations_screen_2" class="md:h-screen w-screen py-30 md:py-0">
+  <div id="locations_screen_2" class="md:h-[100dvh] w-screen py-30 md:py-0">
     <div class="container">
       <div class="grid grid-cols-12 gap-4">
-        <div class="col-span-12 md:col-span-7 md:h-screen flex flex-col justify-center">
+        <div class="col-span-12 md:col-span-7 md:h-[100dvh] flex flex-col justify-center">
           <p>
             Just as the list of characters grew, so too did the spatial ambitions of the storylines.
             Once the show became a fixture in NBC's Fall schedule, from Season Three onwards, it

@@ -160,7 +160,7 @@
 
 <div id="show-section" class="relative">
   <!-- Sticky container -->
-  <div id="show-sticky" class="sticky top-0 h-screen self-start flex flex-col bg-black">
+  <div id="show-sticky" class="sticky top-0 h-[100dvh] self-start flex flex-col bg-black">
     <!-- Video strip -->
     <div class="show-video-strip flex w-full h-[40vh] lg:h-[65vh]">
       <div
@@ -634,12 +634,12 @@
   </div>
 
   <!-- Spacers as scroll triggers (one per transition = 4 total) -->
-  <div id="show-step-1" class="h-[150vh]"></div>
-  <div id="show-step-2" class="h-[150vh]"></div>
-  <div id="show-step-3" class="h-[150vh]"></div>
-  <div id="show-step-4" class="h-[150vh]"></div>
+  <div id="show-step-1" class="h-[150dvh]"></div>
+  <div id="show-step-2" class="h-[150dvh]"></div>
+  <div id="show-step-3" class="h-[150dvh]"></div>
+  <div id="show-step-4" class="h-[150dvh]"></div>
   <!-- Extra spacer so the last video/text has reading time before sticky releases -->
-  <div class="h-[150vh]"></div>
+  <div class="h-[150dvh]"></div>
 </div>
 
 <style>

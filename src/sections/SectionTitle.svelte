@@ -151,7 +151,7 @@
 
 <div
   id={`tiles-container-${section}`}
-  class="tiles-container relative h-screen w-screen bg-black text-white"
+  class="tiles-container relative h-[100dvh] w-screen bg-black text-white"
 >
   <div class="tiles absolute z-0 flex flex-wrap">
     {#each tiles as tile}

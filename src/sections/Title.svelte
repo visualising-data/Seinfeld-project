@@ -163,7 +163,7 @@
 <svelte:window bind:innerWidth />
 
 <section id="title-screen" class="py-40" style="--ring-gradient: {seasonGradient}">
-  <div class="title-container h-screen">
+  <div class="title-container h-[100dvh]">
     <svg width={svgWidth} height="132" onmouseenter={handleMouseEnterBars} role="figure">
       {#each seasons as season, i}
         <rect

@@ -111,7 +111,7 @@
     <div class="grid grid-cols-12 gap-4">
       <div
         id="lead-chars-intro-text-container"
-        class="col-span-12 md:col-span-7 h-screen flex flex-col justify-center"
+        class="col-span-12 md:col-span-7 h-[100dvh] flex flex-col justify-center"
       >
         <p>
           We begin with a look at the lead characters. It was no surprise to find the majority of
@@ -137,7 +137,7 @@
     <div class="container absolute" style="height: 1400px; top: 100vh; left: 0; right: 0;">
       <div class="grid grid-cols-12 gap-4">
         <div class="md:col-span-1"></div>
-        <div class="col-span-12 md:col-span-11 h-screen flex flex-col justify-center">
+        <div class="col-span-12 md:col-span-11 h-[100dvh] flex flex-col justify-center">
           <ul class="flex justify-between mt-4">
             {#each mainChars as char, i}
               <li class="my-2">

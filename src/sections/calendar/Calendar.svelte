@@ -179,7 +179,7 @@
     },
   );
 
-  // Season blocks are flex-grow:1 children of a h-screen flex column with one fixed
+  // Season blocks are flex-grow:1 children of a h-[100dvh] flex column with one fixed
   // header row — compute their geometry purely from innerHeight / headersHeight so
   // there are no stale DOM reads on resize.
   let getYPosition = $derived.by(() => {
@@ -505,7 +505,7 @@
 <div id="intro-calendar-container" class="relative">
   <div
     id="intro-calendar"
-    class="absolute flex h-screen w-screen"
+    class="absolute flex h-[100dvh] w-screen"
     style="padding-top: {navbarHeight}px; background: {navbarHeight > 0
       ? `linear-gradient(#E71D80 ${navbarHeight}px, transparent ${navbarHeight}px)`
       : 'rgb(231 29 128 / 0.05)'};"

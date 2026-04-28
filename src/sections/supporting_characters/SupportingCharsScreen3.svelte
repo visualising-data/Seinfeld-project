@@ -204,10 +204,10 @@
   };
 </script>
 
-<div id="supporting_chars_screen_3" class="md:h-screen w-screen py-60 md:py-0 relative" bind:this={iconsContainer}>
+<div id="supporting_chars_screen_3" class="md:h-[100dvh] w-screen py-60 md:py-0 relative" bind:this={iconsContainer}>
   <div class="container">
     <div class="grid grid-cols-12 md:gap-20">
-      <div class="supporting-chars-text-col col-span-12 md:col-span-7 md:h-screen md:flex md:flex-col md:justify-center">
+      <div class="supporting-chars-text-col col-span-12 md:col-span-7 md:h-[100dvh] md:flex md:flex-col md:justify-center">
         <p>
           The ultimate decision was to create categories for the four respective families of the
           lead characters, as well as groupings for acquaintances - specifically, love interests,

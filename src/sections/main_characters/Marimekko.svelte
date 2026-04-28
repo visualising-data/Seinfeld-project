@@ -120,7 +120,7 @@
 
 <svelte:window bind:innerWidth bind:innerHeight />
 
-<div class={isMobile ? 'w-screen pb-16' : 'h-screen w-screen mb-60'}>
+<div class={isMobile ? 'w-screen pb-16' : 'h-[100dvh] w-screen mb-60'}>
   <div class="container" bind:clientWidth={containerWidth}>
     <!-- Header -->
     <div bind:clientHeight={headerHeight} class="mb-8">

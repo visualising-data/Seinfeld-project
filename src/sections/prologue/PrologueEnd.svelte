@@ -26,8 +26,8 @@
   onDestroy(() => ctx?.revert());
 </script>
 
-<div id="prologue-end" class="w-screen h-screen" style="margin-top: 800px;">
-  <div class="h-screen container flex content-center flex-wrap">
+<div id="prologue-end" class="w-screen h-[100dvh]" style="margin-top: 800px;">
+  <div class="h-[100dvh] container flex content-center flex-wrap">
     <div style="max-width: 900px;">
       In 2024 I decided it was time to work on a new product, to reach a wider audience with a
       completely new format: The Seinfeld Chronicles <span class="highlight">digital edition</span>.

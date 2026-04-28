@@ -27,8 +27,8 @@
   });
 </script>
 
-<div id="data-gathering-bridge" class="h-screen">
-  <div class="h-screen container flex content-center flex-wrap">
+<div id="data-gathering-bridge" class="h-[100dvh]">
+  <div class="h-[100dvh] container flex content-center flex-wrap">
     <p style="max-width: 900px;">Let's look at how we took this laughter data and used it to build a profile of each episode's rhythm and texture.</p>
   </div>
 </div>

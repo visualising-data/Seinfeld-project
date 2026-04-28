@@ -146,7 +146,7 @@
 <svelte:window bind:innerWidth />
 
 <div id="data-gathering-3" class="relative bg-[#000]">
-  <div class="sticky top-0 h-screen flex flex-col">
+  <div class="sticky top-0 h-[100dvh] flex flex-col">
     <!-- Video area: fills remaining height above the overlay -->
     <div class="flex-1 relative flex items-center min-h-0 overflow-hidden">
       <!-- svelte-ignore a11y_media_has_caption -->
@@ -263,9 +263,9 @@
   </div>
 
   <!-- Scroll spacers: keep section pinned long enough to watch the clip -->
-  <div class="h-screen"></div>
-  <div class="h-screen"></div>
-  <div class="h-screen"></div>
+  <div class="h-[100dvh]"></div>
+  <div class="h-[100dvh]"></div>
+  <div class="h-[100dvh]"></div>
 </div>
 
 <style>

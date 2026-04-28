@@ -31,10 +31,10 @@
   <div
     in:fly={{ duration: 250, x: 500 }}
     out:fly={{ duration: 250, x: 500 }}
-    class="menu-container h-screen"
+    class="menu-container h-[100dvh]"
     onclick={(e) => e.stopPropagation()}
   >
-    <div class="h-screen flex flex-col justify-center px-12 py-8">
+    <div class="h-[100dvh] flex flex-col justify-center px-12 py-8">
       <ul id="menu-links">
         {#each menuLinks as menuItem}
           <li class="py-5">
