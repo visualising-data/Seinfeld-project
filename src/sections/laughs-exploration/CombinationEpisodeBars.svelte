@@ -15,6 +15,8 @@
     hoveredEpisodeKey = null,
     onEpisodeHover = () => {},
     onSceneHover = () => {},
+    onSceneClick = () => {},
+    onClosePin = () => {},
   }: {
     episodesData: any[];
     combinationScenes: EpisodeResult[];
@@ -23,13 +25,22 @@
     hoveredEpisodeKey?: string | null;
     onEpisodeHover?: (key: string | null) => void;
     onSceneHover?: (scene: HoveredScene | null) => void;
+    onSceneClick?: (scene: HoveredScene) => void;
+    onClosePin?: () => void;
   } = $props();
 
   function getFirstScene(season: number, episode: number): HoveredScene | null {
     const ep = combinationScenes.find((e) => e.season === season && e.episode === episode);
     if (!ep || ep.scenes.length === 0) return null;
     const sc = ep.scenes[0];
-    return { season, episode, sceneNumber: sc.sceneNumber, duration: sc.duration, laughDuration: sc.laughDuration, laughRate: sc.laughRate };
+    return {
+      season,
+      episode,
+      sceneNumber: sc.sceneNumber,
+      duration: sc.duration,
+      laughDuration: sc.laughDuration,
+      laughRate: sc.laughRate,
+    };
   }
 
   $inspect(combinationScenes);
@@ -117,6 +128,8 @@
   const axisColor = '#DDDBDC';
   const labelColor = '#12020A';
   const BAR_COLOR = '#12020A';
+  const MIN_BAR_H = 2;
+  const HIT_TARGET_H = 8;
 
   const formatDuration = (seconds: number) =>
     seconds < 60 ? `${Math.round(seconds)}sec` : `${Math.round(seconds / 60)}min`;
@@ -135,7 +148,14 @@
   ];
 </script>
 
-<svg {width} {height}>
+<svg
+  {width}
+  {height}
+  role="presentation"
+  onclick={onClosePin}
+  onkeydown={() => {}}
+  style="cursor: default"
+>
   <g transform="translate({margin.left}, {margin.top})">
     <!-- ── Top section: duration bars ──────────────────────────── -->
 
@@ -173,7 +193,7 @@
     >
 
     <!-- Top axis label -->
-    <g transform="translate(-20, {yScaleTop.range()[1]})">
+    <g transform="translate(-30, {yScaleTop.range()[1]})">
       <text y={-10} class="small accent" style="transform: rotate(-90deg);">Duration</text>
       <g transform="rotate(180)">
         <ArrowDown />
@@ -183,30 +203,52 @@
     <!-- Top bars: total duration (bg) and laugh duration (fg) -->
     {#each allEpisodes as ep}
       {#if ep.totalDuration > 0}
+        {@const totalH = Math.max(MIN_BAR_H, yScaleTop(ep.totalDuration))}
+        {@const laughH =
+          ep.laughDuration > 0 ? Math.max(MIN_BAR_H, yScaleTop(ep.laughDuration)) : 0}
+        {@const hitH = Math.max(HIT_TARGET_H, totalH)}
         <g
           role="presentation"
           opacity={hoveredEpisodeKey !== null && hoveredEpisodeKey !== ep.key ? 0.2 : 1}
-          onmouseenter={() => { onEpisodeHover(ep.key); onSceneHover(getFirstScene(ep.season, ep.episode)); }}
-          onmouseleave={() => { onEpisodeHover(null); onSceneHover(null); }}
+          onmouseenter={() => {
+            onEpisodeHover(ep.key);
+            onSceneHover(getFirstScene(ep.season, ep.episode));
+          }}
+          onmouseleave={() => {
+            onEpisodeHover(null);
+            onSceneHover(null);
+          }}
+          onclick={(e) => {
+            e.stopPropagation();
+            const s = getFirstScene(ep.season, ep.episode);
+            if (s) onSceneClick(s);
+          }}
           style="cursor: pointer"
         >
           <rect
             x={xScale(ep.key)}
-            y={sectionHeight - gap - yScaleTop(ep.totalDuration)}
+            y={sectionHeight - gap - totalH}
             width={xScale.bandwidth()}
-            height={yScaleTop(ep.totalDuration)}
+            height={totalH}
             fill={BAR_COLOR}
             opacity="0.3"
           />
-          {#if ep.laughDuration > 0}
+          {#if laughH > 0}
             <rect
               x={xScale(ep.key)}
-              y={sectionHeight - gap - yScaleTop(ep.laughDuration)}
+              y={sectionHeight - gap - laughH}
               width={xScale.bandwidth()}
-              height={yScaleTop(ep.laughDuration)}
+              height={laughH}
               fill={BAR_COLOR}
             />
           {/if}
+          <rect
+            x={xScale(ep.key)}
+            y={sectionHeight - gap - hitH}
+            width={xScale.bandwidth()}
+            height={hitH}
+            fill="transparent"
+          />
         </g>
       {/if}
     {/each}
@@ -286,7 +328,7 @@
     {/each}
 
     <!-- Bottom axis label -->
-    <g transform="translate(-20, {yScaleTop.range()[1] + 22})">
+    <g transform="translate(-30, {yScaleTop.range()[1] + 22})">
       <text y={-10} class="small accent" style="transform: rotate(-90deg);" text-anchor="end"
         >Laugh rate</text
       >
@@ -299,18 +341,40 @@
     <g transform="translate(0, {sectionHeight + midBand + gap})">
       {#each allEpisodes as ep}
         {#if ep.laughRate > 0}
-          <rect
-            x={xScale(ep.key)}
-            y={0}
-            width={xScale.bandwidth()}
-            height={yScaleBottom(ep.laughRate)}
-            fill={BAR_COLOR}
-            opacity={hoveredEpisodeKey !== null && hoveredEpisodeKey !== ep.key ? 0.2 : 1}
+          {@const rateH = Math.max(MIN_BAR_H, yScaleBottom(ep.laughRate))}
+          {@const hitH = Math.max(HIT_TARGET_H, rateH)}
+          <g
             role="presentation"
-            onmouseenter={() => { onEpisodeHover(ep.key); onSceneHover(getFirstScene(ep.season, ep.episode)); }}
-            onmouseleave={() => { onEpisodeHover(null); onSceneHover(null); }}
+            opacity={hoveredEpisodeKey !== null && hoveredEpisodeKey !== ep.key ? 0.2 : 1}
+            onmouseenter={() => {
+              onEpisodeHover(ep.key);
+              onSceneHover(getFirstScene(ep.season, ep.episode));
+            }}
+            onmouseleave={() => {
+              onEpisodeHover(null);
+              onSceneHover(null);
+            }}
+            onclick={() => {
+              const s = getFirstScene(ep.season, ep.episode);
+              if (s) onSceneClick(s);
+            }}
             style="cursor: pointer"
-          />
+          >
+            <rect
+              x={xScale(ep.key)}
+              y={0}
+              width={xScale.bandwidth()}
+              height={rateH}
+              fill={BAR_COLOR}
+            />
+            <rect
+              x={xScale(ep.key)}
+              y={0}
+              width={xScale.bandwidth()}
+              height={hitH}
+              fill="transparent"
+            />
+          </g>
         {/if}
       {/each}
     </g>

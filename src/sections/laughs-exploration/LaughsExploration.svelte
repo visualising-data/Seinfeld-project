@@ -3,6 +3,7 @@
   import CombinationEpisodeBars from './CombinationEpisodeBars.svelte';
   import ScenesBeeswarm from './ScenesBeeswarm.svelte';
   import SceneTooltip from './SceneTooltip.svelte';
+  import CloseIcon from '../../icons/CloseIcon.svelte';
   import type { HoveredScene } from './ScenesBeeswarm.svelte';
   import { getCombinationScenes, type EpisodeResult } from '../../utils/getCombinationScenes';
   import { characters } from '$lib/data/characters';
@@ -10,8 +11,8 @@
 
   let { episodesData } = $props();
 
-  let activeMainChars = $state<string[]>(['JERRY']);
-  let activeSuppChars = $state<string[]>(["Jerry's family"]);
+  let activeMainChars = $state<string[]>(['JERRY', 'GEORGE', 'ELAINE', 'KRAMER']);
+  let activeSuppChars = $state<string[]>([]);
   let activeLocation = $state<string | null>("Jerry's home");
 
   let vizWidth = $state(600);
@@ -22,6 +23,14 @@
   let isLoading = $state(true);
   let hoveredEpisodeKey = $state<string | null>(null);
   let hoveredScene = $state<HoveredScene | null>(null);
+  let pinnedScene = $state<HoveredScene | null>(null);
+
+  const displayedScene = $derived(pinnedScene ?? hoveredScene);
+  const pinnedEpisodeKey = $derived(
+    pinnedScene ? `${pinnedScene.season}-${pinnedScene.episode}` : null,
+  );
+  // Hover takes priority so hovering while pinned still highlights the hovered item
+  const activeEpisodeKey = $derived(hoveredEpisodeKey ?? pinnedEpisodeKey);
 
   $effect(() => {
     // Read reactive deps so Svelte tracks them
@@ -54,6 +63,15 @@
     activeLocation = activeLocation === id ? null : id;
   }
 
+  function handleSceneClick(scene: HoveredScene) {
+    const key = `${scene.season}-${scene.episode}`;
+    pinnedScene = pinnedEpisodeKey === key ? null : scene;
+  }
+
+  function closePinnedScene() {
+    pinnedScene = null;
+  }
+
   const mainChars = characters.slice(0, 4);
   const suppChars = characters.slice(4, characters.length - 1);
 
@@ -75,7 +93,9 @@
       // Pick a random location or null
       const selectedLocation = locationPool[Math.floor(Math.random() * locationPool.length)];
 
-      if (getCombinationScenes(episodesData, selectedMain, selectedSupp, selectedLocation).length > 0) {
+      if (
+        getCombinationScenes(episodesData, selectedMain, selectedSupp, selectedLocation).length > 0
+      ) {
         activeMainChars = selectedMain;
         activeSuppChars = selectedSupp;
         activeLocation = selectedLocation;
@@ -99,26 +119,35 @@
     <!-- Layout -->
     <div class="flex flex-col md:grid md:grid-cols-12 md:gap-16 flex-1 overflow-hidden">
       <!-- Left column: selectors or scene tooltip -->
-      <div class="md:col-span-4 overflow-y-auto">
-        {#if hoveredScene}
-          <SceneTooltip
-            scene={hoveredScene}
-            {episodesData}
-            {activeMainChars}
-            {activeSuppChars}
-            {activeLocation}
-          />
-        {:else}
-          <LaughsSelectors
-            {activeMainChars}
-            {activeSuppChars}
-            {activeLocation}
-            onMainCharClick={toggleMainChar}
-            onSuppCharClick={toggleSuppChar}
-            onLocationClick={toggleLocation}
-            onPickRandom={pickRandom}
-          />
+      <div class="md:col-span-4 relative">
+        {#if displayedScene && pinnedScene}
+          <button
+            onclick={() => (pinnedScene = null)}
+            class="absolute top-4 -right-8 p-2 z-10 opacity-70 hover:opacity-100 transition-opacity"
+            aria-label="Close"><CloseIcon color="#12020A" /></button
+          >
         {/if}
+        <div class="overflow-y-auto h-full">
+          {#if displayedScene}
+            <SceneTooltip
+              scene={displayedScene}
+              {episodesData}
+              {activeMainChars}
+              {activeSuppChars}
+              {activeLocation}
+            />
+          {:else}
+            <LaughsSelectors
+              {activeMainChars}
+              {activeSuppChars}
+              {activeLocation}
+              onMainCharClick={toggleMainChar}
+              onSuppCharClick={toggleSuppChar}
+              onLocationClick={toggleLocation}
+              onPickRandom={pickRandom}
+            />
+          {/if}
+        </div>
       </div>
 
       <!-- Right column: visualizations -->
@@ -143,9 +172,11 @@
             {combinationScenes}
             width={vizWidth}
             height={viz1Height}
-            {hoveredEpisodeKey}
+            hoveredEpisodeKey={activeEpisodeKey}
             onEpisodeHover={(key) => (hoveredEpisodeKey = key)}
             onSceneHover={(scene) => (hoveredScene = scene)}
+            onSceneClick={handleSceneClick}
+            onClosePin={closePinnedScene}
           />
         </div>
         <div
@@ -157,9 +188,11 @@
             {combinationScenes}
             width={vizWidth}
             height={viz2Height}
-            {hoveredEpisodeKey}
+            hoveredEpisodeKey={activeEpisodeKey}
             onEpisodeHover={(key) => (hoveredEpisodeKey = key)}
             onSceneHover={(scene) => (hoveredScene = scene)}
+            onSceneClick={handleSceneClick}
+            onClosePin={closePinnedScene}
           />
         </div>
       </div>

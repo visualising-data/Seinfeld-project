@@ -23,6 +23,8 @@
     hoveredEpisodeKey = null,
     onEpisodeHover = () => {},
     onSceneHover = () => {},
+    onSceneClick = () => {},
+    onClosePin = () => {},
   }: {
     combinationScenes: EpisodeResult[];
     width: number;
@@ -30,6 +32,8 @@
     hoveredEpisodeKey?: string | null;
     onEpisodeHover?: (key: string | null) => void;
     onSceneHover?: (scene: HoveredScene | null) => void;
+    onSceneClick?: (scene: HoveredScene) => void;
+    onClosePin?: () => void;
   } = $props();
 
   const margin = { top: 16, right: 20, bottom: 40, left: 60 };
@@ -132,7 +136,7 @@
   const legendLineLen = 20;
 </script>
 
-<svg {width} {height}>
+<svg {width} {height} role="presentation" onclick={onClosePin} onkeydown={() => {}} style="cursor: default">
   <g transform="translate({margin.left}, {margin.top})">
     <!-- Axis -->
     {#each ticks as t}
@@ -167,6 +171,7 @@
         role="presentation"
         onmouseenter={() => { onEpisodeHover(epKey); onSceneHover({ season: node.season, episode: node.episode, sceneNumber: node.sceneNumber, duration: node.duration, laughDuration: node.laughDuration, laughRate: node.laughRate }); }}
         onmouseleave={() => { onEpisodeHover(null); onSceneHover(null); }}
+        onclick={(e) => { e.stopPropagation(); onSceneClick({ season: node.season, episode: node.episode, sceneNumber: node.sceneNumber, duration: node.duration, laughDuration: node.laughDuration, laughRate: node.laughRate }); }}
         style="cursor: pointer"
       />
     {/each}

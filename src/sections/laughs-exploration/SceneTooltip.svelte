@@ -2,9 +2,10 @@
   import { scaleBand, scaleLinear } from 'd3-scale';
   import { characters } from '$lib/data/characters';
   import { locations } from '$lib/data/locations';
+  import { episodesInfo } from '$lib/data/episodesInfo';
   import { getCharacterImagePath } from '../../utils/getCharacterImagePath';
+  import { getLocationIconPath } from '../../utils/getLocationIconPath';
   import type { HoveredScene } from './ScenesBeeswarm.svelte';
-
   let {
     scene,
     episodesData,
@@ -19,19 +20,30 @@
     activeLocation: string | null;
   } = $props();
 
-  const LABEL_W = 68;
+  const LABEL_W = 100;
   const LAUGH_OVERFLOW = 8; // px laugh bars extend beyond bandwidth
-  const AXIS_H = 20;
+  const AXIS_H = 24;
 
   let containerWidth = $state(200);
   let barWidth = $derived(containerWidth - LABEL_W);
 
   const allActiveChars = $derived([...activeMainChars, ...activeSuppChars]);
 
-  const charMeta = $derived(
-    allActiveChars
+  const mainCharMeta = $derived(
+    activeMainChars
       .map((id) => characters.find((c) => c.id === id))
       .filter((c): c is (typeof characters)[0] => !!c),
+  );
+
+  const suppCharMeta = $derived(
+    activeSuppChars
+      .map((id) => characters.find((c) => c.id === id))
+      .filter((c): c is (typeof characters)[0] => !!c),
+  );
+
+  const episodeTitle = $derived(
+    episodesInfo.find((e) => e.season === scene.season && e.episode === scene.episode)?.title ??
+      null,
   );
 
   const locationLabel = $derived(
@@ -113,40 +125,76 @@
 </script>
 
 <div class="flex flex-col gap-5 p-4">
-  <!-- Character + location pills -->
-  <div class="flex flex-wrap gap-x-3 gap-y-2 items-center">
-    {#each charMeta as char}
-      {@const img = getCharacterImagePath(char.id)}
-      <span class="flex items-center gap-1">
-        {#if img}
-          <img
-            src={img}
-            alt={char.label}
-            class="w-5 h-5 rounded-full object-cover shrink-0"
-            style="border: 2px solid {char.color}"
-          />
-        {/if}
-        <span class="small">{char.label}</span>
-      </span>
-    {/each}
-    {#if locationLabel}
-      <span class="small accent">@ {locationLabel}</span>
-    {/if}
-  </div>
-
   <!-- Stats -->
   <div class="flex flex-col gap-1">
-    <p class="small accent">
-      S{scene.season.toString().padStart(2, '0')} E{scene.episode.toString().padStart(2, '0')} · Scene
-      {scene.sceneNumber}
-    </p>
-    <p class="small">Duration: <span class="number">{formatDuration(scene.duration)}</span></p>
-    <p class="small">
-      Time causing laughs: <span class="number">{formatDuration(scene.laughDuration)}</span>
-    </p>
-    <p class="small">
-      Laugh rate: <span class="number">{Math.round(scene.laughRate * 100)}%</span>
-    </p>
+    {#if episodeTitle}
+      <h4 class="text-[42px]">{episodeTitle}</h4>
+    {/if}
+
+    <div class="text-[1.125rem]">
+      <div class="font-semibold mt-4 mb-2">
+        S{scene.season.toString().padStart(2, '0')} E{scene.episode.toString().padStart(2, '0')} Scene
+        {scene.sceneNumber}
+      </div>
+      <div class="flex flex-col gap-2">
+        <!-- Character + location selectors -->
+        <div class="flex flex-wrap gap-x-6 gap-y-1 my-4">
+          {#each mainCharMeta as char}
+            <div class="flex flex-col items-center w-[60px]">
+              <div
+                class="selector rounded-full bg-contain bg-center"
+                style="background-image: url('{getCharacterImagePath(
+                  char.id,
+                )}'); width: 60px; height: 60px;"
+              ></div>
+              <div class="text-center pt-1" style="font-size: 0.85rem; line-height: 1.2;">
+                {char.label}
+              </div>
+            </div>
+          {/each}
+          {#if suppCharMeta.length > 0}
+            <div class="text-[1.125rem] mt-14">with</div>
+            {#each suppCharMeta as char}
+              <div class="flex flex-col items-center w-[60px]">
+                <div
+                  class="selector rounded-full bg-contain bg-center"
+                  style="background-image: url('{getCharacterImagePath(
+                    char.id,
+                  )}'); width: 60px; height: 60px;"
+                ></div>
+                <div class="text-center pt-1" style="font-size: 0.85rem; line-height: 1.2;">
+                  {char.label}
+                </div>
+              </div>
+            {/each}
+          {/if}
+          {#if activeLocation && locationLabel}
+            <div class="text-[1.125rem] mt-14">in</div>
+            <div class="flex flex-col items-center w-[60px]">
+              <div
+                class="selector rounded-full bg-contain bg-center"
+                style="background-image: url('{getLocationIconPath(
+                  activeLocation,
+                )}'); width: 60px; height: 60px;"
+              ></div>
+              <div class="text-center pt-1" style="font-size: 0.85rem; line-height: 1.2;">
+                {locationLabel}
+              </div>
+            </div>
+          {/if}
+        </div>
+
+        <div>Duration: <span class="font-semibold">{formatDuration(scene.duration)}</span></div>
+        <div>
+          Time causing laughs: <span class="font-semibold"
+            >{formatDuration(scene.laughDuration)}</span
+          >
+        </div>
+        <div>
+          Laugh rate: <span class="font-semibold">{Math.round(scene.laughRate * 100)}%</span>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Mini scene viz -->
@@ -157,14 +205,31 @@
         {@const char = characters.find((c) => c.id === charId)}
         {@const cy = (yScale(charId) ?? 0) + yScale.bandwidth() / 2}
         <text
-          x={LABEL_W - 4}
+          x={LABEL_W - 8}
           y={cy}
-          font-size="10"
-          fill="#DDDBDC"
+          font-size="14"
+          fill="#12020A"
           text-anchor="end"
           dominant-baseline="middle">{char?.label ?? charId}</text
         >
       {/each}
+
+      <!-- Time axis -->
+      <g transform="translate({LABEL_W}, {vizHeight})">
+        <line x1={0} y1={0} x2={barWidth} y2={0} stroke="#DDDBDC" />
+        {#each axisTicks as tick}
+          {@const x = xScale(tick)}
+          <line x1={x} y1={-vizHeight} x2={x} y2={4} stroke="#DDDBDC" />
+          <text
+            class="number text-[0.825rem]"
+            {x}
+            y={7}
+            fill="#12020A"
+            text-anchor="middle"
+            dominant-baseline="hanging">{formatDuration(tick)}</text
+          >
+        {/each}
+      </g>
 
       <g transform="translate({LABEL_W}, 0)">
         <!-- Background rails -->
@@ -211,23 +276,6 @@
               />
             {/each}
           </g>
-        {/each}
-      </g>
-
-      <!-- Time axis -->
-      <g transform="translate({LABEL_W}, {vizHeight})">
-        <line x1={0} y1={0} x2={barWidth} y2={0} stroke="#DDDBDC" stroke-opacity="0.3" />
-        {#each axisTicks as tick}
-          {@const x = xScale(tick)}
-          <line x1={x} y1={0} x2={x} y2={4} stroke="#DDDBDC" stroke-opacity="0.5" />
-          <text
-            {x}
-            y={7}
-            font-size="9"
-            fill="#DDDBDC"
-            text-anchor="middle"
-            dominant-baseline="hanging">{formatDuration(tick)}</text
-          >
         {/each}
       </g>
     </svg>
