@@ -216,7 +216,7 @@
   />
 {/if}
 
-<section id="catalog-section" style="background: #F9F5F7;">
+<section id="catalog-section" style="min-height: 100vh; background: #F9F5F7;">
   <div id="catalog-inner">
     <div id="catalog" class="relative flex w-screen">
       <div class="flex flex-col h-full">

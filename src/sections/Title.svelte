@@ -218,7 +218,7 @@
             />
           </span>
         </span>
-        <span style="margin-left: -10px;"> / </span>
+        <span>/</span>
         <span class="name">
           <span class="highlight">Duncan Geere</span>
           <span class="portrait-ring" id="ring-dg">

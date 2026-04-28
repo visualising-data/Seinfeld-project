@@ -58,44 +58,12 @@
     // Keep episode-example below the catalog backdrop (z-10) so catalog is always clickable.
     gsap.set('#episode-example', { zIndex: 5 });
 
-    // Pin Episode viz — extended by one extra viewport so catalog naturally
-    // arrives at the top of the screen exactly when the pin ends.
-    ScrollTrigger.create({
-      trigger: '#episode-example-container',
-      start: 'top top',
-      end: 'bottom top',
-      pin: '#episode-example',
-      preventOverlaps: true,
-    });
-
-    // ScrollTrigger-based step callbacks (replaces svelte-inview for reliability).
-    [1, 2, 3, 4, 5, 6, 7, 8].forEach((step) => {
-      const el = document.getElementById(`episode-example-text-${step}`);
-      if (!el) return;
-      ScrollTrigger.create({
-        trigger: el,
-        start: 'top center',
-        onEnter: () => episodeStepChange(step),
-        onLeaveBack: () => episodeStepLeave(step),
-      });
-    });
-
-    // Scrub fade-out during the crossfade zone (the extra 100vh after all text is done).
-    gsap.to('#episode-example', {
-      opacity: 0,
-      ease: 'none',
-      scrollTrigger: {
-        trigger: '#episode-example-container',
-        start: 'bottom bottom',
-        end: 'bottom top',
-        scrub: true,
-        onEnter: () => gsap.set('#episode-example', { pointerEvents: 'none' }),
-        onLeave: () => gsap.set('#episode-example', { pointerEvents: 'none' }),
-        onEnterBack: () => gsap.set('#episode-example', { pointerEvents: 'none' }),
-        onLeaveBack: () => gsap.set('#episode-example', { pointerEvents: 'auto' }),
-      },
-    });
-
+    // Establish initial hidden state BEFORE creating ScrollTriggers.
+    // If the component mounts while the user is already scrolled into or past this
+    // section (e.g. browser scroll restoration, direct navigation, or fast scrolling),
+    // GSAP fires onEnter callbacks immediately during ScrollTrigger.create. Setting the
+    // hidden state first ensures reveals animate FROM the correct starting position
+    // rather than being snapped back to hidden after the reveal has already started.
     gsap.set('#episode-detail-container', {
       translateY: 260,
       opacity: 0,
@@ -126,6 +94,34 @@
     gsap.set('#duration-example .label, .score-wrapper', {
       translateY: -30,
       opacity: 0,
+    });
+
+    // ScrollTrigger-based step callbacks (replaces svelte-inview for reliability).
+    [1, 2, 3, 4, 5, 6, 7, 8].forEach((step) => {
+      const el = document.getElementById(`episode-example-text-${step}`);
+      if (!el) return;
+      ScrollTrigger.create({
+        trigger: el,
+        start: 'top center',
+        onEnter: () => episodeStepChange(step),
+        onLeaveBack: () => episodeStepLeave(step),
+      });
+    });
+
+    // Scrub fade-out during the crossfade zone (the extra 100vh after all text is done).
+    gsap.to('#episode-example', {
+      opacity: 0,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: '#episode-example-container',
+        start: 'bottom bottom',
+        end: 'bottom top',
+        scrub: true,
+        onEnter: () => gsap.set('#episode-example', { pointerEvents: 'none' }),
+        onLeave: () => gsap.set('#episode-example', { pointerEvents: 'none' }),
+        onEnterBack: () => gsap.set('#episode-example', { pointerEvents: 'none' }),
+        onLeaveBack: () => gsap.set('#episode-example', { pointerEvents: 'auto' }),
+      },
     });
   });
 
@@ -450,7 +446,7 @@
 <svelte:window bind:innerWidth bind:innerHeight />
 
 <div id="episode-example-container" class="relative pointer-events-none">
-  <div id="episode-example" class="absolute w-full" style="z-index: 5;">
+  <div id="episode-example" class="sticky top-0 w-full" style="z-index: 5;">
     <div class="relative flex flex-col overflow-hidden" style="height: {innerHeight}px;">
       <!-- Episode details -->
       <div class="mask self-start">
@@ -537,8 +533,9 @@
     </div>
   </div>
 
-  <!-- Scrolling Texts -->
-  <div class="relative" style="pointer-events: none; z-index: 30;">
+  <!-- Scrolling Texts — negative margin-top pulls them up to overlay #episode-example,
+       since sticky keeps it in the normal flow (unlike the old absolute positioning). -->
+  <div class="relative" style="pointer-events: none; z-index: 30; margin-top: -{innerHeight}px;">
     <EpisodeTexts />
   </div>
 </div>

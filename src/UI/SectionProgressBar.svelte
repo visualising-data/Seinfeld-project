@@ -58,6 +58,14 @@
         break;
       }
     }
+    // title-screen has a dark background but no bg-black class
+    if (!anyDark) {
+      const titleScreen = document.getElementById('title-screen');
+      if (titleScreen) {
+        const rect = titleScreen.getBoundingClientRect();
+        if (rect.top <= mid && rect.bottom >= mid) anyDark = true;
+      }
+    }
     isDarkBg = anyDark;
   }
 
