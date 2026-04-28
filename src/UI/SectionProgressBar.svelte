@@ -17,7 +17,7 @@
 
   let activeAnchor = $state('intro');
   let isDarkBg = $state(true); // start on Prologue (dark)
-  let innerWidth = $state(1200);
+  let innerWidth = $state(0);
 
   // Colour tokens derived from whether any .bg-black element is currently
   // in the viewport — covers Prologue + the pinned SectionTitle headers in

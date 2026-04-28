@@ -254,6 +254,8 @@
   /** @type {HTMLAudioElement[]} */
   let audioPool = [];
   let poolIndex = 0;
+  /** @type {() => void} */
+  let unsubSoundAuth = () => {};
 
   const playSound = () => {
     if (!$soundIsAuth || !$catalogIsInView || audioPool.length === 0) return;
@@ -378,6 +380,21 @@
     };
     preload();
 
+    // iOS audio unlock: HTMLAudioElement must be played once during a user gesture
+    // before it can be played from GSAP callbacks. soundIsAuth.subscribe() fires
+    // synchronously when the store changes, so this runs within the "Allow sound"
+    // onclick handler — still inside the user gesture callstack.
+    unsubSoundAuth = soundIsAuth.subscribe((isAuth) => {
+      if (isAuth && audioPool.length > 0) {
+        audioPool.forEach((audio) => {
+          audio.play().then(() => {
+            audio.pause();
+            audio.currentTime = 0;
+          }).catch(() => {});
+        });
+      }
+    });
+
     // Run simulation
     initializeSimulation();
     let simulationInitialized = false;
@@ -497,6 +514,7 @@
   onDestroy(() => {
     ctx?.revert();
     $catalogIsInView = false;
+    unsubSoundAuth();
   });
 </script>
 

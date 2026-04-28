@@ -1,5 +1,6 @@
 <script>
 	import { fly } from 'svelte/transition';
+	import * as Tone from 'tone';
 	import SoundIcon from '../icons/SoundIcon.svelte';
 	import { soundIsAuth, soundAuthModaleIsOpen } from '../stores/soundAuthStore';
 
@@ -9,6 +10,10 @@
 	let innerWidth = $state(1600);
 
 	const updateSoundAuth = (/** @type {boolean} */ isAuth) => {
+		if (isAuth) {
+			// Unlock the Web Audio API AudioContext for iOS — must happen within a user gesture
+			Tone.start();
+		}
 		$soundIsAuth = isAuth;
 		$soundAuthModaleIsOpen = false;
 	};
