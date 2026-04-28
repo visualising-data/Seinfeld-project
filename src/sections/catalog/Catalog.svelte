@@ -4,6 +4,7 @@
   import { sharedScrollLeft } from '../../stores/scrollStore';
 
   import { episodesInfo } from '$lib/data/episodesInfo';
+  import { getIllustrationForEpisode } from '$lib/data/illustrations';
   import { formatTime } from '../../utils/formatTime';
   import { scaleLinear } from 'd3-scale';
   import { getRandomEpisode } from '../../utils/getRandom';
@@ -193,9 +194,27 @@
   const handleClickOnScene = (/** @type {number} */ scene) => {
     externallyClickedScene = scene;
   };
+
+  const catalogIllustration = $derived.by(() => {
+    if (currentSeason == null || currentEpisode == null) return null;
+    const url = getIllustrationForEpisode(currentSeason, currentEpisode);
+    if (!url) return null;
+    // Deterministic angle per episode so it's consistent but varied
+    const rotation = ((currentSeason * 7 + currentEpisode * 13) % 30) - 15;
+    return { url, rotation };
+  });
 </script>
 
 <svelte:window bind:innerWidth bind:innerHeight />
+
+{#if catalogIllustration}
+  <img
+    class="catalog-illustration hidden lg:block"
+    src={catalogIllustration.url}
+    alt=""
+    style="--rotation: {catalogIllustration.rotation}deg;"
+  />
+{/if}
 
 <section id="catalog-section" style="background: #F9F5F7;">
   <div id="catalog-inner">
@@ -252,5 +271,26 @@
     flex: 1;
     overflow-y: auto;
     min-height: 0;
+  }
+
+  .catalog-illustration {
+    position: fixed;
+    top: 150px;
+    right: 0;
+    z-index: 1001;
+    max-width: 320px;
+    height: auto;
+    pointer-events: none;
+    transform: rotate(var(--rotation));
+    animation: catalog-float 3s ease-in-out infinite;
+  }
+  @keyframes catalog-float {
+    0%,
+    100% {
+      translate: 0 0;
+    }
+    50% {
+      translate: 0 -16px;
+    }
   }
 </style>
