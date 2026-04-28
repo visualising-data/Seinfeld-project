@@ -133,7 +133,7 @@
           </div>
         </div>
         <!-- Texts 2-3: absolutely positioned so scrollHeight reflects real content height -->
-        <div id="video-text-2" class="absolute inset-x-0 top-0 py-12">
+        <div id="video-text-2" class="absolute inset-x-0 top-0 py-12 container">
           <div class="flex flex-col lg:flex-row lg:justify-between gap-4 lg:gap-8">
             <div style="max-width: 820px;">
               Here we see the four lead characters: <span class="color color-jerry">Jerry</span>
@@ -198,7 +198,7 @@
             </div>
           </div>
         </div>
-        <div id="video-text-3" class="absolute inset-x-0 top-0 py-12">
+        <div id="video-text-3" class="absolute inset-x-0 top-0 py-12 container">
           <div class="md:w-[620px]">
             We'll learn a lot more about all the characters and locations later.
           </div>
