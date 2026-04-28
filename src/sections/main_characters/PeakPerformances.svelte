@@ -117,7 +117,7 @@
                 onclick={() => handleCharacterClick(char.id)}
               >
                 <div
-                  class="character rounded-full bg-contain bg-center opacity-50"
+                  class="character rounded-full bg-contain bg-center opacity-20"
                   style="background-image: url('{getCharacterImagePath(
                     char.id,
                   )}'); width: {charImageSize}px; height: {charImageSize}px;"

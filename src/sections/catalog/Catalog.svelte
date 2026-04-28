@@ -3,6 +3,8 @@
   import { gsap } from 'gsap/dist/gsap';
   import { sharedScrollLeft } from '../../stores/scrollStore';
 
+  import { fly } from 'svelte/transition';
+
   import { episodesInfo } from '$lib/data/episodesInfo';
   import { getIllustrationForEpisode } from '$lib/data/illustrations';
   import { formatTime } from '../../utils/formatTime';
@@ -109,7 +111,8 @@
         start: 'bottom bottom',
         end: 'bottom top',
         scrub: true,
-        onEnter: () =>
+        onEnter: () => {
+          showIllustration = true;
           gsap.set('#catalog-section', {
             position: 'fixed',
             top: 0,
@@ -117,7 +120,8 @@
             width: '100%',
             zIndex: 10,
             pointerEvents: 'auto',
-          }),
+          });
+        },
         // onLeave intentionally omitted: stay-zone trigger handles the release
         onEnterBack: () =>
           gsap.set('#catalog-section', {
@@ -128,10 +132,12 @@
             zIndex: 10,
             pointerEvents: 'auto',
           }),
-        onLeaveBack: () =>
+        onLeaveBack: () => {
+          showIllustration = false;
           gsap.set('#catalog-section', {
             clearProps: 'position,top,left,width,zIndex,pointerEvents',
-          }),
+          });
+        },
       },
     });
 
@@ -146,12 +152,14 @@
         gsap.set('#episode-example', { pointerEvents: 'none' });
       },
       onLeave: () => {
+        showIllustration = false;
         gsap.set('#catalog-section', {
           clearProps: 'position,top,left,width,zIndex,pointerEvents',
         });
         gsap.set('#catalog-section', { position: 'relative', zIndex: 1000 });
       },
-      onEnterBack: () =>
+      onEnterBack: () => {
+        showIllustration = true;
         gsap.set('#catalog-section', {
           position: 'fixed',
           top: 0,
@@ -159,7 +167,8 @@
           width: '100%',
           zIndex: 10,
           pointerEvents: 'auto',
-        }),
+        });
+      },
       onLeaveBack: () => {
         gsap.set('#catalog-section', { pointerEvents: 'none' });
         gsap.set('#episode-example', { pointerEvents: 'auto' });
@@ -190,6 +199,8 @@
     }
   });
 
+  let showIllustration = $state(false);
+
   let externallyClickedScene = $state();
   const handleClickOnScene = (/** @type {number} */ scene) => {
     externallyClickedScene = scene;
@@ -207,12 +218,13 @@
 
 <svelte:window bind:innerWidth bind:innerHeight />
 
-{#if catalogIllustration}
+{#if showIllustration && catalogIllustration}
   <img
     class="catalog-illustration hidden lg:block"
     src={catalogIllustration.url}
     alt=""
     style="--rotation: {catalogIllustration.rotation}deg;"
+    in:fly={{ y: 50, duration: 300, opacity: 1 }}
   />
 {/if}
 

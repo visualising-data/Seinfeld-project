@@ -312,7 +312,7 @@
                 width={node.width}
                 height={node.height}
                 fill={getSeasonColor(node.season)}
-                opacity={hoveredLocation === null || hoveredLocation === node.locationId ? 1 : 0.3}
+                opacity={hoveredLocation === null || hoveredLocation === node.locationId ? 1 : 0.2}
                 class="transition-opacity duration-300"
                 role="presentation"
                 onmouseenter={() => (hoveredLocation = node.locationId)}
@@ -347,7 +347,7 @@
                 opacity={icon.isVisibleByDefault
                   ? hoveredLocation === null || hoveredLocation === icon.id
                     ? 1
-                    : 0.3
+                    : 0.2
                   : hoveredLocation === icon.id
                     ? 1
                     : 0}
@@ -373,7 +373,7 @@
                 opacity={icon.isVisibleByDefault
                   ? hoveredLocation === null || hoveredLocation === icon.id
                     ? 1
-                    : 0.3
+                    : 0.2
                   : hoveredLocation === icon.id
                     ? 1
                     : 0}

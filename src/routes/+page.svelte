@@ -215,11 +215,10 @@
         {#if LocationsSection && LaughsExploration}
           <svelte:component this={LocationsSection} {episodesData} />
           <svelte:component this={LaughsExploration} {episodesData} />
+          <Quotes />
         {/if}
       {/if}
     {/if}
-
-    <Quotes />
     <MethodologyAndCredits />
     <Footer />
   </div>
