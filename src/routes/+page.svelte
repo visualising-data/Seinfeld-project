@@ -105,8 +105,18 @@
     // Force-load all waves immediately when triggered by menu/sidebar navigation
     const unsubLazy = lazyLoadAll.subscribe(async (shouldLoad) => {
       if (!shouldLoad) return;
-      await loadWave1();
-      await Promise.all([loadWave2(), loadWave3()]);
+      await Promise.all([loadWave1(), loadWave2(), loadWave3()]);
+    });
+
+    // If the page loads with a non-zero scroll position (browser scroll restoration
+    // or URL hash), the lazy sentinels are already above the viewport and will never
+    // fire. Load all waves eagerly so sections are present when scrolling up.
+    requestAnimationFrame(() => {
+      if (window.scrollY > 0) {
+        loadWave1();
+        loadWave2();
+        loadWave3();
+      }
     });
 
     // Poll for pending scroll target — works across async child mounts
