@@ -33,17 +33,20 @@
     const ep = combinationScenes.find((e) => e.season === season && e.episode === episode);
     if (!ep || ep.scenes.length === 0) return null;
     const sc = ep.scenes[0];
+    // Use the episode aggregate laugh rate (matches what the bar visually shows)
+    // rather than just the first scene's rate, which is often 0
+    const totalDuration = ep.scenes.reduce((sum, s) => sum + s.duration, 0);
+    const totalLaughs = ep.scenes.reduce((sum, s) => sum + s.laughDuration, 0);
+    const laughRate = totalDuration > 0 ? totalLaughs / totalDuration : 0;
     return {
       season,
       episode,
       sceneNumber: sc.sceneNumber,
       duration: sc.duration,
       laughDuration: sc.laughDuration,
-      laughRate: sc.laughRate,
+      laughRate,
     };
   }
-
-  $inspect(combinationScenes);
 
   const margin = { top: 36, right: 20, bottom: 16, left: 60 };
   const midBand = 12; // height of the season label strip between sections
@@ -155,6 +158,7 @@
   onclick={onClosePin}
   onkeydown={() => {}}
   style="cursor: default"
+  onmouseleave={() => { onEpisodeHover(null); onSceneHover(null); }}
 >
   <g transform="translate({margin.left}, {margin.top})">
     <!-- ── Top section: duration bars ──────────────────────────── -->
@@ -209,14 +213,11 @@
         {@const hitH = Math.max(HIT_TARGET_H, totalH)}
         <g
           role="presentation"
-          opacity={hoveredEpisodeKey !== null && hoveredEpisodeKey !== ep.key ? 0.2 : 1}
+          opacity={hoveredEpisodeKey !== null && hoveredEpisodeKey !== ep.key && !hoveredEpisodeKey.startsWith(ep.key + '-') ? 0.2 : 1}
           onmouseenter={() => {
-            onEpisodeHover(ep.key);
-            onSceneHover(getFirstScene(ep.season, ep.episode));
-          }}
-          onmouseleave={() => {
-            onEpisodeHover(null);
-            onSceneHover(null);
+            const s = getFirstScene(ep.season, ep.episode);
+            onEpisodeHover(s ? `${s.season}-${s.episode}-${s.sceneNumber}` : ep.key);
+            onSceneHover(s);
           }}
           onclick={(e) => {
             e.stopPropagation();
@@ -345,16 +346,14 @@
           {@const hitH = Math.max(HIT_TARGET_H, rateH)}
           <g
             role="presentation"
-            opacity={hoveredEpisodeKey !== null && hoveredEpisodeKey !== ep.key ? 0.2 : 1}
+            opacity={hoveredEpisodeKey !== null && hoveredEpisodeKey !== ep.key && !hoveredEpisodeKey.startsWith(ep.key + '-') ? 0.2 : 1}
             onmouseenter={() => {
-              onEpisodeHover(ep.key);
-              onSceneHover(getFirstScene(ep.season, ep.episode));
+              const s = getFirstScene(ep.season, ep.episode);
+              onEpisodeHover(s ? `${s.season}-${s.episode}-${s.sceneNumber}` : ep.key);
+              onSceneHover(s);
             }}
-            onmouseleave={() => {
-              onEpisodeHover(null);
-              onSceneHover(null);
-            }}
-            onclick={() => {
+            onclick={(e) => {
+              e.stopPropagation();
               const s = getFirstScene(ep.season, ep.episode);
               if (s) onSceneClick(s);
             }}

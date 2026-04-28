@@ -136,7 +136,7 @@
   const legendLineLen = 20;
 </script>
 
-<svg {width} {height} role="presentation" onclick={onClosePin} onkeydown={() => {}} style="cursor: default">
+<svg {width} {height} role="presentation" onclick={onClosePin} onkeydown={() => {}} style="cursor: default" onmouseleave={() => { onEpisodeHover(null); onSceneHover(null); }}>
   <g transform="translate({margin.left}, {margin.top})">
     <!-- Axis -->
     {#each ticks as t}
@@ -161,7 +161,7 @@
 
     <!-- Circles -->
     {#each nodes as node (node.id)}
-      {@const epKey = `${node.season}-${node.episode}`}
+      {@const epKey = `${node.season}-${node.episode}-${node.sceneNumber}`}
       <circle
         cx={node.cx}
         cy={node.cy}
@@ -170,7 +170,6 @@
         opacity={hoveredEpisodeKey !== null && hoveredEpisodeKey !== epKey ? 0.2 : 1}
         role="presentation"
         onmouseenter={() => { onEpisodeHover(epKey); onSceneHover({ season: node.season, episode: node.episode, sceneNumber: node.sceneNumber, duration: node.duration, laughDuration: node.laughDuration, laughRate: node.laughRate }); }}
-        onmouseleave={() => { onEpisodeHover(null); onSceneHover(null); }}
         onclick={(e) => { e.stopPropagation(); onSceneClick({ season: node.season, episode: node.episode, sceneNumber: node.sceneNumber, duration: node.duration, laughDuration: node.laughDuration, laughRate: node.laughRate }); }}
         style="cursor: pointer"
       />

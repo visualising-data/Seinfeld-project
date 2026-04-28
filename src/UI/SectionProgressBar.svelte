@@ -44,14 +44,16 @@
     }
     if (closest) activeAnchor = closest;
 
-    // Check whether any .bg-black element is currently visible in the viewport.
-    // This covers the Prologue section and the pinned SectionTitle headers that
-    // appear at the start of Lead Characters, Supporting Characters, and Locations.
+    // Check whether a .bg-black element covers the vertical midpoint of the viewport
+    // (where the progress bar is anchored via top: 50%). This prevents sections that
+    // are only partially visible at the viewport edges (e.g. Quotes above, Footer below)
+    // from incorrectly switching the dots to their light/invisible colours.
+    const mid = window.innerHeight / 2;
     const bgBlackEls = document.querySelectorAll<HTMLElement>('.bg-black');
     let anyDark = false;
     for (const el of bgBlackEls) {
       const rect = el.getBoundingClientRect();
-      if (rect.bottom > 0 && rect.top < window.innerHeight) {
+      if (rect.top <= mid && rect.bottom >= mid) {
         anyDark = true;
         break;
       }
