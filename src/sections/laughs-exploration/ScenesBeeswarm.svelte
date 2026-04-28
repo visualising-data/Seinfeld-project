@@ -21,6 +21,7 @@
     width = 600,
     height = 160,
     hoveredEpisodeKey = null,
+    layout = 'horizontal' as 'horizontal' | 'vertical',
     onEpisodeHover = () => {},
     onSceneHover = () => {},
     onSceneClick = () => {},
@@ -30,6 +31,7 @@
     width: number;
     height: number;
     hoveredEpisodeKey?: string | null;
+    layout?: 'horizontal' | 'vertical';
     onEpisodeHover?: (key: string | null) => void;
     onSceneHover?: (scene: HoveredScene | null) => void;
     onSceneClick?: (scene: HoveredScene) => void;
@@ -37,8 +39,10 @@
   } = $props();
 
   const margin = { top: 16, right: 20, bottom: 40, left: 60 };
-  let innerWidth = $derived(width - margin.left - margin.right);
-  let innerHeight = $derived(height - margin.top - margin.bottom);
+  const marginV = { top: 16, right: 16, bottom: 16, left: 40 };
+  let activeMargin = $derived(layout === 'vertical' ? marginV : margin);
+  let innerWidth = $derived(width - activeMargin.left - activeMargin.right);
+  let innerHeight = $derived(height - activeMargin.top - activeMargin.bottom);
 
   type SceneNode = {
     id: string;
@@ -79,6 +83,7 @@
   let rScale = $derived(scaleSqrt().domain([0, maxDuration]).range([2, 18]));
 
   let xScale = $derived(scaleLinear().domain([0, 1]).range([0, innerWidth]));
+  let yScaleV = $derived(scaleLinear().domain([0, 1]).range([0, innerHeight]));
 
   let seasonColorMap = $derived(
     new Map(seasons.map((s) => [s.seasonNum, s.accessibleOverDarkColor])),
@@ -93,18 +98,30 @@
       return;
     }
 
+    const isVertical = layout === 'vertical';
+
     const simNodes = flatScenes.map((d) => ({
       ...d,
       r: rScale(d.duration),
-      x: xScale(d.laughRate),
-      y: innerHeight / 2,
+      x: isVertical ? innerWidth / 2 : xScale(d.laughRate),
+      y: isVertical ? yScaleV(d.laughRate) : innerHeight / 2,
     }));
 
     type SimNode = (typeof simNodes)[0];
 
     const sim = forceSimulation(simNodes)
-      .force('x', forceX<SimNode>((d) => xScale(d.laughRate)).strength(1))
-      .force('y', forceY<SimNode>(innerHeight / 2).strength(0.1))
+      .force(
+        'x',
+        isVertical
+          ? forceX<SimNode>(innerWidth / 2).strength(0.1)
+          : forceX<SimNode>((d) => xScale(d.laughRate)).strength(1),
+      )
+      .force(
+        'y',
+        isVertical
+          ? forceY<SimNode>((d) => yScaleV(d.laughRate)).strength(1)
+          : forceY<SimNode>(innerHeight / 2).strength(0.1),
+      )
       .force(
         'collide',
         forceCollide<SimNode>((d) => d.r + 1)
@@ -136,28 +153,60 @@
   const legendLineLen = 20;
 </script>
 
-<svg {width} {height} role="presentation" onclick={onClosePin} onkeydown={() => {}} style="cursor: default" onmouseleave={() => { onEpisodeHover(null); onSceneHover(null); }}>
-  <g transform="translate({margin.left}, {margin.top})">
-    <!-- Axis -->
-    {#each ticks as t}
-      <line x1={xScale(t)} y1={0} x2={xScale(t)} y2={innerHeight} stroke="#DDDBDC" />
+<svg
+  {width}
+  {height}
+  role="presentation"
+  onclick={onClosePin}
+  onkeydown={() => {}}
+  style="cursor: default"
+  onmouseleave={() => {
+    onEpisodeHover(null);
+    onSceneHover(null);
+  }}
+>
+  <g transform="translate({activeMargin.left}, {activeMargin.top})">
+    {#if layout === 'vertical'}
+      <!-- Horizontal grid lines + left-side labels -->
+      {#each ticks as t}
+        <line x1={0} y1={yScaleV(t)} x2={innerWidth} y2={yScaleV(t)} stroke="#DDDBDC" />
+        <text
+          class="number"
+          x={-4}
+          y={yScaleV(t)}
+          text-anchor="end"
+          dominant-baseline="middle"
+          fill="#12020A"
+          font-size="10">{Math.round(t * 100)}%</text
+        >
+      {/each}
+      <!-- Left axis label (rotated) -->
       <text
-        class="number"
-        x={xScale(t)}
-        y={innerHeight + 16}
-        text-anchor="middle"
-        fill="#12020A"
-        font-size="10">{Math.round(t * 100)}%</text
+        transform="translate({-activeMargin.left + 12}, {28}) rotate(-90)"
+        class="small accent"
+        text-anchor="middle">Laugh rate</text
       >
-    {/each}
-
-    <!-- Bottom axis label -->
-    <g transform="translate(0, {innerHeight + 44})">
-      <text y={-10} class="small accent">Laugh rate</text>
-      <g transform="translate(78, -11) rotate(-90)">
-        <ArrowDown />
+    {:else}
+      <!-- Vertical grid lines + bottom labels -->
+      {#each ticks as t}
+        <line x1={xScale(t)} y1={0} x2={xScale(t)} y2={innerHeight} stroke="#DDDBDC" />
+        <text
+          class="number"
+          x={xScale(t)}
+          y={innerHeight + 16}
+          text-anchor="middle"
+          fill="#12020A"
+          font-size="10">{Math.round(t * 100)}%</text
+        >
+      {/each}
+      <!-- Bottom axis label -->
+      <g transform="translate(0, {innerHeight + 44})">
+        <text y={-10} class="small accent">Laugh rate</text>
+        <g transform="translate(78, -11) rotate(-90)">
+          <ArrowDown />
+        </g>
       </g>
-    </g>
+    {/if}
 
     <!-- Circles -->
     {#each nodes as node (node.id)}
@@ -169,8 +218,28 @@
         fill={seasonColorMap.get(node.season) ?? '#928D90'}
         opacity={hoveredEpisodeKey !== null && hoveredEpisodeKey !== epKey ? 0.2 : 1}
         role="presentation"
-        onmouseenter={() => { onEpisodeHover(epKey); onSceneHover({ season: node.season, episode: node.episode, sceneNumber: node.sceneNumber, duration: node.duration, laughDuration: node.laughDuration, laughRate: node.laughRate }); }}
-        onclick={(e) => { e.stopPropagation(); onSceneClick({ season: node.season, episode: node.episode, sceneNumber: node.sceneNumber, duration: node.duration, laughDuration: node.laughDuration, laughRate: node.laughRate }); }}
+        onmouseenter={() => {
+          onEpisodeHover(epKey);
+          onSceneHover({
+            season: node.season,
+            episode: node.episode,
+            sceneNumber: node.sceneNumber,
+            duration: node.duration,
+            laughDuration: node.laughDuration,
+            laughRate: node.laughRate,
+          });
+        }}
+        onclick={(e) => {
+          e.stopPropagation();
+          onSceneClick({
+            season: node.season,
+            episode: node.episode,
+            sceneNumber: node.sceneNumber,
+            duration: node.duration,
+            laughDuration: node.laughDuration,
+            laughRate: node.laughRate,
+          });
+        }}
         style="cursor: pointer"
       />
     {/each}

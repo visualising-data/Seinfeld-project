@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { fly, fade } from 'svelte/transition';
   import * as Tone from 'tone';
   import LaughsSelectors from './LaughsSelectors.svelte';
   import CombinationEpisodeBars from './CombinationEpisodeBars.svelte';
@@ -26,6 +27,11 @@
   let vizWidth = $state(600);
   let viz1Height = $state(200);
   let viz2Height = $state(200);
+
+  let activeChartTab = $state<'bars' | 'beeswarm'>('bars');
+  let isMobile = $state(false);
+  const MOBILE_BARS_H = 900;
+  const MOBILE_BEESWARM_H = 600;
 
   let combinationScenes = $state<EpisodeResult[]>([]);
   let isLoading = $state(true);
@@ -129,7 +135,9 @@
 
   // Track soundIsAuth store reactively
   $effect(() => {
-    const unsub = soundIsAuth.subscribe((v) => { soundAuthorized = v; });
+    const unsub = soundIsAuth.subscribe((v) => {
+      soundAuthorized = v;
+    });
     return unsub;
   });
 
@@ -143,17 +151,23 @@
   // Map LaughsExploration character IDs to the keys getCharSoundFileName expects
   function charIdToSonificationKey(id: string): string {
     switch (id) {
-      case 'Love interest': return 'loveinterest';
+      case 'Love interest':
+        return 'loveinterest';
       case 'Friend/Acquaintance':
       case 'Neighbour':
-      case 'Work colleague': return 'fnc';
+      case 'Work colleague':
+        return 'fnc';
       case "Jerry's family":
       case "George's family":
       case "Elaine's family":
-      case "Kramer's family": return 'families';
-      case 'Other': return 'other';
-      case 'The situation': return 'Situation';
-      default: return id; // JERRY, GEORGE, ELAINE, KRAMER work via toLowerCase in getCharSoundFileName
+      case "Kramer's family":
+        return 'families';
+      case 'Other':
+        return 'other';
+      case 'The situation':
+        return 'Situation';
+      default:
+        return id; // JERRY, GEORGE, ELAINE, KRAMER work via toLowerCase in getCharSoundFileName
     }
   }
 
@@ -163,14 +177,22 @@
       case "Jerry's home":
       case "George's home":
       case "Elaine's home":
-      case "Kramer's home": return 'CharacterHome';
-      case "Other family home": return 'OtherFamilyHome';
-      case 'Diner': return 'Diner';
-      case 'Place of leisure': return 'Leisure';
-      case 'Workplace': return 'Workplace';
-      case 'Transport': return 'Transport';
-      case 'Outside': return 'Outside';
-      default: return 'other';
+      case "Kramer's home":
+        return 'CharacterHome';
+      case 'Other family home':
+        return 'OtherFamilyHome';
+      case 'Diner':
+        return 'Diner';
+      case 'Place of leisure':
+        return 'Leisure';
+      case 'Workplace':
+        return 'Workplace';
+      case 'Transport':
+        return 'Transport';
+      case 'Outside':
+        return 'Outside';
+      default:
+        return 'other';
     }
   }
 
@@ -219,14 +241,22 @@
       chars.forEach((id) => {
         const playerName = getCharSoundFileName(charIdToSonificationKey(id), currentLaughBin);
         if (playerName) {
-          try { st.player(playerName).start(); } catch { /* unknown key */ }
+          try {
+            st.player(playerName).start();
+          } catch {
+            /* unknown key */
+          }
         }
       });
 
       if (loc) {
         const playerName = getLocationSoundFileName(locationIdToSonificationKey(loc));
         if (playerName) {
-          try { st.player(playerName).start(); } catch { /* unknown key */ }
+          try {
+            st.player(playerName).start();
+          } catch {
+            /* unknown key */
+          }
         }
       }
 
@@ -273,15 +303,49 @@
   $effect(() => {
     if (!sectionEl) return;
     const observer = new IntersectionObserver(
-      ([entry]) => { isInView = entry.isIntersecting; },
+      ([entry]) => {
+        isInView = entry.isIntersecting;
+      },
       { threshold: 0.2 },
     );
     observer.observe(sectionEl);
     return () => observer.disconnect();
   });
+
+  // Lock body scroll when the bottom sheet is open on mobile.
+  // overflow:hidden alone doesn't prevent scroll on iOS — position:fixed is required.
+  $effect(() => {
+    if (!(pinnedScene && isMobile)) return;
+    const scrollY = window.scrollY;
+    document.body.style.overflow = 'hidden';
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.width = '100%';
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      window.scrollTo(0, scrollY);
+    };
+  });
+
+  // Mobile detection
+  $effect(() => {
+    const check = () => {
+      isMobile = window.innerWidth < 768;
+    };
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  });
 </script>
 
-<section id="laughs-exploration" class="w-screen mb-60 flex flex-col" bind:this={sectionEl}>
+<section
+  id="laughs-exploration"
+  class="w-screen mb-20 md:mb-60 flex flex-col"
+  bind:this={sectionEl}
+>
   <div class="container flex flex-col flex-1 overflow-hidden">
     <!-- Header -->
     <div class="mb-8 shrink-0">
@@ -294,17 +358,17 @@
 
     <!-- Layout -->
     <div class="flex flex-col md:grid md:grid-cols-12 md:gap-16 flex-1 overflow-hidden">
-      <!-- Left column: selectors or scene tooltip -->
+      <!-- Left column: selectors or scene tooltip (tooltip only on desktop) -->
       <div class="md:col-span-4 relative">
         {#if displayedScene && pinnedScene}
           <button
             onclick={() => (pinnedScene = null)}
-            class="absolute top-4 -right-8 p-2 z-10 opacity-70 hover:opacity-100 transition-opacity"
+            class="hidden md:block absolute top-4 -right-8 p-2 z-10 opacity-70 hover:opacity-100 transition-opacity"
             aria-label="Close"><CloseIcon color="#12020A" /></button
           >
         {/if}
         <div class="overflow-y-auto h-full">
-          {#if displayedScene}
+          {#if displayedScene && !isMobile}
             <SceneTooltip
               scene={displayedScene}
               {episodesData}
@@ -317,6 +381,7 @@
               {activeMainChars}
               {activeSuppChars}
               {activeLocation}
+              {isMobile}
               onMainCharClick={toggleMainChar}
               onSuppCharClick={toggleSuppChar}
               onLocationClick={toggleLocation}
@@ -328,8 +393,7 @@
 
       <!-- Right column: visualizations -->
       <div
-        class="md:col-span-8 flex flex-col h-full relative"
-        style="gap: 48px;"
+        class="md:col-span-8 flex flex-col h-full relative gap-4 md:gap-12"
         bind:clientWidth={vizWidth}
       >
         {#if isLoading}
@@ -338,16 +402,35 @@
           </div>
         {/if}
 
+        <!-- Tab toggle: mobile only -->
+        <div class="flex md:hidden shrink-0 border-b border-[#DDDBDC]">
+          <button
+            class="flex-1 py-2 text-sm font-medium transition-colors {activeChartTab === 'bars'
+              ? 'border-b-2 border-[#E71D80] text-[#E71D80]'
+              : 'text-[#928D90]'}"
+            onclick={() => (activeChartTab = 'bars')}>By episode</button
+          >
+          <button
+            class="flex-1 py-2 text-sm font-medium transition-colors {activeChartTab === 'beeswarm'
+              ? 'border-b-2 border-[#E71D80] text-[#E71D80]'
+              : 'text-[#928D90]'}"
+            onclick={() => (activeChartTab = 'beeswarm')}>By scene</button
+          >
+        </div>
+
         <div
-          class="flex-1 overflow-hidden"
+          class="md:flex-1 overflow-hidden"
           class:opacity-30={isLoading}
+          class:hidden={isMobile && activeChartTab !== 'bars'}
+          style={isMobile ? `height: ${MOBILE_BARS_H}px;` : ''}
           bind:clientHeight={viz1Height}
         >
           <CombinationEpisodeBars
             {episodesData}
             {combinationScenes}
             width={vizWidth}
-            height={viz1Height}
+            height={isMobile ? MOBILE_BARS_H : viz1Height}
+            layout={isMobile ? 'vertical' : 'horizontal'}
             hoveredEpisodeKey={activeEpisodeKey}
             onEpisodeHover={(key) => (hoveredEpisodeKey = key)}
             onSceneHover={(scene) => (hoveredScene = scene)}
@@ -356,14 +439,17 @@
           />
         </div>
         <div
-          class="flex-1 overflow-hidden"
+          class="md:flex-1 overflow-hidden"
           class:opacity-30={isLoading}
+          class:hidden={isMobile && activeChartTab !== 'beeswarm'}
+          style={isMobile ? `height: ${MOBILE_BEESWARM_H}px;` : ''}
           bind:clientHeight={viz2Height}
         >
           <ScenesBeeswarm
             {combinationScenes}
             width={vizWidth}
-            height={viz2Height}
+            height={isMobile ? MOBILE_BEESWARM_H : viz2Height}
+            layout={isMobile ? 'vertical' : 'horizontal'}
             hoveredEpisodeKey={activeEpisodeKey}
             onEpisodeHover={(key) => (hoveredEpisodeKey = key)}
             onSceneHover={(scene) => (hoveredScene = scene)}
@@ -374,6 +460,38 @@
       </div>
     </div>
   </div>
+
+  <!-- Bottom sheet: mobile scene tooltip -->
+  {#if pinnedScene}
+    <div
+      class="md:hidden fixed inset-0 z-40 bg-[#12020A]/40"
+      role="presentation"
+      onclick={closePinnedScene}
+      transition:fade={{ duration: 200 }}
+    ></div>
+    <div
+      class="md:hidden fixed bottom-0 inset-x-0 z-50 bg-[#F9F5F7] rounded-t-3xl shadow-2xl max-h-[75vh] flex flex-col"
+      transition:fly={{ y: 400, duration: 300, opacity: 1 }}
+    >
+      <div class="flex justify-between items-center px-5 py-4 border-b border-[#DDDBDC] shrink-0">
+        <span class="relative top-0.5 font-semibold text-[#12020A]">Scene detail</span>
+        <button
+          onclick={closePinnedScene}
+          class="p-1 opacity-70 hover:opacity-100 transition-opacity"
+          aria-label="Close"><CloseIcon color="#12020A" /></button
+        >
+      </div>
+      <div class="overflow-y-auto flex-1">
+        <SceneTooltip
+          scene={pinnedScene}
+          {episodesData}
+          {activeMainChars}
+          {activeSuppChars}
+          {activeLocation}
+        />
+      </div>
+    </div>
+  {/if}
 </section>
 
 <style>

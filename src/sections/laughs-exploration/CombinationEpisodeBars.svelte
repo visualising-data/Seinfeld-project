@@ -13,6 +13,7 @@
     width = 600,
     height = 184,
     hoveredEpisodeKey = null,
+    layout = 'horizontal' as 'horizontal' | 'vertical',
     onEpisodeHover = () => {},
     onSceneHover = () => {},
     onSceneClick = () => {},
@@ -23,6 +24,7 @@
     width: number;
     height: number;
     hoveredEpisodeKey?: string | null;
+    layout?: 'horizontal' | 'vertical';
     onEpisodeHover?: (key: string | null) => void;
     onSceneHover?: (scene: HoveredScene | null) => void;
     onSceneClick?: (scene: HoveredScene) => void;
@@ -149,8 +151,99 @@
     { value: 0.5, label: '50%' },
     { value: 1, label: '100%' },
   ];
+
+  // ── Vertical layout ───────────────────────────────────────────────────────
+  const marginV = { top: 24, right: 16, bottom: 16, left: 16 };
+  let innerWidthV = $derived(width - marginV.left - marginV.right);
+  let innerHeightV = $derived(height - marginV.top - marginV.bottom);
+  let halfW = $derived((innerWidthV - midBand) / 2);
+  let yBandScale = $derived(
+    scaleBand<string>()
+      .domain(allEpisodes.map((ep) => ep.key))
+      .range([0, innerHeightV])
+      .padding(0.1),
+  );
+  let xScaleDur = $derived(scaleLinear().domain([0, maxDuration]).range([0, halfW]));
+  let xScaleRate = $derived(scaleLinear().domain([0, 1]).range([0, halfW]));
+  let seasonBarsV = $derived.by(() => {
+    const halfGap = (yBandScale.step() - yBandScale.bandwidth()) / 2;
+    return seasons
+      .map((season) => {
+        const eps = allEpisodes.filter((ep) => ep.season === season.seasonNum);
+        if (eps.length === 0) return null;
+        const y = Math.max(0, (yBandScale(eps[0].key) ?? 0) - halfGap);
+        const lastEp = eps[eps.length - 1];
+        const yEnd = Math.min(
+          innerHeightV,
+          (yBandScale(lastEp.key) ?? 0) + yBandScale.bandwidth() + halfGap,
+        );
+        return { season: season.seasonNum, y, height: yEnd - y, color: season.accessibleOverDarkColor };
+      })
+      .filter((d) => d !== null);
+  });
 </script>
 
+{#if layout === 'vertical'}
+  <svg
+    {width}
+    {height}
+    role="presentation"
+    onclick={onClosePin}
+    onkeydown={() => {}}
+    style="cursor: default"
+    onmouseleave={() => { onEpisodeHover(null); onSceneHover(null); }}
+  >
+    <g transform="translate({marginV.left}, {marginV.top})">
+      <!-- Section headers -->
+      <text x={halfW / 2} y={-8} class="small accent" text-anchor="middle">Duration</text>
+      <text x={halfW + midBand + halfW / 2} y={-8} class="small accent" text-anchor="middle">Laugh rate</text>
+
+      <!-- Episodes: one group per row spanning both sections -->
+      {#each allEpisodes as ep}
+        {@const y = yBandScale(ep.key) ?? 0}
+        {@const bh = Math.max(1, yBandScale.bandwidth())}
+        {@const isActive = hoveredEpisodeKey === null || hoveredEpisodeKey === ep.key || hoveredEpisodeKey.startsWith(ep.key + '-')}
+        <g
+          role="presentation"
+          opacity={isActive ? 1 : 0.2}
+          onmouseenter={() => {
+            const s = getFirstScene(ep.season, ep.episode);
+            onEpisodeHover(s ? `${s.season}-${s.episode}-${s.sceneNumber}` : ep.key);
+            onSceneHover(s);
+          }}
+          onclick={(e) => {
+            e.stopPropagation();
+            const s = getFirstScene(ep.season, ep.episode);
+            if (s) onSceneClick(s);
+          }}
+          style="cursor: pointer"
+        >
+          <!-- Duration bars (extend leftward from center) -->
+          {#if ep.totalDuration > 0}
+            {@const totalW = Math.max(MIN_BAR_H, xScaleDur(ep.totalDuration))}
+            {@const laughW = ep.laughDuration > 0 ? Math.max(MIN_BAR_H, xScaleDur(ep.laughDuration)) : 0}
+            <rect x={halfW - totalW} {y} width={totalW} height={bh} fill={BAR_COLOR} opacity="0.3" />
+            {#if laughW > 0}
+              <rect x={halfW - laughW} {y} width={laughW} height={bh} fill={BAR_COLOR} />
+            {/if}
+          {/if}
+          <!-- Laugh rate bar (extends rightward from center + strip) -->
+          {#if ep.laughRate > 0}
+            {@const rateW = Math.max(MIN_BAR_H, xScaleRate(ep.laughRate))}
+            <rect x={halfW + midBand} {y} width={rateW} height={bh} fill={BAR_COLOR} />
+          {/if}
+          <!-- Full-row transparent hit target -->
+          <rect x={0} {y} width={innerWidthV} height={bh} fill="transparent" />
+        </g>
+      {/each}
+
+      <!-- Season strip (center vertical band) -->
+      {#each seasonBarsV as sb}
+        <rect x={halfW} y={sb.y} width={midBand} height={sb.height} fill={sb.color} />
+      {/each}
+    </g>
+  </svg>
+{:else}
 <svg
   {width}
   {height}
@@ -379,3 +472,4 @@
     </g>
   </g>
 </svg>
+{/if}
