@@ -333,7 +333,7 @@
   // Mobile detection
   $effect(() => {
     const check = () => {
-      isMobile = window.innerWidth < 768;
+      isMobile = window.innerWidth < 1080;
     };
     check();
     window.addEventListener('resize', check);
@@ -343,7 +343,7 @@
 
 <section
   id="laughs-exploration"
-  class="w-screen mb-20 md:mb-60 flex flex-col"
+  class="w-screen mb-20 desktop:mb-60 flex flex-col"
   bind:this={sectionEl}
 >
   <div class="container flex flex-col flex-1 overflow-hidden">
@@ -357,13 +357,13 @@
     </div>
 
     <!-- Layout -->
-    <div class="flex flex-col md:grid md:grid-cols-12 md:gap-16 flex-1 overflow-hidden">
+    <div class="flex flex-col desktop:grid desktop:grid-cols-12 desktop:gap-16 flex-1 overflow-hidden">
       <!-- Left column: selectors or scene tooltip (tooltip only on desktop) -->
-      <div class="md:col-span-4 relative">
+      <div class="desktop:col-span-4 relative">
         {#if displayedScene && pinnedScene}
           <button
             onclick={() => (pinnedScene = null)}
-            class="hidden md:block absolute top-4 -right-8 p-2 z-10 opacity-70 hover:opacity-100 transition-opacity"
+            class="hidden desktop:block absolute top-4 -right-8 p-2 z-10 opacity-70 hover:opacity-100 transition-opacity"
             aria-label="Close"><CloseIcon color="#12020A" /></button
           >
         {/if}
@@ -393,7 +393,7 @@
 
       <!-- Right column: visualizations -->
       <div
-        class="md:col-span-8 flex flex-col h-full relative gap-4 md:gap-12"
+        class="desktop:col-span-8 flex flex-col h-full relative gap-4 desktop:gap-12"
         bind:clientWidth={vizWidth}
       >
         {#if isLoading}
@@ -403,7 +403,7 @@
         {/if}
 
         <!-- Tab toggle: mobile only -->
-        <div class="flex md:hidden shrink-0 border-b border-[#DDDBDC]">
+        <div class="flex desktop:hidden shrink-0 border-b border-[#DDDBDC]">
           <button
             class="flex-1 py-2 text-sm font-medium transition-colors {activeChartTab === 'bars'
               ? 'border-b-2 border-[#E71D80] text-[#E71D80]'
@@ -419,7 +419,7 @@
         </div>
 
         <div
-          class="md:flex-1 overflow-hidden"
+          class="desktop:flex-1 overflow-hidden"
           class:opacity-30={isLoading}
           class:hidden={isMobile && activeChartTab !== 'bars'}
           style={isMobile ? `height: ${MOBILE_BARS_H}px;` : ''}
@@ -439,7 +439,7 @@
           />
         </div>
         <div
-          class="md:flex-1 overflow-hidden"
+          class="desktop:flex-1 overflow-hidden"
           class:opacity-30={isLoading}
           class:hidden={isMobile && activeChartTab !== 'beeswarm'}
           style={isMobile ? `height: ${MOBILE_BEESWARM_H}px;` : ''}
@@ -464,13 +464,13 @@
   <!-- Bottom sheet: mobile scene tooltip -->
   {#if pinnedScene}
     <div
-      class="md:hidden fixed inset-0 z-40 bg-[#12020A]/40"
+      class="desktop:hidden fixed inset-0 z-40 bg-[#12020A]/40"
       role="presentation"
       onclick={closePinnedScene}
       transition:fade={{ duration: 200 }}
     ></div>
     <div
-      class="md:hidden fixed bottom-0 inset-x-0 z-50 bg-[#F9F5F7] rounded-t-3xl shadow-2xl max-h-[75vh] flex flex-col"
+      class="desktop:hidden fixed bottom-0 inset-x-0 z-50 bg-[#F9F5F7] rounded-t-3xl shadow-2xl max-h-[75vh] flex flex-col"
       transition:fly={{ y: 400, duration: 300, opacity: 1 }}
     >
       <div class="flex justify-between items-center px-5 py-4 border-b border-[#DDDBDC] shrink-0">

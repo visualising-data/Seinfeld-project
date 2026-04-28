@@ -56,7 +56,7 @@
 {#if isMobile && isCollapsed}
   <!-- Collapsed summary: tap to expand -->
   <button
-    class="w-full flex items-start gap-2 my-4"
+    class="w-full flex items-start gap-2 my-4 border-b border-[#DDDBDC] pb-4"
     onclick={() => (isCollapsed = false)}
     aria-label="Expand combination selector"
   >
@@ -103,7 +103,7 @@
   <!-- Collapse toggle on mobile -->
   {#if isMobile}
     <button
-      class="w-full flex items-start gap-2 my-4"
+      class="w-full flex items-start gap-2 my-4 border-b border-[#DDDBDC] pb-4"
       onclick={() => (isCollapsed = true)}
       aria-label="Collapse combination selector"
     >
@@ -111,7 +111,9 @@
         {#each activeMainCharMeta as char}
           <div
             class="rounded-full bg-contain bg-center shrink-0"
-            style="background-image: url('{getCharacterImagePath(char.id)}'); width: 40px; height: 40px;"
+            style="background-image: url('{getCharacterImagePath(
+              char.id,
+            )}'); width: 40px; height: 40px;"
           ></div>
         {/each}
         {#if activeSuppCharMeta.length > 0}
@@ -119,7 +121,9 @@
           {#each activeSuppCharMeta as char}
             <div
               class="rounded-full bg-contain bg-center shrink-0"
-              style="background-image: url('{getCharacterImagePath(char.id)}'); width: 32px; height: 32px;"
+              style="background-image: url('{getCharacterImagePath(
+                char.id,
+              )}'); width: 32px; height: 32px;"
             ></div>
           {/each}
         {/if}
@@ -127,7 +131,9 @@
           <span class="text-[#928D90] text-sm">in</span>
           <div
             class="rounded-full bg-contain bg-center shrink-0"
-            style="background-image: url('{getLocationIconPath(activeLocationMeta.id)}'); width: 40px; height: 40px;"
+            style="background-image: url('{getLocationIconPath(
+              activeLocationMeta.id,
+            )}'); width: 40px; height: 40px;"
           ></div>
         {:else}
           <span class="text-[#928D90] text-sm">anywhere</span>

@@ -34,7 +34,11 @@ export default {
       'family': '#835330',
       'other': '#5443B0',
     },
-		extend: {}
+		extend: {
+      screens: {
+        desktop: '1080px',
+      },
+    }
 	},
 
 	plugins: [typography]
