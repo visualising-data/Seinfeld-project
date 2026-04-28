@@ -296,12 +296,25 @@
       });
 
       for (let i = 1; i < 5; i++) {
+        // tlRef lets the onRefresh closure reference the timeline after it's created
+        /** @type {gsap.core.Timeline | undefined} */
+        let tlRef;
+
         /** @type {ScrollTrigger.Vars} */
         const stConfig = {
           trigger: `#laughs-step-${i + 1}`,
           start: 'top top',
           toggleActions: 'play none none reverse',
           invalidateOnRefresh: true,
+          // After an instant scroll jump (e.g. SectionProgressBar navigation),
+          // ScrollTrigger.refresh() fires but animated reversals from multiple
+          // timelines conflict and leave panels overlapping. Snap to the correct
+          // progress instantly instead.
+          onRefresh: (/** @type {any} */ self) => {
+            if (!tlRef) return;
+            if (self.progress <= 0) tlRef.progress(0, true);
+            else if (self.progress >= 1) tlRef.progress(1, true);
+          },
         };
 
         if (i + 1 === 2) {
@@ -318,7 +331,7 @@
           stConfig.onLeaveBack = () => safeLaugh3Stop();
         }
 
-        const tl = gsap
+        tlRef = gsap
           .timeline({ scrollTrigger: stConfig })
           .to(`#laughs-text-${i}`, {
             opacity: 0,
@@ -335,7 +348,7 @@
           });
 
         if (i + 1 === 2 || i + 1 === 4) {
-          tl.to(`#laughs-text-${i + 1} .highlight`, {
+          tlRef.to(`#laughs-text-${i + 1} .highlight`, {
             webkitTextFillColor: 'transparent',
             backgroundPosition: '200% center',
             duration: 1.5,
@@ -345,7 +358,7 @@
         }
 
         if (i + 1 === 5) {
-          tl.to('#text5-icon-1', {
+          tlRef.to('#text5-icon-1', {
             opacity: 1,
             duration: 0.3,
             ease: 'power2.out',
@@ -360,7 +373,7 @@
         }
 
         if (i + 1 === 4) {
-          tl.to('#text4-laugh-icon', {
+          tlRef.to('#text4-laugh-icon', {
             opacity: 1,
             duration: 0.4,
             ease: 'power2.out',

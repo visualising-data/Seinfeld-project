@@ -256,7 +256,7 @@
   let poolIndex = 0;
 
   const playSound = () => {
-    if (!$soundIsAuth || audioPool.length === 0) return;
+    if (!$soundIsAuth || !$catalogIsInView || audioPool.length === 0) return;
     const audio = audioPool[poolIndex++ % audioPool.length];
     audio.currentTime = 0;
     audio.play().catch(() => {});
