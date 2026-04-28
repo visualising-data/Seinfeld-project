@@ -3,7 +3,11 @@
   import { gsap } from 'gsap/dist/gsap';
   import * as Tone from 'tone';
 
-  import { sonificationFiles, getCharSoundFileName } from '$lib/data/sonificationFilesMapping';
+  import {
+    sonificationFiles,
+    getCharSoundFileName,
+    getLocationSoundFileName,
+  } from '$lib/data/sonificationFilesMapping';
   import { soundIsAuth } from '../../stores/soundAuthStore';
   import { characters } from '$lib/data/characters';
   import { locations } from '$lib/data/locations';
@@ -81,12 +85,64 @@
    */
   let playCharTimeout;
   /**
-   * @type {string}
+   * @type {string | null}
    */
   let playingFile;
 
+  const suppCharToSonificationKey = (/** @type {string} */ id) => {
+    switch (id) {
+      case 'Love interest':
+        return 'loveinterest';
+      case 'Friend/Acquaintance':
+      case 'Neighbour':
+      case 'Work colleague':
+        return 'fnc';
+      case "Jerry's family":
+      case "George's family":
+      case "Elaine's family":
+      case "Kramer's family":
+        return 'families';
+      case 'Other':
+        return 'other';
+      case 'The situation':
+        return 'Situation';
+      default:
+        return id;
+    }
+  };
+
+  const locationToSonificationKey = (/** @type {string} */ id) => {
+    switch (id) {
+      case "Jerry's home":
+      case "George's home":
+      case "Elaine's home":
+      case "Kramer's home":
+        return 'CharacterHome';
+      case 'Other family home':
+        return 'OtherFamilyHome';
+      case 'Diner':
+        return 'Diner';
+      case 'Place of leisure':
+        return 'Leisure';
+      case 'Workplace':
+        return 'Workplace';
+      case 'Transport':
+        return 'Transport';
+      case 'Outside':
+        return 'Outside';
+      default:
+        return 'other';
+    }
+  };
+
   const updatePlayingFile = (/** @type {string} */ char) => {
-    playingFile = getCharSoundFileName(char, '1');
+    if (currentSection === 'locations') {
+      playingFile = getLocationSoundFileName(locationToSonificationKey(char));
+    } else if (currentSection === 'supporting_chars') {
+      playingFile = getCharSoundFileName(suppCharToSonificationKey(char), '1');
+    } else {
+      playingFile = getCharSoundFileName(char, '1');
+    }
   };
   $effect(() => {
     updatePlayingFile(activeCharacter);
@@ -102,7 +158,7 @@
     }
   };
   const playChar = () => {
-    if ($soundIsAuth) {
+    if ($soundIsAuth && playingFile) {
       soundtrack.player(playingFile).start();
 
       playCharTimeout = setTimeout(() => {
@@ -137,7 +193,7 @@
       isMouseOver = true;
 
       if ($soundIsAuth && soundtrackCanPlay && soundtrack?.state === 'started') {
-        soundtrack.player(playingFile).stop();
+        if (playingFile) soundtrack.player(playingFile).stop();
         clearTimeout(playCharTimeout);
         updatePlayingFile(char);
         playChar();
