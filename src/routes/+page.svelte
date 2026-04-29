@@ -71,6 +71,10 @@
     // ScrollTrigger the page height has changed so all pins recalculate.
     await tick();
     scheduleRefresh();
+    // Pre-load Wave 2 immediately after Wave 1 mounts — fast momentum scrolling
+    // (especially on iPhone) can outrun the sentinel-based cascade, so we start
+    // the next wave eagerly without waiting for its sentinel to enter the viewport.
+    loadWave2();
   }
 
   async function loadWave2() {
@@ -81,6 +85,8 @@
     ]);
     await tick();
     scheduleRefresh();
+    // Same eager pre-load for Wave 3.
+    loadWave3();
   }
 
   async function loadWave3() {
@@ -219,7 +225,7 @@
     <!-- Wave 1 sentinel: triggers DataGathering + IntroEnd -->
     <div
       id="lazy-load-sentinel"
-      use:inview={{ rootMargin: '500px' }}
+      use:inview={{ rootMargin: '2000px' }}
       oninview_change={async (/** @type {{ detail: { inView: any; }; }} */ event) => {
         if (event.detail.inView) await loadWave1();
       }}
@@ -233,7 +239,7 @@
       <!-- Wave 2 sentinel: triggers MainCharsSection + SupportingCharsSection -->
       <div
         id="lazy-load-sentinel-2"
-        use:inview={{ rootMargin: '500px' }}
+        use:inview={{ rootMargin: '2000px' }}
         oninview_change={async (/** @type {{ detail: { inView: any; }; }} */ event) => {
           if (event.detail.inView) await loadWave2();
         }}
@@ -246,7 +252,7 @@
         <!-- Wave 3 sentinel: triggers LocationsSection + LaughsExploration -->
         <div
           id="lazy-load-sentinel-3"
-          use:inview={{ rootMargin: '500px' }}
+          use:inview={{ rootMargin: '2000px' }}
           oninview_change={async (/** @type {{ detail: { inView: any; }; }} */ event) => {
             if (event.detail.inView) await loadWave3();
           }}
