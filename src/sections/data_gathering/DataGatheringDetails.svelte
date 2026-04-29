@@ -47,6 +47,12 @@
 
   let isVideoLoading = $state(false);
 
+  /** @type {HTMLVideoElement} */
+  let videoEl = $state(null);
+  $effect(() => {
+    if (videoEl) videoEl.muted = isMuted;
+  });
+
   /** @type {HTMLElement} */
   let gridContainer;
   /** @type {HTMLElement} */
@@ -149,14 +155,14 @@
   <div class="sticky top-0 h-[100dvh] flex flex-col">
     <!-- Video area: fills remaining height above the overlay -->
     <div class="flex-1 relative flex items-center min-h-0 overflow-hidden">
-      <!-- svelte-ignore a11y_media_has_caption -->
       <video
         id="demo-video"
         class="w-full h-auto"
         playsinline
+        muted
         controls={false}
-        preload="none"
-        bind:muted={isMuted}
+        preload="metadata"
+        bind:this={videoEl}
       >
         <source
           src="https://amdufour.github.io/hosted-data/apis/videos/MarineBiologist_edited(CC).mp4"
