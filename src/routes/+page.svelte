@@ -38,9 +38,11 @@
   // SupportingCharsSection loaded by a nested sentinel after MainCharsSection mounts.
   let MainCharsSection: any = null;
   let SupportingCharsSection: any = null;
-  // Wave 3: loaded when the sentinel after SupportingCharsSection enters viewport
-  // let LocationsSection: any = null;
-  // let LaughsExploration: any = null;
+  // Wave 3: loaded sequentially via nested sentinels after SupportingCharsSection
+  let LocationsSection: any = null;
+  let LaughsExploration: any = null;
+  let MethodologyAndCredits: any = null;
+  let Footer: any = null;
 
   const episodesDataUrl = 'https://amdufour.github.io/hosted-data/apis/episodes_laughs.min.json';
 
@@ -96,15 +98,33 @@
     scheduleRefresh();
   }
 
-  // async function loadWave3() {
-  //   if (LocationsSection) return;
-  //   [LocationsSection, LaughsExploration] = await Promise.all([
-  //     import('../sections/locations/locationsSection.svelte').then((m) => m.default),
-  //     import('../sections/laughs-exploration/LaughsExploration.svelte').then((m) => m.default),
-  //   ]);
-  //   await tick();
-  //   scheduleRefresh();
-  // }
+  async function loadLocations() {
+    if (LocationsSection) return;
+    LocationsSection = await import('../sections/locations/locationsSection.svelte').then(
+      (m) => m.default,
+    );
+    await tick();
+    scheduleRefresh();
+  }
+
+  async function loadLaughsExploration() {
+    if (LaughsExploration) return;
+    LaughsExploration = await import(
+      '../sections/laughs-exploration/LaughsExploration.svelte'
+    ).then((m) => m.default);
+    await tick();
+    scheduleRefresh();
+  }
+
+  async function loadMethodology() {
+    if (MethodologyAndCredits) return;
+    [MethodologyAndCredits, Footer] = await Promise.all([
+      import('../sections/MethodologyAndCredits.svelte').then((m) => m.default),
+      import('../sections/Footer.svelte').then((m) => m.default),
+    ]);
+    await tick();
+    scheduleRefresh();
+  }
 
   onMount(() => {
     // Track the iOS Chrome URL-bar offset via the Visual Viewport API and expose
@@ -148,7 +168,7 @@
     // Force-load all waves immediately when triggered by menu/sidebar navigation
     const unsubLazy = lazyLoadAll.subscribe(async (shouldLoad) => {
       if (!shouldLoad) return;
-      await Promise.all([loadWave1(), loadWave2(), loadSupportingChars()/*, loadWave3()*/]);
+      await Promise.all([loadWave1(), loadWave2(), loadSupportingChars(), loadLocations(), loadLaughsExploration(), loadMethodology()]);
     });
 
     // If the page loads with a non-zero scroll position (browser scroll restoration
@@ -159,7 +179,9 @@
         loadWave1();
         loadWave2();
         loadSupportingChars();
-        // loadWave3();
+        loadLocations();
+        loadLaughsExploration();
+        loadMethodology();
       }
     });
 
@@ -171,9 +193,21 @@
         scrollPollId = null;
       }
       if (anchor) {
+        // Safety timeout: if the target element never mounts (e.g. a section that
+        // is currently disabled), bail out after 5 s so the loader doesn't hang forever.
+        const pollTimeout = setTimeout(() => {
+          if (scrollPollId !== null) {
+            clearInterval(scrollPollId);
+            scrollPollId = null;
+          }
+          pendingScrollAnchor.set(null);
+          isScrollLoading.set(false);
+        }, 5000);
+
         scrollPollId = setInterval(() => {
           const target = document.getElementById(anchor);
           if (target) {
+            clearTimeout(pollTimeout);
             clearInterval(scrollPollId!);
             scrollPollId = null;
             // getBoundingClientRect().top + scrollY gives a true document-offset
@@ -287,23 +321,43 @@
         {#if SupportingCharsSection}
           <svelte:component this={SupportingCharsSection} {episodesData} {ScrollTrigger} />
 
-          <!-- Wave 3 temporarily commented out
+          <!-- Wave 3a sentinel: loads LocationsSection -->
           <div
-            id="lazy-load-sentinel-3"
-            use:inview={{ rootMargin: '2000px' }}
-            oninview_change={async (event) => {
-              if (event.detail.inView) await loadWave3();
+            use:inview={{ rootMargin: '1000px' }}
+            oninview_change={async (/** @type {{ detail: { inView: any; }; }} */ event) => {
+              if (event.detail.inView) await loadLocations();
             }}
           ></div>
 
-          {#if LocationsSection && LaughsExploration}
-            <svelte:component this={LocationsSection} {episodesData} />
-            <svelte:component this={LaughsExploration} {episodesData} />
-            <Quotes />
-            <MethodologyAndCredits />
-            <Footer />
+          {#if LocationsSection}
+            <svelte:component this={LocationsSection} {episodesData} {ScrollTrigger} />
+
+            <!-- Wave 3b sentinel: loads LaughsExploration -->
+            <div
+              use:inview={{ rootMargin: '1000px' }}
+              oninview_change={async (/** @type {{ detail: { inView: any; }; }} */ event) => {
+                if (event.detail.inView) await loadLaughsExploration();
+              }}
+            ></div>
+
+            {#if LaughsExploration}
+              <svelte:component this={LaughsExploration} {episodesData} />
+
+              <!-- Wave 3c sentinel: loads MethodologyAndCredits + Footer -->
+              <div
+                use:inview={{ rootMargin: '1000px' }}
+                oninview_change={async (/** @type {{ detail: { inView: any; }; }} */ event) => {
+                  if (event.detail.inView) await loadMethodology();
+                }}
+              ></div>
+
+              {#if MethodologyAndCredits && Footer}
+                <Quotes />
+                <svelte:component this={MethodologyAndCredits} />
+                <svelte:component this={Footer} />
+              {/if}
+            {/if}
           {/if}
-          -->
         {/if}
       {/if}
     {/if}

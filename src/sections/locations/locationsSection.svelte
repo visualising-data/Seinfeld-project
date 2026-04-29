@@ -1,72 +1,50 @@
 <script>
-  import { mean } from 'd3-array';
+  // @ts-nocheck
+  import { tick } from 'svelte';
+  import { inview } from 'svelte-inview';
 
-  import { locations } from '$lib/data/locations';
-  import { seasons } from '$lib/data/seasons';
-
+  // SectionTitle and Intro are the first visible components — load immediately.
   import SectionTitle from '../SectionTitle.svelte';
   import Intro from './Intro.svelte';
-  import Marimekko from './Marimekko.svelte';
-  import ScreenTimeVsLaughRate from '../ScreenTimeVsLaughRate/ScreenTimeVsLaughRate.svelte';
-  import Alluvial from './Alluvial.svelte';
 
-  let { episodesData } = $props();
+  let { episodesData, ScrollTrigger } = $props();
 
-  // $inspect('locations', locations);
-  // $inspect(episodesData);
+  // ── Fine-grained lazy loading ─────────────────────────────────────────────
+  let ScreenTimeVsLaughRate = $state(null);
+  let Marimekko = $state(null);
+  let Alluvial = $state(null);
 
-  // let locationsData = $derived.by(() => {
-  //   const locationsArray = [];
+  let _refreshTimer = null;
+  function scheduleRefresh() {
+    if (_refreshTimer) clearTimeout(_refreshTimer);
+    _refreshTimer = setTimeout(() => {
+      ScrollTrigger.refresh();
+      _refreshTimer = null;
+    }, 150);
+  }
 
-  //   locations.forEach((loc) => {
-  //     const episodes = structuredClone(episodesData);
+  async function loadScreenTime() {
+    if (ScreenTimeVsLaughRate) return;
+    ScreenTimeVsLaughRate = await import(
+      '../ScreenTimeVsLaughRate/ScreenTimeVsLaughRate.svelte'
+    ).then((m) => m.default);
+    await tick();
+    scheduleRefresh();
+  }
 
-  //     episodes.forEach((ep) => {
-  //       const allLocations = ep.data.filter((d) => d.eventCategory === 'LOCATION');
-  //       const currentLocation = allLocations.filter((d) => d.eventAttribute === loc.id);
+  async function loadMarimekko() {
+    if (Marimekko) return;
+    Marimekko = await import('./Marimekko.svelte').then((m) => m.default);
+    await tick();
+    scheduleRefresh();
+  }
 
-  //       ep['allLocations'] = allLocations;
-  //       ep['currentLocation'] = currentLocation;
-  //       ep['locationScreentimeShare'] = currentLocation.length / allLocations.length;
-  //     });
-
-  //     locationsArray.push({
-  //       id: loc.id,
-  //       label: loc.label,
-  //       episodesData: episodes,
-  //     });
-  //   });
-
-  //   return locationsArray;
-  // });
-
-  // const avgScreentimeSharePerSeason = $derived.by(() => {
-  //   const locationsArray = [];
-
-  //   locations.forEach((loc) => {
-  //     const seasonsArray = [];
-  //     const data = locationsData.find((l) => l.id === loc.id).episodesData;
-
-  //     seasons.forEach((s) => {
-  //       const seasonData = data.filter((d) => d.season === s.seasonNum);
-  //       seasonsArray.push({
-  //         season: s.seasonNum,
-  //         avgScreenTimeShare: mean(seasonData, (d) => d.locationScreentimeShare),
-  //       });
-  //     });
-
-  //     locationsArray.push({
-  //       id: loc.id,
-  //       label: loc.label,
-  //       seasons: seasonsArray,
-  //     });
-  //   });
-
-  //   return locationsArray;
-  // });
-
-  // $inspect('locationsData', locationsData);
-  // $inspect('avgScreentimeSharePerSeason', avgScreentimeSharePerSeason);
+  async function loadAlluvial() {
+    if (Alluvial) return;
+    Alluvial = await import('./Alluvial.svelte').then((m) => m.default);
+    await tick();
+    scheduleRefresh();
+  }
 </script>
 
 <section id="locations">
@@ -74,7 +52,40 @@
     <SectionTitle section="locations" title="Locations" />
   </div>
   <Intro />
-  <ScreenTimeVsLaughRate {episodesData} currentSection="locations" />
-  <Marimekko />
-  <Alluvial />
+
+  <!-- Sentinel 1: loads ScreenTimeVsLaughRate -->
+  <div
+    use:inview={{ rootMargin: '1000px' }}
+    oninview_change={async (event) => {
+      if (event.detail.inView) await loadScreenTime();
+    }}
+  ></div>
+
+  {#if ScreenTimeVsLaughRate}
+    <ScreenTimeVsLaughRate {episodesData} currentSection="locations" />
+
+    <!-- Sentinel 2: loads Marimekko -->
+    <div
+      use:inview={{ rootMargin: '1000px' }}
+      oninview_change={async (event) => {
+        if (event.detail.inView) await loadMarimekko();
+      }}
+    ></div>
+
+    {#if Marimekko}
+      <Marimekko />
+
+      <!-- Sentinel 3: loads Alluvial -->
+      <div
+        use:inview={{ rootMargin: '1000px' }}
+        oninview_change={async (event) => {
+          if (event.detail.inView) await loadAlluvial();
+        }}
+      ></div>
+
+      {#if Alluvial}
+        <Alluvial />
+      {/if}
+    {/if}
+  {/if}
 </section>
