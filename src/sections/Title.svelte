@@ -107,16 +107,25 @@
    * @type {Tone.Player}
    */
   let soundtrack;
+  let isTitleInView = false;
+
   const playJingle = () => {
-    if ($soundIsAuth && soundtrack?.loaded && soundtrack.state !== 'started') {
+    if ($soundIsAuth && isTitleInView && soundtrack?.loaded && soundtrack.state !== 'started') {
       soundtrack.start();
     }
   };
   const stopJingle = () => {
-    if ($soundIsAuth && soundtrack?.loaded && soundtrack.state === 'started') {
+    if (soundtrack?.loaded && soundtrack.state === 'started') {
       soundtrack.stop();
     }
   };
+
+  // When sound auth is granted while already in the title section, start the jingle.
+  $effect(() => {
+    if ($soundIsAuth) {
+      playJingle();
+    }
+  });
 
   /** @type {gsap.core.Timeline | undefined} */
   let barsTl;
@@ -141,10 +150,10 @@
             trigger: '#title-screen',
             start: 'top 30%',
             end: 'bottom top',
-            onEnter: playJingle,
-            onEnterBack: playJingle,
-            onLeave: stopJingle,
-            onLeaveBack: stopJingle,
+            onEnter: () => { isTitleInView = true; playJingle(); },
+            onEnterBack: () => { isTitleInView = true; playJingle(); },
+            onLeave: () => { isTitleInView = false; stopJingle(); },
+            onLeaveBack: () => { isTitleInView = false; stopJingle(); },
             toggleActions: 'play reset play reset',
             invalidateOnRefresh: true,
           },
@@ -155,6 +164,7 @@
   });
 
   onDestroy(() => {
+    isTitleInView = false;
     ctx?.revert();
     soundtrack?.dispose();
   });

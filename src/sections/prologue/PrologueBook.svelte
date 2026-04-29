@@ -80,7 +80,7 @@
   <!-- Scroll-driven section: sticky image strip on mobile, full-screen on desktop -->
   <div id="book-scroll-wrapper" class="relative">
     <div
-      class="sticky lg:top-0 bg-black overflow-x-clip lg:h-[100dvh] lg:flex lg:flex-col lg:justify-between book-strip-sticky"
+      class="sticky lg:top-0 bg-black lg:h-[100dvh] lg:flex lg:flex-col lg:justify-between book-strip-sticky"
     >
       <!-- Desktop only: text + book cover -->
       <div id="book-cover-container" class="hidden lg:flex flex-1 items-center container">
@@ -190,5 +190,10 @@
     .book-strip-sticky {
       top: calc(100dvh - 228px);
     }
+  }
+  /* clip-path instead of overflow-x: clip — avoids iOS Chrome compositing
+     bug that blocks CSS transform (translateX) on child elements */
+  .book-strip-sticky {
+    clip-path: inset(0);
   }
 </style>
