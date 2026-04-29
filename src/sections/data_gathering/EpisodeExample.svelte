@@ -446,8 +446,8 @@
 <svelte:window bind:innerWidth bind:innerHeight />
 
 <div id="episode-example-container" class="relative pointer-events-none">
-  <div id="episode-example" class="sticky top-0 w-full" style="z-index: 5;">
-    <div class="relative flex flex-col overflow-hidden" style="height: {innerHeight}px;">
+  <div id="episode-example" class="sticky w-full" style="top: var(--vv-top, 0px); z-index: 5;">
+    <div class="relative flex flex-col overflow-hidden" style="height: 100dvh;">
       <!-- Episode details -->
       <div class="mask self-start">
         <div id="episode-detail-container">
@@ -535,7 +535,7 @@
 
   <!-- Scrolling Texts — negative margin-top pulls them up to overlay #episode-example,
        since sticky keeps it in the normal flow (unlike the old absolute positioning). -->
-  <div class="relative" style="pointer-events: none; z-index: 30; margin-top: -{innerHeight}px;">
+  <div class="relative" style="pointer-events: none; z-index: 30; margin-top: -100dvh;">
     <EpisodeTexts />
   </div>
 </div>

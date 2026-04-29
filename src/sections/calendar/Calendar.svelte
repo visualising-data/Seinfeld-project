@@ -450,10 +450,13 @@
       });
 
       // Reveal episodes (forward) / hide in reverse order (backward)
+      // 'top center' fires when the text enters the middle of the screen — it's
+      // readable at that point. 'center bottom' was firing while the text was
+      // still off-screen on iOS Chrome (toolbar shifts innerHeight measurements).
       gsap.timeline({
         scrollTrigger: {
           trigger: '#calendar-text-overlay-1',
-          start: 'center bottom',
+          start: 'top center',
           invalidateOnRefresh: true,
           onEnter: () => showEpisodes(1),
           onLeaveBack: () => {
@@ -468,7 +471,7 @@
       gsap.timeline({
         scrollTrigger: {
           trigger: '#calendar-text-overlay-2',
-          start: 'center bottom',
+          start: 'top center',
           invalidateOnRefresh: true,
           onEnter: () => showEpisodes(2),
           onLeaveBack: () => hideEpisodes(2),
@@ -477,7 +480,7 @@
       gsap.timeline({
         scrollTrigger: {
           trigger: '#calendar-text-overlay-3',
-          start: 'center bottom',
+          start: 'top center',
           invalidateOnRefresh: true,
           onEnter: () => showEpisodes(3),
           onLeaveBack: () => hideEpisodes(3),
@@ -486,7 +489,7 @@
       gsap.timeline({
         scrollTrigger: {
           trigger: '#calendar-text-overlay-4',
-          start: 'center bottom',
+          start: 'top center',
           invalidateOnRefresh: true,
           onEnter: () => showEpisodes(4),
           onLeaveBack: () => hideEpisodes(4),
@@ -495,7 +498,7 @@
       gsap.timeline({
         scrollTrigger: {
           trigger: '#calendar-text-overlay-5',
-          start: 'center bottom',
+          start: 'top center',
           invalidateOnRefresh: true,
           onEnter: () => showEpisodes(5),
           onLeaveBack: () => hideEpisodes(5),
@@ -504,7 +507,7 @@
       gsap.timeline({
         scrollTrigger: {
           trigger: '#calendar-text-overlay-6',
-          start: 'center bottom',
+          start: 'top center',
           invalidateOnRefresh: true,
         },
       });

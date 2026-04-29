@@ -113,8 +113,12 @@
   /** @type {IntersectionObserver | undefined} */
   let ioObserver;
 
+  // Guards against the jingle starting before the bar animation fires.
+  // Set to true inside the ScrollTrigger onEnter that also kicks off animateBars().
+  let barsHaveAnimated = false;
+
   const playJingle = () => {
-    if ($soundIsAuth && isTitleInView && soundtrack?.loaded && soundtrack.state !== 'started') {
+    if ($soundIsAuth && isTitleInView && barsHaveAnimated && soundtrack?.loaded && soundtrack.state !== 'started') {
       soundtrack.start();
     }
   };
@@ -125,7 +129,8 @@
   };
 
   // Play/stop jingle reactively whenever auth state or visibility changes.
-  // IntersectionObserver guarantees isTitleInView is accurate on iOS Chrome.
+  // playJingle() is a no-op until barsHaveAnimated is true, so granting sound
+  // auth before the scroll position is reached won't start the music early.
   $effect(() => {
     if ($soundIsAuth && isTitleInView) {
       playJingle();
@@ -172,6 +177,10 @@
             // prevents iOS from hiding content if trigger fires at wrong position
             toggleActions: 'play none none none',
             invalidateOnRefresh: true,
+            onEnter: () => {
+              barsHaveAnimated = true;
+              playJingle();
+            },
           },
         })
         .add(revealContent())

@@ -397,7 +397,7 @@
 </script>
 
 <div id="laughs-scroll-container" class="relative">
-  <div class="sticky top-0 h-[100dvh] self-start">
+  <div class="sticky h-[100dvh] self-start" style="top: var(--vv-top, 0px);">
     <!-- Background image -->
     <div
       class="absolute inset-0 bg-cover bg-center"

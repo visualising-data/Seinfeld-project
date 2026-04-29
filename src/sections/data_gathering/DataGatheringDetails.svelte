@@ -152,7 +152,7 @@
 <svelte:window bind:innerWidth />
 
 <div id="data-gathering-3" class="relative bg-[#000]">
-  <div class="sticky top-0 h-[100dvh] flex flex-col">
+  <div class="sticky h-[100dvh] flex flex-col" style="top: var(--vv-top, 0px);">
     <!-- Video area: fills remaining height above the overlay -->
     <div class="flex-1 relative flex items-center min-h-0 overflow-hidden">
       <video

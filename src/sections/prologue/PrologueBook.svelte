@@ -108,7 +108,7 @@
         </div>
         <div class="flex-1 px-4">
           <img
-            loading="lazy"
+            loading="eager"
             id="book-cover"
             src={BookCover}
             alt="Cover of the book The Seinfeld Chronicles."
@@ -122,49 +122,49 @@
         <div id="books-inner-container" class="flex">
           <!-- Book cover as first image on mobile only -->
           <img
-            loading="lazy"
+            loading="eager"
             class="book-img mx-4 lg:hidden"
             src={BookCover}
             alt="Cover of the book The Seinfeld Chronicles."
           />
           <img
-            loading="lazy"
+            loading="eager"
             class="book-img mx-4"
             src={BookIntro}
             alt="Introduction of the book."
           />
           <img
-            loading="lazy"
+            loading="eager"
             class="book-img mx-4"
             src={BookCalendar}
             alt="Calendar of the nine seasons of Seinfeld."
           />
           <img
-            loading="lazy"
+            loading="eager"
             class="book-img mx-4"
             src={BookLaughs}
             alt="Data visualizations of the laughs caused by the four main characters."
           />
           <img
-            loading="lazy"
+            loading="eager"
             class="book-img mx-4"
             src={BookScatterplot}
             alt="Data visualizations of the peak performances of the four main characters."
           />
           <img
-            loading="lazy"
+            loading="eager"
             class="book-img mx-4"
             src={BookQuotes}
             alt="Famous quotes from each episode."
           />
           <img
-            loading="lazy"
+            loading="eager"
             class="book-img mx-4"
             src={BookCatalog1}
             alt="Data visualization of season 4 episode 11 'The Contest'."
           />
           <img
-            loading="lazy"
+            loading="eager"
             class="book-img mx-4"
             src={BookCatalog2}
             alt="Data visualization of season 7 episode 6 'The Soup Nazi'."

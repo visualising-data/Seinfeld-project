@@ -7,6 +7,10 @@
   // @ts-ignore
   import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
   gsap.registerPlugin(ScrollTrigger);
+  // Prevent ScrollTrigger from recalculating pin positions when the iOS Chrome
+  // toolbar shows/hides (which changes window.innerHeight). Without this, GSAP
+  // pins drift up behind the browser URL bar on iPhone.
+  ScrollTrigger.config({ ignoreMobileResize: true });
 
   import { navBarColor } from '../stores/navbarColor';
   import { pendingScrollAnchor, isScrollLoading } from '../stores/scrollAnchor';
@@ -94,6 +98,17 @@
   // }
 
   onMount(() => {
+    // Track the iOS Chrome URL-bar offset via the Visual Viewport API and expose
+    // it as --vv-top on :root. Sticky sections use `top: var(--vv-top, 0px)`
+    // so they always anchor to the bottom of the URL bar, not behind it.
+    const setVvTop = () => {
+      const offset = window.visualViewport?.offsetTop ?? 0;
+      document.documentElement.style.setProperty('--vv-top', `${offset}px`);
+    };
+    setVvTop();
+    window.visualViewport?.addEventListener('resize', setVvTop);
+    window.visualViewport?.addEventListener('scroll', setVvTop);
+
     // Load episodes data — use localStorage cache for instant repeat visits
     const cached = localStorage.getItem(EPISODES_CACHE_KEY);
     if (cached) {
@@ -185,6 +200,8 @@
       unsubscribe();
       unsubLazy();
       if (scrollPollId !== null) clearInterval(scrollPollId);
+      window.visualViewport?.removeEventListener('resize', setVvTop);
+      window.visualViewport?.removeEventListener('scroll', setVvTop);
     };
   });
 </script>
