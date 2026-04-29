@@ -5,6 +5,7 @@
   // @ts-ignore
   import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
   import Lenis from 'lenis';
+  import { lenisInstance } from '../../stores/lenisStore';
 
   import BookCover from '$lib/assets/book/book_cover.jpg';
   import BookIntro from '$lib/assets/book/book_intro.jpg';
@@ -52,6 +53,7 @@
     window.addEventListener('load', () => ScrollTrigger.refresh(), { once: true });
 
     lenis = new Lenis();
+    lenisInstance.set(lenis);
     lenis.on('scroll', ScrollTrigger.update);
     lenisTicker = (time) => lenis?.raf(time * 1000);
     gsap.ticker.add(lenisTicker);
@@ -63,6 +65,7 @@
     ScrollTrigger.getAll().forEach((st) => st.kill());
     lenis?.off('scroll', ScrollTrigger.update);
     lenis?.destroy();
+    lenisInstance.set(null);
     if (lenisTicker) gsap.ticker.remove(lenisTicker);
   });
 </script>

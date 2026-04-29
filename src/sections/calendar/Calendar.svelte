@@ -523,8 +523,8 @@
 <div id="intro-calendar-container" class="relative">
   <div
     id="intro-calendar"
-    class="absolute flex h-[100dvh] w-screen"
-    style="padding-top: {navbarHeight}px; background: {navbarHeight > 0
+    class="absolute flex w-screen"
+    style="height: {innerHeight}px; padding-top: {navbarHeight}px; background: {navbarHeight > 0
       ? `linear-gradient(#E71D80 ${navbarHeight}px, transparent ${navbarHeight}px)`
       : 'rgb(231 29 128 / 0.05)'};"
   >
