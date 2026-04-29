@@ -129,188 +129,194 @@
         </ul>
       </div>
 
-      <!-- Scatterplot -->
-      <svg
-        class="shrink-0"
-        role="img"
-        aria-label="Scatterplot of character peak performances"
-        width={isMobile ? chartWidth + marginLeft : chartWidth + 32}
-        height={chartHeight + 32}
-        style={isMobile ? `margin-left: -${marginLeft}px` : ''}
-        onmousemove={(e) => (mousePosition = [e.clientX, e.clientY])}
-      >
-        <g transform="translate(30, 1)">
-          <rect
-            x={0}
-            y={0}
-            width={chartWidth}
-            height={chartHeight}
-            fill="transparent"
-            stroke="#12020A"
-          />
-          <line
-            x1={charLaughterRateScale(0.5)}
-            y1={0}
-            x2={charLaughterRateScale(0.5)}
-            y2={chartHeight}
-            stroke="#BEBABC"
-          />
-          <line
-            x1={0}
-            y1={charShareLaughScale(0.5)}
-            x2={chartWidth}
-            y2={charShareLaughScale(0.5)}
-            stroke="#BEBABC"
-          />
-          <g class="number" fill-opacity={isTooltipVisible ? 0 : 1}>
-            <text x={charLaughterRateScale(0.5) + 4} y={chartHeight - 4}>50%</text>
-            <text x={4} y={charShareLaughScale(0.5) - 4}>50%</text>
-          </g>
+      <!-- Scatterplot + Stats wrapper -->
+      <div class="relative md:flex md:flex-row md:items-stretch">
+        <!-- Scatterplot -->
+        <svg
+          class="shrink-0"
+          role="img"
+          aria-label="Scatterplot of character peak performances"
+          width={isMobile ? chartWidth + marginLeft : chartWidth + 32}
+          height={chartHeight + 32}
+          style={isMobile ? `margin-left: -${marginLeft}px` : ''}
+          onmousemove={(e) => (mousePosition = [e.clientX, e.clientY])}
+        >
+          <g transform="translate(30, 1)">
+            <rect
+              x={0}
+              y={0}
+              width={chartWidth}
+              height={chartHeight}
+              fill="transparent"
+              stroke="#12020A"
+            />
+            <line
+              x1={charLaughterRateScale(0.5)}
+              y1={0}
+              x2={charLaughterRateScale(0.5)}
+              y2={chartHeight}
+              stroke="#BEBABC"
+            />
+            <line
+              x1={0}
+              y1={charShareLaughScale(0.5)}
+              x2={chartWidth}
+              y2={charShareLaughScale(0.5)}
+              stroke="#BEBABC"
+            />
+            <g class="number" fill-opacity={isTooltipVisible ? 0 : 1}>
+              <text x={charLaughterRateScale(0.5) + 4} y={chartHeight - 4}>50%</text>
+              <text x={4} y={charShareLaughScale(0.5) - 4}>50%</text>
+            </g>
 
-          <g>
-            {#each orderedChars as char (char.id)}
-              {#each performances as episode (`${episode.seasonNum}-${episode.episode}`)}
-                {@const ep = episode.charsBreakdown.find((c) => c.id === char.id)}
+            <g>
+              {#each orderedChars as char (char.id)}
+                {#each performances as episode (`${episode.seasonNum}-${episode.episode}`)}
+                  {@const ep = episode.charsBreakdown.find((c) => c.id === char.id)}
+                  <circle
+                    class="performance performance-{char.id} {char.isActive
+                      ? 'active'
+                      : ''} {isTooltipVisible ? 'faded' : ''}"
+                    cx={charLaughterRateScale(ep.laughterRate)}
+                    cy={charShareLaughScale(ep.shareOfLaughs)}
+                    r={relativeScreenTimeRateScale(ep.relativeScreenTime)}
+                    fill={'#DDDBDC'}
+                    role="document"
+                    onmouseenter={(e) => handleMouseEnter(e, episode, char.id)}
+                    onmouseleave={handleMouseLeave}
+                  />
+                {/each}
+              {/each}
+            </g>
+
+            <!-- Hover details -->
+            {#if isTooltipVisible && hoveredEpisode}
+              <g class="pointer-events-none">
+                <line
+                  x1={charLaughterRateScale(hoveredCharData.laughterRate)}
+                  y1={0}
+                  x2={charLaughterRateScale(hoveredCharData.laughterRate)}
+                  y2={chartHeight}
+                  stroke="#12020A"
+                  stroke-dasharray="5 5"
+                />
+                <line
+                  x1={0}
+                  y1={charShareLaughScale(hoveredCharData.shareOfLaughs)}
+                  x2={chartWidth}
+                  y2={charShareLaughScale(hoveredCharData.shareOfLaughs)}
+                  stroke="#12020A"
+                  stroke-dasharray="5 5"
+                />
                 <circle
-                  class="performance performance-{char.id} {char.isActive
-                    ? 'active'
-                    : ''} {isTooltipVisible ? 'faded' : ''}"
-                  cx={charLaughterRateScale(ep.laughterRate)}
-                  cy={charShareLaughScale(ep.shareOfLaughs)}
-                  r={relativeScreenTimeRateScale(ep.relativeScreenTime)}
+                  class="performance performance-{hoveredChar} active"
+                  cx={charLaughterRateScale(hoveredCharData.laughterRate)}
+                  cy={charShareLaughScale(hoveredCharData.shareOfLaughs)}
+                  r={relativeScreenTimeRateScale(hoveredCharData.relativeScreenTime)}
                   fill={'#DDDBDC'}
                   role="document"
-                  onmouseenter={(e) => handleMouseEnter(e, episode, char.id)}
-                  onmouseleave={handleMouseLeave}
                 />
-              {/each}
-            {/each}
-          </g>
+              </g>
+            {/if}
 
-          <!-- Hover details -->
-          {#if isTooltipVisible && hoveredEpisode}
-            <g class="pointer-events-none">
-              <line
-                x1={charLaughterRateScale(hoveredCharData.laughterRate)}
-                y1={0}
-                x2={charLaughterRateScale(hoveredCharData.laughterRate)}
-                y2={chartHeight}
-                stroke="#12020A"
-                stroke-dasharray="5 5"
-              />
-              <line
-                x1={0}
-                y1={charShareLaughScale(hoveredCharData.shareOfLaughs)}
-                x2={chartWidth}
-                y2={charShareLaughScale(hoveredCharData.shareOfLaughs)}
-                stroke="#12020A"
-                stroke-dasharray="5 5"
-              />
-              <circle
-                class="performance performance-{hoveredChar} active"
-                cx={charLaughterRateScale(hoveredCharData.laughterRate)}
-                cy={charShareLaughScale(hoveredCharData.shareOfLaughs)}
-                r={relativeScreenTimeRateScale(hoveredCharData.relativeScreenTime)}
-                fill={'#DDDBDC'}
-                role="document"
-              />
+            <!-- Axis labels -->
+            <g transform="translate(0, {chartHeight + 16})">
+              <text class="small accent" x={0} y={0}>Episode laughter rate</text>
+              <g transform="translate(144, -1) rotate(-90)">
+                <ArrowDown />
+              </g>
             </g>
-          {/if}
+            <g transform="translate(-8, {chartHeight}) rotate(-90)">
+              <text class="small accent" x={0} y={0}>Share of episode laughs</text>
+              <g transform="translate(163, -1) rotate(-90)">
+                <ArrowDown />
+              </g>
+            </g>
+            <g class="small accent">
+              <text x={4} y={16}>Higher share of laughs</text>
+              <text x={chartWidth - 4} y={chartHeight - 6} text-anchor="end"
+                >Higher rate of laughs</text
+              >
+            </g>
 
-          <!-- Axis labels -->
-          <g transform="translate(0, {chartHeight + 16})">
-            <text class="small accent" x={0} y={0}>Episode laughter rate</text>
-            <g transform="translate(144, -1) rotate(-90)">
-              <ArrowDown />
+            <!-- Circles size legend -->
+            <g transform="translate({chartWidth - 160}, 40)" dominant-baseline="hanging">
+              <text class="small accent">Screen time</text>
+              <g transform="translate(18, 0)">
+                <circle cx={0} cy={28} r={10} fill="#DDDBDC" />
+                <text class="number" y={40} text-anchor="middle">100%</text>
+              </g>
+              <g transform="translate(70, 0)">
+                <circle cx={0} cy={28} r={6} fill="#DDDBDC" />
+                <text class="number" y={40} text-anchor="middle">60%</text>
+              </g>
+              <g transform="translate(122, 0)">
+                <circle cx={0} cy={28} r={3} fill="#DDDBDC" />
+                <text class="number" y={40} text-anchor="middle">30%</text>
+              </g>
             </g>
           </g>
-          <g transform="translate(-8, {chartHeight}) rotate(-90)">
-            <text class="small accent" x={0} y={0}>Share of episode laughs</text>
-            <g transform="translate(163, -1) rotate(-90)">
-              <ArrowDown />
-            </g>
-          </g>
-          <g class="small accent">
-            <text x={4} y={16}>Higher share of laughs</text>
-            <text x={chartWidth - 4} y={chartHeight - 6} text-anchor="end"
-              >Higher rate of laughs</text
-            >
-          </g>
+        </svg>
 
-          <!-- Circles size legend -->
-          <g transform="translate({chartWidth - 160}, 40)" dominant-baseline="hanging">
-            <text class="small accent">Screen time</text>
-            <g transform="translate(18, 0)">
-              <circle cx={0} cy={28} r={10} fill="#DDDBDC" />
-              <text class="number" y={40} text-anchor="middle">100%</text>
-            </g>
-            <g transform="translate(70, 0)">
-              <circle cx={0} cy={28} r={6} fill="#DDDBDC" />
-              <text class="number" y={40} text-anchor="middle">60%</text>
-            </g>
-            <g transform="translate(122, 0)">
-              <circle cx={0} cy={28} r={3} fill="#DDDBDC" />
-              <text class="number" y={40} text-anchor="middle">30%</text>
-            </g>
-          </g>
-        </g>
-      </svg>
+        <!-- Stats -->
+        {#if isTooltipVisible}
+          <div
+            class="absolute bottom-12 right-0 md:static md:ml-2 md:pb-8 flex flex-col justify-center gap-4 md:mt-0 p-2 md:p-0 bg-white/80 md:bg-transparent rounded"
+          >
+            <!-- Laughter rate -->
+            <div>
+              <div class="small">Episode laughter rate</div>
+              <svg width={statWidth} height={statHeight + 18}>
+                <text class="number baselin" dominant-baseline="hanging">
+                  {`${Math.floor(hoveredCharData.laughterRate * 100)}%`}
+                </text>
+                <rect y={18} width={statWidth} height={statHeight} fill="#EEECED" />
+                <rect
+                  y={18}
+                  width={statScale(hoveredCharData.laughterRate)}
+                  height={statHeight}
+                  fill={mainChars.find((c) => c.id === hoveredChar).color}
+                />
+              </svg>
+            </div>
 
-      <!-- Stats -->
-      {#if isTooltipVisible}
-        <div class="md:ml-2 pb-8 flex flex-col justify-center gap-4 mt-4 md:mt-0">
-          <!-- Laughter rate -->
-          <div>
-            <div class="small">Episode laughter rate</div>
-            <svg width={statWidth} height={statHeight + 18}>
-              <text class="number baselin" dominant-baseline="hanging">
-                {`${Math.floor(hoveredCharData.laughterRate * 100)}%`}
-              </text>
-              <rect y={18} width={statWidth} height={statHeight} fill="#EEECED" />
-              <rect
-                y={18}
-                width={statScale(hoveredCharData.laughterRate)}
-                height={statHeight}
-                fill={mainChars.find((c) => c.id === hoveredChar).color}
-              />
-            </svg>
+            <!-- Share of episode laughs -->
+            <div>
+              <div class="small">Share of episode laughs</div>
+              <svg width={statWidth} height={statHeight + 18}>
+                <text class="number baselin" dominant-baseline="hanging">
+                  {`${Math.floor(hoveredCharData.shareOfLaughs * 100)}%`}
+                </text>
+                <rect y={18} width={statWidth} height={statHeight} fill="#EEECED" />
+                <rect
+                  y={18}
+                  width={statScale(hoveredCharData.shareOfLaughs)}
+                  height={statHeight}
+                  fill={mainChars.find((c) => c.id === hoveredChar).color}
+                />
+              </svg>
+            </div>
+
+            <!-- Screen time -->
+            <div>
+              <div class="small">Screen time</div>
+              <svg width={statWidth} height={statHeight + 18}>
+                <text class="number" dominant-baseline="hanging">
+                  {`${Math.floor(hoveredCharData.relativeScreenTime * 100)}%`}
+                </text>
+                <rect y={18} width={statWidth} height={statHeight} fill="#EEECED" />
+                <rect
+                  y={18}
+                  width={statScale(hoveredCharData.relativeScreenTime)}
+                  height={statHeight}
+                  fill={mainChars.find((c) => c.id === hoveredChar).color}
+                />
+              </svg>
+            </div>
           </div>
-
-          <!-- Share of episode laughs -->
-          <div>
-            <div class="small">Share of episode laughs</div>
-            <svg width={statWidth} height={statHeight + 18}>
-              <text class="number baselin" dominant-baseline="hanging">
-                {`${Math.floor(hoveredCharData.shareOfLaughs * 100)}%`}
-              </text>
-              <rect y={18} width={statWidth} height={statHeight} fill="#EEECED" />
-              <rect
-                y={18}
-                width={statScale(hoveredCharData.shareOfLaughs)}
-                height={statHeight}
-                fill={mainChars.find((c) => c.id === hoveredChar).color}
-              />
-            </svg>
-          </div>
-
-          <!-- Screen time -->
-          <div>
-            <div class="small">Screen time</div>
-            <svg width={statWidth} height={statHeight + 18}>
-              <text class="number" dominant-baseline="hanging">
-                {`${Math.floor(hoveredCharData.relativeScreenTime * 100)}%`}
-              </text>
-              <rect y={18} width={statWidth} height={statHeight} fill="#EEECED" />
-              <rect
-                y={18}
-                width={statScale(hoveredCharData.relativeScreenTime)}
-                height={statHeight}
-                fill={mainChars.find((c) => c.id === hoveredChar).color}
-              />
-            </svg>
-          </div>
-        </div>
-      {/if}
+        {/if}
+      </div>
+      <!-- end scatterplot+stats wrapper -->
     </div>
   </div>
 

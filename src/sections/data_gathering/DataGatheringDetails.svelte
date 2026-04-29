@@ -160,8 +160,7 @@
         class="w-full h-auto"
         playsinline
         muted
-        controls={false}
-        preload="none"
+        preload="metadata"
         bind:this={videoEl}
       >
         <source
