@@ -161,7 +161,7 @@
         playsinline
         muted
         controls={false}
-        preload="metadata"
+        preload="none"
         bind:this={videoEl}
       >
         <source
