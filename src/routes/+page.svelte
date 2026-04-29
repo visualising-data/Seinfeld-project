@@ -23,19 +23,19 @@
   // @ts-ignore
   import Calendar from '../sections/calendar/Calendar.svelte';
   import Quotes from '../sections/quotes/Quotes.svelte';
-  import MethodologyAndCredits from '../sections/MethodologyAndCredits.svelte';
-  import Footer from '../sections/Footer.svelte';
+  // import MethodologyAndCredits from '../sections/MethodologyAndCredits.svelte';
+  // import Footer from '../sections/Footer.svelte';
 
   // ── Lazy-loaded sections ──────────────────────────────────────────────────
   // Wave 1: loaded when the sentinel after Calendar enters viewport
   let DataGathering: any = null;
   let IntroEnd: any = null;
   // Wave 2: loaded when the sentinel after IntroEnd enters viewport
-  let MainCharsSection: any = null;
-  let SupportingCharsSection: any = null;
+  // let MainCharsSection: any = null;
+  // let SupportingCharsSection: any = null;
   // Wave 3: loaded when the sentinel after SupportingCharsSection enters viewport
-  let LocationsSection: any = null;
-  let LaughsExploration: any = null;
+  // let LocationsSection: any = null;
+  // let LaughsExploration: any = null;
 
   const episodesDataUrl = 'https://amdufour.github.io/hosted-data/apis/episodes_laughs.min.json';
 
@@ -73,25 +73,25 @@
     scheduleRefresh();
   }
 
-  async function loadWave2() {
-    if (MainCharsSection) return;
-    [MainCharsSection, SupportingCharsSection] = await Promise.all([
-      import('../sections/main_characters/MainCharsSection.svelte').then((m) => m.default),
-      import('../sections/supporting_characters/SupportingCharsSection.svelte').then((m) => m.default),
-    ]);
-    await tick();
-    scheduleRefresh();
-  }
+  // async function loadWave2() {
+  //   if (MainCharsSection) return;
+  //   [MainCharsSection, SupportingCharsSection] = await Promise.all([
+  //     import('../sections/main_characters/MainCharsSection.svelte').then((m) => m.default),
+  //     import('../sections/supporting_characters/SupportingCharsSection.svelte').then((m) => m.default),
+  //   ]);
+  //   await tick();
+  //   scheduleRefresh();
+  // }
 
-  async function loadWave3() {
-    if (LocationsSection) return;
-    [LocationsSection, LaughsExploration] = await Promise.all([
-      import('../sections/locations/locationsSection.svelte').then((m) => m.default),
-      import('../sections/laughs-exploration/LaughsExploration.svelte').then((m) => m.default),
-    ]);
-    await tick();
-    scheduleRefresh();
-  }
+  // async function loadWave3() {
+  //   if (LocationsSection) return;
+  //   [LocationsSection, LaughsExploration] = await Promise.all([
+  //     import('../sections/locations/locationsSection.svelte').then((m) => m.default),
+  //     import('../sections/laughs-exploration/LaughsExploration.svelte').then((m) => m.default),
+  //   ]);
+  //   await tick();
+  //   scheduleRefresh();
+  // }
 
   onMount(() => {
     // Load episodes data — use localStorage cache for instant repeat visits
@@ -124,7 +124,7 @@
     // Force-load all waves immediately when triggered by menu/sidebar navigation
     const unsubLazy = lazyLoadAll.subscribe(async (shouldLoad) => {
       if (!shouldLoad) return;
-      await Promise.all([loadWave1(), loadWave2(), loadWave3()]);
+      await Promise.all([loadWave1()/*, loadWave2(), loadWave3()*/]);
     });
 
     // If the page loads with a non-zero scroll position (browser scroll restoration
@@ -133,8 +133,8 @@
     requestAnimationFrame(() => {
       if (window.scrollY > 0) {
         loadWave1();
-        loadWave2();
-        loadWave3();
+        // loadWave2();
+        // loadWave3();
       }
     });
 
@@ -230,11 +230,11 @@
       <svelte:component this={IntroEnd} />
       <Quotes />
 
-      <!-- Wave 2 sentinel: triggers MainCharsSection + SupportingCharsSection -->
+      <!-- Wave 2 sentinel and all downstream sections temporarily commented out
       <div
         id="lazy-load-sentinel-2"
         use:inview={{ rootMargin: '2000px' }}
-        oninview_change={async (/** @type {{ detail: { inView: any; }; }} */ event) => {
+        oninview_change={async (event) => {
           if (event.detail.inView) await loadWave2();
         }}
       ></div>
@@ -243,11 +243,10 @@
         <svelte:component this={MainCharsSection} {episodesData} />
         <svelte:component this={SupportingCharsSection} {episodesData} />
 
-        <!-- Wave 3 sentinel: triggers LocationsSection + LaughsExploration -->
         <div
           id="lazy-load-sentinel-3"
           use:inview={{ rootMargin: '2000px' }}
-          oninview_change={async (/** @type {{ detail: { inView: any; }; }} */ event) => {
+          oninview_change={async (event) => {
             if (event.detail.inView) await loadWave3();
           }}
         ></div>
@@ -260,6 +259,7 @@
           <Footer />
         {/if}
       {/if}
+      -->
     {/if}
   </div>
 </main>
