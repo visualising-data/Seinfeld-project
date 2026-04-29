@@ -71,10 +71,6 @@
     // ScrollTrigger the page height has changed so all pins recalculate.
     await tick();
     scheduleRefresh();
-    // Pre-load Wave 2 immediately after Wave 1 mounts — fast momentum scrolling
-    // (especially on iPhone) can outrun the sentinel-based cascade, so we start
-    // the next wave eagerly without waiting for its sentinel to enter the viewport.
-    loadWave2();
   }
 
   async function loadWave2() {
@@ -85,8 +81,6 @@
     ]);
     await tick();
     scheduleRefresh();
-    // Same eager pre-load for Wave 3.
-    loadWave3();
   }
 
   async function loadWave3() {
@@ -262,10 +256,10 @@
           <svelte:component this={LocationsSection} {episodesData} />
           <svelte:component this={LaughsExploration} {episodesData} />
           <Quotes />
+          <MethodologyAndCredits />
+          <Footer />
         {/if}
       {/if}
     {/if}
-    <MethodologyAndCredits />
-    <Footer />
   </div>
 </main>
