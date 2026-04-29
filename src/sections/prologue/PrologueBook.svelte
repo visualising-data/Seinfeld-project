@@ -128,43 +128,43 @@
             alt="Cover of the book The Seinfeld Chronicles."
           />
           <img
-            loading="eager"
+            loading="lazy"
             class="book-img mx-4"
             src={BookIntro}
             alt="Introduction of the book."
           />
           <img
-            loading="eager"
+            loading="lazy"
             class="book-img mx-4"
             src={BookCalendar}
             alt="Calendar of the nine seasons of Seinfeld."
           />
           <img
-            loading="eager"
+            loading="lazy"
             class="book-img mx-4"
             src={BookLaughs}
             alt="Data visualizations of the laughs caused by the four main characters."
           />
           <img
-            loading="eager"
+            loading="lazy"
             class="book-img mx-4"
             src={BookScatterplot}
             alt="Data visualizations of the peak performances of the four main characters."
           />
           <img
-            loading="eager"
+            loading="lazy"
             class="book-img mx-4"
             src={BookQuotes}
             alt="Famous quotes from each episode."
           />
           <img
-            loading="eager"
+            loading="lazy"
             class="book-img mx-4"
             src={BookCatalog1}
             alt="Data visualization of season 4 episode 11 'The Contest'."
           />
           <img
-            loading="eager"
+            loading="lazy"
             class="book-img mx-4"
             src={BookCatalog2}
             alt="Data visualization of season 7 episode 6 'The Soup Nazi'."

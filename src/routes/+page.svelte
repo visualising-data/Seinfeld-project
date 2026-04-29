@@ -192,6 +192,13 @@
               if (y === lastY) {
                 if (++stableCount >= 3) {
                   ScrollTrigger.refresh();
+                  // After refresh, GSAP recalculates pin spacers (e.g. Calendar),
+                  // which shifts content. Re-scroll to the target so we land correctly.
+                  const reTarget = document.getElementById(anchor);
+                  if (reTarget) {
+                    const newY = reTarget.getBoundingClientRect().top + window.scrollY;
+                    window.scrollTo(0, newY);
+                  }
                   return;
                 }
               } else {
