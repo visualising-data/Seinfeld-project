@@ -191,9 +191,9 @@
       top: calc(100dvh - 228px);
     }
   }
-  /* clip-path instead of overflow-x: clip — avoids iOS Chrome compositing
-     bug that blocks CSS transform (translateX) on child elements */
-  .book-strip-sticky {
-    clip-path: inset(0);
+  /* will-change forces its own GPU compositing layer so iOS Chrome renders
+     the GSAP translateX correctly inside the sticky container */
+  #books-inner-container {
+    will-change: transform;
   }
 </style>

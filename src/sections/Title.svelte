@@ -107,7 +107,11 @@
    * @type {Tone.Player}
    */
   let soundtrack;
-  let isTitleInView = false;
+
+  // Tracked via IntersectionObserver — more reliable than GSAP ScrollTrigger on iOS Chrome
+  let isTitleInView = $state(false);
+  /** @type {IntersectionObserver | undefined} */
+  let ioObserver;
 
   const playJingle = () => {
     if ($soundIsAuth && isTitleInView && soundtrack?.loaded && soundtrack.state !== 'started') {
@@ -120,10 +124,13 @@
     }
   };
 
-  // When sound auth is granted while already in the title section, start the jingle.
+  // Play/stop jingle reactively whenever auth state or visibility changes.
+  // IntersectionObserver guarantees isTitleInView is accurate on iOS Chrome.
   $effect(() => {
-    if ($soundIsAuth) {
+    if ($soundIsAuth && isTitleInView) {
       playJingle();
+    } else if (!isTitleInView) {
+      stopJingle();
     }
   });
 
@@ -143,6 +150,17 @@
       'https://amdufour.github.io/hosted-data/apis/sonification/20250925_Seinfeld_Intro_Title_All.mp3',
     ).toDestination();
 
+    // IntersectionObserver is more reliable than GSAP ScrollTrigger on iOS Chrome
+    // for detecting whether the section is actually in view.
+    const titleEl = document.getElementById('title-screen');
+    if (titleEl) {
+      ioObserver = new IntersectionObserver(
+        ([entry]) => { isTitleInView = entry.isIntersecting; },
+        { threshold: 0.1 },
+      );
+      ioObserver.observe(titleEl);
+    }
+
     ctx = gsap.context(() => {
       gsap
         .timeline({
@@ -150,11 +168,9 @@
             trigger: '#title-screen',
             start: 'top 30%',
             end: 'bottom top',
-            onEnter: () => { isTitleInView = true; playJingle(); },
-            onEnterBack: () => { isTitleInView = true; playJingle(); },
-            onLeave: () => { isTitleInView = false; stopJingle(); },
-            onLeaveBack: () => { isTitleInView = false; stopJingle(); },
-            toggleActions: 'play reset play reset',
+            // 'play none none none': content stays visible once revealed —
+            // prevents iOS from hiding content if trigger fires at wrong position
+            toggleActions: 'play none none none',
             invalidateOnRefresh: true,
           },
         })
@@ -164,6 +180,7 @@
   });
 
   onDestroy(() => {
+    ioObserver?.disconnect();
     isTitleInView = false;
     ctx?.revert();
     soundtrack?.dispose();
