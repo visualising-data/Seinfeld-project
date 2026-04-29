@@ -128,6 +128,9 @@
         };
         video.addEventListener('canplay', pendingCanPlay, { once: true });
 
+        // iOS Safari with preload="none" silently blocks play() unless load()
+        // is called first to explicitly start the resource fetch.
+        video.load();
         video.play().catch((err) => {
           if (err.name !== 'AbortError') console.warn('Video play failed:', err);
           isVideoLoading = false;
@@ -160,7 +163,7 @@
         class="w-full h-auto"
         playsinline
         muted
-        preload="metadata"
+        preload="none"
         bind:this={videoEl}
       >
         <source
