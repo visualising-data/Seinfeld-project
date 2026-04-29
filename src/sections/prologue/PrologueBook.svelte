@@ -173,8 +173,11 @@
       </div>
     </div>
 
-    <!-- Scroll spacer: provides scroll distance for the GSAP animation -->
-    <div class="h-[300vh]"></div>
+    <!-- Scroll spacer: provides scroll distance for the GSAP animation.
+         Mobile needs more space than desktop because the image strip is much
+         wider relative to the viewport, so more scroll time is needed to
+         comfortably see all the images. -->
+    <div class="h-[500vh] lg:h-[300vh]"></div>
   </div>
 </div>
 
