@@ -121,7 +121,10 @@
       {#if innerWidth >= 750}
         <div class="small">OR</div>
       {/if}
-      <button class="ml-1 flex items-center lg:ml-5" onclick={handleGoToRandomEpisode}>
+      <button
+        class="{innerWidth >= 750 ? 'ml-1' : 'ml-0'} flex items-center lg:ml-5"
+        onclick={handleGoToRandomEpisode}
+      >
         <div class="flex items-center justify-center">
           <Random size={innerWidth > 1024 ? 42 : 38} />
         </div>

@@ -58,9 +58,7 @@
     {/if}
     <div class="px-4">
       {#if !episodes}
-        <div class="ml-4" style="margin-top: 42px; margin-bottom: -16px; font-weight: 600;">
-          season 5 episode 14
-        </div>
+        <div class="mt-5" style="margin-bottom: -16px; font-weight: 600;">season 5 episode 14</div>
       {/if}
       <div class="flex items-center gap-8 mt-2 lg:mt-0">
         <h2>
@@ -90,48 +88,50 @@
           </div>
         </div>
       {/if}
-      <div
-        style="margin-left: {innerWidth >= 1280 ? 16 : 0}px; margin-bottom: {innerWidth >= 1280
-          ? 0
-          : 42}px; display: {innerWidth >= 1280 ? 'flex' : 'block'};"
-      >
-        {#if innerWidth >= 1280}
-          <div
-            class="desc-wrap relative mid mr-4"
-            style="width: {Math.min(innerWidth - 25 - 450 - 225 - 100, 800)}px;"
-          >
-            <!-- The clamped, always-visible version -->
-            <div class="desc-clamp">
-              {episodeInfo.description}
-            </div>
+      {#if episodes || innerWidth >= 1280}
+        <div
+          style="margin-left: {innerWidth >= 1280 ? 16 : 0}px; margin-bottom: {innerWidth >= 1280
+            ? 0
+            : 42}px; display: {innerWidth >= 1280 ? 'flex' : 'block'};"
+        >
+          {#if innerWidth >= 1280}
+            <div
+              class="desc-wrap relative mid mr-4"
+              style="width: {Math.min(innerWidth - 25 - 450 - 225 - 100, 800)}px;"
+            >
+              <!-- The clamped, always-visible version -->
+              <div class="desc-clamp">
+                {episodeInfo.description}
+              </div>
 
-            <!-- The full text, shown on hover/focus; does not affect layout -->
-            <div class="desc-popover bg-white py-2 rounded-sm" role="tooltip">
+              <!-- The full text, shown on hover/focus; does not affect layout -->
+              <div class="desc-popover bg-white py-2 rounded-sm" role="tooltip">
+                {episodeInfo.description}
+              </div>
+            </div>
+          {:else}
+            <div class="mid mt-3">
               {episodeInfo.description}
             </div>
-          </div>
-        {:else}
-          <div class="mid mt-3">
-            {episodeInfo.description}
-          </div>
-        {/if}
-        <div class="mid shrink-0 mt-3 lg:mt-0">
-          <div class="mb-2 flex items-center">
-            <TvIcon />
-            <span class="relative" style="top: 2px;">
-              <span class="mx-1 font-semibold">First aired:</span>
-              <span>{episodeInfo.date_aired}</span>
-            </span>
-          </div>
-          <div class="flex items-center">
-            <StarIcon />
-            <span class="relative" style="top: 2px;">
-              <span class="mx-1 font-semibold">IMDb rating:</span>
-              <span>{episodeInfo.IMDB_rating.replace(',', '.')}/10</span>
-            </span>
+          {/if}
+          <div class="mid shrink-0 mt-3 lg:mt-0">
+            <div class="mb-2 flex items-center">
+              <TvIcon />
+              <span class="relative" style="top: 2px;">
+                <span class="mx-1 font-semibold">First aired:</span>
+                <span>{episodeInfo.date_aired}</span>
+              </span>
+            </div>
+            <div class="flex items-center">
+              <StarIcon />
+              <span class="relative" style="top: 2px;">
+                <span class="mx-1 font-semibold">IMDb rating:</span>
+                <span>{episodeInfo.IMDB_rating.replace(',', '.')}/10</span>
+              </span>
+            </div>
           </div>
         </div>
-      </div>
+      {/if}
     </div>
   </div>
 </div>

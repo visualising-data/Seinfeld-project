@@ -8,11 +8,9 @@
   import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
   gsap.registerPlugin(ScrollTrigger);
 
-  import { get } from 'svelte/store';
   import { navBarColor } from '../stores/navbarColor';
   import { pendingScrollAnchor, isScrollLoading } from '../stores/scrollAnchor';
   import { lazyLoadAll } from '../stores/lazyLoadTrigger';
-  import { lenisInstance } from '../stores/lenisStore';
   import ScrollLoader from '../UI/ScrollLoader.svelte';
   import SectionProgressBar from '../UI/SectionProgressBar.svelte';
   import { soundAuthModaleIsOpen } from '../stores/soundAuthStore';
@@ -134,20 +132,18 @@
           if (target) {
             clearInterval(scrollPollId!);
             scrollPollId = null;
-            // Use Lenis' immediate scroll so its internal position stays in sync
-            // with the native scroll position, preventing it from smooth-animating
-            // from 0 and playing all intermediate section animations.
-            const lenis = get(lenisInstance);
-            if (lenis) {
-              lenis.scrollTo(target, { immediate: true });
-            } else {
-              target.scrollIntoView({ behavior: 'instant' });
-            }
+            target.scrollIntoView({ behavior: 'instant' });
             pendingScrollAnchor.set(null);
             isScrollLoading.set(false);
-            // Defer refresh one frame so Lenis has emitted its scroll event and
-            // ScrollTrigger knows the new position before recalculating pin starts.
-            requestAnimationFrame(() => ScrollTrigger.refresh());
+            // Two rAFs: iOS defers the actual scroll paint to the next frame, so
+            // a single rAF can still see the old scroll position. The second frame
+            // guarantees window.scrollY is settled before ScrollTrigger recalculates
+            // pin positions and trigger start/end values.
+            requestAnimationFrame(() => {
+              requestAnimationFrame(() => {
+                ScrollTrigger.refresh();
+              });
+            });
           }
         }, 50);
       }
