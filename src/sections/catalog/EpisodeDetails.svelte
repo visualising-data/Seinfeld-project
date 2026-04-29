@@ -82,7 +82,7 @@
       <!-- Episode details -->
       {#if innerWidth < 1280}
         <div style="max-width: 450px; width: 100%;">
-          <img class="mt-2" src={episodeInfo.img_src} alt="Episode cover" />
+          <img class="mt-0" src={episodeInfo.img_src} alt="Episode cover" />
           <div class="small mt-1 ml-1">
             Photo source: <a href="https://www.imdb.com/title/tt0098904/" target="_blank">IMDb</a>
           </div>

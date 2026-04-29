@@ -34,9 +34,10 @@
   // Wave 1: loaded when the sentinel after Calendar enters viewport
   let DataGathering: any = null;
   let IntroEnd: any = null;
-  // Wave 2: loaded when the sentinel after IntroEnd enters viewport
-  // let MainCharsSection: any = null;
-  // let SupportingCharsSection: any = null;
+  // Wave 2: MainCharsSection loaded by sentinel after IntroEnd;
+  // SupportingCharsSection loaded by a nested sentinel after MainCharsSection mounts.
+  let MainCharsSection: any = null;
+  let SupportingCharsSection: any = null;
   // Wave 3: loaded when the sentinel after SupportingCharsSection enters viewport
   // let LocationsSection: any = null;
   // let LaughsExploration: any = null;
@@ -77,15 +78,23 @@
     scheduleRefresh();
   }
 
-  // async function loadWave2() {
-  //   if (MainCharsSection) return;
-  //   [MainCharsSection, SupportingCharsSection] = await Promise.all([
-  //     import('../sections/main_characters/MainCharsSection.svelte').then((m) => m.default),
-  //     import('../sections/supporting_characters/SupportingCharsSection.svelte').then((m) => m.default),
-  //   ]);
-  //   await tick();
-  //   scheduleRefresh();
-  // }
+  async function loadWave2() {
+    if (MainCharsSection) return;
+    MainCharsSection = await import('../sections/main_characters/MainCharsSection.svelte').then(
+      (m) => m.default,
+    );
+    await tick();
+    scheduleRefresh();
+  }
+
+  async function loadSupportingChars() {
+    if (SupportingCharsSection) return;
+    SupportingCharsSection = await import(
+      '../sections/supporting_characters/SupportingCharsSection.svelte'
+    ).then((m) => m.default);
+    await tick();
+    scheduleRefresh();
+  }
 
   // async function loadWave3() {
   //   if (LocationsSection) return;
@@ -139,7 +148,7 @@
     // Force-load all waves immediately when triggered by menu/sidebar navigation
     const unsubLazy = lazyLoadAll.subscribe(async (shouldLoad) => {
       if (!shouldLoad) return;
-      await Promise.all([loadWave1()/*, loadWave2(), loadWave3()*/]);
+      await Promise.all([loadWave1(), loadWave2(), loadSupportingChars()/*, loadWave3()*/]);
     });
 
     // If the page loads with a non-zero scroll position (browser scroll restoration
@@ -148,7 +157,8 @@
     requestAnimationFrame(() => {
       if (window.scrollY > 0) {
         loadWave1();
-        // loadWave2();
+        loadWave2();
+        loadSupportingChars();
         // loadWave3();
       }
     });
@@ -247,36 +257,48 @@
       <svelte:component this={IntroEnd} />
       <Quotes />
 
-      <!-- Wave 2 sentinel and all downstream sections temporarily commented out
+      <!-- Wave 2 sentinel: loads MainCharsSection -->
       <div
         id="lazy-load-sentinel-2"
         use:inview={{ rootMargin: '2000px' }}
-        oninview_change={async (event) => {
+        oninview_change={async (/** @type {{ detail: { inView: any; }; }} */ event) => {
           if (event.detail.inView) await loadWave2();
         }}
       ></div>
 
-      {#if MainCharsSection && SupportingCharsSection}
-        <svelte:component this={MainCharsSection} {episodesData} />
-        <svelte:component this={SupportingCharsSection} {episodesData} />
+      {#if MainCharsSection}
+        <svelte:component this={MainCharsSection} {episodesData} {ScrollTrigger} />
 
+        <!-- Supporting chars sentinel: loads SupportingCharsSection -->
         <div
-          id="lazy-load-sentinel-3"
-          use:inview={{ rootMargin: '2000px' }}
-          oninview_change={async (event) => {
-            if (event.detail.inView) await loadWave3();
+          use:inview={{ rootMargin: '1000px' }}
+          oninview_change={async (/** @type {{ detail: { inView: any; }; }} */ event) => {
+            if (event.detail.inView) await loadSupportingChars();
           }}
         ></div>
 
-        {#if LocationsSection && LaughsExploration}
-          <svelte:component this={LocationsSection} {episodesData} />
-          <svelte:component this={LaughsExploration} {episodesData} />
-          <Quotes />
-          <MethodologyAndCredits />
-          <Footer />
+        {#if SupportingCharsSection}
+          <svelte:component this={SupportingCharsSection} {episodesData} {ScrollTrigger} />
+
+          <!-- Wave 3 temporarily commented out
+          <div
+            id="lazy-load-sentinel-3"
+            use:inview={{ rootMargin: '2000px' }}
+            oninview_change={async (event) => {
+              if (event.detail.inView) await loadWave3();
+            }}
+          ></div>
+
+          {#if LocationsSection && LaughsExploration}
+            <svelte:component this={LocationsSection} {episodesData} />
+            <svelte:component this={LaughsExploration} {episodesData} />
+            <Quotes />
+            <MethodologyAndCredits />
+            <Footer />
+          {/if}
+          -->
         {/if}
       {/if}
-      -->
     {/if}
   </div>
 </main>

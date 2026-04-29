@@ -71,7 +71,7 @@
 <div id="prologue-container" class="relative flex h-[100dvh] items-center bg-black">
   <div class="container">
     <div id="prologue-late-arrival" class="bg-black">
-      I was a late arrival to <span class="highlight">Seinfeld</span> fandom. - new build
+      I was a late arrival to <span class="highlight">Seinfeld</span> fandom.
     </div>
   </div>
 
