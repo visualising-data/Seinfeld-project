@@ -61,7 +61,7 @@
         <div class="mt-5" style="margin-bottom: -16px; font-weight: 600;">season 5 episode 14</div>
       {/if}
       <div class="flex items-center gap-8 mt-2 lg:mt-0">
-        <h2>
+        <h2 style="line-height: 1.2;">
           {episodeInfo.title}
         </h2>
         {#if episodes}

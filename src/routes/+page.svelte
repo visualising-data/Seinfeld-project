@@ -1,6 +1,6 @@
 <script lang="ts">
   import { json } from 'd3-fetch';
-  import { onMount } from 'svelte';
+  import { onMount, tick } from 'svelte';
   import { inview } from 'svelte-inview';
   // @ts-ignore
   import { gsap } from 'gsap/dist/gsap';
@@ -50,12 +50,27 @@
   };
   const EPISODES_CACHE_KEY = 'seinfeld_episodes_v1';
 
+  // Debounce rapid refresh calls (e.g. waves 1+2+3 mounting in quick succession)
+  // into a single ScrollTrigger.refresh() so pin spacers are only recalculated once.
+  let _refreshTimer: ReturnType<typeof setTimeout> | null = null;
+  function scheduleRefresh() {
+    if (_refreshTimer) clearTimeout(_refreshTimer);
+    _refreshTimer = setTimeout(() => {
+      ScrollTrigger.refresh();
+      _refreshTimer = null;
+    }, 150);
+  }
+
   async function loadWave1() {
     if (DataGathering) return;
     [DataGathering, IntroEnd] = await Promise.all([
       import('../sections/data_gathering/DataGathering.svelte').then((m) => m.default),
       import('../sections/IntroEnd.svelte').then((m) => m.default),
     ]);
+    // Wait for Svelte to insert the new sections into the DOM, then tell
+    // ScrollTrigger the page height has changed so all pins recalculate.
+    await tick();
+    scheduleRefresh();
   }
 
   async function loadWave2() {
@@ -64,6 +79,8 @@
       import('../sections/main_characters/MainCharsSection.svelte').then((m) => m.default),
       import('../sections/supporting_characters/SupportingCharsSection.svelte').then((m) => m.default),
     ]);
+    await tick();
+    scheduleRefresh();
   }
 
   async function loadWave3() {
@@ -72,6 +89,8 @@
       import('../sections/locations/locationsSection.svelte').then((m) => m.default),
       import('../sections/laughs-exploration/LaughsExploration.svelte').then((m) => m.default),
     ]);
+    await tick();
+    scheduleRefresh();
   }
 
   onMount(() => {
@@ -132,18 +151,31 @@
           if (target) {
             clearInterval(scrollPollId!);
             scrollPollId = null;
-            target.scrollIntoView({ behavior: 'instant' });
+            // getBoundingClientRect().top + scrollY gives a true document-offset
+            // that's correct even when the target is inside a positioned ancestor.
+            const targetY = target.getBoundingClientRect().top + window.scrollY;
+            window.scrollTo(0, targetY);
             pendingScrollAnchor.set(null);
             isScrollLoading.set(false);
-            // Two rAFs: iOS defers the actual scroll paint to the next frame, so
-            // a single rAF can still see the old scroll position. The second frame
-            // guarantees window.scrollY is settled before ScrollTrigger recalculates
-            // pin positions and trigger start/end values.
-            requestAnimationFrame(() => {
-              requestAnimationFrame(() => {
-                ScrollTrigger.refresh();
-              });
-            });
+            // iOS defers programmatic scroll rendering asynchronously, so a fixed
+            // rAF count can still read the old scrollY. Poll until scrollY is
+            // stable for 3 consecutive frames before refreshing ScrollTrigger.
+            let lastY = -1;
+            let stableCount = 0;
+            const waitForSettle = () => {
+              const y = window.scrollY;
+              if (y === lastY) {
+                if (++stableCount >= 3) {
+                  ScrollTrigger.refresh();
+                  return;
+                }
+              } else {
+                stableCount = 0;
+                lastY = y;
+              }
+              requestAnimationFrame(waitForSettle);
+            };
+            requestAnimationFrame(waitForSettle);
           }
         }, 50);
       }
