@@ -4,6 +4,9 @@
   import CodeIcon from '../icons/CodeIcon.svelte';
   import SoundIcon from '../icons/SoundIcon.svelte';
   import PaintIcon from '../icons/PaintIcon.svelte';
+  import { seasons } from '$lib/data/seasons';
+
+  const seasonGradient = `conic-gradient(${seasons.map((s) => s.accessibleOverDarkColor).join(', ')}, ${seasons[0].accessibleOverDarkColor})`;
 
   const credits = [
     {
@@ -28,7 +31,7 @@
   ];
 </script>
 
-<section id="methodology" class="container mt-20 grid grid-cols-1 lg:grid-cols-12">
+<section id="methodology" class="container mt-20 grid grid-cols-1 lg:grid-cols-12" style="--ring-gradient: {seasonGradient}">
   <div class="col-span-6 mb-10 px-4">
     <h3>Methodology</h3>
     <div>
@@ -85,29 +88,35 @@
               <div class="credit-name font-semibold">
                 <div class="credit-name-container relative">
                   <a href="https://www.miriamquick.com/" target="_blank">Miriam Quick</a>
-                  <img
-                    class="portrait"
-                    alt="Portrait of Miriam Quick"
-                    src="https://amdufour.github.io/hosted-data/apis/portraits/miriam_quick.jpg"
-                  />
+                  <span class="portrait-ring">
+                    <img
+                      class="portrait"
+                      alt="Portrait of Miriam Quick"
+                      src="https://amdufour.github.io/hosted-data/apis/portraits/miriam_quick.jpg"
+                    />
+                  </span>
                 </div>
                 <span class="font-normal">{' and '}</span>
                 <div class="credit-name-container relative">
                   <a href="https://www.duncangeere.com/" target="_blank">Duncan Geere</a>
-                  <img
-                    class="portrait"
-                    alt="Portrait of Duncan Geere"
-                    src="https://amdufour.github.io/hosted-data/apis/portraits/duncan_geere.jpeg"
-                  />
+                  <span class="portrait-ring">
+                    <img
+                      class="portrait"
+                      alt="Portrait of Duncan Geere"
+                      src="https://amdufour.github.io/hosted-data/apis/portraits/duncan_geere.jpeg"
+                    />
+                  </span>
                 </div>
                 <span class="font-normal">{'{ '}</span>
                 <div class="credit-name-container relative">
                   <a href={credit.url} target="_blank">{credit.name}</a>
-                  <img
-                    class="portrait"
-                    alt="Loud Numbers logo"
-                    src="https://amdufour.github.io/hosted-data/apis/portraits/loud_numbers.jpg"
-                  />
+                  <span class="portrait-ring">
+                    <img
+                      class="portrait"
+                      alt="Loud Numbers logo"
+                      src="https://amdufour.github.io/hosted-data/apis/portraits/loud_numbers.jpg"
+                    />
+                  </span>
                 </div>
                 <span class="font-normal">{' }'}</span>
               </div>
@@ -116,12 +125,14 @@
                 <a href={credit.url} target="_blank" class="credit-name font-semibold"
                   >{credit.name}</a
                 >
-                <img
-                  class="portrait"
-                  loading="lazy"
-                  alt="Portrait of {credit.name}"
-                  src={credit.imgUrl}
-                />
+                <span class="portrait-ring">
+                  <img
+                    class="portrait"
+                    loading="lazy"
+                    alt="Portrait of {credit.name}"
+                    src={credit.imgUrl}
+                  />
+                </span>
               </div>
             {:else}
               <div class="credit-name font-semibold">{credit.name}</div>
@@ -144,20 +155,65 @@
   .credit-role {
     font-size: 1rem;
   }
-  .portrait {
+  .portrait-ring {
     position: absolute;
-    left: 10px;
+    z-index: 2;
+    left: 50%;
     top: -50px;
-    width: 75px;
-    height: auto;
-    border-radius: 50%;
-    border: 5px solid #e71d80;
+    width: 81px;
+    height: 81px;
+    padding: 3px;
+    border-radius: 60% 40% 50% 50% / 50% 50% 60% 40%;
+    background: var(--ring-gradient);
     opacity: 0;
-    transition: all 350ms cubic-bezier(0.165, 0.84, 0.44, 1);
+    translate: -50% 0px;
+    scale: 1;
+    transition:
+      opacity 350ms cubic-bezier(0.165, 0.84, 0.44, 1),
+      translate 350ms cubic-bezier(0.165, 0.84, 0.44, 1),
+      scale 350ms cubic-bezier(0.165, 0.84, 0.44, 1);
     pointer-events: none;
+    animation:
+      ring-spin 4s linear infinite,
+      ring-morph 6s ease-in-out infinite;
   }
-  .credit-name-container:hover .portrait {
+  .credit-name-container:hover .portrait-ring {
     opacity: 1;
-    transform: translate(0, -30px) scale(1.2);
+    translate: -50% -40px;
+    scale: 1.2;
+  }
+  .portrait {
+    display: block;
+    width: 75px;
+    height: 75px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: none;
+    animation: counter-spin 4s linear infinite;
+  }
+  @keyframes ring-spin {
+    to {
+      rotate: 360deg;
+    }
+  }
+  @keyframes counter-spin {
+    to {
+      rotate: -360deg;
+    }
+  }
+  @keyframes ring-morph {
+    0%,
+    100% {
+      border-radius: 60% 40% 50% 50% / 50% 50% 60% 40%;
+    }
+    25% {
+      border-radius: 40% 60% 30% 70% / 60% 40% 70% 30%;
+    }
+    50% {
+      border-radius: 70% 30% 60% 40% / 40% 60% 30% 70%;
+    }
+    75% {
+      border-radius: 30% 70% 40% 60% / 70% 30% 50% 50%;
+    }
   }
 </style>

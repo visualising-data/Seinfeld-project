@@ -7,7 +7,6 @@
     { label: 'Prologue', anchor: 'intro' },
     { label: 'The Show', anchor: 'intro-calendar-container' },
     { label: 'Episode Catalog', anchor: 'catalog-section' },
-    { label: 'Data Gathering', anchor: 'data-gathering' },
     { label: 'Lead Characters', anchor: 'lead-chars' },
     { label: 'Supporting Characters', anchor: 'supporting-chars' },
     { label: 'Locations', anchor: 'locations' },
@@ -23,8 +22,8 @@
   // in the viewport — covers Prologue + the pinned SectionTitle headers in
   // Lead Characters, Supporting Characters, and Locations.
   let dotInactive = $derived(isDarkBg ? 'rgba(249,245,247,0.35)' : 'rgba(18,2,10,0.25)');
-  let dotActive   = $derived(isDarkBg ? '#F9F5F7' : '#E71D80');
-  let labelColor  = $derived(isDarkBg ? '#F9F5F7' : '#12020A');
+  let dotActive = $state('#E71D80');
+  let labelColor = $derived(isDarkBg ? '#F9F5F7' : '#12020A');
 
   function updateActive() {
     const center = window.innerHeight / 2;
@@ -100,16 +99,18 @@
 {#if innerWidth >= 1024}
   <nav class="progress-bar" aria-label="Page sections">
     {#each sections as section}
-      <button
+      <div
         class="dot-wrapper"
         class:active={activeAnchor === section.anchor}
-        onclick={() => navigateTo(section.anchor)}
-        aria-label="Go to {section.label}"
         style="--dot-inactive: {dotInactive}; --dot-active: {dotActive}; --label-color: {labelColor};"
       >
         <span class="label">{section.label}</span>
-        <span class="dot"></span>
-      </button>
+        <button
+          class="dot"
+          onclick={() => navigateTo(section.anchor)}
+          aria-label="Go to {section.label}"
+        ></button>
+      </div>
     {/each}
   </nav>
 {/if}
@@ -132,29 +133,43 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    background: none;
-    border: none;
-    cursor: pointer;
     padding: 4px 0;
   }
 
   .dot {
     flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+  }
+
+  .dot::after {
+    content: '';
     display: block;
     width: 6px;
     height: 6px;
     border-radius: 50%;
     background: var(--dot-inactive);
-    transition: width 200ms ease, height 200ms ease, background 200ms ease, opacity 200ms ease;
+    transition:
+      width 200ms ease,
+      height 200ms ease,
+      background 200ms ease,
+      opacity 200ms ease;
   }
 
-  .dot-wrapper.active .dot {
+  .dot-wrapper.active .dot::after {
     width: 9px;
     height: 9px;
     background: var(--dot-active);
   }
 
-  .dot-wrapper:hover .dot {
+  .dot-wrapper:has(.dot:hover) .dot::after {
     background: var(--dot-active);
     opacity: 0.7;
   }
@@ -168,17 +183,14 @@
     color: var(--label-color);
     opacity: 0;
     transform: translateX(6px);
-    transition: opacity 150ms ease, transform 150ms ease;
+    transition:
+      opacity 150ms ease,
+      transform 150ms ease;
     pointer-events: none;
   }
 
-  .dot-wrapper.active .label {
+  .dot-wrapper:has(.dot:hover) .label {
     opacity: 1;
-    transform: translateX(0);
-  }
-
-  .dot-wrapper:hover .label {
-    opacity: 0.75;
     transform: translateX(0);
   }
 </style>
