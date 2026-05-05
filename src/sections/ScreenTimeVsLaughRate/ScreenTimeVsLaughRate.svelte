@@ -190,7 +190,7 @@
 
   const handleCharacterClick = (/** @type {string} */ char) => {
     if (char !== activeCharacter) {
-      isMouseOver = true;
+      isMouseOver = false;
 
       if ($soundIsAuth && soundtrackCanPlay && soundtrack?.state === 'started') {
         if (playingFile) soundtrack.player(playingFile).stop();

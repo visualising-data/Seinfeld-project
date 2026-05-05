@@ -62,6 +62,9 @@
   let highlightedEpisodeTimePosition = $state(0);
   let highlightedEpisodeTimeLabel = $state('');
   let episodeTooltipPosition = $state();
+  let showEpisodeTooltip = $state(false);
+  /** @type {ReturnType<typeof setTimeout> | null} */
+  let tooltipTimer = null;
 
   const handleOverviewMouseEnter = () => {
     if (isTextOver) {
@@ -119,9 +122,17 @@
     }
 
     episodeTooltipPosition = [-58, y];
+
+    showEpisodeTooltip = false;
+    if (tooltipTimer) clearTimeout(tooltipTimer);
+    tooltipTimer = setTimeout(() => {
+      showEpisodeTooltip = true;
+    }, 500);
   };
   const handleOverviewMouseLeave = () => {
     isMouseOver = false;
+    showEpisodeTooltip = false;
+    if (tooltipTimer) clearTimeout(tooltipTimer);
   };
 </script>
 
@@ -222,7 +233,7 @@
     </g>
   </svg>
 
-  {#if isMouseOver && innerWidth >= 793}
+  {#if showEpisodeTooltip && innerWidth >= 793}
     <EpisodeTooltip episode={highlightedEpisodeInfo} position={episodeTooltipPosition} />
   {/if}
 </div>

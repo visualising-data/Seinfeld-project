@@ -246,10 +246,10 @@
     <div class="relative" style="overflow: visible;">
       <!-- Top-right description (desktop only) -->
       <div
-        class="hidden sm:block absolute top-[-30px] right-[56px] leading-4 small accent"
-        style="max-width: 200px;"
+        class="hidden sm:block absolute top-[-32px] right-0 leading-4 small accent"
+        style="max-width: 190px;"
       >
-        The heigt of the bands at each season represents the average screen-time share
+        The height of the bands at each season represents the average screen-time share
       </div>
 
       <svg
@@ -271,7 +271,7 @@
             opacity={hoveredLocation === null ? (innerWidth < 640 ? 0 : 1) : 0}
           >
             <text
-              x={134}
+              x={220}
               y={chartHeight / 2 - 9}
               transform="rotate(-90, {0}, {chartHeight / 2})"
               text-anchor="middle"
@@ -357,6 +357,31 @@
                 onmouseenter={() => (hoveredLocation = icon.id)}
                 onmouseleave={() => (hoveredLocation = null)}
               />
+              {@const labelCX = icon.x + iconSize / 2}
+              {@const labelY = icon.y + iconSize + 14}
+              {@const rectW = icon.label.length * 7}
+              <rect
+                x={labelCX - rectW / 2}
+                y={labelY - 12}
+                width={rectW}
+                height={18}
+                rx={3}
+                fill="#F9F5F7"
+                fill-opacity="0.75"
+                class="pointer-events-none"
+                opacity={hoveredLocation === icon.id ? 1 : 0}
+                style="transition: opacity 0.3s;"
+              />
+              <text
+                x={labelCX}
+                y={labelY}
+                text-anchor="middle"
+                class="text-xs pointer-events-none"
+                opacity={hoveredLocation === icon.id ? 1 : 0}
+                style="transition: opacity 0.3s;"
+              >
+                {icon.label}
+              </text>
             {/each}
           </g>
 
@@ -383,6 +408,30 @@
                 onmouseenter={() => (hoveredLocation = icon.id)}
                 onmouseleave={() => (hoveredLocation = null)}
               />
+              {@const labelCX = icon.x + iconSize / 2}
+              {@const labelY = icon.y + iconSize + 14}
+              {@const rectW = icon.label.length * 7 + 16}
+              <rect
+                x={labelCX - rectW / 2}
+                y={labelY - 12}
+                width={rectW}
+                height={18}
+                rx={3}
+                fill="#F9F5F7"
+                class="pointer-events-none"
+                opacity={hoveredLocation === icon.id ? 1 : 0}
+                style="transition: opacity 0.3s;"
+              />
+              <text
+                x={labelCX}
+                y={labelY}
+                text-anchor="middle"
+                class="text-xs pointer-events-none"
+                opacity={hoveredLocation === icon.id ? 1 : 0}
+                style="transition: opacity 0.3s;"
+              >
+                {icon.label}
+              </text>
             {/each}
           </g>
 

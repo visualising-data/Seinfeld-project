@@ -172,7 +172,7 @@
         <div class="info absolute bottom-0 left-0 right-0 z-20">
           <div
             class="details px-4"
-            style="color: {section === 'locations'
+            style="color: {section === 'locations' || section === 'supp_char'
               ? '#F9F5F7'
               : '#12020A'}; background-color: {getOverlayColor(tile)};"
           >
