@@ -59,7 +59,7 @@
 
         // Initial state
         for (let j = 0; j < 5; j++) {
-          gsap.set(`#show-text-${j}`, { opacity: j === 0 ? 1 : 0 });
+          gsap.set(`#show-text-${j}`, { opacity: j === 0 ? 1 : 0, pointerEvents: j === 0 ? 'auto' : 'none' });
           gsap.set(infoId(j), { opacity: j === 0 ? 1 : 0 });
           if (isMobile) {
             gsap.set(`#show-video-${j}`, { opacity: j === 0 ? 1 : 0 });
@@ -87,9 +87,10 @@
 
           // Snap all texts/info to hidden, then fade in the target
           for (let j = 0; j < 5; j++) {
-            gsap.set(`#show-text-${j}`, { opacity: 0 });
+            gsap.set(`#show-text-${j}`, { opacity: 0, pointerEvents: 'none' });
             gsap.set(infoId(j), { opacity: 0 });
           }
+          gsap.set(`#show-text-${index}`, { pointerEvents: 'auto' });
           gsap.to(`#show-text-${index}`, { opacity: 1, duration: 0.3 });
           gsap.to(infoId(index), { opacity: 1, duration: 0.3 });
 
@@ -575,7 +576,7 @@
       <div
         id="show-text-1"
         class="absolute inset-0 container py-6 flex flex-col justify-center overflow-y-auto"
-        style="opacity: 0"
+        style="opacity: 0; pointer-events: none"
       >
         <p>
           Seinfeld sidestepped sentimentality as well as the pursuit of resolution. With its mantra
@@ -594,7 +595,7 @@
       <div
         id="show-text-2"
         class="absolute inset-0 container py-6 flex flex-col justify-center overflow-y-auto"
-        style="opacity: 0"
+        style="opacity: 0; pointer-events: none"
       >
         <p>
           Despite their flaws, I loved the irreverent characters, with their absurd obsessions and
@@ -606,7 +607,7 @@
       <div
         id="show-text-3"
         class="absolute inset-0 container py-6 flex flex-col justify-center overflow-y-auto"
-        style="opacity: 0"
+        style="opacity: 0; pointer-events: none"
       >
         <p>
           As I progressed through the episodes my fascination with the creative process behind the
@@ -619,7 +620,7 @@
       <div
         id="show-text-4"
         class="absolute inset-0 container py-6 flex flex-col justify-center overflow-y-auto"
-        style="opacity: 0"
+        style="opacity: 0; pointer-events: none"
       >
         <p>
           Like music, situation comedy has rhythm and it has texture: <span class="highlight"
