@@ -185,6 +185,61 @@
       }
     });
 
+    // On viewport resize (e.g. going fullscreen), GSAP recalculates pin spacers
+    // which shifts all section positions. Capture the nearest section anchor
+    // before the layout changes, then scroll back to it after refresh.
+    const SECTION_ANCHORS = [
+      'intro',
+      'intro-calendar-container',
+      'catalog-section',
+      'lead-chars',
+      'supporting-chars',
+      'locations',
+      'laughs-exploration',
+      'methodology',
+    ];
+    let _resizeAnchorId: string | null = null;
+    let _resizeDebounce: ReturnType<typeof setTimeout> | null = null;
+    let _prevWidth = window.innerWidth;
+
+    const onResize = () => {
+      const newWidth = window.innerWidth;
+      // Ignore height-only changes (e.g. iOS URL bar hiding/showing)
+      if (newWidth === _prevWidth) return;
+      _prevWidth = newWidth;
+
+      // Snapshot the closest section on the first resize event in a sequence
+      if (_resizeAnchorId === null) {
+        let bestId: string | null = null;
+        let bestDist = Infinity;
+        for (const id of SECTION_ANCHORS) {
+          const el = document.getElementById(id);
+          if (!el) continue;
+          const dist = Math.abs(el.getBoundingClientRect().top);
+          if (dist < bestDist) {
+            bestDist = dist;
+            bestId = id;
+          }
+        }
+        _resizeAnchorId = bestId;
+      }
+
+      if (_resizeDebounce) clearTimeout(_resizeDebounce);
+      _resizeDebounce = setTimeout(() => {
+        ScrollTrigger.refresh();
+        if (_resizeAnchorId) {
+          const el = document.getElementById(_resizeAnchorId);
+          if (el) {
+            window.scrollTo(0, el.getBoundingClientRect().top + window.scrollY);
+          }
+        }
+        _resizeAnchorId = null;
+        _resizeDebounce = null;
+      }, 200);
+    };
+
+    window.addEventListener('resize', onResize);
+
     // Poll for pending scroll target — works across async child mounts
     let scrollPollId: ReturnType<typeof setInterval> | null = null;
     const unsubscribe = pendingScrollAnchor.subscribe((anchor) => {
@@ -251,6 +306,8 @@
       unsubscribe();
       unsubLazy();
       if (scrollPollId !== null) clearInterval(scrollPollId);
+      window.removeEventListener('resize', onResize);
+      if (_resizeDebounce) clearTimeout(_resizeDebounce);
       window.visualViewport?.removeEventListener('resize', setVvTop);
       window.visualViewport?.removeEventListener('scroll', setVvTop);
     };
