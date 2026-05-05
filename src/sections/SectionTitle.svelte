@@ -5,6 +5,7 @@
 
   import { supportingCharacterTiles, characters, mainCharacterTiles } from '$lib/data/characters';
   import { locationsTiles } from '$lib/data/locations';
+  import { getIllustrationForEpisode } from '$lib/data/illustrations';
   import { getRandom } from '../utils/getRandom';
   import { getCharacterImagePath } from '../utils/getCharacterImagePath';
   import { getLocationIconPath } from '../utils/getLocationIconPath';
@@ -70,6 +71,7 @@
 
   let introComplete = false;
   let activeTileId = $state(null);
+  let activeIllustration = $state(/** @type {{ tileId: string; url: string } | null} */ (null));
 
   const handleTileClick = (/** @type {string} */ tileId) => {
     const isClosing = activeTileId === tileId;
@@ -77,7 +79,8 @@
     if (isClosing) {
       handleMouseLeave();
     } else {
-      handleMouseEnter();
+      const tile = tiles.find((t) => t.id === tileId);
+      handleMouseEnter(tile);
     }
   };
 
@@ -115,7 +118,7 @@
     return () => tl.kill();
   });
 
-  const handleMouseEnter = () => {
+  const handleMouseEnter = (/** @type {any} */ tile) => {
     if (!introComplete) return;
     gsap.to(`#section-title-${section} h2`, {
       translateY: 100,
@@ -123,6 +126,10 @@
       ease: 'power3.out',
       duration: 0.4,
     });
+    if (tile) {
+      const url = getIllustrationForEpisode(tile.season, tile.episode);
+      activeIllustration = url ? { tileId: tile.id, url } : null;
+    }
   };
 
   const handleMouseLeave = () => {
@@ -133,6 +140,7 @@
       ease: 'power3.out',
       duration: 0.4,
     });
+    activeIllustration = null;
   };
 
   const getOverlayColor = (/** @type {{ category: string; name: string }} */ tile) => {
@@ -157,10 +165,10 @@
     {#each tiles as tile}
       <div
         id={tile.id}
-        class={`tile-container tile-container-${section} relative${activeTileId === tile.id ? ' active' : ''}`}
+        class={`cursor-default tile-container tile-container-${section} relative${activeTileId === tile.id ? ' active' : ''}`}
         role="button"
         tabindex="0"
-        onmouseenter={handleMouseEnter}
+        onmouseenter={() => handleMouseEnter(tile)}
         onmouseleave={handleMouseLeave}
         onclick={() => handleTileClick(tile.id)}
         onkeydown={(e) => e.key === 'Enter' && handleTileClick(tile.id)}
@@ -169,6 +177,9 @@
           class="tile relative z-10"
           style="width: {tileWidth}; height: {tileHeight}; background-image: url('https://amdufour.github.io/hosted-data/apis/thumbnails/{tile.thumbnail}');"
         ></div>
+        {#if activeIllustration?.tileId === tile.id}
+          <img class="tile-illustration" src={activeIllustration?.url} alt="" />
+        {/if}
         <div class="info absolute bottom-0 left-0 right-0 z-20">
           <div
             class="details px-4"
@@ -183,16 +194,14 @@
                   ? getLocationIconPath(tile.name)
                   : getCharacterImagePath(tile.icon)}');"
               ></div>
-              <div>
-                <div>
-                  <span class="name font-semibold text-[16px] md:text-[18px] leading-none"
-                    >{tile.name}</span
-                  >
-                  {#if tile.category}
-                    <span class="category small text-[12px] md:text-[14px]">{tile.category}</span>
-                  {/if}
+              <div class="flex flex-col gap-0.5">
+                <div class="name font-semibold text-[16px] md:text-[18px] leading-none">
+                  {tile.name}
                 </div>
-                <div class="small text-[12px] md:text-[14px]">
+                {#if tile.category}
+                  <div class="category small text-[13px]">{tile.category}</div>
+                {/if}
+                <div class="small text-[13px]">
                   {`s${tile.season}e${tile.episode} ${tile.episodeTitle}`}
                 </div>
               </div>
@@ -273,6 +282,28 @@
       padding-top: 8px;
       padding-bottom: 8px;
       max-height: 100px;
+    }
+  }
+
+  /* Illustration */
+  .tile-illustration {
+    position: absolute;
+    bottom: -30px;
+    right: -70px;
+    z-index: 40;
+    max-width: 300px;
+    height: auto;
+    transform: rotate(20deg);
+    pointer-events: none;
+    animation: float 3s ease-in-out infinite;
+  }
+  @keyframes float {
+    0%,
+    100% {
+      translate: 0 0;
+    }
+    50% {
+      translate: 0 -4px;
     }
   }
 
