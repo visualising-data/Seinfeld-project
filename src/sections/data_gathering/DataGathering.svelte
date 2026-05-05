@@ -1,10 +1,11 @@
 <script lang="ts">
   import { csv } from 'd3-fetch';
-  import { tick } from 'svelte';
+  import { tick, onMount } from 'svelte';
   import { inview } from 'svelte-inview';
 
   // Laughs is the first visible component when DataGathering mounts — load it immediately.
   import Laughs from './Laughs.svelte';
+  import { lazyLoadAll } from '../../stores/lazyLoadTrigger';
 
   import type { Episode } from '$lib/types/episode';
   import { episodesInfo } from '$lib/data/episodesInfo';
@@ -79,6 +80,18 @@
     await tick();
     scheduleRefresh();
   }
+
+  // When menu/sidebar navigation triggers a force-load, chain through all
+  // internal sub-sections so catalog-section exists before the scroll poll fires.
+  onMount(() => {
+    const unsub = lazyLoadAll.subscribe(async (shouldLoad) => {
+      if (!shouldLoad) return;
+      await loadDataGatheringDetails();
+      await loadEpisodeExample();
+      await loadCatalog();
+    });
+    return unsub;
+  });
 </script>
 
 <svelte:window bind:innerHeight />

@@ -2,6 +2,7 @@
   import { soundIsAuth } from '../stores/soundAuthStore';
   import { catalogIsInView } from '../stores/catalogIsInView';
   import { navBarColor } from '../stores/navbarColor';
+  import { isAtCatalog } from '../stores/atCatalog';
   import AudioOn from '../icons/AudioOn.svelte';
   import AudioOff from '../icons/AudioOff.svelte';
   import Burger from '../icons/Burger.svelte';
@@ -18,7 +19,9 @@
     showMenu = !showMenu;
   };
 
-  let navBg = $derived($catalogIsInView && innerWidth < 1024 ? '#E71D80' : 'transparent');
+  let navBg = $derived(
+    $isAtCatalog || ($catalogIsInView && innerWidth < 1024) ? '#E71D80' : 'transparent',
+  );
   let color = $derived(
     navBg !== 'transparent' || $catalogIsInView || $navBarColor === 'white' ? '#F9F5F7' : '#E71D80',
   );

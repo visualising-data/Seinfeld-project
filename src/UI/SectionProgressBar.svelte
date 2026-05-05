@@ -21,7 +21,7 @@
   // Colour tokens derived from whether any .bg-black element is currently
   // in the viewport — covers Prologue + the pinned SectionTitle headers in
   // Lead Characters, Supporting Characters, and Locations.
-  let dotInactive = $derived(isDarkBg ? 'rgba(249,245,247,0.35)' : 'rgba(18,2,10,0.25)');
+  let dotInactive = $derived(isDarkBg ? 'rgba(249,245,247,0.35)' : 'rgba(18,2,10,0.45)');
   let dotActive = $state('#E71D80');
   let labelColor = $derived(isDarkBg ? '#F9F5F7' : '#12020A');
 
@@ -57,12 +57,14 @@
         break;
       }
     }
-    // title-screen has a dark background but no bg-black class
+    // title-screen and data-gathering-3 have dark backgrounds but no bg-black class
     if (!anyDark) {
-      const titleScreen = document.getElementById('title-screen');
-      if (titleScreen) {
-        const rect = titleScreen.getBoundingClientRect();
-        if (rect.top <= mid && rect.bottom >= mid) anyDark = true;
+      for (const id of ['title-screen', 'data-gathering-3']) {
+        const el = document.getElementById(id);
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          if (rect.top <= mid && rect.bottom >= mid) { anyDark = true; break; }
+        }
       }
     }
     isDarkBg = anyDark;
@@ -118,7 +120,7 @@
 <style>
   .progress-bar {
     position: fixed;
-    right: 20px;
+    right: 10px;
     top: 50%;
     transform: translateY(-50%);
     z-index: 1000;
@@ -176,9 +178,9 @@
 
   .label {
     white-space: nowrap;
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 600;
-    letter-spacing: 0.08em;
+    letter-spacing: 4%;
     text-transform: uppercase;
     color: var(--label-color);
     opacity: 0;

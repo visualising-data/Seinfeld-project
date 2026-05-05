@@ -1,6 +1,7 @@
 <script>
   import { inview } from 'svelte-inview';
   import { navBarColor } from '../../stores/navbarColor';
+  import { isAtCatalog } from '../../stores/atCatalog';
   import { seasons } from '$lib/data/seasons';
   import { isEpisodeValid } from '../../utils/isEpisodeValid';
   import { getRandomEpisode } from '../../utils/getRandom';
@@ -78,6 +79,7 @@
   oninview_change={(/** @type {{ detail: { inView: any; }; }} */ event) => {
     const { inView } = event.detail;
     $navBarColor = inView ? 'white' : 'pink';
+    $isAtCatalog = inView;
   }}
 >
   <div
@@ -119,7 +121,7 @@
     <!-- Random episode -->
     <div class="flex items-center" style="color: #F9F5F7; font-weight: 600;">
       {#if innerWidth >= 750}
-        <div class="small">OR</div>
+        <div class="small tracking-wide">OR</div>
       {/if}
       <button
         class="{innerWidth >= 750 ? 'ml-1' : 'ml-0'} flex items-center lg:ml-5"
