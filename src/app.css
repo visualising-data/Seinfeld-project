@@ -89,6 +89,7 @@
     color: #e71d80;
     font-weight: 600;
     text-decoration: underline;
+    text-underline-offset: 2px;
     cursor: pointer;
   }
   ul {
