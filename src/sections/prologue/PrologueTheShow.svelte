@@ -7,8 +7,19 @@
   import { getCharacterImagePath } from '../../utils/getCharacterImagePath';
   import { getLocationIconPath } from '../../utils/getLocationIconPath';
   import tv_noise from '$lib/assets/tv_noise.png';
+  import { soundIsAuth } from '../../stores/soundAuthStore';
 
   gsap.registerPlugin(ScrollTrigger);
+
+  /** @type {(HTMLVideoElement | undefined)[]} */
+  let videoEls = Array(5);
+  let currentIndex = 0;
+  let inSection = false;
+
+  $: videoEls.forEach((v, i) => {
+    if (!v) return;
+    v.muted = !($soundIsAuth && inSection && i === currentIndex);
+  });
 
   const jerryImg = getCharacterImagePath('JERRY');
   const georgeImg = getCharacterImagePath('GEORGE');
@@ -44,8 +55,9 @@
     const newSrc = baseVideoUrl + videoFiles[index] + (useCC ? '(CC).mp4' : '.mp4');
     if (source.getAttribute('src') !== newSrc) {
       source.setAttribute('src', newSrc);
-      video.load();
     }
+    video.load();
+    video.play().catch(() => {});
   };
 
   onMount(() => {
@@ -65,9 +77,10 @@
             gsap.set(`#show-video-${j}`, { opacity: j === 0 ? 1 : 0 });
           } else {
             gsap.set(`#show-video-${j}`, { flexGrow: j === 0 ? 4 : 1 });
-            // Desktop: non-focused videos start with plain (no captions) version
-            if (j > 0) setVideoSrc(j, false);
           }
+          // Explicitly load + play every video; video 0 gets CC, others get plain.
+          // This is needed because browsers don't reliably autoplay <video><source> elements.
+          setVideoSrc(j, j === 0);
         }
         gsap.set(['#show-text-3 .highlight', '#show-text-4 .highlight'], {
           webkitTextFillColor: 'currentColor',
@@ -93,6 +106,7 @@
           gsap.set(`#show-text-${index}`, { pointerEvents: 'auto' });
           gsap.to(`#show-text-${index}`, { opacity: 1, duration: 0.3 });
           gsap.to(infoId(index), { opacity: 1, duration: 0.3 });
+          currentIndex = index;
 
           // Videos
           if (isMobile) {
@@ -151,6 +165,16 @@
 
       mm.add('(min-width: 1024px)', () => buildAnimations(false));
       mm.add('(max-width: 1023px)', () => buildAnimations(true));
+
+      ScrollTrigger.create({
+        trigger: '#show-section',
+        start: 'top bottom',
+        end: 'bottom top',
+        onEnter: () => { inSection = true; },
+        onEnterBack: () => { inSection = true; },
+        onLeave: () => { inSection = false; },
+        onLeaveBack: () => { inSection = false; },
+      });
     });
   });
 
@@ -169,7 +193,7 @@
         class="show-video-item relative overflow-hidden min-w-0"
         style="flex: 4 1 0%"
       >
-        <video playsinline autoplay muted loop preload="none" class="h-full w-full object-cover">
+        <video bind:this={videoEls[0]} playsinline autoplay muted loop preload="metadata" class="h-full w-full object-cover">
           <source
             src="https://amdufour.github.io/hosted-data/apis/videos/6c.ShowAboutNothing(CC).mp4"
             type="video/mp4"
@@ -213,7 +237,7 @@
         class="show-video-item relative overflow-hidden min-w-0"
         style="flex: 1 1 0%"
       >
-        <video playsinline autoplay muted loop preload="none" class="h-full w-full object-cover">
+        <video bind:this={videoEls[1]} playsinline autoplay muted loop preload="none" class="h-full w-full object-cover">
           <source
             src="https://amdufour.github.io/hosted-data/apis/videos/32.Minutiae(CC).mp4"
             type="video/mp4"
@@ -256,7 +280,7 @@
         class="show-video-item relative overflow-hidden min-w-0"
         style="flex: 1 1 0%"
       >
-        <video playsinline autoplay muted loop preload="none" class="h-full w-full object-cover">
+        <video bind:this={videoEls[2]} playsinline autoplay muted loop preload="none" class="h-full w-full object-cover">
           <source
             src="https://amdufour.github.io/hosted-data/apis/videos/KramerJeans2(CC).mp4"
             type="video/mp4"
@@ -299,7 +323,7 @@
         class="show-video-item relative overflow-hidden min-w-0"
         style="flex: 1 1 0%"
       >
-        <video playsinline autoplay muted loop preload="none" class="h-full w-full object-cover">
+        <video bind:this={videoEls[3]} playsinline autoplay muted loop preload="none" class="h-full w-full object-cover">
           <source
             src="https://amdufour.github.io/hosted-data/apis/videos/8.KramerCigarette(CC).mp4"
             type="video/mp4"
@@ -342,7 +366,7 @@
         class="show-video-item relative overflow-hidden min-w-0"
         style="flex: 1 1 0%"
       >
-        <video playsinline autoplay muted loop preload="none" class="h-full w-full object-cover">
+        <video bind:this={videoEls[4]} playsinline autoplay muted loop preload="none" class="h-full w-full object-cover">
           <source
             src="https://amdufour.github.io/hosted-data/apis/videos/14.ElaineDancing(CC).mp4"
             type="video/mp4"
@@ -635,12 +659,12 @@
   </div>
 
   <!-- Spacers as scroll triggers (one per transition = 4 total) -->
-  <div id="show-step-1" class="h-[150dvh]"></div>
-  <div id="show-step-2" class="h-[150dvh]"></div>
-  <div id="show-step-3" class="h-[150dvh]"></div>
-  <div id="show-step-4" class="h-[150dvh]"></div>
+  <div id="show-step-1" class="h-[100dvh]"></div>
+  <div id="show-step-2" class="h-[100dvh]"></div>
+  <div id="show-step-3" class="h-[100dvh]"></div>
+  <div id="show-step-4" class="h-[100dvh]"></div>
   <!-- Extra spacer so the last video/text has reading time before sticky releases -->
-  <div class="h-[150dvh]"></div>
+  <div class="h-[100dvh]"></div>
 </div>
 
 <style>

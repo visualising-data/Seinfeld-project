@@ -154,126 +154,119 @@
 
 <svelte:window bind:innerWidth />
 
-<div id="data-gathering-3" class="relative bg-[#000]">
-  <div class="sticky h-[100dvh] flex flex-col" style="top: var(--vv-top, 0px);">
-    <!-- Video area: fills remaining height above the overlay -->
-    <div class="flex-1 relative flex items-center min-h-0 overflow-hidden">
-      <video
-        id="demo-video"
-        class="w-full h-auto"
-        playsinline
-        muted
-        preload="none"
-        bind:this={videoEl}
-      >
-        <source
-          src="https://amdufour.github.io/hosted-data/apis/videos/MarineBiologist_edited(CC).mp4"
-          type="video/mp4"
-        />
-      </video>
+<div id="data-gathering-3" class="relative bg-[#000] h-[104dvh] flex flex-col">
+  <!-- Video area: fills remaining height above the overlay -->
+  <div class="flex-1 relative flex items-center min-h-0 overflow-hidden">
+    <video
+      id="demo-video"
+      class="w-full h-auto"
+      playsinline
+      muted
+      preload="none"
+      bind:this={videoEl}
+    >
+      <source
+        src="https://amdufour.github.io/hosted-data/apis/videos/MarineBiologist_edited(CC).mp4"
+        type="video/mp4"
+      />
+    </video>
 
-      <!-- Dark tint -->
-      <div
-        class="absolute inset-0 pointer-events-none"
-        style="background: rgba(18, 2, 10, 0.3)"
-      ></div>
+    <!-- Dark tint -->
+    <div
+      class="absolute inset-0 pointer-events-none"
+      style="background: rgba(18, 2, 10, 0.3)"
+    ></div>
 
-      <!-- TV noise -->
-      <div
-        class="absolute inset-0 pointer-events-none"
-        style="background-image: url('{tv_noise}')"
-      ></div>
+    <!-- TV noise -->
+    <div
+      class="absolute inset-0 pointer-events-none"
+      style="background-image: url('{tv_noise}')"
+    ></div>
 
-      <!-- Loading spinner -->
-      {#if isVideoLoading}
-        <div class="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
-          <div class="video-loader"></div>
-        </div>
-      {/if}
-    </div>
+    <!-- Loading spinner -->
+    {#if isVideoLoading}
+      <div class="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
+        <div class="video-loader"></div>
+      </div>
+    {/if}
+  </div>
 
-    <!-- Visualization overlay -->
-    <div class="py-8 text-white overflow-hidden">
-      <div class="w-full max-w-[1800px] mx-auto px-6 flex items-stretch">
-        <!-- Character labels: outside the grid, stays put while grid animates -->
-        <div class="shrink-0 w-6.5 ml-[-12px] xl:w-20 xl:ml-0">
-          <div class="h-9"></div>
-          {#each characters as char}
-            <div class="flex items-center justify-end gap-2 pr-3 h-12">
-              {#if innerWidth >= 1280}
-                <div class="small">{char.label}</div>
-              {/if}
-              <div
-                class="image h-7 w-7 rounded-full shrink-0"
-                style="background-image: url({getCharacterImagePath(char.id)});"
-              ></div>
-            </div>
-          {/each}
-        </div>
-
-        <!-- Time grid: clips the overflowing inner content -->
-        <div
-          class="flex-1 border border-white/40 relative overflow-hidden min-w-0"
-          bind:this={gridContainer}
-        >
-          <!-- Playhead: positioned in the container's coordinate space,
-               independent of the inner content's translateX -->
-          <div
-            id="viz-playhead"
-            class="absolute top-0 bottom-0 w-0.5 bg-[#E71D80] z-10 pointer-events-none"
-            style="left: 0"
-          ></div>
-
-          <!-- Inner content: desktop fills full width (1fr works); mobile is w-fit for GSAP translate -->
-          <div class={innerWidth >= 1024 ? 'w-full' : 'w-fit'} bind:this={gridScrollInner}>
-            <!-- Time header row -->
+  <!-- Visualization overlay -->
+  <div class="py-8 text-white overflow-hidden">
+    <div class="w-full max-w-[1800px] mx-auto px-6 flex items-stretch">
+      <!-- Character labels: outside the grid, stays put while grid animates -->
+      <div class="shrink-0 w-6.5 ml-[-12px] xl:w-20 xl:ml-0">
+        <div class="h-9"></div>
+        {#each characters as char}
+          <div class="flex items-center justify-end gap-2 pr-3 h-12">
+            {#if innerWidth >= 1280}
+              <div class="small">{char.label}</div>
+            {/if}
             <div
-              class="grid border-b border-white/40"
+              class="image h-7 w-7 rounded-full shrink-0"
+              style="background-image: url({getCharacterImagePath(char.id)});"
+            ></div>
+          </div>
+        {/each}
+      </div>
+
+      <!-- Time grid: clips the overflowing inner content -->
+      <div
+        class="flex-1 border border-white/40 relative overflow-hidden min-w-0"
+        bind:this={gridContainer}
+      >
+        <!-- Playhead: positioned in the container's coordinate space,
+               independent of the inner content's translateX -->
+        <div
+          id="viz-playhead"
+          class="absolute top-0 bottom-0 w-0.5 bg-[#E71D80] z-10 pointer-events-none"
+          style="left: 0"
+        ></div>
+
+        <!-- Inner content: desktop fills full width (1fr works); mobile is w-fit for GSAP translate -->
+        <div class={innerWidth >= 1024 ? 'w-full' : 'w-fit'} bind:this={gridScrollInner}>
+          <!-- Time header row -->
+          <div
+            class="grid border-b border-white/40"
+            style="grid-template-columns: repeat({timeSlots.length}, {colWidth})"
+          >
+            {#each timeSlots as slot, i}
+              <div
+                class="h-9 flex items-center justify-center border-white/40"
+                class:border-r={i < timeSlots.length - 1}
+              >
+                <span class="number text-white/70">
+                  {formatTimeLabel(slot)}
+                </span>
+              </div>
+            {/each}
+          </div>
+
+          <!-- One row per character -->
+          {#each range(characters.length) as ri}
+            <div
+              class="grid border-white/40"
+              class:border-b={ri < characters.length - 1}
               style="grid-template-columns: repeat({timeSlots.length}, {colWidth})"
             >
               {#each timeSlots as slot, i}
                 <div
-                  class="h-9 flex items-center justify-center border-white/40"
+                  class="h-12 flex items-center justify-center border-white/40"
                   class:border-r={i < timeSlots.length - 1}
                 >
-                  <span class="number text-white/70">
-                    {formatTimeLabel(slot)}
-                  </span>
+                  {#if laughsByCharTime.has(`${charKeys[ri]}-${slot}`)}
+                    <div class="laugh-icon laugh-icon-{slot}">
+                      <Laugh width={32} height={32} color="white" />
+                    </div>
+                  {/if}
                 </div>
               {/each}
             </div>
-
-            <!-- One row per character -->
-            {#each range(characters.length) as ri}
-              <div
-                class="grid border-white/40"
-                class:border-b={ri < characters.length - 1}
-                style="grid-template-columns: repeat({timeSlots.length}, {colWidth})"
-              >
-                {#each timeSlots as slot, i}
-                  <div
-                    class="h-12 flex items-center justify-center border-white/40"
-                    class:border-r={i < timeSlots.length - 1}
-                  >
-                    {#if laughsByCharTime.has(`${charKeys[ri]}-${slot}`)}
-                      <div class="laugh-icon laugh-icon-{slot}">
-                        <Laugh width={32} height={32} color="white" />
-                      </div>
-                    {/if}
-                  </div>
-                {/each}
-              </div>
-            {/each}
-          </div>
+          {/each}
         </div>
       </div>
     </div>
   </div>
-
-  <!-- Scroll spacers: keep section pinned long enough to watch the clip -->
-  <div class="h-[100dvh]"></div>
-  <div class="h-[100dvh]"></div>
-  <div class="h-[100dvh]"></div>
 </div>
 
 <style>

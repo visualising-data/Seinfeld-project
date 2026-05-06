@@ -18,24 +18,39 @@
 
   /** @type {gsap.core.Timeline | undefined} */
   let tl;
+  /** @type {ScrollTrigger | undefined} */
+  let st;
 
   onMount(() => {
-    const setup = () => {
+    const setup = async () => {
       const imgSlider = document.getElementById('books-inner-container');
       const imgSliderMain = document.getElementById('books-outer-container');
 
       if (!imgSlider || !imgSliderMain) return;
+
+      // Wait for all strip images to load before measuring scrollWidth.
+      // Without this, lazy images have 0 width at mount time, making the
+      // pin spacer far too small and causing the animation to flash by.
+      const imgs = [...imgSlider.querySelectorAll('img')];
+      await Promise.all(
+        imgs.map((img) =>
+          /** @type {HTMLImageElement} */ (img).complete
+            ? Promise.resolve()
+            : new Promise((r) => img.addEventListener('load', r, { once: true })),
+        ),
+      );
 
       tl = gsap.timeline({ defaults: { ease: 'none' } });
       tl.to(imgSlider, { x: () => -(imgSlider.scrollWidth - imgSliderMain.offsetWidth) });
       tl.to('#book-cover', { scale: 1.08 }, 0);
       tl.from('#accent-line', { width: 0 }, 0);
 
-      ScrollTrigger.create({
-        trigger: '#book-scroll-wrapper',
+      st = ScrollTrigger.create({
+        trigger: '#book-sticky',
         start: 'top top',
-        end: 'bottom bottom',
+        end: () => `+=${(imgSlider.scrollWidth - imgSliderMain.offsetWidth) * 3}`,
         scrub: 1,
+        pin: true,
         animation: tl,
         invalidateOnRefresh: true,
       });
@@ -43,46 +58,25 @@
       ScrollTrigger.refresh();
     };
 
-    setTimeout(setup, 100);
+    setup();
     window.addEventListener('load', () => ScrollTrigger.refresh(), { once: true });
   });
 
   onDestroy(() => {
     tl?.kill();
-    ScrollTrigger.getAll().forEach((st) => st.kill());
+    st?.kill();
   });
 </script>
 
 <div id="book-images-section" class="bg-black">
-  <!-- Mobile: text scrolls normally above the sticky image strip -->
-  <div class="lg:hidden container py-8">
-    <p>
-      My curiosity transcended just <a
-        href="https://jenniferkarmstrong.com/books/seinfeldia/"
-        target="_blank">reading more about the show</a
-      >, it was now time to go deep. I decided to immerse myself in an entirely unnecessary,
-      self-motivated, long-running, data-driven exploration of every episode of Seinfeld. Why not!
-    </p>
-    <p>
-      The first product of this work was my 2020 publishing of <a
-        href="https://visualisingdata.com/work/#Seinfeld"
-        target="_blank">The Seinfeld Chronicles</a
-      >, a limited-edition printed book presenting all my extensive analysis. With 176 copies
-      released, matching the number of written episodes, this reached a small but exclusive,
-      passionate, and
-      <a
-        href="https://visualisingdata.com/2020/10/the-seinfeld-chronicles-prints-and-donations-update/"
-        target="_blank">generous audience</a
-      >.
-    </p>
-  </div>
-
-  <!-- Scroll-driven section: sticky image strip on mobile, full-screen on desktop -->
   <div id="book-scroll-wrapper" class="relative">
-    <div
-      class="sticky lg:top-0 bg-black lg:h-[100dvh] lg:flex lg:flex-col lg:justify-between book-strip-sticky"
-    >
-      <!-- Desktop only: text + book cover -->
+    <!--
+      #book-sticky is the pinned element.
+      GSAP pins it at top:0 the moment it hits the viewport top, then holds it
+      there for exactly the horizontal scroll distance — no manual spacer needed.
+    -->
+    <div id="book-sticky" class="bg-black h-[100dvh] flex flex-col justify-between">
+      <!-- Desktop: text + book cover -->
       <div id="book-cover-container" class="hidden lg:flex flex-1 items-center container">
         <div class="flex-1 px-4">
           <p>
@@ -116,8 +110,32 @@
         </div>
       </div>
 
+      <!-- Mobile: text fills the top of the pinned screen -->
+      <div class="lg:hidden flex-1 container py-8 flex flex-col justify-center overflow-y-auto">
+        <p>
+          My curiosity transcended just <a
+            href="https://jenniferkarmstrong.com/books/seinfeldia/"
+            target="_blank">reading more about the show</a
+          >, it was now time to go deep. I decided to immerse myself in an entirely unnecessary,
+          self-motivated, long-running, data-driven exploration of every episode of Seinfeld. Why
+          not!
+        </p>
+        <p>
+          The first product of this work was my 2020 publishing of <a
+            href="https://visualisingdata.com/work/#Seinfeld"
+            target="_blank">The Seinfeld Chronicles</a
+          >, a limited-edition printed book presenting all my extensive analysis. With 176 copies
+          released, matching the number of written episodes, this reached a small but exclusive,
+          passionate, and
+          <a
+            href="https://visualisingdata.com/2020/10/the-seinfeld-chronicles-prints-and-donations-update/"
+            target="_blank">generous audience</a
+          >.
+        </p>
+      </div>
+
       <!-- Image strip: GSAP-animated on both mobile and desktop -->
-      <div id="books-outer-container" class="lg:shrink-0">
+      <div id="books-outer-container" class="shrink-0">
         <div id="accent-line" class="mb-3 h-2 w-full" style="background-color: #E71D80;"></div>
         <div id="books-inner-container" class="flex">
           <!-- Book cover as first image on mobile only -->
@@ -172,12 +190,7 @@
         </div>
       </div>
     </div>
-
-    <!-- Scroll spacer: provides scroll distance for the GSAP animation.
-         Mobile needs more space than desktop because the image strip is much
-         wider relative to the viewport, so more scroll time is needed to
-         comfortably see all the images. -->
-    <div class="h-[500vh] lg:h-[300vh]"></div>
+    <!-- No manual spacer: GSAP pin:true inserts its own pin spacer -->
   </div>
 </div>
 
@@ -189,13 +202,9 @@
     .book-img {
       height: 200px;
     }
-    /* Pin strip so its bottom aligns with the viewport bottom */
-    .book-strip-sticky {
-      top: calc(100dvh - 228px);
-    }
   }
   /* will-change forces its own GPU compositing layer so iOS Chrome renders
-     the GSAP translateX correctly inside the sticky container */
+     the GSAP translateX correctly inside the pinned container */
   #books-inner-container {
     will-change: transform;
   }

@@ -160,7 +160,7 @@
 
     // Show sound auth
     ScrollTrigger.create({
-      trigger: '#prologue-end',
+      trigger: '#video-scroll-container',
       start: 'top bottom',
       onEnter: () => showSoundAuth(),
     });

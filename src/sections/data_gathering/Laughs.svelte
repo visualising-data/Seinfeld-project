@@ -565,8 +565,7 @@
     </div>
   </div>
 
-  <!-- Scroll spacers: extra reading time + one per transition + extra at end -->
-  <div class="h-[100dvh]"></div>
+  <!-- Scroll spacers: one per transition + extra at end -->
   <div id="laughs-step-2" class="h-[100dvh]"></div>
   <div id="laughs-step-3" class="h-[100dvh]"></div>
   <div id="laughs-step-4" class="h-[100dvh]"></div>

@@ -1,10 +1,20 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
   import { gsap } from 'gsap/dist/gsap';
+  import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 
   import { getCharacterImagePath } from '../../utils/getCharacterImagePath';
   import { getLocationIconPath } from '../../utils/getLocationIconPath';
   import tv_noise from '$lib/assets/tv_noise.png';
+  import { soundIsAuth } from '../../stores/soundAuthStore';
+
+  /** @type {HTMLVideoElement | undefined} */
+  let videoEl;
+  let inSection = false;
+
+  $: if (videoEl) {
+    videoEl.muted = !($soundIsAuth && inSection);
+  }
 
   const jerryImg = getCharacterImagePath('JERRY');
   const georgeImg = getCharacterImagePath('GEORGE');
@@ -87,6 +97,17 @@
         .to('#video-text-2', { opacity: 0, duration: 0.5 })
         .to('#video-text-3', { opacity: 1, duration: 0.5 }, '<');
 
+      // Unmute video while the section is on screen
+      ScrollTrigger.create({
+        trigger: '#video-scroll-container',
+        start: 'top bottom',
+        end: 'bottom top',
+        onEnter: () => { inSection = true; },
+        onEnterBack: () => { inSection = true; },
+        onLeave: () => { inSection = false; },
+        onLeaveBack: () => { inSection = false; },
+      });
+
       // Height animation on desktop only (mobile uses flex-1 to fill remaining space)
       const mm = gsap.matchMedia();
       mm.add('(min-width: 1024px)', () => {
@@ -110,7 +131,7 @@
   >
     <!-- Video: top half on mobile, full screen on desktop -->
     <div class="relative h-[50dvh] lg:absolute lg:inset-0 lg:h-auto">
-      <video playsinline autoplay muted loop preload="metadata">
+      <video bind:this={videoEl} playsinline autoplay muted loop preload="metadata">
         <source
           src="https://amdufour.github.io/hosted-data/apis/videos/1a.ElaineArrives.mp4"
           type="video/mp4"
@@ -207,12 +228,9 @@
     </div>
   </div>
 
-  <!-- Scroll spacers — provide scroll distance and act as GSAP triggers -->
-  <!-- Extra spacer so text-1 has 2 viewports of reading time -->
-  <div class="h-[100dvh]"></div>
+  <!-- Scroll spacers: one per text transition + one reading-time spacer for the last text -->
   <div id="video-step-2" class="h-[100dvh]"></div>
   <div id="video-step-3" class="h-[100dvh]"></div>
-  <!-- Extra spacer so text-3 has a full viewport of reading time before sticky releases -->
   <div class="h-[100dvh]"></div>
 </div>
 
