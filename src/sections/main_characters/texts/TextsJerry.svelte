@@ -84,7 +84,6 @@
       charData={charData.JERRY}
       showLabels={true}
       charId="JERRY"
-      showMax={true}
       yAxisLabels={[0, 0.5, 1]}
     />
   </div>
