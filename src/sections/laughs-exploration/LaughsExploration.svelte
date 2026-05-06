@@ -357,13 +357,15 @@
     </div>
 
     <!-- Layout -->
-    <div class="flex flex-col desktop:grid desktop:grid-cols-12 desktop:gap-16 flex-1 overflow-hidden">
+    <div
+      class="flex flex-col desktop:grid desktop:grid-cols-12 desktop:gap-16 flex-1 overflow-hidden"
+    >
       <!-- Left column: selectors or scene tooltip (tooltip only on desktop) -->
       <div class="desktop:col-span-4 relative">
         {#if displayedScene && pinnedScene}
           <button
             onclick={() => (pinnedScene = null)}
-            class="hidden desktop:block absolute top-4 -right-8 p-2 z-10 opacity-70 hover:opacity-100 transition-opacity"
+            class="hidden desktop:block absolute top-0.5 -right-8 p-2 z-10 opacity-70 hover:opacity-100 transition-opacity"
             aria-label="Close"><CloseIcon color="#12020A" /></button
           >
         {/if}

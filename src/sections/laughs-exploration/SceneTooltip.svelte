@@ -20,7 +20,7 @@
     activeLocation: string | null;
   } = $props();
 
-  const LABEL_W = 100;
+  const LABEL_W = 150;
   const LAUGH_OVERFLOW = 8; // px laugh bars extend beyond bandwidth
   const AXIS_H = 24;
 
@@ -28,6 +28,7 @@
   let barWidth = $derived(containerWidth - LABEL_W);
 
   const allActiveChars = $derived([...activeMainChars, ...activeSuppChars]);
+  const vizDomain = $derived([...allActiveChars, ...(activeLocation ? [activeLocation] : [])]);
 
   const mainCharMeta = $derived(
     activeMainChars
@@ -52,6 +53,21 @@
       : null,
   );
 
+  const joinNames = (labels: string[]) =>
+    labels.length <= 1
+      ? (labels[0] ?? '')
+      : labels.slice(0, -1).join(', ') + ' & ' + labels[labels.length - 1];
+
+  const characterSummary = $derived(
+    [
+      joinNames(mainCharMeta.map((c) => c.label)),
+      suppCharMeta.length > 0 ? `with ${joinNames(suppCharMeta.map((c) => c.label))}` : '',
+      activeLocation && locationLabel ? `in ${locationLabel}` : '',
+    ]
+      .filter(Boolean)
+      .join(' '),
+  );
+
   // Raw events for this scene
   const sceneEvents = $derived.by(() => {
     const ep = episodesData.find(
@@ -72,14 +88,36 @@
   const laughW = $derived(Math.min(8, Math.max(1, xScale(sceneStart + 5))));
   const axisTicks = $derived(xScale.ticks(4));
 
-  // yScale over active characters
-  const vizHeight = $derived(allActiveChars.length * 40 + 8);
+  // yScale over active characters + optional location
+  const vizHeight = $derived(vizDomain.length * 46 + 8);
   const yScale = $derived(
     scaleBand<string>()
-      .domain(allActiveChars)
+      .domain(vizDomain)
       .range([4, vizHeight - 4])
-      .padding(0.6),
+      .padding(0.66),
   );
+
+  const locationPresence = $derived.by(() => {
+    if (!activeLocation) return [];
+    const times = sceneEvents
+      .filter((e: any) => e.eventCategory === 'LOCATION' && e.eventAttribute === activeLocation)
+      .map((e: any) => +e.eventTimeSeconds)
+      .sort((a: number, b: number) => a - b);
+    const intervals: { start: number; duration: number }[] = [];
+    if (times.length > 0) {
+      let start = times[0];
+      let current = times[0];
+      for (let i = 1; i < times.length; i++) {
+        if (times[i] - current > 5) {
+          intervals.push({ start, duration: current - start + 5 });
+          start = times[i];
+        }
+        current = times[i];
+      }
+      intervals.push({ start, duration: current - start + 5 });
+    }
+    return intervals;
+  });
 
   // Presence: group consecutive time points into continuous intervals
   const charPresence = $derived(
@@ -124,98 +162,73 @@
           .padStart(2, '0')}s`;
 </script>
 
-<div class="flex flex-col gap-5 p-4">
-  <!-- Stats -->
+<div class="flex flex-col gap-4">
+  <!-- Header -->
   <div class="flex flex-col gap-1">
     {#if episodeTitle}
-      <h4 class="text-[42px]">{episodeTitle}</h4>
+      <h4 class="text-[42px] leading-[1.1]">{episodeTitle}</h4>
     {/if}
+    <div class="font-semibold text-[1.125rem]">
+      S{scene.season.toString().padStart(2, '0')} E{scene.episode.toString().padStart(2, '0')} Scene
+      {scene.sceneNumber}
+    </div>
+    <div class="text-[1rem] text-[#928D90]">{characterSummary}</div>
+  </div>
 
-    <div class="text-[1.125rem]">
-      <div class="font-semibold mt-4 mb-2">
-        S{scene.season.toString().padStart(2, '0')} E{scene.episode.toString().padStart(2, '0')} Scene
-        {scene.sceneNumber}
+  <!-- Stats grid -->
+  <div class="grid grid-cols-3 gap-2">
+    <div>
+      <div class="font-semibold text-[1.5rem] leading-tight">{formatDuration(scene.duration)}</div>
+      <div class="text-[0.8rem] text-[#928D90]">Duration</div>
+    </div>
+    <div>
+      <div class="font-semibold text-[1.5rem] leading-tight">
+        {formatDuration(scene.laughDuration)}
       </div>
-      <div class="flex flex-col gap-2">
-        <!-- Character + location selectors -->
-        <div class="flex flex-wrap gap-x-6 gap-y-1 my-4">
-          {#each mainCharMeta as char}
-            <div class="flex flex-col items-center w-[60px]">
-              <div
-                class="selector rounded-full bg-contain bg-center"
-                style="background-image: url('{getCharacterImagePath(
-                  char.id,
-                )}'); width: 60px; height: 60px;"
-              ></div>
-              <div class="text-center pt-1" style="font-size: 0.85rem; line-height: 1.2;">
-                {char.label}
-              </div>
-            </div>
-          {/each}
-          {#if suppCharMeta.length > 0}
-            <div class="text-[1.125rem] mt-14">with</div>
-            {#each suppCharMeta as char}
-              <div class="flex flex-col items-center w-[60px]">
-                <div
-                  class="selector rounded-full bg-contain bg-center"
-                  style="background-image: url('{getCharacterImagePath(
-                    char.id,
-                  )}'); width: 60px; height: 60px;"
-                ></div>
-                <div class="text-center pt-1" style="font-size: 0.85rem; line-height: 1.2;">
-                  {char.label}
-                </div>
-              </div>
-            {/each}
-          {/if}
-          {#if activeLocation && locationLabel}
-            <div class="text-[1.125rem] mt-14">in</div>
-            <div class="flex flex-col items-center w-[60px]">
-              <div
-                class="selector rounded-full bg-contain bg-center"
-                style="background-image: url('{getLocationIconPath(
-                  activeLocation,
-                )}'); width: 60px; height: 60px;"
-              ></div>
-              <div class="text-center pt-1" style="font-size: 0.85rem; line-height: 1.2;">
-                {locationLabel}
-              </div>
-            </div>
-          {/if}
-        </div>
-
-        <div>Duration: <span class="font-semibold">{formatDuration(scene.duration)}</span></div>
-        <div>
-          Time causing laughs: <span class="font-semibold"
-            >{formatDuration(scene.laughDuration)}</span
-          >
-        </div>
-        <div>
-          Laugh rate: <span class="font-semibold">{Math.round(scene.laughRate * 100)}%</span>
-        </div>
+      <div class="text-[0.8rem] text-[#928D90]">Causing laughs</div>
+    </div>
+    <div>
+      <div class="font-semibold text-[1.5rem] leading-tight">
+        {Math.round(scene.laughRate * 100)}%
       </div>
+      <div class="text-[0.8rem] text-[#928D90]">Laugh rate</div>
     </div>
   </div>
 
   <!-- Mini scene viz -->
-  <div bind:clientWidth={containerWidth}>
+  <div class="border-t border-[#DDDBDC] pt-3" bind:clientWidth={containerWidth}>
     <svg width={containerWidth} height={vizHeight + AXIS_H}>
-      <!-- Character labels -->
-      {#each allActiveChars as charId}
-        {@const char = characters.find((c) => c.id === charId)}
-        {@const cy = (yScale(charId) ?? 0) + yScale.bandwidth() / 2}
+      <!-- Character + location labels -->
+      {#each vizDomain as itemId}
+        {@const isLoc = itemId === activeLocation}
+        {@const char = isLoc ? null : characters.find((c) => c.id === itemId)}
+        {@const iconPath = isLoc ? getLocationIconPath(itemId) : getCharacterImagePath(itemId)}
+        {@const label = isLoc ? (locationLabel ?? itemId) : (char?.label ?? itemId)}
+        {@const cy = (yScale(itemId) ?? 0) + yScale.bandwidth() / 2}
+        <clipPath id="clip-label-{itemId.replace(/[^\w]/g, '-')}">
+          <circle cx={barWidth + 8 + 16} cy={cy} r={16} />
+        </clipPath>
+        <image
+          href={iconPath}
+          x={barWidth + 8}
+          y={cy - 16}
+          width={32}
+          height={32}
+          clip-path="url(#clip-label-{itemId.replace(/[^\w]/g, '-')})"
+          preserveAspectRatio="xMidYMid slice"
+        />
         <text
-          x={LABEL_W - 8}
+          x={barWidth + 8 + 32 + 8}
           y={cy}
           font-size="14"
           fill="#12020A"
-          text-anchor="end"
-          dominant-baseline="middle">{char?.label ?? charId}</text
+          text-anchor="start"
+          dominant-baseline="middle">{label}</text
         >
       {/each}
 
       <!-- Time axis -->
-      <g transform="translate({LABEL_W}, {vizHeight})">
+      <g transform="translate(0, {vizHeight})">
         <line x1={0} y1={0} x2={barWidth} y2={0} stroke="#DDDBDC" />
         {#each axisTicks as tick}
           {@const x = xScale(tick)}
@@ -231,9 +244,9 @@
         {/each}
       </g>
 
-      <g transform="translate({LABEL_W}, 0)">
+      <g transform="translate(0, 0)">
         <!-- Background rails -->
-        {#each allActiveChars as charId}
+        {#each vizDomain as charId}
           <rect
             x={0}
             y={yScale(charId)}
@@ -259,6 +272,21 @@
             {/each}
           </g>
         {/each}
+
+        <!-- Location presence -->
+        {#if activeLocation && locationPresence.length > 0}
+          <g transform="translate(0, {yScale(activeLocation)})">
+            {#each locationPresence as interval}
+              <rect
+                x={xScale(interval.start)}
+                y={0}
+                width={xScale(interval.start + interval.duration) - xScale(interval.start)}
+                height={yScale.bandwidth()}
+                fill="#12020A"
+              />
+            {/each}
+          </g>
+        {/if}
 
         <!-- Laugh cause bars (like CausedLaughs — taller, per-character colored, white stroke) -->
         {#each charLaughs as { charId, times }}
