@@ -7,6 +7,7 @@
   import { getLocationIconPath } from '../../utils/getLocationIconPath';
   import tv_noise from '$lib/assets/tv_noise.png';
   import { soundIsAuth } from '../../stores/soundAuthStore';
+  import { enterSoundSection, leaveSoundSection } from '../../stores/soundSectionIsInView';
 
   /** @type {HTMLVideoElement | undefined} */
   let videoEl;
@@ -102,10 +103,10 @@
         trigger: '#video-scroll-container',
         start: 'top bottom',
         end: 'bottom top',
-        onEnter: () => { inSection = true; },
-        onEnterBack: () => { inSection = true; },
-        onLeave: () => { inSection = false; },
-        onLeaveBack: () => { inSection = false; },
+        onEnter: () => { inSection = true; enterSoundSection(); },
+        onEnterBack: () => { inSection = true; enterSoundSection(); },
+        onLeave: () => { inSection = false; leaveSoundSection(); },
+        onLeaveBack: () => { inSection = false; leaveSoundSection(); },
       });
 
       // Height animation on desktop only (mobile uses flex-1 to fill remaining space)

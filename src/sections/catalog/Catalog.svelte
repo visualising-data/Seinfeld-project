@@ -1,5 +1,6 @@
 <script>
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
+  import { enterSoundSection, leaveSoundSection } from '../../stores/soundSectionIsInView';
   import { gsap } from 'gsap/dist/gsap';
   import { sharedScrollLeft } from '../../stores/scrollStore';
 
@@ -180,6 +181,26 @@
     // (EpisodeExample pin/fade, IntroEnd, Quotes, MainChars, etc.) downward.
     // Refreshing here recalculates all positions with the final DOM layout.
     ScrollTrigger.refresh();
+
+    const catalogEl = document.getElementById('catalog-section');
+    if (catalogEl) {
+      catalogObserver = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) enterSoundSection();
+          else leaveSoundSection();
+        },
+        { threshold: 0.1 },
+      );
+      catalogObserver.observe(catalogEl);
+    }
+  });
+
+  /** @type {IntersectionObserver | undefined} */
+  let catalogObserver;
+
+  onDestroy(() => {
+    catalogObserver?.disconnect();
+    leaveSoundSection();
   });
 
   // Reset scroll when episode changes

@@ -7,6 +7,7 @@
   const PLIP_URL =
     'https://amdufour.github.io/hosted-data/apis/sonification/20250925_Seinfeld_Intro_Plip.mp3';
   import { soundIsAuth } from '../../stores/soundAuthStore';
+  import { enterSoundSection, leaveSoundSection } from '../../stores/soundSectionIsInView';
   import { catalogIsInView } from '../../stores/catalogIsInView';
   import { navBarColor } from '../../stores/navbarColor';
 
@@ -439,14 +440,17 @@
           $catalogIsInView = false;
           $navBarColor = 'white';
           isTooltipVisible = false;
+          leaveSoundSection();
         },
         onEnterBack: () => {
           $catalogIsInView = true;
           $navBarColor = 'pink';
+          enterSoundSection();
         },
         onLeaveBack: () => {
           $catalogIsInView = false;
           isTooltipVisible = false;
+          leaveSoundSection();
         },
       });
 
@@ -460,7 +464,7 @@
           trigger: '#calendar-text-overlay-1',
           start: 'center center',
           invalidateOnRefresh: true,
-          onEnter: () => showEpisodes(1),
+          onEnter: () => { showEpisodes(1); enterSoundSection(); },
           onLeaveBack: () => {
             hideEpisodes(1);
             hideEpisodes(2);

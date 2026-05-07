@@ -8,6 +8,7 @@
   import Laugh from '../../icons/Laugh.svelte';
   import tv_noise from '$lib/assets/tv_noise.png';
   import { soundIsAuth } from '../../stores/soundAuthStore';
+  import { enterSoundSection, leaveSoundSection } from '../../stores/soundSectionIsInView';
   import { getCharacterImagePath } from '../../utils/getCharacterImagePath';
   import { characters as charactersAll } from '$lib/data/characters';
   import { formatTimeLabel } from '../../utils/formatTime';
@@ -69,10 +70,10 @@
         start: 'top top',
         end: 'bottom top',
         toggleActions: 'play pause resume pause',
-        onEnter: () => playVideo(),
-        onLeave: () => pauseVideo(),
-        onEnterBack: () => playVideo(),
-        onLeaveBack: () => pauseVideo(),
+        onEnter: () => { playVideo(); enterSoundSection(); },
+        onLeave: () => { pauseVideo(); leaveSoundSection(); },
+        onEnterBack: () => { playVideo(); enterSoundSection(); },
+        onLeaveBack: () => { pauseVideo(); leaveSoundSection(); },
       },
     });
 

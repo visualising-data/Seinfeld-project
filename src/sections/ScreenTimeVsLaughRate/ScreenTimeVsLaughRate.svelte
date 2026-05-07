@@ -9,6 +9,7 @@
     getLocationSoundFileName,
   } from '$lib/data/sonificationFilesMapping';
   import { soundIsAuth } from '../../stores/soundAuthStore';
+  import { enterSoundSection, leaveSoundSection } from '../../stores/soundSectionIsInView';
   import { characters } from '$lib/data/characters';
   import { locations } from '$lib/data/locations';
   import { FILTER } from '../../types/filter';
@@ -388,18 +389,22 @@
           onEnter: () => {
             soundtrackCanPlay = true;
             playAudio();
+            enterSoundSection();
           },
           onEnterBack: () => {
             soundtrackCanPlay = true;
             playAudio();
+            enterSoundSection();
           },
           onLeave: () => {
             soundtrackCanPlay = false;
             stopAudio();
+            leaveSoundSection();
           },
           onLeaveBack: () => {
             soundtrackCanPlay = false;
             stopAudio();
+            leaveSoundSection();
           },
         },
       });
@@ -691,18 +696,22 @@
           onEnter: () => {
             soundtrackCanPlay = true;
             playAudio();
+            enterSoundSection();
           },
           onEnterBack: () => {
             soundtrackCanPlay = true;
             playAudio();
+            enterSoundSection();
           },
           onLeave: () => {
             soundtrackCanPlay = false;
             stopAudio();
+            leaveSoundSection();
           },
           onLeaveBack: () => {
             soundtrackCanPlay = false;
             stopAudio();
+            leaveSoundSection();
           },
         },
       });

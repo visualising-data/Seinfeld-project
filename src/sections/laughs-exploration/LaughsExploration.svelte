@@ -17,6 +17,7 @@
     getLocationSoundFileName,
   } from '$lib/data/sonificationFilesMapping';
   import { soundIsAuth } from '../../stores/soundAuthStore';
+  import { enterSoundSection, leaveSoundSection } from '../../stores/soundSectionIsInView';
 
   let { episodesData } = $props();
 
@@ -305,6 +306,8 @@
     const observer = new IntersectionObserver(
       ([entry]) => {
         isInView = entry.isIntersecting;
+        if (entry.isIntersecting) enterSoundSection();
+        else leaveSoundSection();
       },
       { threshold: 0.2 },
     );

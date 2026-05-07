@@ -6,6 +6,7 @@
   import { max } from 'd3-array';
   import * as Tone from 'tone';
   import { soundIsAuth } from '../stores/soundAuthStore';
+  import { enterSoundSection, leaveSoundSection } from '../stores/soundSectionIsInView';
 
   import { seasons } from '$lib/data/seasons';
 
@@ -160,7 +161,11 @@
     const titleEl = document.getElementById('title-screen');
     if (titleEl) {
       ioObserver = new IntersectionObserver(
-        ([entry]) => { isTitleInView = entry.isIntersecting; },
+        ([entry]) => {
+          isTitleInView = entry.isIntersecting;
+          if (entry.isIntersecting) enterSoundSection();
+          else leaveSoundSection();
+        },
         { threshold: 0.1 },
       );
       ioObserver.observe(titleEl);

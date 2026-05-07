@@ -11,6 +11,7 @@
   import PlayIcon from '../../icons/PlayIcon.svelte';
   import { get } from 'svelte/store';
   import { soundIsAuth } from '../../stores/soundAuthStore';
+  import { enterSoundSection, leaveSoundSection } from '../../stores/soundSectionIsInView';
   import { laughterFiles, getRandomLaughterFile } from '$lib/data/laughterFiles';
 
   /** @type {gsap.Context | undefined} */
@@ -252,10 +253,12 @@
 
     ScrollTrigger.create({
       trigger: '#laughs-scroll-container',
-      start: 'top top',
+      start: 'top bottom',
       end: 'bottom top',
-      onLeave: stopAllLaughsAudio,
-      onLeaveBack: stopAllLaughsAudio,
+      onEnter: () => enterSoundSection(),
+      onEnterBack: () => enterSoundSection(),
+      onLeave: () => { stopAllLaughsAudio(); leaveSoundSection(); },
+      onLeaveBack: () => { stopAllLaughsAudio(); leaveSoundSection(); },
     });
 
     ctx = gsap.context(() => {
