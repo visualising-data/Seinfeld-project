@@ -153,7 +153,6 @@
         gsap.set('#episode-example', { pointerEvents: 'none' });
       },
       onLeave: () => {
-        showIllustration = false;
         gsap.set('#catalog-section', {
           clearProps: 'position,top,left,width,zIndex,pointerEvents',
         });
@@ -186,8 +185,12 @@
     if (catalogEl) {
       catalogObserver = new IntersectionObserver(
         ([entry]) => {
-          if (entry.isIntersecting) enterSoundSection();
-          else leaveSoundSection();
+          if (entry.isIntersecting) {
+            enterSoundSection();
+          } else {
+            leaveSoundSection();
+            showIllustration = false;
+          }
         },
         { threshold: 0.1 },
       );
