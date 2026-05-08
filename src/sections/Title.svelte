@@ -76,6 +76,7 @@
         stagger: 0.07,
         opacity: 0,
         ease: 'power3.out',
+        immediateRender: false,
       },
       '-=2.5',
     )
@@ -119,7 +120,13 @@
   let barsHaveAnimated = false;
 
   const playJingle = () => {
-    if ($soundIsAuth && isTitleInView && barsHaveAnimated && soundtrack?.loaded && soundtrack.state !== 'started') {
+    if (
+      $soundIsAuth &&
+      isTitleInView &&
+      barsHaveAnimated &&
+      soundtrack?.loaded &&
+      soundtrack.state !== 'started'
+    ) {
       soundtrack.start();
     }
   };
@@ -190,6 +197,48 @@
         })
         .add(revealContent())
         .add(animateBars(), 0);
+
+      // Section is 500dvh, sticky container is 100dvh.
+      // scrub (top center → bottom bottom) covers ~450dvh.
+      // fromTo from-states are explicit so the scrub never fights the reveal tween.
+      gsap
+        .timeline({
+          scrollTrigger: {
+            trigger: '#title-screen',
+            start: 'top center',
+            end: 'bottom bottom',
+            scrub: 1,
+            invalidateOnRefresh: true,
+          },
+        })
+        // t=0–1: implicit hold (content fully visible)
+        // t=1–2: fly-out (everything except Seinfeld fades + moves up)
+        // t=2–3: white Seinfeld fades out; 9 season-colored copies emerge from
+        //         the same position and fan out to form a light superposition
+        .fromTo(
+          ['#title-the', '#title-chronicles', '#title-screen svg', '#subtitle'],
+          { opacity: 1, y: 0 },
+          { opacity: 0, y: -80, ease: 'none' },
+          1,
+        )
+        .fromTo(
+          '#title-seinfeld-text',
+          { opacity: 1 },
+          { opacity: 0, ease: 'none', duration: 0.5 },
+          2,
+        )
+        .to('.seinfeld-season-word', { opacity: 1, duration: 0.001 }, 2)
+        .fromTo(
+          '.seinfeld-season-word',
+          { xPercent: 0, scale: 1 },
+          {
+            xPercent: (/** @type {number} */ i) => (i - 4) * 4,
+            scale: (/** @type {number} */ i) => 1 + i * 0.05,
+            ease: 'none',
+            duration: 1,
+          },
+          2,
+        );
     });
   });
 
@@ -203,8 +252,11 @@
 
 <svelte:window bind:innerWidth />
 
-<section id="title-screen" class="py-40" style="--ring-gradient: {seasonGradient}">
-  <div class="title-container h-[100dvh]">
+<section id="title-screen" style="min-height: 500dvh; --ring-gradient: {seasonGradient}">
+  <div
+    class="title-container h-[100dvh]"
+    style="position: sticky; top: var(--vv-top, 0px); z-index: 10;"
+  >
     <svg width={svgWidth} height="132" onmouseenter={handleMouseEnterBars} role="figure">
       {#each seasons as season, i}
         <rect
@@ -219,7 +271,19 @@
     </svg>
     <div class="container">
       <div style="margin-top: -25px; max-width: 940px;">
-        <h1>The Seinfeld Chronicles</h1>
+        <h1>
+          <span id="title-the">The </span><span id="title-seinfeld"
+            ><span id="title-seinfeld-text">Seinfeld</span><span
+              id="seinfeld-seasons"
+              aria-hidden="true"
+              >{#each seasons as season}<span
+                  class="seinfeld-season-word"
+                  style="color: {season.accessibleOverDarkColor}">Seinfeld</span
+                >{/each}<span class="seinfeld-season-word" style="color: #F9F5F7">Seinfeld</span
+              ></span
+            ></span
+          ><br /><span id="title-chronicles"> Chronicles</span>
+        </h1>
       </div>
       <div id="subtitle" class="subtitle number mt-6">
         An unnecessary data exploration by
@@ -304,7 +368,7 @@
     padding-top: 100px;
   }
   .subtitle {
-    font-size: 0.6rem;
+    font-size: 0.875rem;
     line-height: 2.5;
   }
   @media (min-width: 768px) {
@@ -413,6 +477,25 @@
     75% {
       border-radius: 30% 70% 40% 60% / 70% 30% 50% 50%;
     }
+  }
+  #title-seinfeld {
+    position: relative;
+    display: inline-block;
+    vertical-align: baseline;
+  }
+  #seinfeld-seasons {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+  }
+  .seinfeld-season-word {
+    position: absolute;
+    top: 0;
+    left: 0;
+    white-space: nowrap;
+    -webkit-text-stroke: 1px white;
+    opacity: 0;
   }
   @media screen and (min-width: 996px) {
     .subtitle {

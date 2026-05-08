@@ -431,7 +431,6 @@
         start: 'top top',
         end: 'bottom bottom',
         pin: '#intro-calendar',
-        preventOverlaps: true,
         invalidateOnRefresh: true,
         onEnter: () => {
           $catalogIsInView = true;

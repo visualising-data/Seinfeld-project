@@ -22,43 +22,42 @@
   let st;
 
   onMount(() => {
-    const setup = async () => {
-      const imgSlider = document.getElementById('books-inner-container');
-      const imgSliderMain = document.getElementById('books-outer-container');
+    const imgSlider = document.getElementById('books-inner-container');
+    const imgSliderMain = document.getElementById('books-outer-container');
 
-      if (!imgSlider || !imgSliderMain) return;
+    if (!imgSlider || !imgSliderMain) return;
 
-      // Wait for all strip images to load before measuring scrollWidth.
-      // Without this, lazy images have 0 width at mount time, making the
-      // pin spacer far too small and causing the animation to flash by.
-      const imgs = [...imgSlider.querySelectorAll('img')];
-      await Promise.all(
-        imgs.map((img) =>
-          /** @type {HTMLImageElement} */ (img).complete
-            ? Promise.resolve()
-            : new Promise((r) => img.addEventListener('load', r, { once: true })),
-        ),
-      );
+    // Create the pin immediately (synchronously) so the pin spacer exists in the
+    // DOM before downstream components' onMount callbacks (Title, Calendar) run.
+    // In dev mode, images may not be loaded yet — scrollWidth could be 0 —
+    // but invalidateOnRefresh:true recalculates the end value on every refresh,
+    // and the post-load refresh below corrects the pin spacer size.
+    tl = gsap.timeline({ defaults: { ease: 'none' } });
+    tl.to(imgSlider, { x: () => -(imgSlider.scrollWidth - imgSliderMain.offsetWidth) });
+    tl.to('#book-cover', { scale: 1.08 }, 0);
+    tl.from('#accent-line', { width: 0 }, 0);
 
-      tl = gsap.timeline({ defaults: { ease: 'none' } });
-      tl.to(imgSlider, { x: () => -(imgSlider.scrollWidth - imgSliderMain.offsetWidth) });
-      tl.to('#book-cover', { scale: 1.08 }, 0);
-      tl.from('#accent-line', { width: 0 }, 0);
+    st = ScrollTrigger.create({
+      trigger: '#book-sticky',
+      start: 'top top',
+      end: () => `+=${(imgSlider.scrollWidth - imgSliderMain.offsetWidth) * 3}`,
+      scrub: 1,
+      pin: true,
+      animation: tl,
+      invalidateOnRefresh: true,
+    });
 
-      st = ScrollTrigger.create({
-        trigger: '#book-sticky',
-        start: 'top top',
-        end: () => `+=${(imgSlider.scrollWidth - imgSliderMain.offsetWidth) * 3}`,
-        scrub: 1,
-        pin: true,
-        animation: tl,
-        invalidateOnRefresh: true,
-      });
+    // After images load, refresh so the pin spacer gets the correct size and
+    // all downstream ScrollTriggers (Calendar etc.) recalculate their positions.
+    const imgs = [...imgSlider.querySelectorAll('img')];
+    Promise.all(
+      imgs.map((img) =>
+        /** @type {HTMLImageElement} */ (img).complete
+          ? Promise.resolve()
+          : new Promise((r) => img.addEventListener('load', r, { once: true })),
+      ),
+    ).then(() => ScrollTrigger.refresh());
 
-      ScrollTrigger.refresh();
-    };
-
-    setup();
     window.addEventListener('load', () => ScrollTrigger.refresh(), { once: true });
   });
 
@@ -146,43 +145,43 @@
             alt="Cover of the book The Seinfeld Chronicles."
           />
           <img
-            loading="lazy"
+            loading="eager"
             class="book-img mx-4"
             src={BookIntro}
             alt="Introduction of the book."
           />
           <img
-            loading="lazy"
+            loading="eager"
             class="book-img mx-4"
             src={BookCalendar}
             alt="Calendar of the nine seasons of Seinfeld."
           />
           <img
-            loading="lazy"
+            loading="eager"
             class="book-img mx-4"
             src={BookLaughs}
             alt="Data visualizations of the laughs caused by the four main characters."
           />
           <img
-            loading="lazy"
+            loading="eager"
             class="book-img mx-4"
             src={BookScatterplot}
             alt="Data visualizations of the peak performances of the four main characters."
           />
           <img
-            loading="lazy"
+            loading="eager"
             class="book-img mx-4"
             src={BookQuotes}
             alt="Famous quotes from each episode."
           />
           <img
-            loading="lazy"
+            loading="eager"
             class="book-img mx-4"
             src={BookCatalog1}
             alt="Data visualization of season 4 episode 11 'The Contest'."
           />
           <img
-            loading="lazy"
+            loading="eager"
             class="book-img mx-4"
             src={BookCatalog2}
             alt="Data visualization of season 7 episode 6 'The Soup Nazi'."

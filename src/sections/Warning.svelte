@@ -44,10 +44,10 @@
 </script>
 
 <!-- Outer wrapper: sticky inner + scroll spacer provide entry and exit scroll distance -->
-<div class="warning-wrapper relative">
+<div class="warning-wrapper relative" style="background: #12020A;">
   <div
     id="warning"
-    class="sticky top-0 h-dvh overflow-hidden flex flex-col justify-between py-16 text-black"
+    class="sticky top-0 h-dvh overflow-hidden flex flex-col justify-between py-16 text-white" style="z-index: 5;"
   >
     <!-- Background: huge illustrations -->
     <div class="absolute inset-0 flex pointer-events-none">

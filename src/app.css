@@ -215,7 +215,8 @@
       line-height: 1.5;
     }
     h1 {
-      font-size: 7rem;
+      font-size: 10rem;
+      line-height: 1.05;
     }
     h2 {
       font-size: 6.5rem;

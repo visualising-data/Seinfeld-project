@@ -23,7 +23,6 @@
   import SoundAuthPopup from '../UI/SoundAuthPopup.svelte';
   import Title from '../sections/Title.svelte';
   import Warning from '../sections/Warning.svelte';
-  import TitleTransition from '../sections/TitleTransition.svelte';
   // @ts-ignore
   import Calendar from '../sections/calendar/Calendar.svelte';
   import Quotes from '../sections/quotes/Quotes.svelte';
@@ -333,10 +332,8 @@
       <SoundAuthPopup />
     {/if}
     <Title />
-    <TitleTransition>
-      <Warning />
-    </TitleTransition>
   </div>
+  <Warning />
   <div style="background: #F9F5F7; min-height: 100dvh;"></div>
   <div class="text-black" style="background: #F9F5F7;">
     <Calendar {ScrollTrigger} />
