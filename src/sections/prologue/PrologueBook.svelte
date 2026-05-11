@@ -79,12 +79,8 @@
       <div id="book-cover-container" class="hidden lg:flex flex-1 items-center container">
         <div class="flex-1 px-4">
           <p>
-            My curiosity transcended just <a
-              href="https://jenniferkarmstrong.com/books/seinfeldia/"
-              target="_blank">reading more about the show</a
-            >, it was now time to go deep. I decided to immerse myself in an entirely unnecessary,
-            self-motivated, long-running, data-driven exploration of every episode of Seinfeld. Why
-            not!
+            And so began a self-motivated, long-running, entirely unnecessary, data-driven
+            exploration of every episode of Seinfeld.z
           </p>
           <p>
             The first product of this work was my 2020 publishing of <a

@@ -103,10 +103,22 @@
         trigger: '#video-scroll-container',
         start: 'top bottom',
         end: 'bottom top',
-        onEnter: () => { inSection = true; enterSoundSection(); },
-        onEnterBack: () => { inSection = true; enterSoundSection(); },
-        onLeave: () => { inSection = false; leaveSoundSection(); },
-        onLeaveBack: () => { inSection = false; leaveSoundSection(); },
+        onEnter: () => {
+          inSection = true;
+          enterSoundSection();
+        },
+        onEnterBack: () => {
+          inSection = true;
+          enterSoundSection();
+        },
+        onLeave: () => {
+          inSection = false;
+          leaveSoundSection();
+        },
+        onLeaveBack: () => {
+          inSection = false;
+          leaveSoundSection();
+        },
       });
 
       // Height animation on desktop only (mobile uses flex-1 to fill remaining space)
@@ -150,8 +162,8 @@
         <!-- Text 1: in normal flow — sets natural wrapper height -->
         <div id="video-text-1" class="py-12">
           <div class="md:w-[620px]">
-            There's a good chance you've seen this popular gif. It shows a clip taken from episode 4
-            of season 4, titled <span class="em">'The Wallet'</span>.
+            There's a good chance you've seen this popular gif. It shows a clip taken from the
+            fourth episode of season four, titled 'The Wallet'.
           </div>
         </div>
         <!-- Texts 2-3: absolutely positioned so scrollHeight reflects real content height -->

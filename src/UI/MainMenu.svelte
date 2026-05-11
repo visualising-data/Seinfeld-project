@@ -10,7 +10,7 @@
   const menuLinks = [
     { label: 'Prologue', anchor: 'intro' },
     { label: 'The Show', anchor: 'intro-calendar-container' },
-    { label: 'Episode Catalog', anchor: 'catalog-section' },
+    { label: 'Episode Catalogue', anchor: 'catalog-section' },
     { label: 'Lead Characters', anchor: 'lead-chars' },
     { label: 'Supporting Characters', anchor: 'supporting-chars' },
     { label: 'Locations', anchor: 'locations' },

@@ -72,7 +72,10 @@
 
         // Initial state
         for (let j = 0; j < 5; j++) {
-          gsap.set(`#show-text-${j}`, { opacity: j === 0 ? 1 : 0, pointerEvents: j === 0 ? 'auto' : 'none' });
+          gsap.set(`#show-text-${j}`, {
+            opacity: j === 0 ? 1 : 0,
+            pointerEvents: j === 0 ? 'auto' : 'none',
+          });
           gsap.set(infoId(j), { opacity: j === 0 ? 1 : 0 });
           if (isMobile) {
             gsap.set(`#show-video-${j}`, { opacity: j === 0 ? 1 : 0 });
@@ -171,10 +174,22 @@
         trigger: '#show-section',
         start: 'top bottom',
         end: 'bottom top',
-        onEnter: () => { inSection = true; enterSoundSection(); },
-        onEnterBack: () => { inSection = true; enterSoundSection(); },
-        onLeave: () => { inSection = false; leaveSoundSection(); },
-        onLeaveBack: () => { inSection = false; leaveSoundSection(); },
+        onEnter: () => {
+          inSection = true;
+          enterSoundSection();
+        },
+        onEnterBack: () => {
+          inSection = true;
+          enterSoundSection();
+        },
+        onLeave: () => {
+          inSection = false;
+          leaveSoundSection();
+        },
+        onLeaveBack: () => {
+          inSection = false;
+          leaveSoundSection();
+        },
       });
     });
   });
@@ -194,7 +209,15 @@
         class="show-video-item relative overflow-hidden min-w-0"
         style="flex: 4 1 0%"
       >
-        <video bind:this={videoEls[0]} playsinline autoplay muted loop preload="metadata" class="h-full w-full object-cover">
+        <video
+          bind:this={videoEls[0]}
+          playsinline
+          autoplay
+          muted
+          loop
+          preload="metadata"
+          class="h-full w-full object-cover"
+        >
           <source
             src="https://amdufour.github.io/hosted-data/apis/videos/6c.ShowAboutNothing(CC).mp4"
             type="video/mp4"
@@ -238,7 +261,15 @@
         class="show-video-item relative overflow-hidden min-w-0"
         style="flex: 1 1 0%"
       >
-        <video bind:this={videoEls[1]} playsinline autoplay muted loop preload="none" class="h-full w-full object-cover">
+        <video
+          bind:this={videoEls[1]}
+          playsinline
+          autoplay
+          muted
+          loop
+          preload="none"
+          class="h-full w-full object-cover"
+        >
           <source
             src="https://amdufour.github.io/hosted-data/apis/videos/32.Minutiae(CC).mp4"
             type="video/mp4"
@@ -281,7 +312,15 @@
         class="show-video-item relative overflow-hidden min-w-0"
         style="flex: 1 1 0%"
       >
-        <video bind:this={videoEls[2]} playsinline autoplay muted loop preload="none" class="h-full w-full object-cover">
+        <video
+          bind:this={videoEls[2]}
+          playsinline
+          autoplay
+          muted
+          loop
+          preload="none"
+          class="h-full w-full object-cover"
+        >
           <source
             src="https://amdufour.github.io/hosted-data/apis/videos/KramerJeans2(CC).mp4"
             type="video/mp4"
@@ -324,7 +363,15 @@
         class="show-video-item relative overflow-hidden min-w-0"
         style="flex: 1 1 0%"
       >
-        <video bind:this={videoEls[3]} playsinline autoplay muted loop preload="none" class="h-full w-full object-cover">
+        <video
+          bind:this={videoEls[3]}
+          playsinline
+          autoplay
+          muted
+          loop
+          preload="none"
+          class="h-full w-full object-cover"
+        >
           <source
             src="https://amdufour.github.io/hosted-data/apis/videos/8.KramerCigarette(CC).mp4"
             type="video/mp4"
@@ -367,7 +414,15 @@
         class="show-video-item relative overflow-hidden min-w-0"
         style="flex: 1 1 0%"
       >
-        <video bind:this={videoEls[4]} playsinline autoplay muted loop preload="none" class="h-full w-full object-cover">
+        <video
+          bind:this={videoEls[4]}
+          playsinline
+          autoplay
+          muted
+          loop
+          preload="none"
+          class="h-full w-full object-cover"
+        >
           <source
             src="https://amdufour.github.io/hosted-data/apis/videos/14.ElaineDancing(CC).mp4"
             type="video/mp4"
@@ -586,11 +641,8 @@
         <p>
           Seinfeld is considered a unique sitcom in how it deviated from the traditional rules of
           the time, rejecting the classic three-act story in favour of a faster-paced multi-story
-          structure.
-        </p>
-        <p>
-          It was essentially written in a different key, focusing on - and amplifying - the minutiae
-          of daily life, and earning its reputation as <a
+          structure. It was essentially written in a different key, focusing on - and amplifying -
+          the minutiae of daily life, and earning its reputation as <a
             href="https://www.latimes.com/archives/la-xpm-1993-03-04-ca-474-story.html"
             target="_blank">the show about nothing</a
           >.
@@ -635,9 +687,11 @@
         style="opacity: 0; pointer-events: none"
       >
         <p>
-          As I progressed through the episodes my fascination with the creative process behind the
-          show grew. It was the <span class="highlight">musicality</span> of the show I found particularly
-          intriguing, orchestrated by the comedic talents of co-creators Jerry Seinfeld and Larry David.
+          As I <a href="https://jenniferkarmstrong.com/books/seinfeldia/" target="_blank"
+            >read more about the show</a
+          >, my fascination with the creative process behind it grew. It was the
+          <span class="highlight">musicality</span> of the show I found particularly intriguing, orchestrated
+          by the comedic talents of co-creators Jerry Seinfeld and Larry David.
         </p>
       </div>
 

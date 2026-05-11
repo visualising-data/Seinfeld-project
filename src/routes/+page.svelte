@@ -90,9 +90,10 @@
 
   async function loadSupportingChars() {
     if (SupportingCharsSection) return;
-    SupportingCharsSection = await import(
-      '../sections/supporting_characters/SupportingCharsSection.svelte'
-    ).then((m) => m.default);
+    SupportingCharsSection =
+      await import('../sections/supporting_characters/SupportingCharsSection.svelte').then(
+        (m) => m.default,
+      );
     await tick();
     scheduleRefresh();
   }
@@ -108,9 +109,10 @@
 
   async function loadLaughsExploration() {
     if (LaughsExploration) return;
-    LaughsExploration = await import(
-      '../sections/laughs-exploration/LaughsExploration.svelte'
-    ).then((m) => m.default);
+    LaughsExploration =
+      await import('../sections/laughs-exploration/LaughsExploration.svelte').then(
+        (m) => m.default,
+      );
     await tick();
     scheduleRefresh();
   }
@@ -167,7 +169,14 @@
     // Force-load all waves immediately when triggered by menu/sidebar navigation
     const unsubLazy = lazyLoadAll.subscribe(async (shouldLoad) => {
       if (!shouldLoad) return;
-      await Promise.all([loadWave1(), loadWave2(), loadSupportingChars(), loadLocations(), loadLaughsExploration(), loadMethodology()]);
+      await Promise.all([
+        loadWave1(),
+        loadWave2(),
+        loadSupportingChars(),
+        loadLocations(),
+        loadLaughsExploration(),
+        loadMethodology(),
+      ]);
     });
 
     // If the page loads with a non-zero scroll position (browser scroll restoration
@@ -350,7 +359,7 @@
     {#if episodesData && DataGathering && IntroEnd}
       <svelte:component this={DataGathering} {episodesData} {ScrollTrigger} />
       <svelte:component this={IntroEnd} />
-      <Quotes />
+      <!-- <Quotes /> -->
 
       <!-- Wave 2 sentinel: loads MainCharsSection -->
       <div

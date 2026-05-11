@@ -29,6 +29,16 @@
 
 <div id="data-gathering-bridge" class="h-[100dvh]">
   <div class="h-[100dvh] container flex content-center flex-wrap">
-    <p style="max-width: 900px;">Let's look at how we took this laughter data and used it to build a profile of each episode's rhythm and texture.</p>
+    <div style="max-width: 900px;">
+      <p>
+        In addition to measuring the comedy, extensive data was captured about the situation
+        [emphasise]: which characters were used in each scene, for how long, and where were the
+        scenes set.
+      </p>
+      <p>
+        Let’s see how the laughter data was blended with the character and location data to build a
+        unique profile of each episode’s rhythm and texture.
+      </p>
+    </div>
   </div>
 </div>

@@ -114,7 +114,9 @@
   </div>
   {#if !$catalogLegendIsVisible}
     <div class="relative" style="width: {columnWidth}px;">
-      <div class="small accent absolute" style="width: {columnWidth}px;">% of episode laughs</div>
+      <div class="small accent absolute" style="width: {columnWidth}px;">
+        % share of episode laughs
+      </div>
       <svg width={columnWidth} {height}>
         {#each charactersCausedLaughs as char}
           <rect

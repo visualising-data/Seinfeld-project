@@ -257,8 +257,14 @@
       end: 'bottom top',
       onEnter: () => enterSoundSection(),
       onEnterBack: () => enterSoundSection(),
-      onLeave: () => { stopAllLaughsAudio(); leaveSoundSection(); },
-      onLeaveBack: () => { stopAllLaughsAudio(); leaveSoundSection(); },
+      onLeave: () => {
+        stopAllLaughsAudio();
+        leaveSoundSection();
+      },
+      onLeaveBack: () => {
+        stopAllLaughsAudio();
+        leaveSoundSection();
+      },
     });
 
     ctx = gsap.context(() => {
@@ -361,15 +367,16 @@
         }
 
         if (i + 1 === 5) {
-          tlRef.to('#text5-icon-1', {
-            opacity: 1,
-            duration: 0.3,
-            ease: 'power2.out',
-            delay: 0.3,
-            onStart: () => {
-              Promise.all([Tone.start(), guffaw2ReadyPromise]).then(() => playGuffaw2());
-            },
-          })
+          tlRef
+            .to('#text5-icon-1', {
+              opacity: 1,
+              duration: 0.3,
+              ease: 'power2.out',
+              delay: 0.3,
+              onStart: () => {
+                Promise.all([Tone.start(), guffaw2ReadyPromise]).then(() => playGuffaw2());
+              },
+            })
             .to('#text5-icon-2', { opacity: 1, duration: 0.3, ease: 'power2.out' }, '>+4.7')
             .to('#text5-icon-3', { opacity: 1, duration: 0.3, ease: 'power2.out' }, '>+4.7')
             .to('#text5-icon-4', { opacity: 1, duration: 0.3, ease: 'power2.out' }, '>+4.7');
@@ -412,10 +419,11 @@
       <!-- wrapper: text 1 in flow sets natural height; texts 2-5 are absolute -->
       <div id="laughs-text-wrapper" class="relative container">
         <div id="laughs-text-1" class="py-8 md:py-12 max-w-[840px] pointer-events-none">
-          We gathered all the data for this project manually, by watching every one of the <span
-            class="highlight">176&nbsp;written episodes</span
-          > of Seinfeld using a detailed spreadsheet template to record observations about the show's
-          rhythm and texture.
+          With the DVD’s episodes timeline showing, a detailed spreadsheet template was used to <span
+            class="highlight">quantify</span
+          >
+          and <span class="highlight">classify</span> data that would aid the analysis of the show’s rhythm
+          and texture.
         </div>
         <div id="laughs-text-2" class="absolute inset-x-0 top-0 px-6 md:px-12 py-8 md:py-12">
           <div class="flex flex-col md:grid md:grid-cols-[142px_1fr] gap-6 md:gap-8 items-start">
@@ -433,13 +441,13 @@
             </div>
             <!-- Text -->
             <div class="max-w-[984px]">
-              It doesn't take a genius to recognise the main goal of a sitcom is to offer
-              situational comedy. It also stands to reason that a reliable indicator of a situation
-              comedy being funny is to measure the reaction of an audience's laughter through the
-              laugh track. These days it is rare to find laugh tracks on modern sitcoms, but
-              Seinfeld had one and with the show always being filmed in front of a <span
-                class="highlight">live studio audience</span
-              > (any scenes filmed outside were played back in the studio) so the laughter heard is authentic.
+              It doesn't take a genius to recognise the main goal of a situation comedy is to be
+              funny. Therefore, a reliable indicator of a sitcom being funny is to measure the
+              reaction of an audience's laughter through the laugh track. It is rare to find laugh
+              tracks on modern sitcoms, but Seinfeld had one. With the show always being filmed in
+              front of a <span class="highlight">live studio audience</span> (any scenes filmed outside
+              were played back in the studio) it meant the laughter heard is an authentic measure of the
+              audience’s reaction.
             </div>
           </div>
         </div>
@@ -447,11 +455,12 @@
           <div class="flex flex-col md:grid md:grid-cols-[1fr_auto] gap-6 md:gap-8 items-end">
             <!-- Text -->
             <div class="self-center max-w-[984px]">
-              Laughter has a spectrum of levels, from the subtle smile characteristic of 'inner'
-              laughter, through to more external titters, chuckles, chortles, and through to belly
-              laughs or howls. To establish a standard measurement any laughter heard during the
-              episodes counted as a "laughter moment", regardless of whether it was loud or
-              fleeting.
+              Measuring laughter was the most subjective and, therefore, challenging data collection
+              activity. Laughing can occur at different levels, from the subtle smile characterising
+              'inner' laughter, through to more external giggles, and up to howling belly laughs. To
+              establish a standard and consistent measurement, any audience laughter heard would be
+              considered as a <span class="highlight">laughter moment</span>, regardless of its
+              level.
             </div>
             <!-- Icons -->
             <div
@@ -489,16 +498,16 @@
             <!-- Text -->
             <div class="max-w-[984px]">
               For consistency, each observed laughter moment was recorded against an associated
-              <span class="highlight">5&#8209;second</span> block of time. When testing out the data collection
-              approach over three sample episodes, the 5-second duration proved to be the most reliable
-              and representative 'average' duration, from the gag's delivery to the audience's laughter
-              subsiding.
+              <span class="highlight">5&#8209;second</span> block of time, determined by in which period
+              the laughter was heard and/or most associated. When testing out the data collection approach
+              over three sample episodes, the 5-second duration proved to be the most reliable and representative
+              'average' duration, from the gag's delivery to the audience's laughter subsiding.
             </div>
             <!-- Excel-like grid -->
             <div class="shrink-0 border border-white/40 text-xs">
               <!-- Time headers -->
               <div class="grid grid-cols-5 border-b border-white/40">
-                {#each ['00:00', '00:05', '00:10', '00:15', '00:20'] as time, ti}
+                {#each ['18:35', '18:40', '18:45', '18:50', '18:55'] as time, ti}
                   <div
                     class="px-4 py-2 number text-center text-white/70 {ti < 4
                       ? 'border-r border-white/40'
@@ -527,15 +536,17 @@
           <div class="flex flex-col md:grid md:grid-cols-[1fr_auto] gap-6 md:gap-10 items-center">
             <!-- Text -->
             <div class="max-w-[984px]">
-              Occasionally, laughter would run for longer than 5 seconds, sometimes persisting for
-              10 and even 15 seconds. In these rare cases, each 5-second unit would count as a
-              laughter moment.
+              On rare occasions, laughter would run for longer than 5 seconds, sometimes persisting
+              for 10 and even 15 seconds. This might have been a single sustained period of laughing
+              or waves of renewed laughter caused by a character’s glance or change in expression,
+              perhaps in reaction to the laughter itself. In such cases, distinct laughter moments
+              would be logged for each consecutive 5-second block of the laughing duration.
             </div>
             <!-- Excel-like grid -->
             <div class="shrink-0 border border-white/40 text-xs">
               <!-- Time headers -->
               <div class="grid grid-cols-5 border-b border-white/40">
-                {#each ['00:00', '00:05', '00:10', '00:15', '00:20'] as time, ti}
+                {#each ['18:35', '18:40', '18:45', '18:50', '18:55'] as time, ti}
                   <div
                     class="px-4 py-2 number text-center text-white/70 {ti < 4
                       ? 'border-r border-white/40'
