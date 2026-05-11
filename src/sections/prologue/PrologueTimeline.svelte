@@ -201,7 +201,7 @@
     >
       <div id="date-us" class="flex items-center">
         <div id="year-us" class="year" style="width: {innerWidth >= 768 ? 176 : 60}px;">1989</div>
-        <div class="circle bg-white"></div>
+        <div class="circle bg-accent"></div>
         {#if innerWidth >= 996}
           <div class="timeline-description" style="margin-left: 24px">
             Seinfeld first aired on NBC in the USA
@@ -217,7 +217,7 @@
     >
       <div id="date-uk" class="flex items-center">
         <div id="year-uk" class="year" style="width: {innerWidth >= 768 ? 176 : 60}px;">1993</div>
-        <div class="circle bg-white"></div>
+        <div class="circle bg-accent"></div>
         {#if innerWidth >= 996}
           <div class="timeline-description" style="margin-left: 24px">
             Seinfeld first aired on BBC2 in the UK
@@ -241,7 +241,7 @@
     <div id="date-4" class="absolute w-full" style={`top: ${innerHeight - 120 + 30}px; left: 0`}>
       <div id="date-hulu" class="flex items-center" style="opacity: 0">
         <div class="year" style="width: {innerWidth >= 768 ? 176 : 60}px;">2015</div>
-        <div class="circle bg-white"></div>
+        <div class="circle bg-accent"></div>
         {#if innerWidth >= 996}
           <div class="timeline-description" style="margin-left: 24px">
             Seinfeld available on-demand on Hulu in the USA
@@ -253,7 +253,7 @@
     <div id="date-5" class="absolute w-full" style={`top: ${innerHeight - 120 + 30}px; left: 0`}>
       <div id="date-netflix" class="flex items-center" style="opacity: 0">
         <div class="year" style="width: {innerWidth >= 768 ? 176 : 60}px;">2021</div>
-        <div class="circle bg-white"></div>
+        <div class="circle bg-accent"></div>
         {#if innerWidth >= 996}
           <div class="timeline-description" style="margin-left: 24px">
             Seinfeld launches on Netflix with worldwide streaming
@@ -283,6 +283,7 @@
     font-weight: 600;
   }
   .circle {
+    margin-left: 2px;
     width: 24px;
     min-width: 24px;
     height: 24px;
@@ -291,13 +292,7 @@
   @media screen and (min-width: 768px) {
     .year {
       margin-right: 24px;
-      font-size: 1.875rem;
-    }
-    .circle {
-      width: 28px;
-      min-width: 28px;
-      height: 28px;
-      border-radius: 50%;
+      font-size: 1.45rem;
     }
   }
   @media screen and (min-width: 996px) {
@@ -310,18 +305,7 @@
     }
   }
   .timeline-description {
-    line-height: 1.4;
-  }
-  .pulse {
-    animation: pulse-animation 2s infinite;
-  }
-
-  @keyframes pulse-animation {
-    0% {
-      box-shadow: 0 0 0 0px rgba(231, 29, 128, 0.5);
-    }
-    100% {
-      box-shadow: 0 0 0 20px rgba(231, 29, 128, 0);
-    }
+    font-size: 1.125rem;
+    line-height: 1.2;
   }
 </style>
