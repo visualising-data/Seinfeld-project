@@ -140,7 +140,7 @@
       </div>
     {:else}
       <div class="animate-bounce">
-        <DownIcon />
+        <DownIcon isCaretOnly={true} />
       </div>
     {/if}
   </div>
