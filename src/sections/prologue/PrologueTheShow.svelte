@@ -86,10 +86,10 @@
           // This is needed because browsers don't reliably autoplay <video><source> elements.
           setVideoSrc(j, j === 0);
         }
-        gsap.set(['#show-text-3 .highlight', '#show-text-4 .highlight'], {
-          webkitTextFillColor: 'currentColor',
-          backgroundPosition: '0% center',
-        });
+        gsap.set(
+          ['#show-text-0 .highlight', '#show-text-1 .highlight', '#show-text-2 .highlight', '#show-text-3 .highlight', '#show-text-4 .highlight'],
+          { webkitTextFillColor: 'currentColor', backgroundPosition: '0% center' }
+        );
 
         /** @param {number} index */
         const transitionTo = (index) => {
@@ -99,6 +99,9 @@
             gsap.killTweensOf(infoId(j));
             gsap.killTweensOf(`#show-video-${j}`);
           }
+          gsap.killTweensOf('#show-text-0 .highlight');
+          gsap.killTweensOf('#show-text-1 .highlight');
+          gsap.killTweensOf('#show-text-2 .highlight');
           gsap.killTweensOf('#show-text-3 .highlight');
           gsap.killTweensOf('#show-text-4 .highlight');
 
@@ -128,15 +131,36 @@
           }
 
           // Highlight animations
-          gsap.set('#show-text-3 .highlight', {
-            webkitTextFillColor: 'currentColor',
-            backgroundPosition: '0% center',
-          });
-          gsap.set('#show-text-4 .highlight', {
-            webkitTextFillColor: 'currentColor',
-            backgroundPosition: '0% center',
-          });
-          if (index === 3) {
+          gsap.set('#show-text-0 .highlight', { webkitTextFillColor: 'currentColor', backgroundPosition: '0% center' });
+          gsap.set('#show-text-1 .highlight', { webkitTextFillColor: 'currentColor', backgroundPosition: '0% center' });
+          gsap.set('#show-text-2 .highlight', { webkitTextFillColor: 'currentColor', backgroundPosition: '0% center' });
+          gsap.set('#show-text-3 .highlight', { webkitTextFillColor: 'currentColor', backgroundPosition: '0% center' });
+          gsap.set('#show-text-4 .highlight', { webkitTextFillColor: 'currentColor', backgroundPosition: '0% center' });
+          if (index === 0) {
+            gsap.to('#show-text-0 .highlight', {
+              webkitTextFillColor: 'transparent',
+              backgroundPosition: '200% center',
+              duration: 1.5,
+              ease: 'power3.out',
+              delay: 0.3,
+            });
+          } else if (index === 1) {
+            gsap.to('#show-text-1 .highlight', {
+              webkitTextFillColor: 'transparent',
+              backgroundPosition: '200% center',
+              duration: 1.5,
+              ease: 'power3.out',
+              delay: 0.3,
+            });
+          } else if (index === 2) {
+            gsap.to('#show-text-2 .highlight', {
+              webkitTextFillColor: 'transparent',
+              backgroundPosition: '200% center',
+              duration: 1.5,
+              ease: 'power3.out',
+              delay: 0.3,
+            });
+          } else if (index === 3) {
             gsap.to('#show-text-3 .highlight', {
               webkitTextFillColor: 'transparent',
               backgroundPosition: '200% center',
@@ -165,6 +189,20 @@
             onLeaveBack: () => transitionTo(i),
           });
         }
+
+        // Text 0 highlight: animate on initial section entry
+        gsap.to('#show-text-0 .highlight', {
+          webkitTextFillColor: 'transparent',
+          backgroundPosition: '200% center',
+          duration: 1.5,
+          ease: 'power3.out',
+          delay: 0.3,
+          scrollTrigger: {
+            trigger: '#show-section',
+            start: 'top 80%',
+            toggleActions: 'play none none reverse',
+          },
+        });
       };
 
       mm.add('(min-width: 1024px)', () => buildAnimations(false));
@@ -641,8 +679,9 @@
         <p>
           Seinfeld is considered a unique sitcom in how it deviated from the traditional rules of
           the time, rejecting the classic three-act story in favour of a faster-paced multi-story
-          structure. It was essentially written in a different key, focusing on - and amplifying -
-          the minutiae of daily life, and earning its reputation as <a
+          structure. It was essentially written in a <span class="highlight">different key</span>,
+          focusing on - and amplifying - the minutiae of daily life, and earning its reputation as
+          <a
             href="https://www.latimes.com/archives/la-xpm-1993-03-04-ca-474-story.html"
             target="_blank">the show about nothing</a
           >.
@@ -661,8 +700,9 @@
             href="https://www.theguardian.com/tv-and-radio/2018/may/10/no-hugging-no-learning-20-years-on-seinfelds-mantra-still-looms-large"
             target="_blank">no hugging*, no learning</a
           >
-          the lead characters were insecure and entertainingly flawed, lacking any desire or capability
-          for personal growth when faced with the slightest adversity or annoyance, and especially in
+          the lead characters were insecure and
+          <span class="highlight">entertainingly flawed</span>, lacking any desire or capability for
+          personal growth when faced with the slightest adversity or annoyance, and especially in
           their romantic encounters.
         </p>
         <p class="number">*the first clip notwithstanding!</p>
@@ -675,8 +715,9 @@
         style="opacity: 0; pointer-events: none"
       >
         <p>
-          Despite their flaws, I loved the irreverent characters, with their absurd obsessions and
-          neurotic tendencies, and the hilariously avoidable situations they found themselves in.
+          Despite their flaws, I loved the <span class="highlight">irreverent characters</span>,
+          with their absurd obsessions and neurotic tendencies, and the hilariously avoidable
+          situations they found themselves in.
         </p>
       </div>
 

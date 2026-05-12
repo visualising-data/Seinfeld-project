@@ -3,8 +3,10 @@
   import PrologueTimeline from './PrologueTimeline.svelte';
   import PrologueAfterTimeline from './PrologueAfterTimeline.svelte';
   import PrologueVideo from './PrologueVideo.svelte';
+  import PrologueAfterVideo from './PrologueAfterVideo.svelte';
   import PrologueTheShow from './PrologueTheShow.svelte';
   import PrologueBook from './PrologueBook.svelte';
+  import PrologueBeforeBook from './PrologueBeforeBook.svelte';
   import PrologueEnd from './PrologueEnd.svelte';
 </script>
 
@@ -13,7 +15,9 @@
   <PrologueTimeline />
   <PrologueAfterTimeline />
   <PrologueVideo />
+  <PrologueAfterVideo />
   <PrologueTheShow />
+  <PrologueBeforeBook />
   <PrologueBook />
   <PrologueEnd />
 </section>

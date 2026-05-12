@@ -47,6 +47,23 @@
       invalidateOnRefresh: true,
     });
 
+    gsap.set('#book-cover-container .highlight', {
+      webkitTextFillColor: 'currentColor',
+      backgroundPosition: '0% center',
+    });
+    gsap.to('#book-cover-container .highlight', {
+      webkitTextFillColor: 'transparent',
+      backgroundPosition: '200% center',
+      duration: 1.5,
+      ease: 'power3.out',
+      delay: 0.3,
+      scrollTrigger: {
+        trigger: '#book-sticky',
+        start: 'top 80%',
+        toggleActions: 'play none none reverse',
+      },
+    });
+
     // After images load, refresh so the pin spacer gets the correct size and
     // all downstream ScrollTriggers (Calendar etc.) recalculate their positions.
     const imgs = [...imgSlider.querySelectorAll('img')];
@@ -79,8 +96,9 @@
       <div id="book-cover-container" class="hidden lg:flex flex-1 items-center container">
         <div class="flex-1 px-4">
           <p>
-            And so began a self-motivated, long-running, entirely unnecessary, data-driven
-            exploration of every episode of Seinfeld.z
+            And so began a self-motivated, long-running, <span class="highlight"
+              >entirely unnecessary</span
+            >, data-driven exploration of every episode of Seinfeld.z
           </p>
           <p>
             The first product of this work was my 2020 publishing of <a
@@ -96,12 +114,17 @@
           </p>
         </div>
         <div class="flex-1 px-4">
-          <img
-            loading="eager"
-            id="book-cover"
-            src={BookCover}
-            alt="Cover of the book The Seinfeld Chronicles."
-          />
+          <a
+            href="https://indd.adobe.com/view/564a8d63-0130-4473-a04f-d17346526502"
+            target="_blank"
+          >
+            <img
+              loading="eager"
+              id="book-cover"
+              src={BookCover}
+              alt="Cover of the book The Seinfeld Chronicles."
+            />
+          </a>
         </div>
       </div>
 

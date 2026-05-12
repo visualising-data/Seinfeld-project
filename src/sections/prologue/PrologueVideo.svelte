@@ -36,7 +36,6 @@
 
       gsap.set('.video-char-icon', { opacity: 0, translateY: 20 });
       gsap.set('#video-text-2', { opacity: 0 });
-      gsap.set('#video-text-3', { opacity: 0 });
 
       // text-2 replaces text-1 when step-2 enters the viewport
       const tl2 = gsap.timeline({
@@ -85,19 +84,6 @@
           '<',
         );
 
-      // text-3 replaces text-2 when step-3 enters the viewport
-      const tl3 = gsap.timeline({
-        scrollTrigger: {
-          trigger: '#video-step-3',
-          start: 'top top',
-          toggleActions: 'play none none reverse',
-          invalidateOnRefresh: true,
-        },
-      });
-      tl3
-        .to('#video-text-2', { opacity: 0, duration: 0.5 })
-        .to('#video-text-3', { opacity: 1, duration: 0.5 }, '<');
-
       // Unmute video while the section is on screen
       ScrollTrigger.create({
         trigger: '#video-scroll-container',
@@ -125,7 +111,6 @@
       const mm = gsap.matchMedia();
       mm.add('(min-width: 1024px)', () => {
         tl2.to(wrapper, { height: heights[1], duration: 0.3, ease: 'power2.inOut' }, 0);
-        tl3.to(wrapper, { height: heights[2], duration: 0.3, ease: 'power2.inOut' }, 0);
       });
     });
   });
@@ -232,18 +217,12 @@
             </div>
           </div>
         </div>
-        <div id="video-text-3" class="absolute inset-x-0 top-0 py-12 container">
-          <div class="md:w-[620px]">
-            We'll learn a lot more about all the characters and locations later.
-          </div>
-        </div>
       </div>
     </div>
   </div>
 
   <!-- Scroll spacers: one per text transition + one reading-time spacer for the last text -->
   <div id="video-step-2" class="h-[100dvh]"></div>
-  <div id="video-step-3" class="h-[100dvh]"></div>
   <div class="h-[100dvh]"></div>
 </div>
 

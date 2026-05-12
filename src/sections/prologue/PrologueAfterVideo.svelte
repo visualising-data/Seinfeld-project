@@ -10,17 +10,18 @@
       gsap
         .timeline({
           scrollTrigger: {
-            trigger: '#prologue-after-timeline',
+            trigger: '#prologue-after-video',
             start: 'top 80%',
             toggleActions: 'play none none reverse',
             invalidateOnRefresh: true,
           },
         })
-        .to('#prologue-after-timeline .highlight', {
+        .to('#prologue-after-video .highlight', {
           webkitTextFillColor: 'transparent',
           backgroundPosition: '200% center',
           duration: 2,
           ease: 'power3.out',
+          stagger: 0.5,
         });
     });
   });
@@ -28,11 +29,11 @@
   onDestroy(() => ctx?.revert());
 </script>
 
-<div id="prologue-after-timeline" class="w-screen h-[100dvh] bg-black">
+<div id="prologue-after-video" class="w-screen h-[100dvh] bg-black">
   <div class="h-[100dvh] container flex content-center flex-wrap">
     <div class="bg-black" style="max-width: 900px;">
-      If you’ve still never seen the show, let me bring you up to speed with a quick intro and
-      explain why <span class="highlight">I became hooked</span> after only a handful of episodes.
+      We'll learn a lot more about all the <span class="highlight">characters</span> and
+      <span class="highlight">locations</span> later.
     </div>
   </div>
 </div>
