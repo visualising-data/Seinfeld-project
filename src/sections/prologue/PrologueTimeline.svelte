@@ -306,6 +306,6 @@
   }
   .timeline-description {
     font-size: 1.125rem;
-    line-height: 1.2;
+    line-height: 1.3;
   }
 </style>

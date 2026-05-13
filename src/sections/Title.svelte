@@ -68,18 +68,17 @@
 
   const revealContent = () => {
     const tl = gsap.timeline();
-    tl.from(
-      ['h1', '#subtitle'],
-      {
-        yPercent: 140,
-        duration: 1.5,
-        stagger: 0.07,
-        opacity: 0,
-        ease: 'power3.out',
-        immediateRender: false,
-      },
-      '-=2.5',
+    tl.fromTo(
+      ['h1'],
+      { yPercent: 140, opacity: 0 },
+      { yPercent: 0, opacity: 1, duration: 1.5, ease: 'power3.out' },
     )
+      .fromTo(
+        ['#subtitle'],
+        { yPercent: 140, opacity: 0 },
+        { yPercent: 0, opacity: 1, duration: 1.5, ease: 'power3.out' },
+        '-=.5',
+      )
       .to(
         '.name',
         {
@@ -90,15 +89,6 @@
           ease: 'power3.out',
         },
         '-=.5',
-      )
-      .to(
-        '.name',
-        {
-          webkitTextFillColor: 'inherit',
-          duration: 5,
-          ease: 'sine.out',
-        },
-        '+=.3',
       );
 
     return tl;
@@ -116,8 +106,10 @@
   let ioObserver;
 
   // Guards against the jingle starting before the bar animation fires.
-  // Set to true inside the ScrollTrigger onEnter that also kicks off animateBars().
   let barsHaveAnimated = false;
+
+  /** @type {gsap.core.Timeline | undefined} */
+  let revealTl;
 
   const playJingle = () => {
     if (
@@ -140,9 +132,20 @@
   // playJingle() is a no-op until barsHaveAnimated is true, so granting sound
   // auth before the scroll position is reached won't start the music early.
   $effect(() => {
-    if ($soundIsAuth && isTitleInView) {
-      playJingle();
-    } else if (!isTitleInView) {
+    if (isTitleInView) {
+      // Nav fallback: ScrollTrigger.refresh() in the nav handler pre-calculates
+      // trigger positions without firing callbacks, so the boundary is never
+      // crossed and toggleActions never fires. If the timeline is at t=0 and the
+      // section top is at the viewport top, play it explicitly.
+      if (revealTl && !revealTl.isActive() && revealTl.progress() < 0.001) {
+        const titleEl = document.getElementById('title-screen');
+        if (titleEl && titleEl.getBoundingClientRect().top <= 10) {
+          barsHaveAnimated = false;
+          revealTl.play();
+        }
+      }
+      if ($soundIsAuth) playJingle();
+    } else {
       stopJingle();
     }
   });
@@ -179,24 +182,32 @@
     }
 
     ctx = gsap.context(() => {
-      gsap
+      revealTl = gsap
         .timeline({
           scrollTrigger: {
             trigger: '#title-screen',
-            start: 'top 30%',
+            start: 'top top',
             end: 'bottom top',
-            // 'play none none none': content stays visible once revealed —
-            // prevents iOS from hiding content if trigger fires at wrong position
-            toggleActions: 'play none none none',
+            toggleActions: 'play none restart reset',
             invalidateOnRefresh: true,
-            onEnter: () => {
-              barsHaveAnimated = true;
-              playJingle();
+            onEnterBack: () => {
+              barsHaveAnimated = false;
+            },
+            onLeaveBack: () => {
+              barsHaveAnimated = false;
             },
           },
         })
-        .add(revealContent())
-        .add(animateBars(), 0);
+        .add(revealContent(), 0)
+        .call(
+          () => {
+            barsHaveAnimated = true;
+            playJingle();
+          },
+          [],
+          1.5,
+        )
+        .add(animateBars(), 1.5);
 
       // Section is 500dvh, sticky container is 100dvh.
       // scrub (top center → bottom bottom) covers ~450dvh.
@@ -272,7 +283,7 @@
     <div class="container">
       <div style="margin-top: -25px; max-width: 940px;">
         <h1>
-          <span id="title-the">The </span><span id="title-seinfeld"
+          <span id="title-the">The</span>{' '}<span id="title-seinfeld"
             ><span id="title-seinfeld-text">Seinfeld</span><span
               id="seinfeld-seasons"
               aria-hidden="true"
@@ -354,6 +365,10 @@
 </section>
 
 <style>
+  h1,
+  #subtitle {
+    opacity: 0;
+  }
   section {
     background: linear-gradient(
       180deg,

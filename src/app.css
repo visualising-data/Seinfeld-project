@@ -208,15 +208,21 @@
       font-size: 1.5625rem;
     }
   }
-  /* lg */
   @media screen and (min-width: 1024px) {
+    h1 {
+      font-size: 8rem;
+      line-height: 1.05;
+    }
+  }
+  /* lg */
+  @media screen and (min-width: 1400px) {
     body {
       font-size: 1.375rem;
       line-height: 1.5;
     }
     h1 {
       font-size: 10rem;
-      line-height: 1.05;
+      line-height: 1;
     }
     h2 {
       font-size: 6.5rem;

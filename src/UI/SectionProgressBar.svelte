@@ -5,7 +5,7 @@
 
   const sections = [
     { label: 'Prologue', anchor: 'intro' },
-    { label: 'The Show', anchor: 'intro-calendar-container' },
+    { label: 'The Show', anchor: 'title-screen' },
     { label: 'Episode Catalogue', anchor: 'catalog-section' },
     { label: 'Lead Characters', anchor: 'lead-chars' },
     { label: 'Supporting Characters', anchor: 'supporting-chars' },
