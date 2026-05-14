@@ -18,6 +18,7 @@
   } from '$lib/data/sonificationFilesMapping';
   import { soundIsAuth } from '../../stores/soundAuthStore';
   import { enterSoundSection, leaveSoundSection } from '../../stores/soundSectionIsInView';
+  import SectionTitle from '../SectionTitle.svelte';
 
   let { episodesData } = $props();
 
@@ -349,6 +350,8 @@
   class="w-screen mb-20 desktop:mb-60 flex flex-col"
   bind:this={sectionEl}
 >
+  <SectionTitle title="Combinations and findings" section="laughs-exploration" />
+
   <div class="container flex flex-col flex-1 overflow-hidden">
     <!-- Header -->
     <div class="mb-8 shrink-0">

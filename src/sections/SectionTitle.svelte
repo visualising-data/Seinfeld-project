@@ -19,6 +19,7 @@
   const TARGET_TILE_RATIO = 1.2; // tile width/height ratio matching desktop layout
 
   const numColumns = $derived.by(() => {
+    if (section === 'laughs-exploration') return 4;
     switch (true) {
       case innerWidth >= 1024:
         return 4;
@@ -28,12 +29,13 @@
         return 2;
     }
   });
-  const numRows = $derived(
-    Math.min(
+  const numRows = $derived.by(() => {
+    if (section === 'laughs-exploration') return 3;
+    return Math.min(
       Math.max(2, Math.ceil((TARGET_TILE_RATIO * numColumns * innerHeight) / innerWidth)),
       Math.floor(12 / numColumns),
-    ),
-  );
+    );
+  });
 
   const numTiles = $derived(numColumns * numRows);
   const tileWidth = $derived(`calc(100vw / ${numColumns})`);
@@ -61,6 +63,17 @@
 
   // @ts-ignore
   const tiles = $derived.by(() => {
+    if (section === 'laughs-exploration') {
+      const mainRow = ['Jerry', 'George', 'Elaine', 'Kramer'].map((name) => {
+        const charTiles = mainCharacterTiles.filter((t) => t.name === name);
+        return getRandom(charTiles, 1)[0];
+      });
+      return [
+        ...mainRow.map((t) => ({ ...t, _source: 'main_char' })),
+        ...getRandom(supportingCharacterTiles, numColumns).map((t) => ({ ...t, _source: 'supp_char' })),
+        ...getRandom(locationsTiles, numColumns).map((t) => ({ ...t, _source: 'locations' })),
+      ];
+    }
     if (numTiles <= tilesData.length) return getRandom(tilesData, numTiles);
     const repeated = Array.from(
       { length: Math.ceil(numTiles / tilesData.length) },
@@ -143,8 +156,8 @@
     activeIllustration = null;
   };
 
-  const getOverlayColor = (/** @type {{ category: string; name: string }} */ tile) => {
-    switch (section) {
+  const getOverlayColor = (/** @type {{ category: string; name: string; _source?: string }} */ tile) => {
+    switch (tile._source || section) {
       case 'supp_char':
         return characters.find((char) => char.label === tile.category)?.color;
       case 'main_char':
@@ -183,14 +196,14 @@
         <div class="info absolute bottom-0 left-0 right-0 z-20">
           <div
             class="details px-4"
-            style="color: {section === 'locations' || section === 'supp_char'
+            style="color: {(tile._source || section) === 'locations' || (tile._source || section) === 'supp_char'
               ? '#F9F5F7'
               : '#12020A'}; background-color: {getOverlayColor(tile)};"
           >
             <div class="flex items-center gap-2">
               <div
                 class="character grow-0 shrink-0 rounded-full bg-contain bg-center border-2 border-black w-12 h-12 bg-no-repeat"
-                style="background-image: url('{section === 'locations'
+                style="background-image: url('{(tile._source || section) === 'locations'
                   ? getLocationIconPath(tile.name)
                   : getCharacterImagePath(tile.icon)}');"
               ></div>
