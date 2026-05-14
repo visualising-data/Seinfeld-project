@@ -10,7 +10,7 @@
     { label: 'Lead Characters', anchor: 'lead-chars' },
     { label: 'Supporting Characters', anchor: 'supporting-chars' },
     { label: 'Locations', anchor: 'locations' },
-    { label: 'Laughs Exploration', anchor: 'laughs-exploration' },
+    { label: 'Combinations & Findings', anchor: 'laughs-exploration' },
     { label: 'Methodology & Credits', anchor: 'methodology' },
   ];
 
@@ -183,7 +183,7 @@
     white-space: nowrap;
     font-size: 12px;
     font-weight: 600;
-    letter-spacing: 4%;
+    letter-spacing: 6%;
     text-transform: uppercase;
     color: var(--label-color);
     opacity: 0;

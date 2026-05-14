@@ -14,7 +14,7 @@
     { label: 'Lead Characters', anchor: 'lead-chars' },
     { label: 'Supporting Characters', anchor: 'supporting-chars' },
     { label: 'Locations', anchor: 'locations' },
-    { label: 'Laughs Exploration', anchor: 'laughs-exploration' },
+    { label: 'Combinations & Findings', anchor: 'laughs-exploration' },
     { label: 'Methodology & Credits', anchor: 'methodology' },
   ];
 </script>
@@ -39,7 +39,7 @@
         {#each menuLinks as menuItem}
           <li class="py-5">
             <a
-              class="no-underline text-white uppercase flex justify-between items-center font-normal md:text-[20px]"
+              class="no-underline text-white uppercase flex justify-between items-center font-normal md:text-[20px] tracking-wide"
               href="#{menuItem.anchor}"
               aria-label="Go to {menuItem.label}"
               onclick={(e) => {

@@ -350,7 +350,7 @@
   class="w-screen mb-20 desktop:mb-60 flex flex-col"
   bind:this={sectionEl}
 >
-  <SectionTitle title="Combinations and findings" section="laughs-exploration" />
+  <SectionTitle title="Combinations and Findings" section="laughs-exploration" />
 
   <div class="container flex flex-col flex-1 overflow-hidden">
     <!-- Header -->
