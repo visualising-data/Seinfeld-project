@@ -15,9 +15,10 @@
       // Trigger spans the full wrapper: top bottom → bottom top
       const tl = gsap.timeline({ defaults: { ease: 'none' } });
       tl
-        // Entry: coffee from left, couch from right
+        // Entry: coffee from left, couch from right; labels fade+slide up simultaneously
         .from('#warning-coffee-bg', { xPercent: -110 }, 0)
         .from('#warning-couch-bg', { xPercent: 110 }, 0)
+        .from('.warning-label', { opacity: 0, y: 30, duration: 0.2 }, 0)
         // Exit: coffee exits right, couch exits left
         .to('#warning-coffee-bg', { xPercent: 110 }, 0.5)
         .to('#warning-couch-bg', { xPercent: -110 }, 0.5)
@@ -47,16 +48,20 @@
 <div class="warning-wrapper relative" style="background: #12020A;">
   <div
     id="warning"
-    class="sticky top-0 h-dvh overflow-hidden flex flex-col justify-between py-16 text-white" style="z-index: 5;"
+    class="sticky top-0 h-dvh overflow-hidden flex flex-col justify-between py-16 text-white"
+    style="z-index: 5;"
   >
     <!-- Background: huge illustrations -->
     <div class="absolute inset-0 flex pointer-events-none">
-      <div id="warning-coffee-bg" class="relative z-[1] w-1/2 h-full flex items-start justify-end pr-8 pt-8">
+      <div
+        id="warning-coffee-bg"
+        class="relative z-[1] w-1/2 h-full flex items-start justify-end pr-8 pt-8"
+      >
         <img
           src="https://amdufour.github.io/hosted-data/apis/illustrations/coffee_cup.png"
           alt=""
           loading="lazy"
-          class="h-[60%] w-auto object-contain coffee-rotate"
+          class="h-[40%] w-auto mt-40 object-contain coffee-rotate"
         />
       </div>
       <div id="warning-couch-bg" class="w-1/2 h-full flex items-center justify-start pl-4">
@@ -77,13 +82,17 @@
     ></div>
 
     <!-- Top: 2 column labels -->
-    <div class="warning-text-item relative z-10 grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-0 w-full px-8 md:px-16 mt-12">
+    <div
+      class="warning-text-item relative z-10 container grid grid-cols-2 gap-8 mt-12"
+    >
       <div class="warning-label">Grab a coffee</div>
       <div class="warning-label">Take a seat</div>
     </div>
 
     <!-- Bottom: full-width text over 2 lines -->
-    <div class="warning-text-item relative text-center z-10 w-full px-2 leading-[0.85] warning-end-text">
+    <div
+      class="warning-text-item relative text-center z-10 w-full px-2 leading-[0.85] warning-end-text"
+    >
       <div>We have a lot</div>
       <div>to get through!</div>
     </div>
@@ -95,7 +104,8 @@
 
 <style>
   .warning-label {
-    font-size: clamp(1.5rem, 3.5vw, 3.2rem);
+    font-size: clamp(1.5rem, 3.5vw, 3rem);
+    font-weight: 600;
   }
   .warning-end-text {
     font-size: 11.5vw;
