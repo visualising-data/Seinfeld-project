@@ -229,9 +229,9 @@
   const twentyFourArray = range(1, 25);
   const episodesShow3 = twelveArray.map((e) => `s2e${e}`);
   const episodesShow4 = twentyThreeArray.map((e) => `s3e${e}`);
-  const episodesShow5 = twentyFourArray
-    .map((e) => `s4e${e}`)
-    .concat(twentyTwoArray.map((e) => `s5e${e}`))
+  const episodesShow5 = twentyFourArray.map((e) => `s4e${e}`);
+  const episodesShow6 = twentyTwoArray
+    .map((e) => `s5e${e}`)
     .concat(twentyFourArray.map((e) => `s6e${e}`))
     .concat(twentyFourArray.map((e) => `s7e${e}`))
     .concat(twentyTwoArray.map((e) => `s8e${e}`))
@@ -247,8 +247,10 @@
         return episodesShow3.map((e) => `#calendar-${e}`).join(',');
       case 4:
         return episodesShow4.map((e) => `#calendar-${e}`).join(',');
-      default:
+      case 5:
         return episodesShow5.map((e) => `#calendar-${e}`).join(',');
+      default:
+        return episodesShow6.map((e) => `#calendar-${e}`).join(',');
     }
   };
 
@@ -274,7 +276,7 @@
     if (!selectors) return;
 
     gsap.killTweensOf(selectors);
-    const maxSounds = number === 5 ? 30 : 20;
+    const maxSounds = number >= 5 ? 30 : 20;
     let soundCount = 0;
     gsap.to(selectors, {
       scale: 1,
@@ -302,6 +304,22 @@
       opacity: 0,
       pointerEvents: 'none',
     });
+  }
+
+  /**
+   * @param {number} number
+   * @param {boolean} stagger
+   */
+  function animateHighlight(number, stagger = false) {
+    const props = {
+      webkitTextFillColor: 'transparent',
+      backgroundPosition: '200% center',
+      duration: 2,
+      delay: 0.5,
+      ease: 'power3.out',
+    };
+    if (stagger) /** @type {any} */ (props).stagger = 0.3;
+    gsap.to(`#calendar-text-overlay-${number} .highlight`, props);
   }
 
   /**
@@ -463,13 +481,14 @@
           trigger: '#calendar-text-overlay-1',
           start: 'center center',
           invalidateOnRefresh: true,
-          onEnter: () => { showEpisodes(1); enterSoundSection(); },
+          onEnter: () => { showEpisodes(1); enterSoundSection(); animateHighlight(1); },
           onLeaveBack: () => {
             hideEpisodes(1);
             hideEpisodes(2);
             hideEpisodes(3);
             hideEpisodes(4);
             hideEpisodes(5);
+            hideEpisodes(6);
           },
         },
       });
@@ -478,7 +497,7 @@
           trigger: '#calendar-text-overlay-2',
           start: 'center center',
           invalidateOnRefresh: true,
-          onEnter: () => showEpisodes(2),
+          onEnter: () => { showEpisodes(2); animateHighlight(2); },
           onLeaveBack: () => hideEpisodes(2),
         },
       });
@@ -487,7 +506,7 @@
           trigger: '#calendar-text-overlay-3',
           start: 'center center',
           invalidateOnRefresh: true,
-          onEnter: () => showEpisodes(3),
+          onEnter: () => { showEpisodes(3); animateHighlight(3); },
           onLeaveBack: () => hideEpisodes(3),
         },
       });
@@ -496,7 +515,7 @@
           trigger: '#calendar-text-overlay-4',
           start: 'center center',
           invalidateOnRefresh: true,
-          onEnter: () => showEpisodes(4),
+          onEnter: () => { showEpisodes(4); animateHighlight(4); },
           onLeaveBack: () => hideEpisodes(4),
         },
       });
@@ -505,7 +524,7 @@
           trigger: '#calendar-text-overlay-5',
           start: 'center center',
           invalidateOnRefresh: true,
-          onEnter: () => showEpisodes(5),
+          onEnter: () => { showEpisodes(5); animateHighlight(5); },
           onLeaveBack: () => hideEpisodes(5),
         },
       });
@@ -514,6 +533,8 @@
           trigger: '#calendar-text-overlay-6',
           start: 'center center',
           invalidateOnRefresh: true,
+          onEnter: () => { showEpisodes(6); animateHighlight(6, true); },
+          onLeaveBack: () => hideEpisodes(6),
         },
       });
     });
