@@ -5,6 +5,7 @@
 
   // Laughs is the first visible component when DataGathering mounts — load it immediately.
   import Laughs from './Laughs.svelte';
+  import BeforeVideo from './BeforeVideo.svelte';
   import { lazyLoadAll } from '../../stores/lazyLoadTrigger';
 
   import type { Episode } from '$lib/types/episode';
@@ -43,6 +44,7 @@
   let DataGatheringDetails: any = $state(null);
   let Bridge: any = $state(null);
   let EpisodeExample: any = $state(null);
+  let BridgeToCatalog: any = $state(null);
   let Catalog: any = $state(null);
 
   // Local debounced refresh — ScrollTrigger is already available as a prop.
@@ -74,6 +76,13 @@
     scheduleRefresh();
   }
 
+  async function loadBridgeToCatalog() {
+    if (BridgeToCatalog) return;
+    BridgeToCatalog = await import('./BridgeToCatalog.svelte').then((m) => m.default);
+    await tick();
+    scheduleRefresh();
+  }
+
   async function loadCatalog() {
     if (Catalog) return;
     Catalog = await import('../catalog/Catalog.svelte').then((m) => m.default);
@@ -88,6 +97,7 @@
       if (!shouldLoad) return;
       await loadDataGatheringDetails();
       await loadEpisodeExample();
+      await loadBridgeToCatalog();
       await loadCatalog();
     });
     return unsub;
@@ -108,6 +118,8 @@
       }}
     ></div>
 
+    <BeforeVideo />
+
     {#if DataGatheringDetails && Bridge}
       <DataGatheringDetails {laughData} />
       <Bridge />
@@ -123,25 +135,37 @@
       {#if EpisodeExample}
         <EpisodeExample {episodeInfo} {episodeData} {laughData} {ScrollTrigger} />
 
-        <!-- Sentinel 3: loads Catalog component (data fetched in the await blocks below) -->
+        <!-- Sentinel 3: loads BridgeToCatalog -->
         <div
           use:inview={{ rootMargin: '1000px' }}
           oninview_change={async (/** @type {{ detail: { inView: any; }; }} */ event) => {
-            if (event.detail.inView) await loadCatalog();
+            if (event.detail.inView) await loadBridgeToCatalog();
           }}
         ></div>
 
-        {#if Catalog}
-          {#await csv(sonificationCharactersDataUrl) then sonificationCharactersData}
-            {#await csv(sonificationLocationDataUrl) then sonificationLocationData}
-              <Catalog
-                {episodesData}
-                {sonificationCharactersData}
-                {sonificationLocationData}
-                {ScrollTrigger}
-              />
+        {#if BridgeToCatalog}
+          <BridgeToCatalog />
+
+          <!-- Sentinel 4: loads Catalog component (data fetched in the await blocks below) -->
+          <div
+            use:inview={{ rootMargin: '1000px' }}
+            oninview_change={async (/** @type {{ detail: { inView: any; }; }} */ event) => {
+              if (event.detail.inView) await loadCatalog();
+            }}
+          ></div>
+
+          {#if Catalog}
+            {#await csv(sonificationCharactersDataUrl) then sonificationCharactersData}
+              {#await csv(sonificationLocationDataUrl) then sonificationLocationData}
+                <Catalog
+                  {episodesData}
+                  {sonificationCharactersData}
+                  {sonificationLocationData}
+                  {ScrollTrigger}
+                />
+              {/await}
             {/await}
-          {/await}
+          {/if}
         {/if}
       {/if}
     {/if}

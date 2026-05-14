@@ -91,95 +91,11 @@
   );
 
   onMount(() => {
-    // Pin seasons strip
-    ScrollTrigger.create({
-      trigger: '#catalog',
-      start: 'top top',
-      end: 'bottom bottom',
-      pin: '#catalog #seasons-strip',
-      preventOverlaps: true,
-    });
-
-    // Crossfade: catalog-section becomes a solid fixed backdrop only when the
-    // crossfade zone begins (episode-example-container bottom hits viewport bottom).
-    // This prevents it from covering sections above (Laughs, EpisodeExample).
-    gsap.set('#catalog-inner', { opacity: 0 });
-    gsap.to('#catalog-inner', {
-      opacity: 1,
-      ease: 'none',
-      scrollTrigger: {
-        trigger: '#episode-example-container',
-        start: 'bottom bottom',
-        end: 'bottom top',
-        scrub: true,
-        onEnter: () => {
-          showIllustration = true;
-          gsap.set('#catalog-section', {
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100%',
-            zIndex: 10,
-            pointerEvents: 'auto',
-          });
-        },
-        // onLeave intentionally omitted: stay-zone trigger handles the release
-        onEnterBack: () =>
-          gsap.set('#catalog-section', {
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100%',
-            zIndex: 10,
-            pointerEvents: 'auto',
-          }),
-        onLeaveBack: () => {
-          showIllustration = false;
-          gsap.set('#catalog-section', {
-            clearProps: 'position,top,left,width,zIndex,pointerEvents',
-          });
-        },
-      },
-    });
-
-    // Stay zone: keep catalog pinned for one viewport after the crossfade ends,
-    // then release it into normal flow with the highest z-index so it's fully interactive.
-    ScrollTrigger.create({
-      trigger: '#episode-example-container',
-      start: 'bottom top',
-      end: () => `bottom top+=${window.innerHeight * 2}`,
-      onEnter: () => {
-        gsap.set('#catalog-section', { pointerEvents: 'auto' });
-        gsap.set('#episode-example', { pointerEvents: 'none' });
-      },
-      onLeave: () => {
-        gsap.set('#catalog-section', {
-          clearProps: 'position,top,left,width,zIndex,pointerEvents',
-        });
-        gsap.set('#catalog-section', { position: 'relative', zIndex: 1000 });
-      },
-      onEnterBack: () => {
-        showIllustration = true;
-        gsap.set('#catalog-section', {
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100%',
-          zIndex: 10,
-          pointerEvents: 'auto',
-        });
-      },
-      onLeaveBack: () => {
-        gsap.set('#catalog-section', { pointerEvents: 'none' });
-        gsap.set('#episode-example', { pointerEvents: 'auto' });
-      },
-    });
-
     // Catalog is the last async-mounted section (loaded after CSV fetches inside
     // DataGathering). Its content shifts every ScrollTrigger registered earlier
     // (EpisodeExample pin/fade, IntroEnd, Quotes, MainChars, etc.) downward.
-    // Refreshing here recalculates all positions with the final DOM layout.
-    ScrollTrigger.refresh();
+    // Deferred so the refresh doesn't fire mid-scroll and cause a position jump.
+    setTimeout(() => ScrollTrigger.refresh(), 150);
 
     const catalogEl = document.getElementById('catalog-section');
     if (catalogEl) {
@@ -187,6 +103,7 @@
         ([entry]) => {
           if (entry.isIntersecting) {
             enterSoundSection();
+            showIllustration = true;
           } else {
             leaveSoundSection();
             showIllustration = false;
@@ -242,18 +159,18 @@
 
 <svelte:window bind:innerWidth bind:innerHeight />
 
-{#if showIllustration && catalogIllustration}
-  <img
-    class="catalog-illustration hidden lg:block"
-    src={catalogIllustration.url}
-    alt=""
-    style="--rotation: {catalogIllustration.rotation}deg;"
-    in:fly={{ y: 50, duration: 300, opacity: 1 }}
-  />
-{/if}
-
 <section id="catalog-section" style="min-height: 100vh; background: #F9F5F7;">
-  <div id="catalog-inner">
+  <div id="catalog-inner" class="relative">
+    {#if showIllustration && catalogIllustration}
+      <img
+        class="catalog-illustration hidden lg:block"
+        src={catalogIllustration.url}
+        alt=""
+        style="--rotation: {catalogIllustration.rotation}deg;"
+        in:fly={{ y: 50, duration: 300, opacity: 1 }}
+      />
+    {/if}
+
     <div id="catalog" class="relative flex w-screen">
       <div class="flex flex-col h-full">
         <!-- Episode details and controls -->
@@ -310,7 +227,7 @@
   }
 
   .catalog-illustration {
-    position: fixed;
+    position: absolute;
     top: 150px;
     right: 0;
     z-index: 1001;

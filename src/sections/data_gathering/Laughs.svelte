@@ -285,7 +285,7 @@
         opacity: 0,
       });
       gsap.set(
-        ['#laughs-text-1 .highlight', '#laughs-text-2 .highlight', '#laughs-text-4 .highlight'],
+        ['#laughs-text-1 .highlight', '#laughs-text-2 .highlight', '#laughs-text-3 .highlight', '#laughs-text-4 .highlight', '#laughs-text-5 .highlight'],
         {
           webkitTextFillColor: 'currentColor',
           backgroundPosition: '0% center',
@@ -356,7 +356,7 @@
             ease: 'power2.out',
           });
 
-        if (i + 1 === 2 || i + 1 === 4) {
+        if (i + 1 === 2 || i + 1 === 3 || i + 1 === 4 || i + 1 === 5) {
           tlRef.to(`#laughs-text-${i + 1} .highlight`, {
             webkitTextFillColor: 'transparent',
             backgroundPosition: '200% center',
@@ -540,7 +540,8 @@
               for 10 and even 15 seconds. This might have been a single sustained period of laughing
               or waves of renewed laughter caused by a character’s glance or change in expression,
               perhaps in reaction to the laughter itself. In such cases, distinct laughter moments
-              would be logged for each consecutive 5-second block of the laughing duration.
+              would be logged for each consecutive <span class="highlight">5-second block</span> of the
+              laughing duration.
             </div>
             <!-- Excel-like grid -->
             <div class="shrink-0 border border-white/40 text-xs">

@@ -1,29 +1,32 @@
 <script>
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import { gsap } from 'gsap/dist/gsap';
   import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 
+  gsap.registerPlugin(ScrollTrigger);
+
+  /** @type {gsap.Context | undefined} */
+  let ctx;
+
   onMount(() => {
-    gsap.set('#data-gathering-bridge p', { translateY: 100, opacity: 0 });
-
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: '#data-gathering-bridge',
-        start: 'top 80%',
-      },
+    ctx = gsap.context(() => {
+      gsap.to('#data-gathering-bridge .highlight-reverse', {
+        webkitTextFillColor: 'transparent',
+        backgroundPosition: '200% center',
+        duration: 2,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: '#data-gathering-bridge',
+          start: 'top center',
+          toggleActions: 'play none none reverse',
+          invalidateOnRefresh: true,
+        },
+      });
     });
+  });
 
-    tl.to('#data-gathering-bridge p', {
-      translateY: 0,
-      opacity: 1,
-      duration: 1,
-      ease: 'power3.out',
-    });
-
-    return () => {
-      tl.scrollTrigger?.kill();
-      tl.kill();
-    };
+  onDestroy(() => {
+    ctx?.revert();
   });
 </script>
 
@@ -31,9 +34,9 @@
   <div class="h-[100dvh] container flex content-center flex-wrap">
     <div style="max-width: 900px;">
       <p>
-        In addition to measuring the comedy, extensive data was captured about the situation
-        [emphasise]: which characters were used in each scene, for how long, and where were the
-        scenes set.
+        In addition to measuring the comedy, extensive data was captured about <span
+          class="highlight-reverse">the situation</span
+        >: which characters were used in each scene, for how long, and where were the scenes set.
       </p>
       <p>
         Let’s see how the laughter data was blended with the character and location data to build a

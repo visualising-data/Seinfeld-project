@@ -55,9 +55,6 @@
   );
 
   onMount(() => {
-    // Keep episode-example below the catalog backdrop (z-10) so catalog is always clickable.
-    gsap.set('#episode-example', { zIndex: 5 });
-
     // Establish initial hidden state BEFORE creating ScrollTriggers.
     // If the component mounts while the user is already scrolled into or past this
     // section (e.g. browser scroll restoration, direct navigation, or fast scrolling),
@@ -107,22 +104,6 @@
         onLeaveBack: () => episodeStepLeave(step),
       });
     });
-
-    // Scrub fade-out during the crossfade zone (the extra 100vh after all text is done).
-    gsap.to('#episode-example', {
-      opacity: 0,
-      ease: 'none',
-      scrollTrigger: {
-        trigger: '#episode-example-container',
-        start: 'bottom bottom',
-        end: 'bottom top',
-        scrub: true,
-        onEnter: () => gsap.set('#episode-example', { pointerEvents: 'none' }),
-        onLeave: () => gsap.set('#episode-example', { pointerEvents: 'none' }),
-        onEnterBack: () => gsap.set('#episode-example', { pointerEvents: 'none' }),
-        onLeaveBack: () => gsap.set('#episode-example', { pointerEvents: 'auto' }),
-      },
-    });
   });
 
   const textAnim = {
@@ -134,6 +115,7 @@
   };
 
   const reveal1 = () => {
+    gsap.to('#episode-example-text-1 .highlight', textAnim);
     gsap.to('#episode-detail-container', {
       translateY: 0,
       opacity: 1,
@@ -447,7 +429,7 @@
 
 <div id="episode-example-container" class="relative pointer-events-none">
   <div id="episode-example" class="sticky w-full" style="top: var(--vv-top, 0px); z-index: 5;">
-    <div class="relative flex flex-col overflow-hidden" style="height: 100dvh;">
+    <div class="relative flex flex-col overflow-hidden" style="height: calc(100dvh + 260px);">
       <!-- Episode details -->
       <div class="mask self-start">
         <div id="episode-detail-container">

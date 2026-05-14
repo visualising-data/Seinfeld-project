@@ -1,7 +1,7 @@
 <!-- Text 1 -->
 <div class="flex w-screen items-center justify-center" style="height: calc(150vh + 260px);">
   <div id="episode-example-text-1" class="text-overlay">
-    Let’s stay with ‘The Marine Biologist’ episode (a personal favourite)
+    Let’s stay with <span class="highlight">The Marine Biologist</span> episode (a personal favourite)
   </div>
 </div>
 
@@ -60,5 +60,3 @@
     > - ie. those that were written, discounting any clip/highlight shows.
   </div>
 </div>
-
-<div id="episode-example-exit" class="flex h-[100dvh] w-screen items-center justify-center"></div>
