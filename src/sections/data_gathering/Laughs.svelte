@@ -285,7 +285,13 @@
         opacity: 0,
       });
       gsap.set(
-        ['#laughs-text-1 .highlight', '#laughs-text-2 .highlight', '#laughs-text-3 .highlight', '#laughs-text-4 .highlight', '#laughs-text-5 .highlight'],
+        [
+          '#laughs-text-1 .highlight',
+          '#laughs-text-2 .highlight',
+          '#laughs-text-3 .highlight',
+          '#laughs-text-4 .highlight',
+          '#laughs-text-5 .highlight',
+        ],
         {
           webkitTextFillColor: 'currentColor',
           backgroundPosition: '0% center',
@@ -419,9 +425,8 @@
       <!-- wrapper: text 1 in flow sets natural height; texts 2-5 are absolute -->
       <div id="laughs-text-wrapper" class="relative container">
         <div id="laughs-text-1" class="py-8 md:py-12 max-w-[840px] pointer-events-none">
-          With the DVD’s episodes timeline showing, a detailed spreadsheet template was used to <span
-            class="highlight">quantify</span
-          >
+          Whilst tracking the episode's time elapsed on screen, a detailed spreadsheet template was
+          used to <span class="highlight">quantify</span>
           and <span class="highlight">classify</span> data that would aid the analysis of the show’s rhythm
           and texture.
         </div>

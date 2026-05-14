@@ -128,7 +128,12 @@
       }
 
       forceSimulation(nodes)
-        .force('collide', forceCollide(/** @type {any} */ ((d) => d.collisionR)).strength(1).iterations(4))
+        .force(
+          'collide',
+          forceCollide(/** @type {any} */ ((d) => d.collisionR))
+            .strength(1)
+            .iterations(4),
+        )
         .force('charge', forceManyBody().strength(-5))
         .force('x', forceX(cx).strength(0.08))
         .force('y', forceY(cy).strength(0.08))
@@ -204,10 +209,16 @@
   };
 </script>
 
-<div id="supporting_chars_screen_3" class="md:h-[100dvh] w-screen py-60 md:py-0 relative" bind:this={iconsContainer}>
+<div
+  id="supporting_chars_screen_3"
+  class="md:h-[100dvh] w-screen py-60 md:py-0 relative"
+  bind:this={iconsContainer}
+>
   <div class="container">
     <div class="grid grid-cols-12 md:gap-20">
-      <div class="supporting-chars-text-col col-span-12 md:col-span-7 md:h-[100dvh] md:flex md:flex-col md:justify-center">
+      <div
+        class="supporting-chars-text-col col-span-12 md:col-span-7 md:h-[100dvh] md:flex md:flex-col md:justify-center"
+      >
         <p>
           The ultimate decision was to create categories for the four respective families of the
           lead characters, as well as groupings for acquaintances - specifically, love interests,
@@ -215,19 +226,21 @@
           growing list of transient characters.
         </p>
         <p>
-          When classifying supporting characters, it was <span class="highlight"
+          When recording the involvement of supporting characters, it was <span class="highlight"
             >their central purpose in that episode</span
           > that informed their grouping, e.g. a friend of Elaine's who dates George would be considered
           a love interest, rather than a friend. Some supporting characters were therefore alternated
-          into different groupings across the show (e.g. a former love interest may shift to become
-          a friend, and vice-versa).
+          into different groupings across the show (e.g. a former love interest may shift to become a
+          friend, and vice-versa).
         </p>
         <div class="md:hidden flex flex-wrap justify-center gap-4 mt-10">
           {#each supportingChars as char}
             <div class="flex flex-col items-center">
               <div
                 class="character rounded-full bg-contain bg-center"
-                style="background-image: url('{getCharacterImagePath(char.id)}'); width: 60px; height: 60px;"
+                style="background-image: url('{getCharacterImagePath(
+                  char.id,
+                )}'); width: 60px; height: 60px;"
               ></div>
               <div class="mid pt-1 text-center text-sm">{char.label}</div>
             </div>
@@ -247,7 +260,9 @@
             <div class="supporting-char flex flex-col items-center">
               <div
                 class="character rounded-full bg-contain bg-center"
-                style="background-image: url('{getCharacterImagePath(char.id)}'); width: 75px; height: 75px;"
+                style="background-image: url('{getCharacterImagePath(
+                  char.id,
+                )}'); width: 75px; height: 75px;"
               ></div>
               <div class="mid pt-2 text-center">{char.label}</div>
             </div>

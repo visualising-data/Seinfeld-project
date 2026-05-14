@@ -113,18 +113,25 @@
             const dy = node.y - centerY;
             const d = Math.sqrt(dx * dx + dy * dy);
             if (d > r) {
-              const k = (d - r) / d * alpha * 2;
+              const k = ((d - r) / d) * alpha * 2;
               node.vx -= dx * k;
               node.vy -= dy * k;
             }
           }
         }
-        force.initialize = (/** @type {any[]} */ n) => { simNodes = n; };
+        force.initialize = (/** @type {any[]} */ n) => {
+          simNodes = n;
+        };
         return force;
       }
 
       forceSimulation(nodes)
-        .force('collide', forceCollide(/** @type {any} */ ((d) => d.collisionR)).strength(1).iterations(4))
+        .force(
+          'collide',
+          forceCollide(/** @type {any} */ ((d) => d.collisionR))
+            .strength(1)
+            .iterations(4),
+        )
         .force('charge', forceManyBody().strength(-5))
         .force('x', forceX(cx).strength(0.08))
         .force('y', forceY(cy).strength(0.08))
@@ -200,10 +207,16 @@
   };
 </script>
 
-<div id="locations_screen_3" class="md:h-[100dvh] w-screen py-60 md:py-0 relative" bind:this={iconsContainer}>
+<div
+  id="locations_screen_3"
+  class="md:h-[100dvh] w-screen py-60 md:py-0 relative"
+  bind:this={iconsContainer}
+>
   <div class="container">
     <div class="grid grid-cols-12 md:gap-20">
-      <div class="locations-text-col col-span-12 md:col-span-7 md:h-[100dvh] md:flex md:flex-col md:justify-center">
+      <div
+        class="locations-text-col col-span-12 md:col-span-7 md:h-[100dvh] md:flex md:flex-col md:justify-center"
+      >
         <p>
           As with the task of classifying characters, there were challenges with establishing a
           robust taxonomy for distinguishing different types of locations. You don't want too many
@@ -211,23 +224,28 @@
           settings.
         </p>
         <p>
-          The final list of distinct locations would include the homes of the four leads, as well
-          as a further 'family home' to cover all and any family setting. The 'diner' was another
-          common hangout location, but separate from other 'places of leisure', which would
-          include other restaurants as well as cinemas and indoor sports venues. The lead
-          characters' 'workplace' would be a recurring setting, from Jerry doing his stand-up
-          routines to George working at Yankee Stadium. Scenes set in various forms of
-          'transport', like taxis, planes, or cars, were common, as were 'outside' locations like
-          visits to the Hamptons or when disputes arose about street-side parking. An 'other'
-          grouping would be necessary to organise together the many other residual additional
-          types of locations used.
+          The final list of distinct locations would include the <span class="em"
+            >homes of the four leads</span
+          >, as well as a further <span class="em">family home</span> to cover all and any family
+          setting. The <span class="em">diner</span> was another common hangout location, but
+          separate from other <span class="em">places of leisure</span>, which would include other
+          restaurants as well as cinemas and indoor sports venues. The lead characters'
+          <span class="em">workplace</span> would be a recurring setting, from Jerry doing his
+          stand-up routines to George working at Yankee Stadium. Scenes set in various forms of
+          <span class="em">transport</span>, like taxis, planes, or cars, were common, as were
+          <span class="em">outside</span>
+          locations like visits to the Hamptons or when disputes arose about street-side parking. An
+          <span class="em">other location</span> grouping was added to classify the many other unique
+          types of locations used infrequently, like hospitals or courtrooms.
         </p>
         <div class="md:hidden flex flex-wrap justify-center gap-4 mt-10">
           {#each locations as location}
             <div class="flex flex-col items-center">
               <div
                 class="character rounded-full bg-contain bg-center"
-                style="background-color: #12020A; background-image: url('{getLocationIconPath(location.id)}'); width: 60px; height: 60px;"
+                style="background-color: #12020A; background-image: url('{getLocationIconPath(
+                  location.id,
+                )}'); width: 60px; height: 60px;"
               ></div>
               <div class="mid pt-1 text-center text-sm">{location.label}</div>
             </div>
@@ -238,7 +256,8 @@
         {#each locations as location, i}
           <div
             class="icon-wrapper hidden md:block md:absolute cursor-pointer"
-            style="top: {locationPositions[i]?.top ?? 0}px; left: {locationPositions[i]?.left ?? 0}px;"
+            style="top: {locationPositions[i]?.top ?? 0}px; left: {locationPositions[i]?.left ??
+              0}px;"
             role="button"
             tabindex="0"
             onmouseenter={() => handleIconEnter(i)}

@@ -42,12 +42,12 @@
     <div class="mb-4">
       Also, as the most naturally slapstick physical comedian, Kramer often got the most wacky gags,
       sometimes picking up spare stories that had been intended for Jerry, but were instead
-      repackaged for Kramer. Moreover, Keishin Armstrong mentions that Seinfeld was inspired by the
-      burlesque qualities of Abbot and Costello, and when he took over as Head Writer and Executive
-      Producer (and appointed young writers on staff), the show went in a slightly different, more
-      absurd or cartoonish direction. By contrast, under Larry David's stewardship, the stories had,
-      at times, been somewhat darker. As Jerry and George drop in their laughter share, Kramer's
-      rises, and he arguably <span class="highlight"
+      repackaged for Kramer. Moreover, Jennifer Keishin Armstrong mentions that Seinfeld was
+      inspired by the burlesque qualities of Abbot and Costello, and when he took over as Head
+      Writer and Executive Producer (and appointed young writers on staff), the show went in a
+      slightly different, more absurd or cartoonish direction. By contrast, under Larry David's
+      stewardship, the stories had, at times, been somewhat darker. As Jerry and George drop in
+      their laughter share, Kramer's rises, and he arguably <span class="highlight"
         >emerges to become the show's central comic force</span
       >.
     </div>

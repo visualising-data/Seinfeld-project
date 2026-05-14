@@ -19,7 +19,7 @@
     version of yourself, it is no surprise that <span class="em" style="color: {color};"
       >Jerry Seinfeld</span
     > was the dominant lead character, appearing in every episode as well as a high proportion of scenes
-    and screen-time.
+    and overall screen-time.
   </div>
 </div>
 
@@ -75,9 +75,9 @@
 <div id="jerry-text-6" class="flex h-[100dvh] w-screen items-center justify-end md:pr-6">
   <div class="text-overlay flex flex-col">
     <div class="mb-4">
-      Although his absolute screen-time levels continued to be high, you can see a <span
-        class="highlight">clear trend of reduction</span
-      > as the seasons pass.
+      Although his screen-time levels remained the highest, you can see a <span class="highlight"
+        >clear trend of reduction</span
+      > in the proportion of screen time as the seasons pass.
     </div>
     <div class="small mb-2">Average screen-time per season</div>
     <Sparkline
@@ -93,8 +93,15 @@
 <div id="jerry-text-7" class="flex h-[100dvh] w-screen items-center justify-end md:pr-6">
   <div class="text-overlay flex flex-col">
     <div class="mb-4">
-      This is mirrored in the trends for his share of <span class="highlight">episode laughs</span>,
-      which peaked in Season 1 at 54% but dropped by Season 9 to around 20%.
+      <p>
+        This trend is mirrored when we look at the <span class="highlight">share of laughs</span> within
+        an episode - the proportion of laughs in an episode caused by a character compared to others -
+        for which his average peaked in Season One at 54% but dropped to around 20% by Season Nine.
+      </p>
+      <p>
+        His laughter rate, however, remained fairly consistent throughout the seasons with an
+        average of nearly 28% (ie. For 28% of his time on screen he was causing laughter).
+      </p>
     </div>
     <div class="small mb-2">Average laughter share per season</div>
     <Sparkline

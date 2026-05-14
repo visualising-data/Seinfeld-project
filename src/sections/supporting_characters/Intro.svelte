@@ -100,10 +100,10 @@
             to deliver the storylines.
           </p>
           <p>
-            <span class="highlight">Supporting characters</span> come and go but will appear quite
-            frequently, are quite popular, and are usually played by the same actors for continuity.
-            <span class="highlight">Transient characters</span> tend to appear just once, are often unnamed,
-            and primarily exist to help progress a single strand of an episode story.
+            <span class="highlight">Supporting characters</span> come and go but will appear quite frequently,
+            are quite popular, and are usually played by the same actors for continuity. Transient characters
+            tend to appear just once, are often unnamed, and primarily exist to help progress a single
+            strand of an episode story.
           </p>
           <p>
             In any sitcom, you will have permanent lead characters, supporting or recurring

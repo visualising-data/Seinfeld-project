@@ -124,10 +124,11 @@
   <div class="container" bind:clientWidth={containerWidth}>
     <!-- Header -->
     <div bind:clientHeight={headerHeight} class="mb-8">
-      <h3>Screen time vs laughter rate</h3>
+      <h3>Comparing lead characters</h3>
       <div style="max-width: 900px;">
-        If we compare the relative screen time of each of the four lead characters with how much of
-        that screen time they generated laughs we can draw a few conclusions.
+        In summary, if we compare the relative amount of screen time of each of the four lead
+        characters with how much of that screen time they caused laughter we can form some general
+        remarks.
       </div>
     </div>
 

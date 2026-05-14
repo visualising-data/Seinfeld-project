@@ -130,10 +130,12 @@
   <div class="container" bind:clientWidth={containerWidth}>
     <!-- Header -->
     <div bind:clientHeight={headerHeight} class="mb-8">
-      <h3>Screen time vs laughter rate</h3>
+      <h3>Comparing supporting characters</h3>
       <div style="max-width: 900px;">
-        If we compare the relative screen time of each of the four lead characters with how much of
-        that screen time they generated laughs we can draw a few conclusions.
+        In summary, here we can compare the relative amount of screen time of each of the supporting
+        character groups with how much of that screen time they caused laughter. You can
+        contextualise the usage of these supporting characters alongside the lead characters by
+        showing/hiding their relative bars.
       </div>
       <div class="mt-4 flex items-center gap-3">
         <span class="small">Include lead characters</span>

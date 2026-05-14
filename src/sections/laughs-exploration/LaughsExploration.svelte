@@ -354,11 +354,21 @@
 
   <div class="container flex flex-col flex-1 overflow-hidden">
     <!-- Header -->
-    <div class="mb-8 shrink-0">
-      <h3>"It was Colonel Mustard… with the Candlestick… in the Kitchen!"</h3>
-      <div style="max-width: 900px;">
-        Like in a game of Cluedo, combinations of lead characters, supporting characters, and
-        locations were used to generate laughs.
+    <div class="h-screen flex flex-col justify-center">
+      <div class="mt-12" style="max-width: 900px;">
+        <p>
+          Have you ever played the board game Cluedo? “Was it Colonel Mustard… with the Candlestick…
+          in the Kitchen?”
+        </p>
+        <p>
+          In this final interactive you have the chance to bring a Cluedo-like approach to <span
+            class="highlight">exploring your own curiosities</span
+          > about how often different characters and locations were combined across all episodes.
+        </p>
+        <p>
+          Specifically you can select lead characters, with supporting characters, and set the
+          locations to see in which episodes, to what extent, and to what effect they were used.
+        </p>
       </div>
     </div>
 

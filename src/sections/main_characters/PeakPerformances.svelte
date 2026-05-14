@@ -89,13 +89,13 @@
   <div class="container" bind:clientWidth={containerWidth}>
     <!-- Header -->
     <div class="mb-8">
-      <h3>Peak performances</h3>
+      <h3>Peak performances?</h3>
       <div style="max-width: 900px;">
-        If we consider the simplistic, but not unreasonable, goal of a sitcom is to cause laughter,
-        the peak performance of a character can be identified as an episode in which they generated
-        a high number of laughs while they were on screen (laughter rate), they were allocated a
-        high proportion of all the laughs in that episode (laughter share), and they were on screen
-        for a long duration (screen-time).
+        It could be argued that the peak performance of a sitcom character is shown by the episodes
+        in which they generated a high number of laughs while they were on screen (laughter rate),
+        they were allocated a high proportion of all the laughs in that episode (laughter share),
+        and they were also on screen for a long duration (screen-time). Explore this chart to
+        identify what you think might be each lead character’s most potent episode display.
       </div>
     </div>
 

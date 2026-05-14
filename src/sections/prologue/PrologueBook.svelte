@@ -98,7 +98,7 @@
           <p>
             And so began a self-motivated, long-running, <span class="highlight"
               >entirely unnecessary</span
-            >, data-driven exploration of every episode of Seinfeld.z
+            >, data-driven exploration of every episode of Seinfeld.
           </p>
           <p>
             The first product of this work was my 2020 publishing of <a

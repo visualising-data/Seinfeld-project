@@ -166,11 +166,13 @@
   <!-- Header -->
   <div class="flex flex-col gap-1">
     {#if episodeTitle}
-      <h4 class="text-[42px] leading-[1.1]">{episodeTitle}</h4>
+      <h4 class="text-[42px] leading-[1.1]">
+        S{scene.season.toString().padStart(2, '0')} E{scene.episode.toString().padStart(2, '0')} Scene
+        {scene.sceneNumber}
+      </h4>
     {/if}
     <div class="font-semibold text-[1.125rem]">
-      S{scene.season.toString().padStart(2, '0')} E{scene.episode.toString().padStart(2, '0')} Scene
-      {scene.sceneNumber}
+      {episodeTitle}
     </div>
     <div class="text-[1rem] text-[#928D90]">{characterSummary}</div>
   </div>
@@ -206,7 +208,7 @@
         {@const label = isLoc ? (locationLabel ?? itemId) : (char?.label ?? itemId)}
         {@const cy = (yScale(itemId) ?? 0) + yScale.bandwidth() / 2}
         <clipPath id="clip-label-{itemId.replace(/[^\w]/g, '-')}">
-          <circle cx={barWidth + 8 + 16} cy={cy} r={16} />
+          <circle cx={barWidth + 8 + 16} {cy} r={16} />
         </clipPath>
         <image
           href={iconPath}

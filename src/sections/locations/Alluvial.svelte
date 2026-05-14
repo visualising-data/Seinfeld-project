@@ -228,11 +228,13 @@
   <div class="container" bind:clientWidth={containerWidth}>
     <!-- Header -->
     <div bind:clientHeight={headerHeight} class="mb-8">
-      <h3>Locations screen-time across seasons</h3>
+      <h3>Ranking locations used across the seasons</h3>
       <div style="max-width: 900px;">
-        This alluvial diagram shows how the screen time share for each location changes across the
-        nine seasons of Seinfeld. The width of each band represents the proportion of time spent in
-        that location.
+        This chart shows how the screen time share for each location changes across the nine seasons
+        of Seinfeld. The width of each band represents the average proportion of an episode’s screen
+        time was set in that location and the sorting vertically ranks the highest to lowest
+        relative shares. As you can see Jerry’s apartment started off as the primary setting for
+        scenes in the show and remained the top ranked location throughout.
       </div>
     </div>
 

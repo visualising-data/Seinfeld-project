@@ -50,7 +50,7 @@
     being on-screen and being funny. In the absence of women writers, this was perhaps an
     unsurprising effect of there being a male-dominated staff, but it was also a consequence of the
     grounded role her character played within the group of leads, considering Jerry's omnipresence
-    as the gag-man, George's with his neuroticism and Kramer bringing the slapstick. Elaine, as
+    as the gag-man, George with his neuroticism and Kramer bringing the slapstick. Elaine, as
     arguably the strongest actor, took on more of the role <span class="highlight"
       >holding the main stories together</span
     >.

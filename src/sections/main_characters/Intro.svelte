@@ -119,16 +119,15 @@
             >Jerry</span
           >, <span class="color color-george">George</span>,
           <span class="color color-elaine">Elaine</span>, and
-          <span class="color color-kramer">Kramer</span>.
+          <span class="color color-kramer">Kramer</span>. They were the stars who delivered most of
+          the lines, acted out the stories, and ultimately caused the majority of the laughs.
         </p>
         <p>
-          They were the stars who delivered most of the lines, acted out the stories, and ultimately
-          caused the majority of the laughs.
-        </p>
-        <p>
-          In this section we’ll explore how much these characters were used on-screen during each
-          episode’s run-time - <span class="highlight">screen time</span> - and how funny they were
-          during those appearances - <span class="highlight">laughter rate</span>.
+          In this section we’ll explore how much these characters were used in scenes across each
+          episode’s run-time - <span class="highlight">screen time</span> - how funny they were
+          during those appearances - <span class="highlight">laughter rate</span> - and what
+          proportion of the total laughs they caused in each episode -
+          <span class="highlight">laughter share</span>.
         </p>
       </div>
     </div>
