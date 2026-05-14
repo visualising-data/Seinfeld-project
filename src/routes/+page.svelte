@@ -26,6 +26,7 @@
   import Definition from '../sections/Definition.svelte';
   // @ts-ignore
   import Calendar from '../sections/calendar/Calendar.svelte';
+  import DVDSet from '../sections/DVDSet.svelte';
   import Quotes from '../sections/quotes/Quotes.svelte';
   // import MethodologyAndCredits from '../sections/MethodologyAndCredits.svelte';
   // import Footer from '../sections/Footer.svelte';
@@ -347,6 +348,7 @@
   <Warning />
   <div class="text-black" style="background: #F9F5F7;">
     <Calendar {ScrollTrigger} />
+    <DVDSet />
 
     <!-- Wave 1 sentinel: triggers DataGathering + IntroEnd -->
     <div
