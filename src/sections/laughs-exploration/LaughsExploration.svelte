@@ -38,6 +38,22 @@
   const MOBILE_BARS_H = 900;
   const MOBILE_BEESWARM_H = 600;
 
+  let globalMaxDuration = $derived.by(() => {
+    let maxDur = 0;
+    for (const ep of episodesData) {
+      const sceneTimes = new Map<number, Set<number>>();
+      for (const e of ep.data) {
+        const sceneNum = +e.sceneNumber;
+        if (!sceneTimes.has(sceneNum)) sceneTimes.set(sceneNum, new Set());
+        sceneTimes.get(sceneNum)!.add(e.eventTimeSeconds);
+      }
+      sceneTimes.forEach((times) => {
+        maxDur = Math.max(maxDur, times.size * 5);
+      });
+    }
+    return maxDur;
+  });
+
   let combinationScenes = $state<EpisodeResult[]>([]);
   let isLoading = $state(true);
   let hoveredEpisodeKey = $state<string | null>(null);
@@ -514,6 +530,7 @@
         >
           <ScenesBeeswarm
             {combinationScenes}
+            {globalMaxDuration}
             width={vizWidth}
             height={isMobile ? MOBILE_BEESWARM_H : viz2Height}
             layout={isMobile ? 'vertical' : 'horizontal'}

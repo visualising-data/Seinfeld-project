@@ -1,7 +1,6 @@
 <script lang="ts">
   import { forceSimulation, forceX, forceY, forceCollide } from 'd3-force';
   import { scaleLinear, scaleSqrt } from 'd3-scale';
-  import { max } from 'd3-array';
   import { seasons } from '$lib/data/seasons';
   import type { EpisodeResult } from '../../utils/getCombinationScenes';
 
@@ -18,6 +17,7 @@
 
   let {
     combinationScenes,
+    globalMaxDuration = 0,
     width = 600,
     height = 160,
     hoveredEpisodeKey = null,
@@ -28,6 +28,7 @@
     onClosePin = () => {},
   }: {
     combinationScenes: EpisodeResult[];
+    globalMaxDuration?: number;
     width: number;
     height: number;
     hoveredEpisodeKey?: string | null;
@@ -78,9 +79,11 @@
     return all;
   });
 
-  let maxDuration = $derived(max(flatScenes, (d) => d.duration) ?? 1);
-
-  let rScale = $derived(scaleSqrt().domain([0, maxDuration]).range([2, 18]));
+  let rScale = $derived(
+    scaleSqrt()
+      .domain([0, globalMaxDuration || 1])
+      .range([2, 18]),
+  );
 
   let xScale = $derived(scaleLinear().domain([0, 1]).range([0, innerWidth]));
   let yScaleV = $derived(scaleLinear().domain([0, 1]).range([0, innerHeight]));
@@ -143,13 +146,12 @@
 
   const ticks = [0, 0.25, 0.5, 0.75, 1];
 
-  const legendRScale = scaleSqrt().domain([0, 300]).range([2, 18]);
-  const legendSizes = [
-    { r: legendRScale(30), label: '30s' },
-    { r: legendRScale(120), label: '2min' },
-    { r: legendRScale(300), label: '5min' },
-  ];
-  const legendRMax = legendRScale(300);
+  let legendSizes = $derived([
+    { r: rScale(60), label: '1min' },
+    { r: rScale(300), label: '5min' },
+    { r: rScale(1200), label: '20min' },
+  ]);
+  let legendRMax = $derived(rScale(1200));
   const legendLineLen = 20;
 </script>
 

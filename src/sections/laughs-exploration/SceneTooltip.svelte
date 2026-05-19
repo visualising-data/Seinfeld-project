@@ -199,7 +199,7 @@
   <!-- Mini scene viz -->
   <div class="border-t border-[#DDDBDC] pt-3" bind:clientWidth={containerWidth}>
     <svg width={containerWidth} height={vizHeight + AXIS_H}>
-      <!-- Character + location labels -->
+      <!-- Character + location labels (left side: text then icon, right-aligned to bars) -->
       {#each vizDomain as itemId}
         {@const isLoc = sceneLocationIdSet.has(itemId)}
         {@const char = isLoc ? null : characters.find((c) => c.id === itemId)}
@@ -209,11 +209,11 @@
           : (char?.label ?? itemId)}
         {@const cy = (yScale(itemId) ?? 0) + yScale.bandwidth() / 2}
         <clipPath id="clip-label-{itemId.replace(/[^\w]/g, '-')}">
-          <circle cx={vizBarWidth + 8 + 16} {cy} r={16} />
+          <circle cx={LABEL_W - 8 - 16} {cy} r={16} />
         </clipPath>
         <image
           href={iconPath}
-          x={vizBarWidth + 8}
+          x={LABEL_W - 8 - 32}
           y={cy - 16}
           width={32}
           height={32}
@@ -221,39 +221,39 @@
           preserveAspectRatio="xMidYMid slice"
         />
         <text
-          x={vizBarWidth + 8 + 32 + 8}
+          x={LABEL_W - 8 - 32 - 8}
           y={cy}
           font-size="14"
           fill="#12020A"
-          text-anchor="start"
+          text-anchor="end"
           dominant-baseline="middle">{label}</text
         >
       {/each}
 
       <!-- Time axis -->
-      <g transform="translate(0, {vizHeight})">
+      <g transform="translate({LABEL_W}, {vizHeight})">
         <line x1={0} y1={0} x2={vizBarWidth} y2={0} stroke="#DDDBDC" />
         <line x1={0} y1={-vizHeight} x2={0} y2={10} stroke="#DDDBDC" />
         <line x1={vizBarWidth} y1={-vizHeight} x2={vizBarWidth} y2={10} stroke="#DDDBDC" />
         <text
           class="number text-[0.825rem]"
-          x={4}
+          x={vizBarWidth < 50 ? -4 : 4}
           y={7}
           fill="#12020A"
-          text-anchor="start"
+          text-anchor={vizBarWidth < 50 ? 'end' : 'start'}
           dominant-baseline="hanging">{formatDuration(sceneStart)}</text
         >
         <text
           class="number text-[0.825rem]"
-          x={vizBarWidth - 4}
+          x={vizBarWidth < 50 ? vizBarWidth + 4 : vizBarWidth - 4}
           y={7}
           fill="#12020A"
-          text-anchor="end"
+          text-anchor={vizBarWidth < 50 ? 'start' : 'end'}
           dominant-baseline="hanging">{formatDuration(sceneEnd)}</text
         >
       </g>
 
-      <g transform="translate(0, 0)">
+      <g transform="translate({LABEL_W}, 0)">
         <!-- Background rails -->
         {#each vizDomain as charId}
           <rect
