@@ -28,17 +28,10 @@
   let barWidth = $derived(containerWidth - LABEL_W);
 
   const allActiveChars = $derived([...activeMainChars, ...activeSuppChars]);
-  const vizDomain = $derived([...allActiveChars, ...(activeLocation ? [activeLocation] : [])]);
 
   const episodeTitle = $derived(
     episodesInfo.find((e) => e.season === scene.season && e.episode === scene.episode)?.title ??
       null,
-  );
-
-  const locationLabel = $derived(
-    activeLocation
-      ? (locations.find((l) => l.id === activeLocation)?.label ?? activeLocation)
-      : null,
   );
 
   // Raw events for this scene
@@ -50,6 +43,37 @@
     return (ep.data as any[]).filter((e) => +e.sceneNumber === scene.sceneNumber);
   });
 
+  // All unique characters/locations present in the scene
+  const allSceneCharIds = $derived([
+    ...new Set(
+      sceneEvents
+        .filter((e: any) => e.eventCategory === 'CHARACTERS')
+        .map((e: any) => e.eventAttribute as string),
+    ),
+  ]);
+
+  const allSceneLocationIds = $derived([
+    ...new Set(
+      sceneEvents
+        .filter((e: any) => e.eventCategory === 'LOCATION')
+        .map((e: any) => e.eventAttribute as string),
+    ),
+  ]);
+
+  const sceneLocationIdSet = $derived(new Set(allSceneLocationIds));
+
+  const otherSceneCharIds = $derived(allSceneCharIds.filter((id) => !allActiveChars.includes(id)));
+
+  // Active chars first, then other scene chars, then locations (active first)
+  const vizDomain = $derived.by(() => {
+    const orderedLocs = activeLocation
+      ? [activeLocation, ...allSceneLocationIds.filter((id) => id !== activeLocation)]
+      : allSceneLocationIds;
+    return [...allActiveChars, ...otherSceneCharIds, ...orderedLocs];
+  });
+
+  const allSceneCharsOrdered = $derived([...allActiveChars, ...otherSceneCharIds]);
+
   // Time domain
   const timeTicks = $derived(
     [...new Set(sceneEvents.map((e: any) => +e.eventTimeSeconds))].sort((a, b) => a - b),
@@ -57,9 +81,11 @@
   const sceneStart = $derived(timeTicks[0] ?? 0);
   const sceneEnd = $derived((timeTicks[timeTicks.length - 1] ?? 0) + 5);
 
-  const xScale = $derived(scaleLinear().domain([sceneStart, sceneEnd]).range([0, barWidth]));
-  const laughW = $derived(Math.min(8, Math.max(1, xScale(sceneStart + 5))));
-  const axisTicks = $derived(xScale.ticks(4));
+  const sceneDuration = $derived(sceneEnd - sceneStart);
+  // Shrink viz width so a 5s laugh bar never exceeds 20px
+  const vizBarWidth = $derived(Math.min(barWidth, (20 * sceneDuration) / 5));
+  const xScale = $derived(scaleLinear().domain([sceneStart, sceneEnd]).range([0, vizBarWidth]));
+  const laughW = $derived(xScale(sceneStart + 5) - xScale(sceneStart));
 
   // yScale over active characters + optional location
   const vizHeight = $derived(vizDomain.length * 46 + 8);
@@ -70,31 +96,32 @@
       .padding(0.66),
   );
 
-  const locationPresence = $derived.by(() => {
-    if (!activeLocation) return [];
-    const times = sceneEvents
-      .filter((e: any) => e.eventCategory === 'LOCATION' && e.eventAttribute === activeLocation)
-      .map((e: any) => +e.eventTimeSeconds)
-      .sort((a: number, b: number) => a - b);
-    const intervals: { start: number; duration: number }[] = [];
-    if (times.length > 0) {
-      let start = times[0];
-      let current = times[0];
-      for (let i = 1; i < times.length; i++) {
-        if (times[i] - current > 5) {
-          intervals.push({ start, duration: current - start + 5 });
-          start = times[i];
+  const allLocationPresences = $derived(
+    allSceneLocationIds.map((locId) => {
+      const times = sceneEvents
+        .filter((e: any) => e.eventCategory === 'LOCATION' && e.eventAttribute === locId)
+        .map((e: any) => +e.eventTimeSeconds)
+        .sort((a: number, b: number) => a - b);
+      const intervals: { start: number; duration: number }[] = [];
+      if (times.length > 0) {
+        let start = times[0];
+        let current = times[0];
+        for (let i = 1; i < times.length; i++) {
+          if (times[i] - current > 5) {
+            intervals.push({ start, duration: current - start + 5 });
+            start = times[i];
+          }
+          current = times[i];
         }
-        current = times[i];
+        intervals.push({ start, duration: current - start + 5 });
       }
-      intervals.push({ start, duration: current - start + 5 });
-    }
-    return intervals;
-  });
+      return { locId, intervals };
+    }),
+  );
 
   // Presence: group consecutive time points into continuous intervals
   const charPresence = $derived(
-    allActiveChars.map((charId) => {
+    allSceneCharsOrdered.map((charId) => {
       const times = sceneEvents
         .filter((e: any) => e.eventCategory === 'CHARACTERS' && e.eventAttribute === charId)
         .map((e: any) => +e.eventTimeSeconds)
@@ -119,7 +146,7 @@
 
   // Laugh causes: per character (eventAttribute = character who caused it)
   const charLaughs = $derived(
-    allActiveChars.map((charId) => ({
+    allSceneCharsOrdered.map((charId) => ({
       charId,
       times: sceneEvents
         .filter((e: any) => e.eventCategory === 'CAUSES THE LAUGH' && e.eventAttribute === charId)
@@ -174,17 +201,19 @@
     <svg width={containerWidth} height={vizHeight + AXIS_H}>
       <!-- Character + location labels -->
       {#each vizDomain as itemId}
-        {@const isLoc = itemId === activeLocation}
+        {@const isLoc = sceneLocationIdSet.has(itemId)}
         {@const char = isLoc ? null : characters.find((c) => c.id === itemId)}
         {@const iconPath = isLoc ? getLocationIconPath(itemId) : getCharacterImagePath(itemId)}
-        {@const label = isLoc ? (locationLabel ?? itemId) : (char?.label ?? itemId)}
+        {@const label = isLoc
+          ? (locations.find((l) => l.id === itemId)?.label ?? itemId)
+          : (char?.label ?? itemId)}
         {@const cy = (yScale(itemId) ?? 0) + yScale.bandwidth() / 2}
         <clipPath id="clip-label-{itemId.replace(/[^\w]/g, '-')}">
-          <circle cx={barWidth + 8 + 16} {cy} r={16} />
+          <circle cx={vizBarWidth + 8 + 16} {cy} r={16} />
         </clipPath>
         <image
           href={iconPath}
-          x={barWidth + 8}
+          x={vizBarWidth + 8}
           y={cy - 16}
           width={32}
           height={32}
@@ -192,7 +221,7 @@
           preserveAspectRatio="xMidYMid slice"
         />
         <text
-          x={barWidth + 8 + 32 + 8}
+          x={vizBarWidth + 8 + 32 + 8}
           y={cy}
           font-size="14"
           fill="#12020A"
@@ -203,19 +232,25 @@
 
       <!-- Time axis -->
       <g transform="translate(0, {vizHeight})">
-        <line x1={0} y1={0} x2={barWidth} y2={0} stroke="#DDDBDC" />
-        {#each axisTicks as tick}
-          {@const x = xScale(tick)}
-          <line x1={x} y1={-vizHeight} x2={x} y2={4} stroke="#DDDBDC" />
-          <text
-            class="number text-[0.825rem]"
-            {x}
-            y={7}
-            fill="#12020A"
-            text-anchor="middle"
-            dominant-baseline="hanging">{formatDuration(tick)}</text
-          >
-        {/each}
+        <line x1={0} y1={0} x2={vizBarWidth} y2={0} stroke="#DDDBDC" />
+        <line x1={0} y1={-vizHeight} x2={0} y2={10} stroke="#DDDBDC" />
+        <line x1={vizBarWidth} y1={-vizHeight} x2={vizBarWidth} y2={10} stroke="#DDDBDC" />
+        <text
+          class="number text-[0.825rem]"
+          x={4}
+          y={7}
+          fill="#12020A"
+          text-anchor="start"
+          dominant-baseline="hanging">{formatDuration(sceneStart)}</text
+        >
+        <text
+          class="number text-[0.825rem]"
+          x={vizBarWidth - 4}
+          y={7}
+          fill="#12020A"
+          text-anchor="end"
+          dominant-baseline="hanging">{formatDuration(sceneEnd)}</text
+        >
       </g>
 
       <g transform="translate(0, 0)">
@@ -224,7 +259,7 @@
           <rect
             x={0}
             y={yScale(charId)}
-            width={barWidth}
+            width={vizBarWidth}
             height={yScale.bandwidth()}
             fill="#DDDBDC"
             opacity="0.1"
@@ -248,9 +283,9 @@
         {/each}
 
         <!-- Location presence -->
-        {#if activeLocation && locationPresence.length > 0}
-          <g transform="translate(0, {yScale(activeLocation)})">
-            {#each locationPresence as interval}
+        {#each allLocationPresences as { locId, intervals }}
+          <g transform="translate(0, {yScale(locId)})">
+            {#each intervals as interval}
               <rect
                 x={xScale(interval.start)}
                 y={0}
@@ -260,7 +295,7 @@
               />
             {/each}
           </g>
-        {/if}
+        {/each}
 
         <!-- Laugh cause bars (like CausedLaughs — taller, per-character colored, white stroke) -->
         {#each charLaughs as { charId, times }}
@@ -274,7 +309,7 @@
                 height={yScale.bandwidth() + LAUGH_OVERFLOW * 2}
                 fill={char?.color ?? '#928D90'}
                 stroke="#F9F5F7"
-                stroke-width="0.5"
+                stroke-width="1"
               />
             {/each}
           </g>

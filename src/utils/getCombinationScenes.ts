@@ -16,8 +16,8 @@ export type EpisodeResult = {
  * find all scenes across all episodes where at least one of each selected group appears
  * within the same scene. Empty arrays / null location means "no filter on that dimension".
  *
- * Character matching is exclusive: a scene must contain exactly the selected characters — all of
- * them must appear, and no others. Location matching is inclusive: the scene just needs to include
+ * Character matching is inclusive: all selected characters must appear in the scene, but other
+ * characters may also be present. Location matching is inclusive: the scene just needs to include
  * the selected location (it may have others).
  * Scene duration = all unique time points in the scene × 5s (each event is a 5-second window).
  * Laugh duration = unique time points in the scene with a CAUSES THE LAUGH event × 5s.
@@ -54,11 +54,6 @@ export function getCombinationScenes(
         // All selected characters must be present
         for (const char of selectedChars) {
           if (!sceneChars.has(char)) return;
-        }
-
-        // No characters beyond the selected ones may appear
-        for (const char of sceneChars) {
-          if (!selectedChars.has(char)) return;
         }
       }
 
