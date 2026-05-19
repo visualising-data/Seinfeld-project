@@ -177,7 +177,12 @@
           innerHeightV,
           (yBandScale(lastEp.key) ?? 0) + yBandScale.bandwidth() + halfGap,
         );
-        return { season: season.seasonNum, y, height: yEnd - y, color: season.accessibleOverDarkColor };
+        return {
+          season: season.seasonNum,
+          y,
+          height: yEnd - y,
+          color: season.accessibleOverDarkColor,
+        };
       })
       .filter((d) => d !== null);
   });
@@ -191,24 +196,32 @@
     onclick={onClosePin}
     onkeydown={() => {}}
     style="cursor: default"
-    onmouseleave={() => { onEpisodeHover(null); onSceneHover(null); }}
+    onmouseleave={() => {
+      onEpisodeHover(null);
+      onSceneHover(null);
+    }}
   >
     <g transform="translate({marginV.left}, {marginV.top})">
       <!-- Section headers -->
       <text x={halfW / 2} y={-8} class="small accent" text-anchor="middle">Duration</text>
-      <text x={halfW + midBand + halfW / 2} y={-8} class="small accent" text-anchor="middle">Laugh rate</text>
+      <text x={halfW + midBand + halfW / 2} y={-8} class="small accent" text-anchor="middle"
+        >Laugh rate</text
+      >
 
       <!-- Episodes: one group per row spanning both sections -->
       {#each allEpisodes as ep}
         {@const y = yBandScale(ep.key) ?? 0}
         {@const bh = Math.max(1, yBandScale.bandwidth())}
-        {@const isActive = hoveredEpisodeKey === null || hoveredEpisodeKey === ep.key || hoveredEpisodeKey.startsWith(ep.key + '-')}
+        {@const isActive =
+          hoveredEpisodeKey === null ||
+          hoveredEpisodeKey === ep.key ||
+          hoveredEpisodeKey.startsWith(ep.key + '-')}
         <g
           role="presentation"
           opacity={isActive ? 1 : 0.2}
           onmouseenter={() => {
             const s = getFirstScene(ep.season, ep.episode);
-            onEpisodeHover(s ? `${s.season}-${s.episode}-${s.sceneNumber}` : ep.key);
+            onEpisodeHover(ep.key);
             onSceneHover(s);
           }}
           onclick={(e) => {
@@ -221,8 +234,16 @@
           <!-- Duration bars (extend leftward from center) -->
           {#if ep.totalDuration > 0}
             {@const totalW = Math.max(MIN_BAR_H, xScaleDur(ep.totalDuration))}
-            {@const laughW = ep.laughDuration > 0 ? Math.max(MIN_BAR_H, xScaleDur(ep.laughDuration)) : 0}
-            <rect x={halfW - totalW} {y} width={totalW} height={bh} fill={BAR_COLOR} opacity="0.3" />
+            {@const laughW =
+              ep.laughDuration > 0 ? Math.max(MIN_BAR_H, xScaleDur(ep.laughDuration)) : 0}
+            <rect
+              x={halfW - totalW}
+              {y}
+              width={totalW}
+              height={bh}
+              fill={BAR_COLOR}
+              opacity="0.3"
+            />
             {#if laughW > 0}
               <rect x={halfW - laughW} {y} width={laughW} height={bh} fill={BAR_COLOR} />
             {/if}
@@ -244,205 +265,79 @@
     </g>
   </svg>
 {:else}
-<svg
-  {width}
-  {height}
-  role="presentation"
-  onclick={onClosePin}
-  onkeydown={() => {}}
-  style="cursor: default"
-  onmouseleave={() => { onEpisodeHover(null); onSceneHover(null); }}
->
-  <g transform="translate({margin.left}, {margin.top})">
-    <!-- ── Top section: duration bars ──────────────────────────── -->
+  <svg
+    {width}
+    {height}
+    role="presentation"
+    onclick={onClosePin}
+    onkeydown={() => {}}
+    style="cursor: default"
+    onmouseleave={() => {
+      onEpisodeHover(null);
+      onSceneHover(null);
+    }}
+  >
+    <g transform="translate({margin.left}, {margin.top})">
+      <!-- ── Top section: duration bars ──────────────────────────── -->
 
-    <!-- Grid lines + y-axis labels (top section) -->
-    {#each topGridTicks as tick}
-      {@const y = sectionHeight - gap - yScaleTop(tick.value)}
-      <line x1={0} y1={y} x2={innerWidth} y2={y} stroke={axisColor} />
-      <text
-        class="number"
-        x={-6}
-        {y}
-        fill={labelColor}
-        font-size="10"
-        text-anchor="end"
-        dominant-baseline="middle">{tick.label}</text
-      >
-    {/each}
-
-    <!-- Baseline (0) for top section -->
-    <line
-      x1={0}
-      y1={sectionHeight - gap}
-      x2={innerWidth}
-      y2={sectionHeight - gap}
-      stroke={axisColor}
-    />
-    <text
-      class="number"
-      x={-6}
-      y={sectionHeight - gap}
-      fill={labelColor}
-      font-size="10"
-      text-anchor="end"
-      dominant-baseline="middle">0</text
-    >
-
-    <!-- Top axis label -->
-    <g transform="translate(-30, {yScaleTop.range()[1]})">
-      <text y={-10} class="small accent" style="transform: rotate(-90deg);">Duration</text>
-      <g transform="rotate(180)">
-        <ArrowDown />
-      </g>
-    </g>
-
-    <!-- Top bars: total duration (bg) and laugh duration (fg) -->
-    {#each allEpisodes as ep}
-      {#if ep.totalDuration > 0}
-        {@const totalH = Math.max(MIN_BAR_H, yScaleTop(ep.totalDuration))}
-        {@const laughH =
-          ep.laughDuration > 0 ? Math.max(MIN_BAR_H, yScaleTop(ep.laughDuration)) : 0}
-        {@const hitH = Math.max(HIT_TARGET_H, totalH)}
-        <g
-          role="presentation"
-          opacity={hoveredEpisodeKey !== null && hoveredEpisodeKey !== ep.key && !hoveredEpisodeKey.startsWith(ep.key + '-') ? 0.2 : 1}
-          onmouseenter={() => {
-            const s = getFirstScene(ep.season, ep.episode);
-            onEpisodeHover(s ? `${s.season}-${s.episode}-${s.sceneNumber}` : ep.key);
-            onSceneHover(s);
-          }}
-          onclick={(e) => {
-            e.stopPropagation();
-            const s = getFirstScene(ep.season, ep.episode);
-            if (s) onSceneClick(s);
-          }}
-          style="cursor: pointer"
-        >
-          <rect
-            x={xScale(ep.key)}
-            y={sectionHeight - gap - totalH}
-            width={xScale.bandwidth()}
-            height={totalH}
-            fill={BAR_COLOR}
-            opacity="0.3"
-          />
-          {#if laughH > 0}
-            <rect
-              x={xScale(ep.key)}
-              y={sectionHeight - gap - laughH}
-              width={xScale.bandwidth()}
-              height={laughH}
-              fill={BAR_COLOR}
-            />
-          {/if}
-          <rect
-            x={xScale(ep.key)}
-            y={sectionHeight - gap - hitH}
-            width={xScale.bandwidth()}
-            height={hitH}
-            fill="transparent"
-          />
-        </g>
-      {/if}
-    {/each}
-
-    <!-- ── Legend annotations on first bar ───────────────────────── -->
-    {#if allEpisodes.length > 0}
-      {@const firstEp = allEpisodes.find((ep) => ep.totalDuration > 0)}
-      {#if firstEp}
-        {@const barLeft = xScale(firstEp.key) ?? 0}
-        {@const barRight = barLeft + xScale.bandwidth()}
-        {@const isRightHalf = barLeft > innerWidth / 2}
-        {@const anchorX = isRightHalf ? barLeft : barRight}
-        {@const dir = isRightHalf ? -1 : 1}
-        {@const lineLen = 28}
-        {@const totalTop = sectionHeight - gap - yScaleTop(firstEp.totalDuration)}
-        {@const laughTop = sectionHeight - gap - yScaleTop(firstEp.laughDuration)}
-        {@const textAnchor = isRightHalf ? 'end' : 'start'}
-
-        <!-- Total duration: "Time on screen" -->
-        <line
-          x1={anchorX - dir * 3}
-          y1={totalTop - 4}
-          x2={anchorX + dir * lineLen}
-          y2={-28}
-          stroke="#E71D80"
-          stroke-width="1"
-        />
+      <!-- Grid lines + y-axis labels (top section) -->
+      {#each topGridTicks as tick}
+        {@const y = sectionHeight - gap - yScaleTop(tick.value)}
+        <line x1={0} y1={y} x2={innerWidth} y2={y} stroke={axisColor} />
         <text
-          x={anchorX + dir * (lineLen + 4)}
-          y={-28}
-          class="small accent"
-          dominant-baseline="middle"
-          text-anchor={textAnchor}>Time on screen</text
+          class="number"
+          x={-6}
+          {y}
+          fill={labelColor}
+          font-size="10"
+          text-anchor="end"
+          dominant-baseline="middle">{tick.label}</text
         >
-
-        <!-- Laugh duration: "Time causing laughs" -->
-        <line
-          x1={anchorX - dir * 3}
-          y1={laughTop - 4}
-          x2={anchorX + dir * (lineLen + 16)}
-          y2={-10}
-          stroke="#E71D80"
-          stroke-width="1"
-        />
-        <text
-          x={anchorX + dir * (lineLen + 20)}
-          y={-10}
-          class="small accent"
-          dominant-baseline="middle"
-          text-anchor={textAnchor}>Time causing laughs</text
-        >
-      {/if}
-    {/if}
-
-    <!-- ── Middle strip: season labels ─────────────────────────── -->
-    <g transform="translate(0, {sectionHeight})">
-      {#each seasonBars as sb}
-        <rect x={sb.x} y={0} width={sb.width} height={midBand} fill={sb.color} />
       {/each}
-    </g>
 
-    <!-- ── Bottom section: laugh rate bars ─────────────────────── -->
-
-    <!-- Grid lines + y-axis labels (bottom section) -->
-    {#each bottomGridTicks as tick}
-      {@const y = sectionHeight + midBand + gap + yScaleBottom(tick.value)}
-      <line x1={0} y1={y} x2={innerWidth} y2={y} stroke={axisColor} />
+      <!-- Baseline (0) for top section -->
+      <line
+        x1={0}
+        y1={sectionHeight - gap}
+        x2={innerWidth}
+        y2={sectionHeight - gap}
+        stroke={axisColor}
+      />
       <text
         class="number"
         x={-6}
-        {y}
+        y={sectionHeight - gap}
         fill={labelColor}
         font-size="10"
         text-anchor="end"
-        dominant-baseline="middle">{tick.label}</text
+        dominant-baseline="middle">0</text
       >
-    {/each}
 
-    <!-- Bottom axis label -->
-    <g transform="translate(-30, {yScaleTop.range()[1] + 22})">
-      <text y={-10} class="small accent" style="transform: rotate(-90deg);" text-anchor="end"
-        >Laugh rate</text
-      >
-      <g transform="translate(-6, 0)">
-        <ArrowDown />
+      <!-- Top axis label -->
+      <g transform="translate(-30, {yScaleTop.range()[1]})">
+        <text y={-10} class="small accent" style="transform: rotate(-90deg);">Duration</text>
+        <g transform="rotate(180)">
+          <ArrowDown />
+        </g>
       </g>
-    </g>
 
-    <!-- Bottom bars: laugh rate -->
-    <g transform="translate(0, {sectionHeight + midBand + gap})">
+      <!-- Top bars: total duration (bg) and laugh duration (fg) -->
       {#each allEpisodes as ep}
-        {#if ep.laughRate > 0}
-          {@const rateH = Math.max(MIN_BAR_H, yScaleBottom(ep.laughRate))}
-          {@const hitH = Math.max(HIT_TARGET_H, rateH)}
+        {#if ep.totalDuration > 0}
+          {@const totalH = Math.max(MIN_BAR_H, yScaleTop(ep.totalDuration))}
+          {@const laughH =
+            ep.laughDuration > 0 ? Math.max(MIN_BAR_H, yScaleTop(ep.laughDuration)) : 0}
+          {@const hitH = Math.max(HIT_TARGET_H, totalH)}
           <g
             role="presentation"
-            opacity={hoveredEpisodeKey !== null && hoveredEpisodeKey !== ep.key && !hoveredEpisodeKey.startsWith(ep.key + '-') ? 0.2 : 1}
+            opacity={hoveredEpisodeKey !== null &&
+            hoveredEpisodeKey !== ep.key &&
+            !hoveredEpisodeKey.startsWith(ep.key + '-')
+              ? 0.2
+              : 1}
             onmouseenter={() => {
               const s = getFirstScene(ep.season, ep.episode);
-              onEpisodeHover(s ? `${s.season}-${s.episode}-${s.sceneNumber}` : ep.key);
+              onEpisodeHover(ep.key);
               onSceneHover(s);
             }}
             onclick={(e) => {
@@ -454,14 +349,24 @@
           >
             <rect
               x={xScale(ep.key)}
-              y={0}
+              y={sectionHeight - gap - totalH}
               width={xScale.bandwidth()}
-              height={rateH}
+              height={totalH}
               fill={BAR_COLOR}
+              opacity="0.3"
             />
+            {#if laughH > 0}
+              <rect
+                x={xScale(ep.key)}
+                y={sectionHeight - gap - laughH}
+                width={xScale.bandwidth()}
+                height={laughH}
+                fill={BAR_COLOR}
+              />
+            {/if}
             <rect
               x={xScale(ep.key)}
-              y={0}
+              y={sectionHeight - gap - hitH}
               width={xScale.bandwidth()}
               height={hitH}
               fill="transparent"
@@ -469,7 +374,134 @@
           </g>
         {/if}
       {/each}
+
+      <!-- ── Legend annotations on first bar ───────────────────────── -->
+      {#if allEpisodes.length > 0}
+        {@const firstEp = allEpisodes.find((ep) => ep.totalDuration > 0)}
+        {#if firstEp}
+          {@const barLeft = xScale(firstEp.key) ?? 0}
+          {@const barRight = barLeft + xScale.bandwidth()}
+          {@const isRightHalf = barLeft > innerWidth / 2}
+          {@const anchorX = isRightHalf ? barLeft : barRight}
+          {@const dir = isRightHalf ? -1 : 1}
+          {@const lineLen = 28}
+          {@const totalTop = sectionHeight - gap - yScaleTop(firstEp.totalDuration)}
+          {@const laughTop = sectionHeight - gap - yScaleTop(firstEp.laughDuration)}
+          {@const textAnchor = isRightHalf ? 'end' : 'start'}
+
+          <!-- Total duration: "Time on screen" -->
+          <line
+            x1={anchorX - dir * 3}
+            y1={totalTop - 4}
+            x2={anchorX + dir * lineLen}
+            y2={-28}
+            stroke="#E71D80"
+            stroke-width="1"
+          />
+          <text
+            x={anchorX + dir * (lineLen + 4)}
+            y={-28}
+            class="small accent"
+            dominant-baseline="middle"
+            text-anchor={textAnchor}>Time on screen</text
+          >
+
+          <!-- Laugh duration: "Time causing laughs" -->
+          <line
+            x1={anchorX - dir * 3}
+            y1={laughTop - 4}
+            x2={anchorX + dir * (lineLen + 16)}
+            y2={-10}
+            stroke="#E71D80"
+            stroke-width="1"
+          />
+          <text
+            x={anchorX + dir * (lineLen + 20)}
+            y={-10}
+            class="small accent"
+            dominant-baseline="middle"
+            text-anchor={textAnchor}>Time causing laughs</text
+          >
+        {/if}
+      {/if}
+
+      <!-- ── Middle strip: season labels ─────────────────────────── -->
+      <g transform="translate(0, {sectionHeight})">
+        {#each seasonBars as sb}
+          <rect x={sb.x} y={0} width={sb.width} height={midBand} fill={sb.color} />
+        {/each}
+      </g>
+
+      <!-- ── Bottom section: laugh rate bars ─────────────────────── -->
+
+      <!-- Grid lines + y-axis labels (bottom section) -->
+      {#each bottomGridTicks as tick}
+        {@const y = sectionHeight + midBand + gap + yScaleBottom(tick.value)}
+        <line x1={0} y1={y} x2={innerWidth} y2={y} stroke={axisColor} />
+        <text
+          class="number"
+          x={-6}
+          {y}
+          fill={labelColor}
+          font-size="10"
+          text-anchor="end"
+          dominant-baseline="middle">{tick.label}</text
+        >
+      {/each}
+
+      <!-- Bottom axis label -->
+      <g transform="translate(-30, {yScaleTop.range()[1] + 22})">
+        <text y={-10} class="small accent" style="transform: rotate(-90deg);" text-anchor="end"
+          >Laugh rate</text
+        >
+        <g transform="translate(-6, 0)">
+          <ArrowDown />
+        </g>
+      </g>
+
+      <!-- Bottom bars: laugh rate -->
+      <g transform="translate(0, {sectionHeight + midBand + gap})">
+        {#each allEpisodes as ep}
+          {#if ep.laughRate > 0}
+            {@const rateH = Math.max(MIN_BAR_H, yScaleBottom(ep.laughRate))}
+            {@const hitH = Math.max(HIT_TARGET_H, rateH)}
+            <g
+              role="presentation"
+              opacity={hoveredEpisodeKey !== null &&
+              hoveredEpisodeKey !== ep.key &&
+              !hoveredEpisodeKey.startsWith(ep.key + '-')
+                ? 0.2
+                : 1}
+              onmouseenter={() => {
+                const s = getFirstScene(ep.season, ep.episode);
+                onEpisodeHover(ep.key);
+                onSceneHover(s);
+              }}
+              onclick={(e) => {
+                e.stopPropagation();
+                const s = getFirstScene(ep.season, ep.episode);
+                if (s) onSceneClick(s);
+              }}
+              style="cursor: pointer"
+            >
+              <rect
+                x={xScale(ep.key)}
+                y={0}
+                width={xScale.bandwidth()}
+                height={rateH}
+                fill={BAR_COLOR}
+              />
+              <rect
+                x={xScale(ep.key)}
+                y={0}
+                width={xScale.bandwidth()}
+                height={hitH}
+                fill="transparent"
+              />
+            </g>
+          {/if}
+        {/each}
+      </g>
     </g>
-  </g>
-</svg>
+  </svg>
 {/if}

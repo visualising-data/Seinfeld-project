@@ -476,7 +476,7 @@
 
       <!-- Right column: visualizations -->
       <div
-        class="desktop:col-span-8 flex flex-col h-full relative gap-4 desktop:gap-12"
+        class="desktop:col-span-8 flex flex-col h-full relative gap-4"
         bind:clientWidth={vizWidth}
       >
         {#if isLoading}
@@ -501,6 +501,7 @@
           >
         </div>
 
+        <h5>Cummulative presence per episode</h5>
         <div
           class="desktop:flex-1 overflow-hidden"
           class:opacity-30={isLoading}
@@ -521,6 +522,7 @@
             onClosePin={closePinnedScene}
           />
         </div>
+        <h5 class="mt-8">All the distinct scenes</h5>
         <div
           class="desktop:flex-1 overflow-hidden"
           class:opacity-30={isLoading}

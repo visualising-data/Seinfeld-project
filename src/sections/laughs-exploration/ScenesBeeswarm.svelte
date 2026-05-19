@@ -213,12 +213,17 @@
     <!-- Circles -->
     {#each nodes as node (node.id)}
       {@const epKey = `${node.season}-${node.episode}-${node.sceneNumber}`}
+      {@const episodeKey = `${node.season}-${node.episode}`}
       <circle
         cx={node.cx}
         cy={node.cy}
         r={node.r}
         fill={seasonColorMap.get(node.season) ?? '#928D90'}
-        opacity={hoveredEpisodeKey !== null && hoveredEpisodeKey !== epKey ? 0.2 : 1}
+        opacity={hoveredEpisodeKey !== null &&
+        hoveredEpisodeKey !== epKey &&
+        hoveredEpisodeKey !== episodeKey
+          ? 0.2
+          : 1}
         role="presentation"
         onmouseenter={() => {
           onEpisodeHover(epKey);
