@@ -30,18 +30,6 @@
   const allActiveChars = $derived([...activeMainChars, ...activeSuppChars]);
   const vizDomain = $derived([...allActiveChars, ...(activeLocation ? [activeLocation] : [])]);
 
-  const mainCharMeta = $derived(
-    activeMainChars
-      .map((id) => characters.find((c) => c.id === id))
-      .filter((c): c is (typeof characters)[0] => !!c),
-  );
-
-  const suppCharMeta = $derived(
-    activeSuppChars
-      .map((id) => characters.find((c) => c.id === id))
-      .filter((c): c is (typeof characters)[0] => !!c),
-  );
-
   const episodeTitle = $derived(
     episodesInfo.find((e) => e.season === scene.season && e.episode === scene.episode)?.title ??
       null,
@@ -51,21 +39,6 @@
     activeLocation
       ? (locations.find((l) => l.id === activeLocation)?.label ?? activeLocation)
       : null,
-  );
-
-  const joinNames = (labels: string[]) =>
-    labels.length <= 1
-      ? (labels[0] ?? '')
-      : labels.slice(0, -1).join(', ') + ' & ' + labels[labels.length - 1];
-
-  const characterSummary = $derived(
-    [
-      joinNames(mainCharMeta.map((c) => c.label)),
-      suppCharMeta.length > 0 ? `with ${joinNames(suppCharMeta.map((c) => c.label))}` : '',
-      activeLocation && locationLabel ? `in ${locationLabel}` : '',
-    ]
-      .filter(Boolean)
-      .join(' '),
   );
 
   // Raw events for this scene
@@ -174,7 +147,6 @@
     <div class="font-semibold text-[1.125rem]">
       {episodeTitle}
     </div>
-    <div class="text-[1rem] text-[#928D90]">{characterSummary}</div>
   </div>
 
   <!-- Stats grid -->

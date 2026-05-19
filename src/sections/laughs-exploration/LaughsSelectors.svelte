@@ -48,10 +48,12 @@
   );
 </script>
 
-<button class="hint small inline-flex items-center gap-1" onclick={onPickRandom}>
-  <span class="shrink"><Random size="34" color="#F9F5F7" /></span>
-  <span class="relative top-1 max-w-[150px]">Click here to select a random combination.</span>
-</button>
+{#if isMobile}
+  <button class="hint small inline-flex items-center gap-1" onclick={onPickRandom}>
+    <span class="shrink"><Random size="34" color="#F9F5F7" /></span>
+    <span class="relative top-1 max-w-[150px]">Click here to select a random combination.</span>
+  </button>
+{/if}
 
 {#if isMobile && isCollapsed}
   <!-- Collapsed summary: tap to expand -->
@@ -143,11 +145,18 @@
     </button>
   {/if}
 
-  <div class="flex items-center gap-4">
-    <span class="hint small inline-flex items-center gap-2">
+  <div class="flex items-center gap-2">
+    <span class="hint small inline-flex items-center gap-2 flex-1">
       <span class="shrink"><HelpIcon color="#E71D80" /></span>
       <span class="relative top-1">Select a combination of characters and locations.</span>
     </span>
+    {#if !isMobile}<span class="hint small tracking-wide">OR</span>{/if}
+    {#if !isMobile}
+      <button class="hint small inline-flex items-center gap-1 flex-1" onclick={onPickRandom}>
+        <span class="shrink"><Random size="34" color="#F9F5F7" /></span>
+        <span class="relative top-1 max-w-[150px]">Click here to select a random combination.</span>
+      </button>
+    {/if}
   </div>
   <div class="flex flex-col gap-2">
     <!-- Main characters -->

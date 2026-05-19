@@ -2,6 +2,9 @@
   import { onMount } from 'svelte';
   import { fly, fade } from 'svelte/transition';
   import * as Tone from 'tone';
+  import { gsap } from 'gsap/dist/gsap';
+  import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
+  gsap.registerPlugin(ScrollTrigger);
   import LaughsSelectors from './LaughsSelectors.svelte';
   import CombinationEpisodeBars from './CombinationEpisodeBars.svelte';
   import ScenesBeeswarm from './ScenesBeeswarm.svelte';
@@ -91,6 +94,30 @@
   const mainChars = characters.slice(0, 4);
   const suppChars = characters.slice(4, characters.length - 1);
 
+  const joinNames = (labels: string[]) =>
+    labels.length <= 1
+      ? (labels[0] ?? '')
+      : labels.slice(0, -1).join(', ') + ' & ' + labels[labels.length - 1];
+
+  const characterSummary = $derived.by(() => {
+    const mainMeta = activeMainChars
+      .map((id) => characters.find((c) => c.id === id))
+      .filter((c): c is (typeof characters)[0] => !!c);
+    const suppMeta = activeSuppChars
+      .map((id) => characters.find((c) => c.id === id))
+      .filter((c): c is (typeof characters)[0] => !!c);
+    const locationLabel = activeLocation
+      ? (locations.find((l) => l.id === activeLocation)?.label ?? activeLocation)
+      : null;
+    return [
+      joinNames(mainMeta.map((c) => c.label)),
+      suppMeta.length > 0 ? `with ${joinNames(suppMeta.map((c) => c.label))}` : '',
+      activeLocation && locationLabel ? `in ${locationLabel}` : '',
+    ]
+      .filter(Boolean)
+      .join(' ');
+  });
+
   function pickRandom() {
     const locationPool = [...locations.map((l) => l.id), null];
     const MAX_ATTEMPTS = 200;
@@ -122,6 +149,7 @@
 
   // ── Sonification ────────────────────────────────────────────────────────────
 
+  let headerEl = $state<HTMLElement | null>(null);
   let soundtrack: Tone.Players | null = null;
   let isInView = $state(false);
   let soundAuthorized = $state(false);
@@ -298,7 +326,25 @@
   onMount(() => {
     soundtrack = new Tone.Players(sonificationFiles).toDestination();
     soundtrack.volume.value = TARGET_VOLUME;
-    return stopSoundsImmediate; // hard stop on component destroy
+
+    const gsapCtx = gsap.context(() => {
+      gsap.to('#laughs-exploration .highlight-reverse', {
+        webkitTextFillColor: 'transparent',
+        backgroundPosition: '200% center',
+        duration: 2,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: headerEl,
+          start: 'top top',
+          toggleActions: 'play reverse play reverse',
+        },
+      });
+    });
+
+    return () => {
+      stopSoundsImmediate();
+      gsapCtx.revert();
+    };
   });
 
   // IntersectionObserver — uses $effect so sectionEl is guaranteed to be bound
@@ -354,7 +400,7 @@
 
   <div class="container flex flex-col flex-1 overflow-hidden">
     <!-- Header -->
-    <div class="h-screen flex flex-col justify-center">
+    <div class="h-screen flex flex-col justify-center" bind:this={headerEl}>
       <div class="mt-12" style="max-width: 900px;">
         <p>
           Have you ever played the board game Cluedo? “Was it Colonel Mustard… with the Candlestick…
@@ -362,7 +408,7 @@
         </p>
         <p>
           In this final interactive you have the chance to bring a Cluedo-like approach to <span
-            class="highlight">exploring your own curiosities</span
+            class="highlight-reverse">exploring your own curiosities</span
           > about how often different characters and locations were combined across all episodes.
         </p>
         <p>
@@ -373,6 +419,9 @@
     </div>
 
     <!-- Layout -->
+    {#key characterSummary}
+      <h3 class="max-w-[1200px] mb-4" in:fly={{ duration: 500, y: 50 }}>{characterSummary}</h3>
+    {/key}
     <div
       class="flex flex-col desktop:grid desktop:grid-cols-12 desktop:gap-16 flex-1 overflow-hidden"
     >
