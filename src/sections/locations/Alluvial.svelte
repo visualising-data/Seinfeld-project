@@ -22,7 +22,7 @@
     left: 0,
   });
 
-  let availableWidth = $derived(innerWidth < 640 ? containerWidth - 96 : containerWidth - 64);
+  let availableWidth = $derived(innerWidth < 640 ? containerWidth - 96 : containerWidth - 200);
   let chartWidth = $derived(availableWidth - margin.left - margin.right);
   let chartHeight = $derived.by(() => {
     const availableHeight = innerHeight - headerHeight - 200;
@@ -229,7 +229,7 @@
     <!-- Header -->
     <div bind:clientHeight={headerHeight} class="mb-8">
       <h3>Ranking locations used across the seasons</h3>
-      <div style="max-width: 900px;">
+      <div style="max-width: 1200px;">
         This chart shows how the screen time share for each location changes across the nine seasons
         of Seinfeld. The width of each band represents the average proportion of an episode’s screen
         time was set in that location and the sorting vertically ranks the highest to lowest
@@ -248,8 +248,8 @@
     <div class="relative" style="overflow: visible;">
       <!-- Top-right description (desktop only) -->
       <div
-        class="hidden sm:block absolute top-[-32px] right-0 leading-4 small accent"
-        style="max-width: 190px;"
+        class="hidden sm:block absolute top-[-32px] right-16 leading-4 small accent"
+        style="max-width: 210px;"
       >
         The height of the bands at each season represents the average screen-time share
       </div>
@@ -273,7 +273,7 @@
             opacity={hoveredLocation === null ? (innerWidth < 640 ? 0 : 1) : 0}
           >
             <text
-              x={220}
+              x={135}
               y={chartHeight / 2 - 9}
               transform="rotate(-90, {0}, {chartHeight / 2})"
               text-anchor="middle"
