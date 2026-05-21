@@ -15,7 +15,7 @@
     { label: 'Supporting Characters', anchor: 'supporting-chars' },
     { label: 'Locations', anchor: 'locations' },
     { label: 'Combinations & Findings', anchor: 'laughs-exploration' },
-    { label: 'Methodology & Credits', anchor: 'methodology' },
+    { label: 'Credits & Methodology', anchor: 'methodology' },
   ];
 </script>
 
