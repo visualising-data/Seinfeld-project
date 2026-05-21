@@ -224,18 +224,19 @@
           settings.
         </p>
         <p>
-          The final list of distinct locations would include the <span class="em"
+          The final list of distinct locations would include the <span class="location"
             >homes of the four leads</span
-          >, as well as a further <span class="em">family home</span> to cover all and any family
-          setting. The <span class="em">diner</span> was another common hangout location, but
-          separate from other <span class="em">places of leisure</span>, which would include other
-          restaurants as well as cinemas and indoor sports venues. The lead characters'
-          <span class="em">workplace</span> would be a recurring setting, from Jerry doing his
+          >, as well as a further <span class="location">family home</span> to cover all and any
+          family setting. The <span class="location">diner</span> was another common hangout
+          location, but separate from other <span class="location">places of leisure</span>, which
+          would include other restaurants as well as cinemas and indoor sports venues. The lead
+          characters'
+          <span class="location">workplace</span> would be a recurring setting, from Jerry doing his
           stand-up routines to George working at Yankee Stadium. Scenes set in various forms of
-          <span class="em">transport</span>, like taxis, planes, or cars, were common, as were
-          <span class="em">outside</span>
+          <span class="location">transport</span>, like taxis, planes, or cars, were common, as were
+          <span class="location">outside</span>
           locations like visits to the Hamptons or when disputes arose about street-side parking. An
-          <span class="em">other location</span> grouping was added to classify the many other unique
+          <span class="location">other location</span> grouping was added to classify the many other unique
           types of locations used infrequently, like hospitals or courtrooms.
         </p>
         <div class="md:hidden flex flex-wrap justify-center gap-4 mt-10">
@@ -278,3 +279,13 @@
     </div>
   </div>
 </div>
+
+<style>
+  .location {
+    padding: 0 4px;
+    font-weight: 600;
+    color: #12020a;
+    background-color: #f9f5f7;
+    border-radius: 8px;
+  }
+</style>

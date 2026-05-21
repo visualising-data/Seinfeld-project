@@ -42,6 +42,7 @@
   // Wave 3: loaded sequentially via nested sentinels after SupportingCharsSection
   let LocationsSection: any = null;
   let LaughsExploration: any = null;
+  let WhatHaveWeLearned: any = null;
   let MethodologyAndCredits: any = null;
   let Footer: any = null;
 
@@ -121,7 +122,8 @@
 
   async function loadMethodology() {
     if (MethodologyAndCredits) return;
-    [MethodologyAndCredits, Footer] = await Promise.all([
+    [WhatHaveWeLearned, MethodologyAndCredits, Footer] = await Promise.all([
+      import('../sections/WhatHaveWeLearned.svelte').then((m) => m.default),
       import('../sections/MethodologyAndCredits.svelte').then((m) => m.default),
       import('../sections/Footer.svelte').then((m) => m.default),
     ]);
@@ -417,7 +419,8 @@
                 }}
               ></div>
 
-              {#if MethodologyAndCredits && Footer}
+              {#if WhatHaveWeLearned && MethodologyAndCredits && Footer}
+                <svelte:component this={WhatHaveWeLearned} />
                 <Quotes />
                 <svelte:component this={MethodologyAndCredits} />
                 <svelte:component this={Footer} />
