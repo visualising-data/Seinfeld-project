@@ -337,8 +337,8 @@
     <h3 class="mb-2 desktop:mb-4">What have we learned?</h3>
 
     <div class="flex flex-col desktop:grid desktop:grid-cols-12 desktop:gap-16 flex-1">
-      <!-- Left: bars grouped by category -->
-      <div class="desktop:col-span-5 flex flex-col gap-5">
+      <!-- Left: bars grouped by category (rendered after detail on mobile) -->
+      <div class="order-last desktop:order-none desktop:col-span-5 flex flex-col gap-5">
         {#each findingsByCategory as group}
           <div class="flex flex-col gap-1">
             <span
@@ -347,11 +347,14 @@
               {group.name}
             </span>
             {#each group.findings as finding}
-              <!-- svelte-ignore a11y_no_static_element_interactions -->
               <div
-                class="bar-row py-0.5 cursor-default"
+                role="button"
+                tabindex="0"
+                class="bar-row py-0.5 cursor-pointer"
                 onmouseenter={() => (hoveredFinding = finding)}
                 onmouseleave={() => (hoveredFinding = null)}
+                ontouchend={(e) => { e.preventDefault(); hoveredFinding = hoveredFinding?.id === finding.id ? null : finding; }}
+                onkeydown={(e) => e.key === 'Enter' && (hoveredFinding = hoveredFinding?.id === finding.id ? null : finding)}
               >
                 <div
                   class="bar h-2 rounded-full transition-all duration-150"
@@ -369,8 +372,8 @@
         {/each}
       </div>
 
-      <!-- Right: finding detail -->
-      <div class="desktop:col-span-7 flex flex-col justify-center mt-8 desktop:mt-0">
+      <!-- Detail panel: sticky at top on mobile, right column on desktop -->
+      <div class="order-first desktop:order-none desktop:col-span-7 sticky top-0 desktop:static z-10 bg-[#F9F5F7] py-4 desktop:py-0 border-b border-[#928D90]/20 desktop:border-none mb-6 desktop:mb-0 min-h-[80px] desktop:min-h-0 flex flex-col desktop:justify-center">
         {#if hoveredFinding}
           <div class="finding-detail">
             <span
@@ -383,7 +386,9 @@
             </p>
           </div>
         {:else}
-          <p class="text-[#928D90] text-[1.2rem] italic m-0">Hover a bar to read the finding</p>
+          <p class="text-[#928D90] text-[1.2rem] italic m-0">
+            <span class="hidden desktop:inline">Hover</span><span class="desktop:hidden">Tap</span> a bar to read the finding
+          </p>
         {/if}
       </div>
     </div>
