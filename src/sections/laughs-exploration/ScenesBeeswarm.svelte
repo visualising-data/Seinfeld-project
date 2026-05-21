@@ -39,7 +39,7 @@
     onClosePin?: () => void;
   } = $props();
 
-  const margin = { top: 16, right: 20, bottom: 40, left: 60 };
+  const margin = { top: 16, right: 20, bottom: 40, left: 73 };
   const marginV = { top: 16, right: 16, bottom: 16, left: 40 };
   let activeMargin = $derived(layout === 'vertical' ? marginV : margin);
   let innerWidth = $derived(width - activeMargin.left - activeMargin.right);

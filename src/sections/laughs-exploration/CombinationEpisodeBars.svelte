@@ -50,7 +50,7 @@
     };
   }
 
-  const margin = { top: 36, right: 20, bottom: 16, left: 60 };
+  const margin = { top: 36, right: 20, bottom: 16, left: 73 };
   const midBand = 12; // height of the season label strip between sections
   const gap = 5; // px between bar tips and the middle strip
 
@@ -147,7 +147,6 @@
 
   // Bottom section: grid at 50% and 100%
   const bottomGridTicks = [
-    { value: 0, label: '0' },
     { value: 0.5, label: '50%' },
     { value: 1, label: '100%' },
   ];
@@ -303,19 +302,10 @@
         y2={sectionHeight - gap}
         stroke={axisColor}
       />
-      <text
-        class="number"
-        x={-6}
-        y={sectionHeight - gap}
-        fill={labelColor}
-        font-size="10"
-        text-anchor="end"
-        dominant-baseline="middle">0</text
-      >
 
       <!-- Top axis label -->
-      <g transform="translate(-30, {yScaleTop.range()[1]})">
-        <text y={-10} class="small accent" style="transform: rotate(-90deg);">Duration</text>
+      <g transform="translate(4, {yScaleTop.range()[1]})">
+        <text x={-8} y={0} class="small accent" text-anchor="end">Duration</text>
         <g transform="rotate(180)">
           <ArrowDown />
         </g>
@@ -450,8 +440,8 @@
       {/each}
 
       <!-- Bottom axis label -->
-      <g transform="translate(-30, {yScaleTop.range()[1] + 22})">
-        <text y={-10} class="small accent" style="transform: rotate(-90deg);" text-anchor="end"
+      <g transform="translate(4, {yScaleTop.range()[1] + 22})">
+        <text x={-8} y={-2} class="small accent" text-anchor="end" dominant-baseline="hanging"
           >Laugh rate</text
         >
         <g transform="translate(-6, 0)">
