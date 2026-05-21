@@ -141,7 +141,7 @@
           class="pointer-events-none {activeSelector}-laugh"
           x={episodeTimeScale(screenMoment.start) - (isMouseOver && highlightedEpisode === `${d.season}-${d.episode}` ? 2 : 0)}
           y={isMouseOver && highlightedEpisode === `${d.season}-${d.episode}` ? -2 : 0}
-          width={episodeTimeScale(screenMoment.duration) + (isMouseOver && highlightedEpisode === `${d.season}-${d.episode}` ? 4 : 0)}
+          width={(screenMoment.duration > 0 ? Math.max(2, episodeTimeScale(screenMoment.duration)) : 0) + (isMouseOver && highlightedEpisode === `${d.season}-${d.episode}` ? 4 : 0)}
           height={episodesVerticalScale.bandwidth() + (isMouseOver && highlightedEpisode === `${d.season}-${d.episode}` ? 4 : 0)}
           fill="#12020A"
           style="opacity: {(isMouseOver && highlightedEpisode === `${d.season}-${d.episode}`) || !isMouseOver ? 1 : 0.3};"

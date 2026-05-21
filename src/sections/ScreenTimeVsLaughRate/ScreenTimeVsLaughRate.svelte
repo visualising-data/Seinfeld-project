@@ -227,17 +227,22 @@
    */
   function aggregateTimeEvents(events) {
     const result = [];
-    let start, currentTime;
+    let start = NaN;
+    let currentTime = NaN;
     events.forEach((d, i) => {
-      if (start === undefined && currentTime === undefined) {
-        start = +d.eventTimeSeconds;
-        currentTime = +d.eventTimeSeconds;
-      } else if (+d.eventTimeSeconds > currentTime + 5 || i === events.length - 1) {
-        result.push({ start: start - 5, duration: currentTime - start });
-        start = +d.eventTimeSeconds;
-        currentTime = +d.eventTimeSeconds;
-      } else if (+d.eventTimeSeconds === currentTime + 5) {
-        currentTime = +d.eventTimeSeconds;
+      const t = +d.eventTimeSeconds;
+      if (isNaN(start)) {
+        start = t;
+        currentTime = t;
+      } else if (t > currentTime + 5) {
+        result.push({ start: start - 5, duration: currentTime - start + 5 });
+        start = t;
+        currentTime = t;
+      } else {
+        currentTime = t;
+      }
+      if (i === events.length - 1) {
+        result.push({ start: start - 5, duration: currentTime - start + 5 });
       }
     });
     return result;
