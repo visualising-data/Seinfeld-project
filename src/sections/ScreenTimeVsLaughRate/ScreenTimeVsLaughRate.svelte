@@ -740,7 +740,7 @@
   >
     <div class="container">
       <!-- Header -->
-      <Header bind:headerHeight />
+      <Header bind:headerHeight {currentSection} />
 
       <!-- Visualization -->
       <div id="lead-chars-episodes-viz" class="flex flex-col md:grid md:grid-cols-12 md:gap-8">
@@ -756,7 +756,7 @@
 
         <div class="md:col-span-10 md:mt-1" bind:clientHeight={visualizationsContainerHeight}>
           <div class="flex gap-10">
-            <Toggle {switchFilter} {activeFilter} {isMobile} />
+            <Toggle {switchFilter} {activeFilter} {isMobile} {currentSection} />
             {#if !isMobile}
               <ScreenTimeVsLaughRateLegend {activeCharacter} {activeFilter} />
             {/if}

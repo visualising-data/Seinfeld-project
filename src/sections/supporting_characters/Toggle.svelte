@@ -6,7 +6,10 @@
     SCREEN_TIME: 'screenTime',
     LAUGHS: 'causesLaughs',
   };
-  let { switchFilter, activeFilter, isMobile } = $props();
+  let { switchFilter, activeFilter, isMobile, currentSection } = $props();
+
+  let laughLabel = $derived(currentSection === 'locations' ? 'Staging the funny' : 'Being funny');
+  let btnWidth = $derived(currentSection === 'locations' ? 340 : 260);
 
   const selectScreenTime = () => {
     switchFilter(FILTER.SCREEN_TIME);
@@ -16,7 +19,10 @@
   };
 </script>
 
-<div class="relative rounded-full overflow-hidden mb-4" style="width: 520px;">
+<div
+  class="relative rounded-full overflow-hidden mb-4"
+  style="width: {btnWidth * 2}px; --btn-width: {btnWidth}px;"
+>
   <!-- Background color -->
   <div
     class="button-background relative z-0 {activeFilter === FILTER.SCREEN_TIME ? 'left' : 'right'}"
@@ -53,14 +59,14 @@
           color={activeFilter === FILTER.SCREEN_TIME ? '#12020A' : '#F9F5F7'}
         />
       </div>
-      <h4 class="ml-2 text-[16px] md:text-[28px]">Being funny</h4>
+      <h4 class="ml-2 text-[16px] md:text-[28px]">{laughLabel}</h4>
     </button>
   </div>
 </div>
 
 <style>
   button {
-    width: 260px;
+    width: var(--btn-width, 260px);
     padding: 4px 12px 5px;
     border: 1px solid;
     overflow: hidden;
@@ -86,7 +92,7 @@
       padding: 6px 24px 7px;
     }
     .button-background {
-      width: 260px;
+      width: var(--btn-width, 260px);
     }
   }
 </style>
