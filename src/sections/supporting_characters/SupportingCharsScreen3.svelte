@@ -220,10 +220,15 @@
         class="supporting-chars-text-col col-span-12 md:col-span-7 md:h-[100dvh] md:flex md:flex-col md:justify-center"
       >
         <p>
-          The ultimate decision was to create categories for the four respective families of the
-          lead characters, as well as groupings for acquaintances - specifically, love interests,
-          friends, neighbours, colleagues - and then a final 'other persons' group to sweep up the
-          growing list of transient characters.
+          The ultimate decision was to create categories for the four respective <span
+            class="color color-family">families of the lead characters</span
+          >, as well as groupings for acquaintances - specifically,
+          <span class="color color-acquaintance">love interests</span>,
+          <span class="color color-acquaintance">friends</span>,
+          <span class="color color-acquaintance">neighbours</span>,
+          <span class="color color-acquaintance">colleagues</span> - and then a final
+          <span class="color color-other">other persons</span>
+          group to sweep up the growing list of transient characters.
         </p>
         <p>
           When recording the involvement of supporting characters, it was <span class="highlight"
@@ -272,3 +277,18 @@
     </div>
   </div>
 </div>
+
+<style>
+  .color {
+    font-weight: 600;
+  }
+  .color-family {
+    color: #835330;
+  }
+  .color-acquaintance {
+    color: #b3478b;
+  }
+  .color-other {
+    color: #5443b0;
+  }
+</style>
