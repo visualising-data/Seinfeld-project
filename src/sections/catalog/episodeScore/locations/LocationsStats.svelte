@@ -4,7 +4,7 @@
   import { catalogLegendIsVisible } from '../../../../stores/catalogLegendIsVisible';
   import { getLocationIconPath } from '../../../../utils/getLocationIconPath';
 
-  import SignalFull from '../../../../icons/SignalFull.svelte';
+  import LaughIcon from '../../../../icons/Laugh.svelte';
 
   let {
     width,
@@ -31,13 +31,13 @@
     class="relative mr-4"
     style="width: {$catalogLegendIsVisible ? 'auto' : `${columnWidth}px`};"
   >
-    <div class="small accent absolute w-[300px]">
+    <div class="small accent absolute -top-2 w-[300px]">
       {#if !$catalogLegendIsVisible}
         % of episode appeared in
       {/if}
     </div>
     {#if $catalogLegendIsVisible}
-      <div class="flex flex-col gap-3 mt-[50px]">
+      <div class="flex flex-col gap-[13px] mt-[22px]">
         {#each locationsOnScreen as location}
           <div
             class="flex items-center gap-4"
@@ -49,7 +49,7 @@
               class="w-8 h-8 bg-no-repeat bg-contain bg-center rounded-full"
               style="background-image: url({getLocationIconPath(location.id)});"
             ></div>
-            <SignalFull />
+            <LaughIcon width={26} height={26} />
           </div>
         {/each}
       </div>

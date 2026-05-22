@@ -5,6 +5,7 @@
   import { locations } from '$lib/data/locations';
   import { sharedScrollLeft } from '../../../../stores/scrollStore';
 
+  import { catalogLegendIsVisible } from '../../../../stores/catalogLegendIsVisible';
   import Scenes from '../Scenes.svelte';
   import LocationsList from './LocationsList.svelte';
   import LocationsOnScreen from './LocationsOnScreen.svelte';
@@ -94,7 +95,15 @@
 
 <svelte:window bind:innerWidth />
 
-<div class="flex">
+<div class="flex relative">
+  {#if $catalogLegendIsVisible && innerWidth >= 1280}
+    <div
+      class="absolute top-[-30px] right-[-174px] small accent pl-6"
+      style="width: {statsWidth}px;"
+    >
+      Signature sounds represent each location; each reflects the nature of the setting.
+    </div>
+  {/if}
   <LocationsList
     {labelsWidth}
     locations={locationsOnScreen}

@@ -21,8 +21,10 @@
   } = $props();
 
   const getLaughIconOpacity = (charId, iconLevel) => {
-    if ((!isPlaying && !isHover) || !hoveredCharacters.includes(charId)) return 1;
     const laughBin = playingCharLaughLevels[charId];
+    if (!isPlaying && iconLevel === 1) return 0.3;
+    if (!isPlaying && iconLevel === 2) return 0.6;
+    if (!isPlaying && iconLevel === 3) return 1;
     if (!laughBin) return 1;
     if (iconLevel === 1) return laughBin !== '2' && laughBin !== '3' ? 1 : 0.2;
     if (iconLevel === 2) return laughBin === '2' ? 1 : 0.2;
@@ -45,18 +47,8 @@
     class="relative mr-4"
     style="width: {$catalogLegendIsVisible ? 'auto' : `${columnWidth}px`};"
   >
-    <div
-      class="small accent absolute"
-      style="width: {$catalogLegendIsVisible ? 'auto' : `${columnWidth}px`};"
-    >
-      {#if $catalogLegendIsVisible}
-        <div class="mt-4">sonification legend</div>
-      {:else}
-        % of episode appeared in
-      {/if}
-    </div>
     {#if $catalogLegendIsVisible}
-      <div class="flex flex-col gap-3 mt-[50px]">
+      <div class="flex flex-col gap-[13px] mt-[50px]">
         {#each charactersOnScreen as char}
           <div
             class="flex items-center gap-4"
@@ -68,19 +60,22 @@
               class="w-8 h-8 bg-no-repeat bg-contain bg-center rounded-full"
               style="background-image: url({getCharacterImagePath(char.id)});"
             ></div>
-            <button style="opacity: {getLaughIconOpacity(char.id, 1)}">
-              <LaughIcon width={20} height={20} />
-            </button>
-            <button style="opacity: {getLaughIconOpacity(char.id, 2)}">
+            <div style="opacity: {getLaughIconOpacity(char.id, 1)}">
               <LaughIcon width={26} height={26} />
-            </button>
-            <button style="opacity: {getLaughIconOpacity(char.id, 3)}">
-              <LaughIcon width={32} height={32} />
-            </button>
+            </div>
+            <div style="opacity: {getLaughIconOpacity(char.id, 2)}">
+              <LaughIcon width={26} height={26} />
+            </div>
+            <div style="opacity: {getLaughIconOpacity(char.id, 3)}">
+              <LaughIcon width={26} height={26} />
+            </div>
           </div>
         {/each}
       </div>
     {:else}
+      <div class="small accent absolute" style="width: {columnWidth}px;">
+        % of episode appeared in
+      </div>
       <svg width={columnWidth} {height}>
         {#each charactersOnScreen as char}
           {#if char.timesOnScreen}

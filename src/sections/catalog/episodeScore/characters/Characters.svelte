@@ -5,6 +5,7 @@
   import { characters } from '$lib/data/characters';
   import { sharedScrollLeft } from '../../../../stores/scrollStore';
   import { getCharacterId } from '../../../../utils/sonificationToIds';
+  import { catalogLegendIsVisible } from '../../../../stores/catalogLegendIsVisible';
   import CharactersList from './CharactersList.svelte';
   import Scenes from '../Scenes.svelte';
   import PresenceOnScreen from './PresenceOnScreen.svelte';
@@ -147,7 +148,12 @@
 
 <svelte:window bind:innerWidth />
 
-<div class="flex">
+<div class="flex relative">
+  {#if $catalogLegendIsVisible && innerWidth >= 1280}
+    <div class="absolute top-0 right-[-174px] small accent pl-6" style="width: {statsWidth}px;">
+      Signature sounds represent each character; the level shows their laughter rate per scene.
+    </div>
+  {/if}
   <CharactersList
     {labelsWidth}
     characters={charactersOnScreen}
