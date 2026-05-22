@@ -1,5 +1,6 @@
 <script>
   import { scaleLinear, scaleRadial } from 'd3-scale';
+  import { mainCharsTextsDone } from '../../stores/mainCharsTextsDone';
   import HelpIcon from '../../icons/HelpIcon.svelte';
   import { characters } from '$lib/data/characters';
   import { getCharacterImagePath } from '../../utils/getCharacterImagePath';
@@ -83,9 +84,14 @@
   const statWidth = 80;
   const statHeight = 10;
   const statScale = scaleLinear().domain([0, 1]).range([0, statWidth]);
+
 </script>
 
-<div id="peak-performances-container" class="w-screen pb-80 relative">
+<div
+  id="peak-performances-container"
+  class="w-screen pb-80 relative"
+  style="opacity: {$mainCharsTextsDone ? 1 : 0}; transform: translateY({$mainCharsTextsDone ? '0px' : '12px'}); pointer-events: {$mainCharsTextsDone ? 'auto' : 'none'}; transition: opacity 0.5s ease 0.2s, transform 0.5s ease 0.2s;"
+>
   <div class="container" bind:clientWidth={containerWidth}>
     <!-- Header -->
     <div class="mb-8">

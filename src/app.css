@@ -143,7 +143,11 @@
       rgba(69, 55, 130, 1) 100%
     );
     background-size: 200% auto;
+    background-position: 0% center;
+    -webkit-background-clip: text;
     background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
   }
   .highlight-reverse {
     font-weight: 600;

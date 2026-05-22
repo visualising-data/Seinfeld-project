@@ -10,6 +10,7 @@
 
   onMount(() => {
     gsap.set('#lead-chars-intro p', { translateY: 100, opacity: 0 });
+    gsap.set('#lead-chars-intro .highlight', { webkitTextFillColor: '#F9F5F7', backgroundPosition: '0% center' });
 
     const tl1 = gsap.timeline({
       scrollTrigger: {

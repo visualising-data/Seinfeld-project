@@ -65,28 +65,28 @@
     share only <span class="highlight">rose gradually</span>, her laughter rates jumped from 15% in
     Season 1 to a peak of 25% by Season 8.
     <div bind:clientWidth={sparklinesContainerWidth} style="height: 0; overflow: hidden;"></div>
-    <div class="small mt-4 mb-2">Average laughter share and rate per season</div>
-    <div class="relative">
-      <div class="absolute top-0 left-0 w-full overflow-hidden">
-        <Sparkline onlyAxes={true} containerWidth={sparklinesContainerWidth} />
-      </div>
-      <div class="flex items-end gap-3" style="overflow: hidden;">
+    <div class="flex gap-4 mt-4">
+      <div class="">
+        <div class="small mb-2">Average laughter share per season</div>
         <Sparkline
           charData={charData.ELAINE}
           showLabels={true}
           charId="ELAINE"
-          showMax={true}
+          showMax={false}
           isScreenTime={false}
-          containerWidth={sparklineWidth}
+          yAxisLabels={[0, 0.5, 1]}
         />
+      </div>
+      <div class="">
+        <div class="small mb-2">Average laughter rate per season</div>
         <Sparkline
           charData={charData.ELAINE}
           showLabels={true}
           charId="ELAINE"
-          showMax={true}
+          showMax={false}
           isScreenTime={false}
           isLaughRate={true}
-          containerWidth={sparklineWidth}
+          yAxisLabels={[0, 0.5, 1]}
         />
       </div>
     </div>

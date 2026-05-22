@@ -9,11 +9,12 @@
     activeSelector,
     handleCharacterClick,
     isMobile = false,
+    hideHint = false,
   } = $props();
 </script>
 
 {#if !isMobile}
-  <div class="hint small flex items-center gap-2 mb-6" style="max-width: 320px;">
+  <div class="hint small flex items-center gap-2 mb-6" style="max-width: 320px; opacity: {hideHint ? 0 : 1};">
     <span class="shrink"><HelpIcon color="#E71D80" /></span>
     <span class="relative top-1"
       >{`Select a ${currentSection === 'locations' ? 'location' : 'character'} to explore their time on screen and when they were funny.`}</span

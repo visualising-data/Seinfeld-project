@@ -3,6 +3,8 @@
 
   import { FILTER } from '../../types/filter';
   import ArrowDown from "../../icons/ArrowDown.svelte";
+  import { episodesInfo } from '$lib/data/episodesInfo';
+  import { getIfClipShow } from '../../utils/getIfClipShow';
 
   let { 
     visualizationsWidth,
@@ -37,15 +39,19 @@
   <g transform="rotate(-90) translate(4, {activeFilter === FILTER.SCREEN_TIME ? 88 : 77})">
     <ArrowDown />
   </g>
-  <rect
-    class="pointer-events-none"
-    x={0}
-    y={0}
-    width={episodesOverviewWidth - marginEnd}
-    height={visualizationsInnerHeight}
-    fill="#F9F5F7"
-    fill-opacity={isMouseOver ? 0.3 : 0.9}
-  />
+  {#each episodesInfo as ep}
+    {#if !getIfClipShow(ep.season, ep.episode)}
+      <rect
+        class="pointer-events-none"
+        x={0}
+        y={episodesVerticalScale(`${ep.season}-${ep.episode}`)}
+        width={episodesOverviewWidth - marginEnd}
+        height={episodesVerticalScale.bandwidth()}
+        fill="#F9F5F7"
+        fill-opacity={isMouseOver ? 0.3 : 0.9}
+      />
+    {/if}
+  {/each}
 
   <!-- Vertical Axes -->
   {#each overviewLabels as overviewLabel}

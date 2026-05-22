@@ -45,7 +45,7 @@
       charData={charData.GEORGE}
       showLabels={true}
       charId="GEORGE"
-      showMax={true}
+      showMax={false}
       isScreenTime={false}
       yAxisLabels={[0, 0.5, 1]}
     />

@@ -10,6 +10,7 @@
   } from '$lib/data/sonificationFilesMapping';
   import { soundIsAuth } from '../../stores/soundAuthStore';
   import { enterSoundSection, leaveSoundSection } from '../../stores/soundSectionIsInView';
+  import { mainCharsTextsDone } from '../../stores/mainCharsTextsDone';
   import { characters } from '$lib/data/characters';
   import { locations } from '$lib/data/locations';
   import { FILTER } from '../../types/filter';
@@ -428,9 +429,11 @@
           onEnterBack: () => {
             isMouseOver = false;
             isTextOver = true;
+            mainCharsTextsDone.set(false);
           },
           onLeave: () => {
             isTextOver = false;
+            mainCharsTextsDone.set(true);
           },
           onLeaveBack: () => {
             isTextOver = false;
@@ -743,7 +746,7 @@
       <Header bind:headerHeight {currentSection} />
 
       <!-- Visualization -->
-      <div id="lead-chars-episodes-viz" class="flex flex-col md:grid md:grid-cols-12 md:gap-8">
+      <div id="lead-chars-episodes-viz" class="flex flex-col md:grid md:grid-cols-12 md:gap-8" class:pointer-events-none={currentSection === 'main_chars' && isTextOver}>
         <div class="md:col-span-2 md:flex md:flex-col md:items-center md:relative">
           <Selectors
             {currentSection}
@@ -751,6 +754,7 @@
             activeSelector={activeCharacter}
             {handleCharacterClick}
             {isMobile}
+            hideHint={currentSection === 'main_chars' && isTextOver}
           />
         </div>
 
