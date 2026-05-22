@@ -148,6 +148,16 @@
     soundtrack.stopAll();
   };
 
+  export const stopWithFadeOut = () => {
+    if (!isPlaying) return;
+    const originalVolume = Tone.Destination.volume.value;
+    Tone.Destination.volume.rampTo(-60, 0.5);
+    setTimeout(() => {
+      stop();
+      Tone.Destination.volume.value = originalVolume;
+    }, 520);
+  };
+
   const handleClickOnScene = (/** @type {number} */ sceneNum) => {
     if ($soundIsAuth) {
       updatePlayingData(true, sceneNum);

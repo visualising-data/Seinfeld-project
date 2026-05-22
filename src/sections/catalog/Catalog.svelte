@@ -107,6 +107,7 @@
           } else {
             leaveSoundSection();
             showIllustration = false;
+            sonificationPlayerRef?.stopWithFadeOut();
           }
         },
         { threshold: 0.1 },
@@ -141,6 +142,9 @@
   });
 
   let showIllustration = $state(false);
+
+  /** @type {any} */
+  let sonificationPlayerRef = $state(null);
 
   let externallyClickedScene = $state();
   const handleClickOnScene = (/** @type {number} */ scene) => {
@@ -183,6 +187,7 @@
 
         <!-- Sonification player -->
         <SonificationPlayer
+          bind:this={sonificationPlayerRef}
           {labelsWidth}
           {scenesWidth}
           {scenes}
