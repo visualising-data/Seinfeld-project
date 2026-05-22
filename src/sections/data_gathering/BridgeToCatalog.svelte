@@ -2,6 +2,7 @@
   import { onMount, onDestroy } from 'svelte';
   import { gsap } from 'gsap/dist/gsap';
   import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
+  import SectionTitle from '../SectionTitle.svelte';
 
   gsap.registerPlugin(ScrollTrigger);
 
@@ -31,9 +32,12 @@
   });
 </script>
 
-<div id="bridge-to-catalog" class="h-[100dvh]">
+<div id="bridge-to-catalog">
+  <SectionTitle title="Episode Catalogue" section="catalog" />
+</div>
+
+<div class="h-[100dvh]">
   <div class="h-[100dvh] container flex content-center flex-wrap">
-    <h2 class="mb-2">Episode Catalogue</h2>
     <div style="max-width: 900px;">
       <p>
         You can now browse through an interactive catalogue of episodes, showing visual compositions

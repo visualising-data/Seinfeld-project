@@ -37,6 +37,14 @@
       gsap.set('.video-char-icon', { opacity: 0, translateY: 20 });
       gsap.set('#video-text-2', { opacity: 0 });
 
+      gsap.to('#video-text-1 .highlight', {
+        webkitTextFillColor: 'transparent',
+        backgroundPosition: '200% center',
+        duration: 2,
+        ease: 'power3.out',
+        delay: 1,
+      });
+
       // text-2 replaces text-1 when step-2 enters the viewport
       const tl2 = gsap.timeline({
         scrollTrigger: {
@@ -147,8 +155,8 @@
         <!-- Text 1: in normal flow — sets natural wrapper height -->
         <div id="video-text-1" class="py-12">
           <div class="md:w-[620px]">
-            There's a good chance you've seen this popular gif. It shows a clip taken from the
-            fourth episode of season four, titled 'The Wallet'.
+            There's a good chance you've seen this <span class="highlight">popular gif</span>. It
+            shows a clip taken from the fourth episode of season four, titled 'The Wallet'.
           </div>
         </div>
         <!-- Texts 2-3: absolutely positioned so scrollHeight reflects real content height -->

@@ -5,6 +5,8 @@
 
   import { supportingCharacterTiles, characters, mainCharacterTiles } from '$lib/data/characters';
   import { locationsTiles } from '$lib/data/locations';
+  import { episodesInfo } from '$lib/data/episodesInfo';
+  import { seasons } from '$lib/data/seasons';
   import { getIllustrationForEpisode } from '$lib/data/illustrations';
   import { getRandom } from '../utils/getRandom';
   import { getCharacterImagePath } from '../utils/getCharacterImagePath';
@@ -56,6 +58,19 @@
         return supportingCharacterTiles;
       case 'locations':
         return locationsTiles;
+      case 'catalog':
+        return episodesInfo
+          .filter((ep) => ep.include === 'Yes' && ep.img_src)
+          .map((ep) => ({
+            id: `catalog-s${ep.season}e${ep.episode}`,
+            img_src: ep.img_src,
+            season: ep.season,
+            episode: ep.episode,
+            episodeTitle: ep.title,
+            name: ep.title,
+            category: `Season ${ep.season}`,
+            icon: null,
+          }));
       default:
         return mainCharacterTiles;
     }
@@ -70,7 +85,10 @@
       });
       return [
         ...mainRow.map((t) => ({ ...t, _source: 'main_char' })),
-        ...getRandom(supportingCharacterTiles, numColumns).map((t) => ({ ...t, _source: 'supp_char' })),
+        ...getRandom(supportingCharacterTiles, numColumns).map((t) => ({
+          ...t,
+          _source: 'supp_char',
+        })),
         ...getRandom(locationsTiles, numColumns).map((t) => ({ ...t, _source: 'locations' })),
       ];
     }
@@ -118,7 +136,7 @@
         amount: 0.4,
       },
     }).from(
-      `#section-title-${section} h2`,
+      `#section-title-${section}`,
       {
         translateY: 100,
         opacity: 0,
@@ -133,13 +151,13 @@
 
   const handleMouseEnter = (/** @type {any} */ tile) => {
     if (!introComplete) return;
-    gsap.to(`#section-title-${section} h2`, {
-      translateY: 100,
-      opacity: 0,
-      ease: 'power3.out',
-      duration: 0.4,
-    });
-    if (tile) {
+    const tileIndex = tiles.findIndex((t) => t.id === tile?.id);
+    const triggerRow = innerWidth < 768 ? 1 : 0;
+    const rowIndex = Math.floor(tileIndex / numColumns);
+    if (tileIndex !== -1 && rowIndex === triggerRow) {
+      gsap.to(`#section-title-${section}`, { translateY: 100, ease: 'power3.out', duration: 0.4 });
+    }
+    if (tile && innerWidth >= 768) {
       const url = getIllustrationForEpisode(tile.season, tile.episode);
       activeIllustration = url ? { tileId: tile.id, url } : null;
     }
@@ -147,21 +165,25 @@
 
   const handleMouseLeave = () => {
     if (!introComplete) return;
-    gsap.to(`#section-title-${section} h2`, {
-      translateY: 0,
-      opacity: 1,
-      ease: 'power3.out',
-      duration: 0.4,
-    });
+    gsap.to(`#section-title-${section}`, { translateY: 0, ease: 'power3.out', duration: 0.4 });
     activeIllustration = null;
   };
 
-  const getOverlayColor = (/** @type {{ category: string; name: string; _source?: string }} */ tile) => {
+  const getTileBackgroundImage = (/** @type {any} */ tile) => {
+    if (tile.img_src) return tile.img_src;
+    return `https://amdufour.github.io/hosted-data/apis/thumbnails/${tile.thumbnail}`;
+  };
+
+  const getOverlayColor = (
+    /** @type {{ category: string; name: string; season?: number; _source?: string }} */ tile,
+  ) => {
     switch (tile._source || section) {
       case 'supp_char':
         return characters.find((char) => char.label === tile.category)?.color;
       case 'main_char':
         return characters.find((char) => char.label === tile.name)?.color;
+      case 'catalog':
+        return seasons.find((s) => s.seasonNum === tile.season)?.color || '#12020A';
       default:
         return '#12020A';
     }
@@ -188,7 +210,9 @@
       >
         <div
           class="tile relative z-10"
-          style="width: {tileWidth}; height: {tileHeight}; background-image: url('https://amdufour.github.io/hosted-data/apis/thumbnails/{tile.thumbnail}');"
+          style="width: {tileWidth}; height: {tileHeight}; background-image: url('{getTileBackgroundImage(
+            tile,
+          )}');"
         ></div>
         {#if activeIllustration?.tileId === tile.id}
           <img class="tile-illustration" src={activeIllustration?.url} alt="" />
@@ -196,17 +220,24 @@
         <div class="info absolute bottom-0 left-0 right-0 z-20">
           <div
             class="details px-4"
-            style="color: {(tile._source || section) === 'locations' || (tile._source || section) === 'supp_char'
-              ? '#F9F5F7'
-              : '#12020A'}; background-color: {getOverlayColor(tile)};"
+            style="color: {(tile._source || section) === 'catalog'
+              ? tile.season <= 3
+                ? '#12020A'
+                : '#F9F5F7'
+              : (tile._source || section) === 'locations' ||
+                  (tile._source || section) === 'supp_char'
+                ? '#F9F5F7'
+                : '#12020A'}; background-color: {getOverlayColor(tile)};"
           >
             <div class="flex items-center gap-2">
-              <div
-                class="character grow-0 shrink-0 rounded-full bg-contain bg-center border-2 border-black w-12 h-12 bg-no-repeat"
-                style="background-image: url('{(tile._source || section) === 'locations'
-                  ? getLocationIconPath(tile.name)
-                  : getCharacterImagePath(tile.icon)}');"
-              ></div>
+              {#if tile.icon != null}
+                <div
+                  class="character grow-0 shrink-0 rounded-full bg-contain bg-center border-2 border-black w-12 h-12 bg-no-repeat"
+                  style="background-image: url('{(tile._source || section) === 'locations'
+                    ? getLocationIconPath(tile.name)
+                    : getCharacterImagePath(tile.icon)}');"
+                ></div>
+              {/if}
               <div class="flex flex-col gap-0.5">
                 <div class="name font-semibold text-[16px] md:text-[18px] leading-none">
                   {tile.name}
