@@ -30,7 +30,7 @@
 
 <div id="prologue-end" class="w-screen h-[100dvh]" style="margin-top: 800px;">
   <div class="h-[100dvh] container flex content-center flex-wrap">
-    <div style="max-width: 900px;">
+    <div style="max-width: 520px;">
       <p>
         A few years later, I decided it was time to revisit this work and develop a new format that
         could reach a wider audience.

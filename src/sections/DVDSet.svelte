@@ -41,6 +41,7 @@
         shows).
       </div>
       <img
+        class="max-h-[96vh]"
         src="https://amdufour.github.io/hosted-data/apis/images/DVDBoxset.png"
         alt="DVD boxset"
       />
