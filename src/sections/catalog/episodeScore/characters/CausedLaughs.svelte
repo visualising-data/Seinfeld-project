@@ -7,6 +7,10 @@
   const playingSceneData = $derived(
     scenes.find((/** @type {{ sceneNum: number; }} */ s) => s.sceneNum === playingScene),
   );
+
+  const hoveredSceneData = $derived(
+    scenes.find((/** @type {{ startTime: number; endTime: number; }} */ s) => hoveredTime >= s.startTime && hoveredTime <= s.endTime),
+  );
 </script>
 
 <g>
@@ -21,7 +25,7 @@
           height={yScale.bandwidth() + 20}
           fill={char.color}
           fill-opacity={(!isHover && !isPlaying) ||
-          (isHover && hoveredTime >= laugh && hoveredTime <= laugh + laughWidth) ||
+          (isHover && hoveredSceneData && laugh >= hoveredSceneData.startTime && laugh <= hoveredSceneData.endTime) ||
           (isPlaying &&
             laugh >= playingSceneData.startTime &&
             laugh + laughWidth <= playingSceneData.endTime)
@@ -29,7 +33,7 @@
             : 0.2}
           stroke="#F9F5F7"
           stroke-opacity={(!isHover && !isPlaying) ||
-          (isHover && hoveredTime >= laugh && hoveredTime <= laugh + laughWidth) ||
+          (isHover && hoveredSceneData && laugh >= hoveredSceneData.startTime && laugh <= hoveredSceneData.endTime) ||
           (isPlaying &&
             laugh >= playingSceneData.startTime &&
             laugh + laughWidth <= playingSceneData.endTime)

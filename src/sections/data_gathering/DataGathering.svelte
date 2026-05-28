@@ -155,15 +155,25 @@
           ></div>
 
           {#if Catalog}
-            {#await csv(sonificationCharactersDataUrl) then sonificationCharactersData}
-              {#await csv(sonificationLocationDataUrl) then sonificationLocationData}
-                <Catalog
-                  {episodesData}
-                  {sonificationCharactersData}
-                  {sonificationLocationData}
-                  {ScrollTrigger}
-                />
-              {/await}
+            {#await Promise.all([csv(sonificationCharactersDataUrl), csv(sonificationLocationDataUrl)])}
+              <section id="catalog-section" style="min-height: 100vh; background: #F9F5F7;">
+                <div class="flex items-center justify-center" style="height: 100vh;">
+                  <div class="w-8 h-8 rounded-full border-2 border-gray-300 border-t-gray-600 animate-spin"></div>
+                </div>
+              </section>
+            {:then [sonificationCharactersData, sonificationLocationData]}
+              <Catalog
+                {episodesData}
+                {sonificationCharactersData}
+                {sonificationLocationData}
+                {ScrollTrigger}
+              />
+            {:catch}
+              <section id="catalog-section" style="min-height: 100vh; background: #F9F5F7;">
+                <div class="flex items-center justify-center" style="height: 100vh;">
+                  <p style="color: #888; font-size: 0.9rem;">Failed to load episode data. Please refresh the page.</p>
+                </div>
+              </section>
             {/await}
           {/if}
         {/if}

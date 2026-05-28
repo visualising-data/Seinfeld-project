@@ -1,7 +1,6 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
   import { enterSoundSection, leaveSoundSection } from '../../stores/soundSectionIsInView';
-  import { gsap } from 'gsap/dist/gsap';
   import { sharedScrollLeft } from '../../stores/scrollStore';
 
   import { fly } from 'svelte/transition';
@@ -233,7 +232,7 @@
 
   .catalog-illustration {
     position: absolute;
-    top: 150px;
+    top: 180px;
     right: 0;
     z-index: 1001;
     max-width: 320px;

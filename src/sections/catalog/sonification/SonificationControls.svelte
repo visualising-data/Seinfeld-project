@@ -39,7 +39,7 @@
             onclick={stop}
             style="cursor: {$soundIsAuth ? 'pointer' : 'not-allowed'};"
           >
-            <StopIcon color="#E71D80" />
+            <StopIcon color="#E71D80" diameter={32} />
           </button>
         {:else}
           <button
@@ -48,7 +48,7 @@
             disabled={!$soundIsAuth}
             style="cursor: {$soundIsAuth ? 'pointer' : 'not-allowed'};"
           >
-            <PlayIcon color={$soundIsAuth ? '#E71D80' : '#BEBABC'} />
+            <PlayIcon color={$soundIsAuth ? '#E71D80' : '#BEBABC'} diameter={32} />
           </button>
         {/if}
       </div>

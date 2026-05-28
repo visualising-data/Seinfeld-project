@@ -11,7 +11,6 @@
 
 <div class="relative">
   <svg
-    class="lg:mt-6"
     width={scenesWidth}
     {height}
     style="transform: translateX({playingScene && innerWidth <= 1000
