@@ -51,7 +51,10 @@
   /** @type {HTMLVideoElement} */
   let videoEl = $state(null);
   $effect(() => {
-    if (videoEl) videoEl.muted = isMuted;
+    if (videoEl) {
+      videoEl.muted = isMuted;
+      videoEl.volume = 1;
+    }
   });
 
   /** @type {HTMLElement} */

@@ -155,7 +155,7 @@
       <!-- Image strip: GSAP-animated on both mobile and desktop -->
       <div id="books-outer-container" class="shrink-0">
         <div id="accent-line" class="mb-3 h-2 w-full" style="background-color: #E71D80;"></div>
-        <div id="books-inner-container" class="flex">
+        <div id="books-inner-container" class="flex items-start">
           <!-- Book cover as first image on mobile only -->
           <img
             loading="eager"
