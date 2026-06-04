@@ -1,5 +1,5 @@
 <script>
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import { scaleLinear } from 'd3-scale';
   import { gsap } from 'gsap/dist/gsap';
 
@@ -54,6 +54,9 @@
       .range([0, scenesWidth]),
   );
 
+  /** @type {ScrollTrigger[]} */
+  const stepTriggers = [];
+
   onMount(() => {
     // Establish initial hidden state BEFORE creating ScrollTriggers.
     // If the component mounts while the user is already scrolled into or past this
@@ -97,13 +100,19 @@
     [1, 2, 3, 4, 5, 6, 7, 8].forEach((step) => {
       const el = document.getElementById(`episode-example-text-${step}`);
       if (!el) return;
-      ScrollTrigger.create({
-        trigger: el,
-        start: 'top center',
-        onEnter: () => episodeStepChange(step),
-        onLeaveBack: () => episodeStepLeave(step),
-      });
+      stepTriggers.push(
+        ScrollTrigger.create({
+          trigger: el,
+          start: 'top center',
+          onEnter: () => episodeStepChange(step),
+          onLeaveBack: () => episodeStepLeave(step),
+        }),
+      );
     });
+  });
+
+  onDestroy(() => {
+    stepTriggers.forEach((st) => st.kill());
   });
 
   const textAnim = {
@@ -121,16 +130,18 @@
       opacity: 1,
       ease: 'power3.out',
       duration: 2,
+      overwrite: 'auto',
     });
   };
 
   const reveal2 = () => {
-    gsap.to('#duration-example', { opacity: 1, duration: 0.3 });
+    gsap.to('#duration-example', { opacity: 1, duration: 0.3, overwrite: 'auto' });
     gsap.to('#episode-length', {
       translateX: 0,
       opacity: 1,
       ease: 'power3.out',
       duration: 1,
+      overwrite: 'auto',
     });
     gsap.to('#duration-example .episode-start-end', {
       translateY: 0,
@@ -138,17 +149,19 @@
       ease: 'power3.out',
       duration: 0.5,
       delay: 0.7,
+      overwrite: 'auto',
     });
   };
 
   const reveal3 = () => {
     gsap.to('#episode-example-text-3 .highlight', textAnim);
-    gsap.to('#laughs-group', { opacity: 1, duration: 0.3 });
+    gsap.to('#laughs-group', { opacity: 1, duration: 0.3, overwrite: 'auto' });
     gsap.to('#duration-example .laugh-bar', {
       translateY: 0,
       opacity: 1,
       ease: 'power3.out',
       duration: 1,
+      overwrite: 'auto',
     });
     gsap.to('#duration-example .label', {
       translateY: 0,
@@ -156,6 +169,7 @@
       ease: 'power3.out',
       duration: 1,
       delay: 0.5,
+      overwrite: 'auto',
     });
   };
 
@@ -168,6 +182,7 @@
         opacity: 0,
         ease: 'power3.out',
         duration: 1,
+        overwrite: 'auto',
       },
     );
     gsap.to('.score-wrapper', {
@@ -176,6 +191,7 @@
       ease: 'power3.out',
       duration: 1,
       delay: 0.7,
+      overwrite: 'auto',
     });
   };
 
@@ -186,12 +202,14 @@
       opacity: 1,
       ease: 'power3.out',
       duration: 2,
+      overwrite: 'auto',
     });
     gsap.to('#episode-example-container .catalog-character-on-screen', {
       translateX: 0,
       opacity: 1,
       ease: 'power3.out',
       duration: 1,
+      overwrite: 'auto',
     });
     gsap.to('#episode-example-container .catalog-character-stats', {
       translateX: 0,
@@ -199,6 +217,7 @@
       ease: 'power3.out',
       duration: 1,
       delay: 0.3,
+      overwrite: 'auto',
     });
   };
 
@@ -209,6 +228,7 @@
       opacity: 1,
       ease: 'power3.out',
       duration: 1,
+      overwrite: 'auto',
     });
   };
 
@@ -219,12 +239,14 @@
       opacity: 1,
       ease: 'power3.out',
       duration: 2,
+      overwrite: 'auto',
     });
     gsap.to('#episode-example-container .catalog-location-on-screen', {
       translateX: 0,
       opacity: 1,
       ease: 'power3.out',
       duration: 0.3,
+      overwrite: 'auto',
     });
     gsap.to('#episode-example-container .catalog-location-stats', {
       translateX: 0,
@@ -232,6 +254,7 @@
       ease: 'power3.out',
       duration: 1,
       delay: 0.3,
+      overwrite: 'auto',
     });
   };
 
@@ -279,18 +302,32 @@
       opacity: 0,
       ease: 'power3.in',
       duration: 1,
+      overwrite: 'auto',
     });
   };
 
   const undo2 = () => {
-    gsap.to('#episode-length', { translateX: -30, opacity: 0, ease: 'power3.in', duration: 0.7 });
+    gsap.to('#episode-length', {
+      translateX: -30,
+      opacity: 0,
+      ease: 'power3.in',
+      duration: 0.7,
+      overwrite: 'auto',
+    });
     gsap.to('#duration-example .episode-start-end', {
       translateY: 20,
       opacity: 0,
       ease: 'power3.in',
       duration: 0.5,
+      overwrite: 'auto',
     });
-    gsap.to('#duration-example', { opacity: 0, ease: 'power3.in', duration: 0.5, delay: 0.7 });
+    gsap.to('#duration-example', {
+      opacity: 0,
+      ease: 'power3.in',
+      duration: 0.5,
+      delay: 0.7,
+      overwrite: 'auto',
+    });
   };
 
   const undo3 = () => {
@@ -299,18 +336,32 @@
       opacity: 0,
       ease: 'power3.in',
       duration: 0.5,
+      overwrite: 'auto',
     });
     gsap.to('#duration-example .label', {
       translateY: -30,
       opacity: 0,
       ease: 'power3.in',
       duration: 0.5,
+      overwrite: 'auto',
     });
-    gsap.to('#laughs-group', { opacity: 0, ease: 'power3.in', duration: 0.3, delay: 0.5 });
+    gsap.to('#laughs-group', {
+      opacity: 0,
+      ease: 'power3.in',
+      duration: 0.3,
+      delay: 0.5,
+      overwrite: 'auto',
+    });
   };
 
   const undo4 = () => {
-    gsap.to('.score-wrapper', { translateY: -30, opacity: 0, ease: 'power3.in', duration: 0.5 });
+    gsap.to('.score-wrapper', {
+      translateY: -30,
+      opacity: 0,
+      ease: 'power3.in',
+      duration: 0.5,
+      overwrite: 'auto',
+    });
     gsap.to('#episode-length', {
       translateX: 0,
       translateY: 0,
@@ -318,6 +369,7 @@
       ease: 'power3.out',
       duration: 0.7,
       delay: 0.2,
+      overwrite: 'auto',
     });
     gsap.to('#duration-example .episode-start-end', {
       translateY: 0,
@@ -325,6 +377,7 @@
       ease: 'power3.out',
       duration: 0.5,
       delay: 0.3,
+      overwrite: 'auto',
     });
     gsap.to('#duration-example .laugh-bar', {
       translateY: 0,
@@ -332,6 +385,7 @@
       ease: 'power3.out',
       duration: 0.7,
       delay: 0.3,
+      overwrite: 'auto',
     });
     gsap.to('#duration-example .label', {
       translateY: 0,
@@ -339,6 +393,7 @@
       ease: 'power3.out',
       duration: 0.5,
       delay: 0.5,
+      overwrite: 'auto',
     });
   };
 
@@ -348,18 +403,21 @@
       opacity: 0,
       ease: 'power3.in',
       duration: 0.7,
+      overwrite: 'auto',
     });
     gsap.to('#episode-example-container .catalog-character-on-screen', {
       translateX: -30,
       opacity: 0,
       ease: 'power3.in',
       duration: 0.5,
+      overwrite: 'auto',
     });
     gsap.to('#episode-example-container .catalog-character-stats', {
       translateX: -30,
       opacity: 0,
       ease: 'power3.in',
       duration: 0.5,
+      overwrite: 'auto',
     });
   };
 
@@ -369,6 +427,7 @@
       opacity: 0,
       ease: 'power3.in',
       duration: 0.5,
+      overwrite: 'auto',
     });
   };
 
@@ -378,18 +437,21 @@
       opacity: 0,
       ease: 'power3.in',
       duration: 0.7,
+      overwrite: 'auto',
     });
     gsap.to('#episode-example-container .catalog-location-on-screen', {
       translateX: -30,
       opacity: 0,
       ease: 'power3.in',
       duration: 0.3,
+      overwrite: 'auto',
     });
     gsap.to('#episode-example-container .catalog-location-stats', {
       translateX: -30,
       opacity: 0,
       ease: 'power3.in',
       duration: 0.5,
+      overwrite: 'auto',
     });
   };
 
@@ -505,7 +567,7 @@
 
       <!-- Episode data -->
       <div
-        class="score-wrapper w-full absolute top-[120px] mt-[40px]"
+        class="score-wrapper w-full absolute top-[120px] md:top-[160px] mt-[40px]"
         style="max-height: {innerHeight - 320}px;"
       >
         <EpisodeScore

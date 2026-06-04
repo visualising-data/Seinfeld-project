@@ -42,9 +42,9 @@
 
 <div
   class="relative flex-none"
-  style="display: {innerWidth >= 1280 ? 'flex' : 'block'}; z-index: {innerWidth <= 539 ? 10 : 50};"
+  style="display: {innerWidth >= 920 ? 'flex' : 'block'}; z-index: {innerWidth <= 539 ? 10 : 50};"
 >
-  {#if innerWidth >= 1280}
+  {#if innerWidth >= 920}
     <div class="shrink-0" style="width: 480px;">
       <img src={episodeInfo.img_src} loading="lazy" alt="Episode cover" />
       <div class="small mt-1 ml-1">
@@ -61,10 +61,10 @@
         <div class="mt-5" style="margin-bottom: -16px; font-weight: 600;">season 5 episode 14</div>
       {/if}
       <div class="flex items-center gap-8 mt-2 lg:mt-0">
-        <h3 class="pt-4 pb-0 lg:pb-4" style="line-height: 1.1;">
+        <h3 class="pt-4 pb-0 lg:pb-" style="line-height: 1.1;">
           {episodeInfo.title}
         </h3>
-        {#if episodes && innerWidth >= 1280}
+        {#if episodes && innerWidth >= 920}
           <span class="quote-btn-wrap">
             <button
               class="flex justify-center items-center w-[42px] h-[42px] rounded-full {$soundIsAuth
@@ -80,7 +80,7 @@
       </div>
 
       <!-- Compact mobile metadata -->
-      {#if innerWidth < 1280 && episodeInfo}
+      {#if innerWidth < 920 && episodeInfo}
         <div class="flex flex-wrap gap-x-6 gap-y-1 mt-2 mb-3">
           <div class="flex items-center gap-1">
             <TvIcon />
@@ -97,13 +97,13 @@
       {/if}
 
       <!-- Episode details -->
-      {#if episodes || innerWidth >= 1280}
+      {#if episodes || innerWidth >= 920}
         <div
-          style="margin-left: {innerWidth >= 1280 ? 16 : 0}px; display: {innerWidth >= 1280
+          style="margin-left: {innerWidth >= 920 ? 16 : 0}px; display: {innerWidth >= 920
             ? 'flex'
             : 'block'};"
         >
-          {#if innerWidth >= 1280}
+          {#if innerWidth >= 920}
             <div
               class="desc-wrap relative mid mr-4"
               style="width: {Math.min(innerWidth - 25 - 450 - 225 - 100, 800)}px;"

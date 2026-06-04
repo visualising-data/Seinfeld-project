@@ -201,6 +201,7 @@
     // which shifts all section positions. Capture the nearest section anchor
     // before the layout changes, then scroll back to it after refresh.
     const SECTION_ANCHORS = [
+      'title-screen',
       'intro',
       'intro-calendar-container',
       'catalog-section',

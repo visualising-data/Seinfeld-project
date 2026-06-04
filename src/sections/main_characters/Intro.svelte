@@ -18,6 +18,7 @@
         start: 'top top',
         end: 'bottom top',
         pin: '#lead-chars-intro-text-container',
+        invalidateOnRefresh: true,
       },
     });
     tl1
@@ -83,15 +84,18 @@
             trigger: char,
             start: 'top bottom',
             scrub: true,
+            invalidateOnRefresh: true,
           },
         }),
       );
     });
 
-    // Smooth scroll — drive Lenis through GSAP's ticker so ScrollTrigger stays in sync
+    // Smooth scroll — drive Lenis through GSAP's ticker so ScrollTrigger stays in sync.
+    // Store the function reference so the same identity can be passed to remove().
     const lenis = new Lenis();
     lenis.on('scroll', ScrollTrigger.update);
-    gsap.ticker.add((time) => lenis.raf(time * 1000));
+    const lenisRaf = (time) => lenis.raf(time * 1000);
+    gsap.ticker.add(lenisRaf);
     gsap.ticker.lagSmoothing(0);
 
     return () => {
@@ -101,7 +105,7 @@
         t.scrollTrigger?.kill();
         t.kill();
       });
-      gsap.ticker.remove((time) => lenis.raf(time * 1000));
+      gsap.ticker.remove(lenisRaf);
       lenis.destroy();
     };
   });

@@ -293,6 +293,9 @@
       margin-right: 24px;
       font-size: 1.45rem;
     }
+    .circle {
+      margin-left: 2px;
+    }
   }
   @media screen and (min-width: 996px) {
     #timeline-line {

@@ -1,7 +1,7 @@
 <script>
   // @ts-nocheck
 
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy, tick } from 'svelte';
   import { gsap } from 'gsap/dist/gsap';
   import { range } from 'd3-array';
 
@@ -64,7 +64,7 @@
 
   let tlVideo;
   let pendingCanPlay = null;
-  onMount(() => {
+  onMount(async () => {
     const laughIconReveal = { opacity: 0, yPercent: 50, duration: 1, ease: 'power3.out' };
 
     tlVideo = gsap.timeline({
@@ -80,8 +80,11 @@
       },
     });
 
-    // Defer GSAP setup so the DOM has been measured
-    setTimeout(() => {
+    // Wait for Svelte to finish rendering, then wait one rAF for the browser to
+    // lay out the grid, so scrollWidth/clientWidth are correct before we bake
+    // maxTranslate into the timeline.
+    await tick();
+    requestAnimationFrame(() => {
       // Distance the inner content needs to travel so that the last column
       // aligns with the right edge of the container at the end of the video.
       const maxTranslate = Math.max(0, gridScrollInner.scrollWidth - gridContainer.clientWidth);
@@ -109,7 +112,7 @@
         .from('.laugh-icon-1220', laughIconReveal, 1220 - videoStartTime)
         .from('.laugh-icon-1225', laughIconReveal, 1225 - videoStartTime)
         .from('.laugh-icon-1230', laughIconReveal, 1230 - videoStartTime);
-    }, 3000);
+    });
 
     const video = document.getElementById('demo-video');
 
@@ -153,6 +156,10 @@
         video.currentTime = 0;
         tlVideo.pause();
       });
+  });
+
+  onDestroy(() => {
+    tlVideo?.kill();
   });
 </script>
 

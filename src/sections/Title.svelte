@@ -219,6 +219,7 @@
             start: 'top center',
             end: 'bottom bottom',
             scrub: 1,
+            invalidateOnRefresh: true,
           },
         })
         // t=0–1: implicit hold (content fully visible)
