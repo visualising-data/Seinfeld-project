@@ -26,7 +26,7 @@
   let vizWidth = $derived(
     innerWidth > 1000
       ? innerWidth - statsWidth - extraPadding
-      : Math.max(innerWidth - extraPadding, 1000),
+      : Math.max(innerWidth * 2, 600),
   );
   let scenesWidth = $derived(vizWidth - labelsWidth);
 

@@ -30,6 +30,7 @@
   } = $props();
 
   let innerWidth = $state(1200);
+  let statsOpen = $state(false);
 
   let scrollEl = $state(null);
   let lastSyncedLeft = -1;
@@ -136,7 +137,25 @@
     return hoveredCharactersArray;
   });
 
-  const vizHeight = $derived(charactersOnScreen.length * 48 + 32);
+  const rowHeight = $derived(innerWidth >= 1280 ? 48 : 32);
+  const vizHeight = $derived(charactersOnScreen.length * rowHeight + 32);
+
+  const mobileStats = $derived.by(() => {
+    const totalLaughs = charactersCausedLaughs.reduce((acc, d) => acc + d.causedLaughs.length, 0);
+    return charactersOnScreen.map((char) => {
+      const laugh = charactersCausedLaughs.find((c) => c.id === char.id);
+      return {
+        id: char.id,
+        label: char.label,
+        color: char.color,
+        appearedPct:
+          char.timesOnScreen?.length > 0
+            ? Math.min(99, Math.round(((char.timesOnScreen.length * 5) / episodeDuration) * 100))
+            : null,
+        laughPct: laugh && totalLaughs > 0 ? Math.round((laugh.causedLaughs.length / totalLaughs) * 100) : null,
+      };
+    });
+  });
 
   const yScale = $derived(
     scaleBand()
@@ -163,13 +182,15 @@
     {hoveredCharacters}
   />
   <div
-    bind:this={scrollEl}
-    onscroll={handleScrollEl}
-    class="flex-col flex-shrink-0"
-    style="max-width: {innerWidth >= 1280
-      ? width
-      : innerWidth - 63}px; overflow: scroll; margin-top: -18px;"
+    class="relative flex-shrink-0"
+    style="max-width: {innerWidth >= 1280 ? width : innerWidth - 63}px;"
   >
+    <div
+      bind:this={scrollEl}
+      onscroll={handleScrollEl}
+      class="flex-col"
+      style="overflow: scroll; margin-top: -18px;"
+    >
     <svg height={18}>
       <g transform="translate(0, 9)">
         <text class="small accent" alignment-baseline="middle">Scene number</text>
@@ -213,6 +234,10 @@
         <line x1={hoveredPosition} y1={0} x2={hoveredPosition} y2={vizHeight} stroke="#12020A" />
       {/if}
     </svg>
+    </div>
+    {#if innerWidth < 1280}
+      <div class="scroll-fade"></div>
+    {/if}
   </div>
   {#if innerWidth >= 1280}
     <CharactersStats
@@ -229,3 +254,73 @@
     />
   {/if}
 </div>
+
+{#if innerWidth < 1280}
+  <div class="mobile-stats">
+    <button class="stats-toggle" onclick={() => (statsOpen = !statsOpen)}>
+      <span class="small accent">Character stats</span>
+      <span class="arrow" style="transform: rotate({statsOpen ? 180 : 0}deg);">▾</span>
+    </button>
+    {#if statsOpen}
+      <div class="stats-grid">
+        <div></div>
+        <div class="small accent" style="text-align: right;">In ep.</div>
+        <div class="small accent" style="text-align: right;">Laughs</div>
+        {#each mobileStats as s}
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <div
+              style="width: 10px; height: 10px; border-radius: 50%; background: {s.color}; flex-shrink: 0;"
+            ></div>
+            <span class="small">{s.label}</span>
+          </div>
+          <div class="small" style="text-align: right; color: {s.color}; font-weight: 600;">
+            {s.appearedPct != null ? s.appearedPct + '%' : '—'}
+          </div>
+          <div class="small" style="text-align: right; color: {s.color}; font-weight: 600;">
+            {s.laughPct != null ? s.laughPct + '%' : '—'}
+          </div>
+        {/each}
+      </div>
+    {/if}
+  </div>
+{/if}
+
+<style>
+  .mobile-stats {
+    border-top: 1px solid #eeeced;
+    margin-top: 8px;
+    padding: 8px 16px 12px;
+  }
+  .stats-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+  }
+  .arrow {
+    display: inline-block;
+    transition: transform 150ms ease;
+    font-size: 16px;
+    color: #928d90;
+  }
+  .stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 60px 60px;
+    gap: 6px 8px;
+    align-items: center;
+    margin-top: 8px;
+  }
+  .scroll-fade {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 48px;
+    background: linear-gradient(to right, transparent, #f9f5f7);
+    pointer-events: none;
+  }
+</style>

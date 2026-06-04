@@ -14,7 +14,7 @@
 			class="mask absolute w-full"
 			style="top: {yScale(location.id) +
 				yScale.bandwidth() / 2 -
-				16}px; right: 16px; opacity: {(!isHover && !isPlaying) ||
+				(innerWidth >= 1280 ? 16 : 12)}px; right: 16px; opacity: {(!isHover && !isPlaying) ||
 			((isHover || isPlaying) && hoveredLocations.includes(location.id))
 				? 1
 				: 0.2}"
@@ -24,7 +24,7 @@
 					<div class="small flex items-center justify-end pr-2">{location.label}</div>
 				{/if}
 				<div
-					class="image h-8 w-8 rounded-full"
+					class="image {innerWidth >= 1280 ? 'h-8 w-8' : 'h-6 w-6'} rounded-full"
 					style="background-image: url({getLocationIconPath(location.id)});"
 				></div>
 			</div>

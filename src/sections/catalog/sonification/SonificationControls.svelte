@@ -66,9 +66,7 @@
     </div>
     <div
       class="small pointer-events-none"
-      style="margin-top: {innerWidth >= 1280 ? 0 : 16}px; top: {innerWidth >= 1280
-        ? 0
-        : -67}px; line-height: 24px; color: {$soundIsAuth ? '#E71D80' : '#BEBABC'};"
+      style="line-height: 24px; color: {$soundIsAuth ? '#E71D80' : '#BEBABC'};"
     >
       Listen to this episode's data
     </div>

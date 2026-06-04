@@ -1,4 +1,5 @@
 <script>
+  // @ts-nocheck
   import { onMount } from 'svelte';
   import * as Tone from 'tone';
 
@@ -212,32 +213,57 @@
 <svelte:window bind:innerWidth />
 
 <div
-  class="mb-4"
+  class="mb-4 flex flex-col"
   style="margin-left: {labelsWidth}px;"
   role="complementary"
   onmouseenter={handleMouseEnter}
   onmouseleave={handleMouseLeave}
 >
-  <div bind:this={scrollEl} onscroll={handleScrollEl} style="max-width: {innerWidth - 63}px; overflow: scroll;">
-    <SonificationTrack {scenesWidth} {scenes} {xScale} {playingScene} {handleClickOnScene} />
+  <div class="relative flex-shrink-0" style="max-width: {innerWidth - 63}px; order: {innerWidth < 1280 ? 2 : 0}">
+    <div bind:this={scrollEl} onscroll={handleScrollEl} style="overflow: scroll;">
+      <SonificationTrack {scenesWidth} {scenes} {xScale} {playingScene} {handleClickOnScene} />
+    </div>
+    {#if innerWidth < 1280}
+      <div class="scroll-fade"></div>
+    {/if}
   </div>
-  <SonificationControls
-    {scenesWidth}
-    {isPlaying}
-    {playingScene}
-    numScenes={scenes.length}
-    {play}
-    {playNext}
-    {playPrev}
-    {stop}
-  />
+  <div style="order: {innerWidth < 1280 ? 1 : 0}">
+    <SonificationControls
+      {scenesWidth}
+      {isPlaying}
+      {playingScene}
+      numScenes={scenes.length}
+      {play}
+      {playNext}
+      {playPrev}
+      {stop}
+    />
+  </div>
 
   {#if showSoundDisabledPopup && !popupWasShown}
-    <div
-      class="absolute z-50"
-      style="top: {hoveredPosition.y - 30}px; left: {hoveredPosition.x + 16}px;"
-    >
-      <SoundIsDisabledPopup bind:showSoundDisabledPopup />
-    </div>
+    {#if innerWidth < 1280}
+      <div class="fixed inset-0 z-50 flex items-center justify-center px-4">
+        <SoundIsDisabledPopup bind:showSoundDisabledPopup />
+      </div>
+    {:else}
+      <div
+        class="absolute z-50"
+        style="top: {hoveredPosition.y - 30}px; left: {hoveredPosition.x + 16}px;"
+      >
+        <SoundIsDisabledPopup bind:showSoundDisabledPopup />
+      </div>
+    {/if}
   {/if}
 </div>
+
+<style>
+  .scroll-fade {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 48px;
+    background: linear-gradient(to right, transparent, #f9f5f7);
+    pointer-events: none;
+  }
+</style>

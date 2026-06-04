@@ -30,7 +30,7 @@
   {height}
   style="transform: translateX({-$sharedScrollLeft}px);"
 >
-  <g transform="translate(35, 20)">
+  <g transform="translate({innerWidth >= 1280 ? 35 : 17}, {innerWidth >= 1280 ? 20 : 12})">
     <text class="small accent" alignment-baseline="middle">Episode time</text>
   </g>
   <g transform="translate({labelsWidth}, 0)" stroke="#928D90">
@@ -60,7 +60,7 @@
         <text
           class="number"
           x={xScale(min * 60)}
-          y={height / 2 + 1}
+          y={innerWidth >= 1280 ? height / 2 + 1 : height / 2 + 6}
           text-anchor="middle"
           dominant-baseline="middle"
           fill="#928D90"

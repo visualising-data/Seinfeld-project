@@ -15,7 +15,7 @@
 
 <div
   class="px-8 py-8 rounded-2xl bg-white text-black shadow-lg"
-  style="min-width: 400px;"
+  style="min-width: min(400px, calc(100vw - 32px));"
   in:fly={{ duration: 500, y: 30 }}
   out:fly={{ duration: 500, y: 30 }}
 >

@@ -61,10 +61,10 @@
         <div class="mt-5" style="margin-bottom: -16px; font-weight: 600;">season 5 episode 14</div>
       {/if}
       <div class="flex items-center gap-8 mt-2 lg:mt-0">
-        <h3 class="pt-4" style="line-height: 1.1;">
+        <h3 class="pt-4 pb-0 lg:pb-4" style="line-height: 1.1;">
           {episodeInfo.title}
         </h3>
-        {#if episodes}
+        {#if episodes && innerWidth >= 1280}
           <span class="quote-btn-wrap">
             <button
               class="flex justify-center items-center w-[42px] h-[42px] rounded-full {$soundIsAuth
@@ -79,20 +79,29 @@
         {/if}
       </div>
 
-      <!-- Episode details -->
-      {#if innerWidth < 1280}
-        <div style="max-width: 450px; width: 100%;">
-          <img class="mt-0" src={episodeInfo.img_src} alt="Episode cover" />
-          <div class="small mt-1 ml-1">
-            Photo source: <a href="https://www.imdb.com/title/tt0098904/" target="_blank">IMDb</a>
+      <!-- Compact mobile metadata -->
+      {#if innerWidth < 1280 && episodeInfo}
+        <div class="flex flex-wrap gap-x-6 gap-y-1 mt-2 mb-3">
+          <div class="flex items-center gap-1">
+            <TvIcon />
+            <span class="small" style="position: relative; top: 1px;">{episodeInfo.date_aired}</span
+            >
+          </div>
+          <div class="flex items-center gap-1">
+            <StarIcon />
+            <span class="small" style="position: relative; top: 1px;"
+              >{episodeInfo.IMDB_rating.replace(',', '.')}/10</span
+            >
           </div>
         </div>
       {/if}
+
+      <!-- Episode details -->
       {#if episodes || innerWidth >= 1280}
         <div
-          style="margin-left: {innerWidth >= 1280 ? 16 : 0}px; margin-bottom: {innerWidth >= 1280
-            ? 0
-            : 42}px; display: {innerWidth >= 1280 ? 'flex' : 'block'};"
+          style="margin-left: {innerWidth >= 1280 ? 16 : 0}px; display: {innerWidth >= 1280
+            ? 'flex'
+            : 'block'};"
         >
           {#if innerWidth >= 1280}
             <div
@@ -109,27 +118,23 @@
                 {episodeInfo.description}
               </div>
             </div>
-          {:else}
-            <div class="mid mt-3">
-              {episodeInfo.description}
+            <div class="mid shrink-0 mt-3 lg:mt-0">
+              <div class="mb-2 flex items-center">
+                <TvIcon />
+                <span class="relative" style="top: 2px;">
+                  <span class="mx-1 font-semibold">First aired:</span>
+                  <span>{episodeInfo.date_aired}</span>
+                </span>
+              </div>
+              <div class="flex items-center">
+                <StarIcon />
+                <span class="relative" style="top: 2px;">
+                  <span class="mx-1 font-semibold">IMDb rating:</span>
+                  <span>{episodeInfo.IMDB_rating.replace(',', '.')}/10</span>
+                </span>
+              </div>
             </div>
           {/if}
-          <div class="mid shrink-0 mt-3 lg:mt-0">
-            <div class="mb-2 flex items-center">
-              <TvIcon />
-              <span class="relative" style="top: 2px;">
-                <span class="mx-1 font-semibold">First aired:</span>
-                <span>{episodeInfo.date_aired}</span>
-              </span>
-            </div>
-            <div class="flex items-center">
-              <StarIcon />
-              <span class="relative" style="top: 2px;">
-                <span class="mx-1 font-semibold">IMDb rating:</span>
-                <span>{episodeInfo.IMDB_rating.replace(',', '.')}/10</span>
-              </span>
-            </div>
-          </div>
         </div>
       {/if}
     </div>

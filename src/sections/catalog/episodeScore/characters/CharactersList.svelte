@@ -20,7 +20,7 @@
 			class="mask absolute w-full"
 			style="top: {yScale(char.id) +
 				yScale.bandwidth() / 2 -
-				16}px; right: 16px; opacity: {!isHighlight ||
+				(innerWidth >= 1280 ? 16 : 12)}px; right: 16px; opacity: {!isHighlight ||
 			(isHighlight && hoveredCharacters.includes(char.id))
 				? 1
 				: 0.2}"
@@ -30,7 +30,7 @@
 					<div class="small flex items-center justify-end pr-2">{char.label}</div>
 				{/if}
 				<div
-					class="image h-8 w-8 rounded-full"
+					class="image {innerWidth >= 1280 ? 'h-8 w-8' : 'h-6 w-6'} rounded-full"
 					style="background-image: url({getCharacterImagePath(char.id)});"
 				></div>
 			</div>

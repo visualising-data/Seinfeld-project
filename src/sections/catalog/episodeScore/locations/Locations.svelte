@@ -83,7 +83,21 @@
     return hoveredLocationsArray;
   });
 
-  const vizHeight = $derived(locationsOnScreen.length * 48 + 32);
+  const rowHeight = $derived(innerWidth >= 1280 ? 48 : 32);
+  const vizHeight = $derived(locationsOnScreen.length * rowHeight + 32);
+
+  const mobileStats = $derived.by(() => {
+    return locationsOnScreen.map((loc) => ({
+      id: loc.id,
+      label: loc.label,
+      appearedPct:
+        loc.timesOnScreen?.length > 0
+          ? Math.min(99, Math.round(((loc.timesOnScreen.length * 5) / episodeDuration) * 100))
+          : null,
+    }));
+  });
+
+  let statsOpen = $state(false);
 
   const yScale = $derived(
     scaleBand()
@@ -113,11 +127,15 @@
     {isPlaying}
   />
   <div
-    bind:this={scrollEl}
-    onscroll={handleScrollEl}
-    class="flex-col flex-shrink-0"
-    style="max-width: {innerWidth >= 1280 ? width : innerWidth - 63}px; overflow: scroll;"
+    class="relative flex-shrink-0"
+    style="max-width: {innerWidth >= 1280 ? width : innerWidth - 63}px;"
   >
+    <div
+      bind:this={scrollEl}
+      onscroll={handleScrollEl}
+      class="flex-col"
+      style="overflow: scroll;"
+    >
     <svg {width} height={vizHeight}>
       <Scenes
         {scenes}
@@ -152,6 +170,10 @@
         </g>
       </g>
     </svg>
+    </div>
+    {#if innerWidth < 1280}
+      <div class="scroll-fade"></div>
+    {/if}
   </div>
   {#if statsWidth > 0}
     <LocationsStats
@@ -166,3 +188,64 @@
     />
   {/if}
 </div>
+
+{#if innerWidth < 1280}
+  <div class="mobile-stats">
+    <button class="stats-toggle" onclick={() => (statsOpen = !statsOpen)}>
+      <span class="small accent">Location stats</span>
+      <span class="arrow" style="transform: rotate({statsOpen ? 180 : 0}deg);">▾</span>
+    </button>
+    {#if statsOpen}
+      <div class="stats-grid">
+        <div></div>
+        <div class="small accent" style="text-align: right;">In ep.</div>
+        {#each mobileStats as s}
+          <div class="small">{s.label}</div>
+          <div class="small" style="text-align: right; font-weight: 600;">
+            {s.appearedPct != null ? s.appearedPct + '%' : '—'}
+          </div>
+        {/each}
+      </div>
+    {/if}
+  </div>
+{/if}
+
+<style>
+  .mobile-stats {
+    border-top: 1px solid #eeeced;
+    margin-top: 8px;
+    padding: 8px 16px 12px;
+  }
+  .stats-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+  }
+  .arrow {
+    display: inline-block;
+    transition: transform 150ms ease;
+    font-size: 16px;
+    color: #928d90;
+  }
+  .stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 60px;
+    gap: 6px 8px;
+    align-items: center;
+    margin-top: 8px;
+  }
+  .scroll-fade {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 48px;
+    background: linear-gradient(to right, transparent, #f9f5f7);
+    pointer-events: none;
+  }
+</style>
