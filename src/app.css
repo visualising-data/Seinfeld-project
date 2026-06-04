@@ -101,7 +101,7 @@
     width: 100%;
     max-width: 1536px !important;
     margin: 0 auto;
-    padding: 0 2rem;
+    padding: 0 1rem;
   }
   .mask {
     overflow: hidden;
@@ -210,6 +210,9 @@
     }
     h5 {
       font-size: 1.5625rem;
+    }
+    .container {
+      padding: 0 2rem;
     }
   }
   @media screen and (min-width: 1024px) {
