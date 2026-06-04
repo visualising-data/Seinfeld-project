@@ -482,9 +482,14 @@
                   stroke-width={innerWidth > 793 ? 1.5 : 0.5}
                 />
               {/each}
-              <text class="mid label" x={timeScale(+laughData[0].eventTimeSeconds)} y={-20}
-                >Each bar represents a block of 5s with audience laughter.</text
-              >
+              <text class="mid label" x={timeScale(+laughData[0].eventTimeSeconds)} y={-20}>
+                {#if innerWidth >= 1280}
+                  Each bar represents a block of 5s with audience laughter.
+                {:else}
+                  <tspan x={4} y={-28}>Each bar represents a block of 5s</tspan>
+                  <tspan x={4} y={-10}> with audience laughter. </tspan>
+                {/if}
+              </text>
               <line
                 class="label"
                 x1={timeScale(+laughData[0].eventTimeSeconds) + laughWidth / 2}
@@ -500,7 +505,7 @@
 
       <!-- Episode data -->
       <div
-        class="score-wrapper w-full absolute top-[280px] mt-[40px]"
+        class="score-wrapper w-full absolute top-[120px] mt-[40px]"
         style="max-height: {innerHeight - 320}px;"
       >
         <EpisodeScore
