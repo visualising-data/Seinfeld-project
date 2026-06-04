@@ -283,7 +283,6 @@
     font-weight: 600;
   }
   .circle {
-    margin-left: 2px;
     width: 24px;
     min-width: 24px;
     height: 24px;
