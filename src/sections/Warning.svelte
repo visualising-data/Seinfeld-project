@@ -11,6 +11,8 @@
 
   onMount(() => {
     ctx = gsap.context(() => {
+      const isMobile = window.innerWidth < 768;
+
       // Single timeline covers entry (0→0.5) and exit (0.5→1)
       // Trigger spans the full wrapper: top bottom → bottom top
       const tl = gsap.timeline({ defaults: { ease: 'none' } });
@@ -21,7 +23,7 @@
         .from('.warning-label', { opacity: 0, y: 30, duration: 0.2 }, 0)
         // Exit: coffee exits right, couch exits left
         .to('#warning-coffee-bg', { xPercent: 110 }, 0.5)
-        .to('#warning-couch-bg', { xPercent: -110 }, 0.5)
+        .to('#warning-couch-bg', { xPercent: isMobile ? -350 : -110, duration: isMobile ? 0.3 : 0.5 }, 0.5)
         // Text fades out after images are gone
         .to('.warning-text-item', { opacity: 0, duration: 0.1 }, 0.8)
         // Background reveals #F9F5F7
@@ -83,7 +85,7 @@
 
     <!-- Top: 2 column labels -->
     <div
-      class="warning-text-item relative z-10 container grid grid-cols-2 gap-8 mt-12"
+      class="warning-text-item relative z-10 container grid grid-cols-1 md:grid-cols-2 gap-8 mt-12"
     >
       <div class="warning-label">Grab a coffee</div>
       <div class="warning-label">Take a seat</div>

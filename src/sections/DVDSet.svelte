@@ -34,7 +34,7 @@
 
 <div id="dvd-set" class="h-screen flex items-center" style="background: rgba(231, 29, 128, 0.05)">
   <div class="container">
-    <div class="grid grid-cols-2 gap-8 items-center">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
       <div>
         The data for this project was <span class="highlight-reverse">manually recorded</span> through
         watching the DVD boxset of every one of the 176 written episodes (ignoring 4 specials/highlight

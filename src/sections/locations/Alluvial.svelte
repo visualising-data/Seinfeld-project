@@ -362,8 +362,10 @@
               {@const labelCX = icon.x + iconSize / 2}
               {@const labelY = icon.y + iconSize + 14}
               {@const rectW = icon.label.length * 7}
+              {@const textX = innerWidth < 640 ? icon.x : labelCX}
+              {@const textAnchor = innerWidth < 640 ? 'start' : 'middle'}
               <rect
-                x={labelCX - rectW / 2}
+                x={innerWidth < 640 ? icon.x : labelCX - rectW / 2}
                 y={labelY - 12}
                 width={rectW}
                 height={18}
@@ -375,9 +377,9 @@
                 style="transition: opacity 0.3s;"
               />
               <text
-                x={labelCX}
+                x={textX}
                 y={labelY}
-                text-anchor="middle"
+                text-anchor={textAnchor}
                 class="text-xs pointer-events-none"
                 opacity={hoveredLocation === icon.id ? 1 : 0}
                 style="transition: opacity 0.3s;"
@@ -412,22 +414,25 @@
               />
               {@const labelCX = icon.x + iconSize / 2}
               {@const labelY = icon.y + iconSize + 14}
-              {@const rectW = icon.label.length * 7 + 16}
+              {@const rectW = icon.label.length * 7}
+              {@const textX = innerWidth < 640 ? icon.x + iconSize : labelCX}
+              {@const textAnchor = innerWidth < 640 ? 'end' : 'middle'}
               <rect
-                x={labelCX - rectW / 2}
+                x={innerWidth < 640 ? icon.x + iconSize - rectW : labelCX - rectW / 2}
                 y={labelY - 12}
                 width={rectW}
                 height={18}
                 rx={3}
                 fill="#F9F5F7"
+                fill-opacity="0.75"
                 class="pointer-events-none"
                 opacity={hoveredLocation === icon.id ? 1 : 0}
                 style="transition: opacity 0.3s;"
               />
               <text
-                x={labelCX}
+                x={textX}
                 y={labelY}
-                text-anchor="middle"
+                text-anchor={textAnchor}
                 class="text-xs pointer-events-none"
                 opacity={hoveredLocation === icon.id ? 1 : 0}
                 style="transition: opacity 0.3s;"

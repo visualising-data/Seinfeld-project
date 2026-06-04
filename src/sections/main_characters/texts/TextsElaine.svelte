@@ -65,7 +65,7 @@
     share only <span class="highlight">rose gradually</span>, her laughter rates jumped from 15% in
     Season 1 to a peak of 25% by Season 8.
     <div bind:clientWidth={sparklinesContainerWidth} style="height: 0; overflow: hidden;"></div>
-    <div class="flex gap-4 mt-4">
+    <div class="flex flex-col md:flex-row gap-8 md:gap-4 mt-4">
       <div class="">
         <div class="small mb-2">Average laughter share per season</div>
         <Sparkline

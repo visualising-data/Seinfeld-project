@@ -232,7 +232,7 @@
             <div class="flex items-center gap-2">
               {#if tile.icon != null}
                 <div
-                  class="character grow-0 shrink-0 rounded-full bg-contain bg-center border-2 border-black w-12 h-12 bg-no-repeat"
+                  class="character grow-0 shrink-0 rounded-full bg-contain bg-center border-2 border-black w-8 h-8 md:w-12 md:h-12 bg-no-repeat"
                   style="background-image: url('{(tile._source || section) === 'locations'
                     ? getLocationIconPath(tile.name)
                     : getCharacterImagePath(tile.icon)}');"

@@ -1,15 +1,20 @@
 <script>
   import { onMount } from 'svelte';
   import { gsap } from 'gsap/dist/gsap';
+  import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
   import { locations } from '$lib/data/locations';
   import { getLocationIconPath } from '../../utils/getLocationIconPath';
-  import { forceSimulation, forceCollide, forceManyBody, forceX, forceY } from 'd3-force';
 
-  let locationPositions = $state(/** @type {{ top: number; left: number }[]} */ ([]));
-  let iconsContainer = /** @type {HTMLDivElement} */ (/** @type {unknown} */ (null));
+  // 11 locations → 3 rows: 4 + 4 + 3
+  const mobileRows = [
+    locations.slice(0, 4),
+    locations.slice(4, 8),
+    locations.slice(8),
+  ];
+  const mobileRowSpeeds = [0.5, 1.5, 3];
 
   onMount(() => {
-    gsap.set('#locations_screen_3 .supporting-char', { translateY: 100, opacity: 0 });
+    gsap.set('#locations_screen_3 .location-char', { translateY: 100, opacity: 0 });
 
     const tl3 = gsap.timeline({
       scrollTrigger: {
@@ -17,10 +22,10 @@
         start: 'top center',
       },
       onComplete: () => {
-        gsap.utils.toArray('#locations_screen_3 .supporting-char').forEach((el) => {
+        gsap.utils.toArray('#locations_screen_3 .location-char').forEach((el) => {
           gsap.to(el, {
-            y: -(Math.random() * 3 + 3), // 3–6px upward
-            duration: 2.5 + Math.random() * 1.5, // 2.5–4s per half-cycle
+            y: -(Math.random() * 3 + 3),
+            duration: 2.5 + Math.random() * 1.5,
             ease: 'sine.inOut',
             yoyo: true,
             repeat: -1,
@@ -38,18 +43,7 @@
         stagger: { each: 0.3 },
       })
       .to(
-        '#locations_screen_3 .highlight',
-        {
-          webkitTextFillColor: 'transparent',
-          backgroundPosition: '200% center',
-          duration: 2,
-          delay: 1,
-          ease: 'power3.out',
-        },
-        '<-0.5',
-      )
-      .to(
-        '#locations_screen_3 .supporting-char',
+        '#locations_screen_3 .location-char',
         {
           translateY: 0,
           opacity: 1,
@@ -60,162 +54,60 @@
         '<-0.5',
       );
 
-    function computePositions() {
-      const screenW = iconsContainer.clientWidth;
-      const screenH = iconsContainer.clientHeight;
-      const border = 30;
-      const xMin = border + 37.5;
-      const xMax = screenW - border - 37.5;
-      const yMin = border + 37.5;
-      const yMax = screenH - border - 67.5;
+    const mm = gsap.matchMedia();
 
-      const textCol = iconsContainer.querySelector('.locations-text-col');
-      const screenRect = iconsContainer.getBoundingClientRect();
-      const textRect = textCol.getBoundingClientRect();
-      const textZone = {
-        x1: textRect.left - screenRect.left - border,
-        x2: textRect.right - screenRect.left + border,
-        y1: textRect.top - screenRect.top - border,
-        y2: textRect.bottom - screenRect.top + border,
-      };
-
-      // Disc centred in the available area (right of text zone)
-      const cx = (textZone.x2 + screenW) / 2;
-      const cy = screenH / 2;
-      const discRadius = Math.min((screenW - textZone.x2) * 0.45, screenH * 0.38);
-
-      // Measure each element's real rendered dimensions for accurate collision
-      const iconEls = Array.from(iconsContainer.querySelectorAll('.supporting-char'));
-
-      // Seed nodes uniformly within the disc using polar coordinates
-      const nodes = locations.map((_, i) => {
-        const el = /** @type {HTMLElement | undefined} */ (iconEls[i]);
-        const w = el ? el.offsetWidth : 75;
-        const h = el ? el.offsetHeight : 100;
-        const angle = Math.random() * 2 * Math.PI;
-        const r = Math.sqrt(Math.random()) * discRadius;
-        return {
-          x: Math.max(xMin, Math.min(cx + r * Math.cos(angle), xMax)),
-          y: Math.max(yMin, Math.min(cy + r * Math.sin(angle), yMax)),
-          collisionR: Math.max(w, h) / 2 + 20,
-          w,
-          h,
-        };
+    mm.add('(max-width: 767px)', () => {
+      ScrollTrigger.create({
+        trigger: '#locations_screen_3',
+        start: 'top top',
+        end: 'bottom top',
+        pin: '#locations-3-text',
       });
 
-      // Custom force: push nodes back inside the disc if they drift outside
-      function forceBoundCircle(centerX, centerY, r) {
-        /** @type {any[]} */ let simNodes;
-        /** @param {number} alpha */
-        function force(alpha) {
-          for (const node of simNodes) {
-            const dx = node.x - centerX;
-            const dy = node.y - centerY;
-            const d = Math.sqrt(dx * dx + dy * dy);
-            if (d > r) {
-              const k = ((d - r) / d) * alpha * 2;
-              node.vx -= dx * k;
-              node.vy -= dy * k;
-            }
-          }
-        }
-        force.initialize = (/** @type {any[]} */ n) => {
-          simNodes = n;
-        };
-        return force;
-      }
-
-      forceSimulation(nodes)
-        .force(
-          'collide',
-          forceCollide(/** @type {any} */ ((d) => d.collisionR))
-            .strength(1)
-            .iterations(4),
-        )
-        .force('charge', forceManyBody().strength(-5))
-        .force('x', forceX(cx).strength(0.08))
-        .force('y', forceY(cy).strength(0.08))
-        .force('bound', forceBoundCircle(cx, cy, discRadius))
-        .stop()
-        .tick(400);
-
-      locationPositions = nodes.map((node) => ({
-        top: Math.max(border, Math.min(node.y - node.h / 2, screenH - node.h - border)),
-        left: Math.max(border, Math.min(node.x - node.w / 2, screenW - node.w - border)),
-      }));
-    }
-
-    computePositions();
-
-    let rafId = 0;
-    const observer = new ResizeObserver(() => {
-      cancelAnimationFrame(rafId);
-      rafId = requestAnimationFrame(computePositions);
+      /** @type {HTMLElement[]} */
+      const mobileRowEls = gsap.utils.toArray('.location-mobile-row');
+      mobileRowEls.forEach((el) => {
+        gsap.to(el, {
+          yPercent: Number(el.dataset.speed) * 50,
+          ease: 'none',
+          scrollTrigger: { trigger: el, start: 'top bottom', scrub: true },
+        });
+      });
     });
-    observer.observe(iconsContainer);
+
+    mm.add('(min-width: 768px)', () => {
+      ScrollTrigger.create({
+        trigger: '#locations_screen_3',
+        start: 'top top',
+        end: 'bottom top',
+        pin: '#locations-3-text',
+      });
+
+      /** @type {HTMLElement[]} */
+      const parallaxEls = gsap.utils.toArray('.location-desktop-parallax');
+      parallaxEls.forEach((el) => {
+        gsap.to(el, {
+          yPercent: Number(el.dataset.speed) * 50,
+          ease: 'none',
+          scrollTrigger: { trigger: el, start: 'top bottom', scrub: true },
+        });
+      });
+    });
 
     return () => {
-      observer.disconnect();
-      cancelAnimationFrame(rafId);
+      tl3.scrollTrigger?.kill();
+      tl3.kill();
+      mm.revert();
     };
   });
-
-  const handleIconEnter = (/** @type {number} */ index) => {
-    const wrappers = Array.from(iconsContainer.querySelectorAll('.icon-wrapper'));
-    const chars = Array.from(iconsContainer.querySelectorAll('.supporting-char'));
-
-    // Scale up the hovered icon
-    gsap.to(chars[index], { scale: 1.3, duration: 0.3, ease: 'back.out(1.7)' });
-
-    // Measure the hovered icon's centre in viewport coordinates
-    const hoveredRect = wrappers[index].getBoundingClientRect();
-    const hoveredCx = hoveredRect.left + hoveredRect.width / 2;
-    const hoveredCy = hoveredRect.top + hoveredRect.height / 2;
-
-    // Push nearby wrappers away
-    wrappers.forEach((wrapper, i) => {
-      if (i === index) return;
-      const rect = wrapper.getBoundingClientRect();
-      const dx = rect.left + rect.width / 2 - hoveredCx;
-      const dy = rect.top + rect.height / 2 - hoveredCy;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      const maxDist = 220;
-      if (dist < maxDist) {
-        const force = Math.pow((maxDist - dist) / maxDist, 1.5) * 35;
-        gsap.to(wrapper, {
-          x: (dx / dist) * force,
-          y: (dy / dist) * force,
-          duration: 0.5,
-          ease: 'power2.out',
-        });
-      }
-    });
-  };
-
-  const handleIconLeave = (/** @type {number} */ index) => {
-    const wrappers = Array.from(iconsContainer.querySelectorAll('.icon-wrapper'));
-    const chars = Array.from(iconsContainer.querySelectorAll('.supporting-char'));
-
-    // Scale the hovered icon back
-    gsap.to(chars[index], { scale: 1, duration: 0.4, ease: 'power2.inOut' });
-
-    // Spring all wrappers back to their original positions
-    wrappers.forEach((wrapper, i) => {
-      if (i === index) return;
-      gsap.to(wrapper, { x: 0, y: 0, duration: 0.6, ease: 'elastic.out(1, 0.5)' });
-    });
-  };
 </script>
 
-<div
-  id="locations_screen_3"
-  class="md:h-[100dvh] w-screen py-60 md:py-0 relative"
-  bind:this={iconsContainer}
->
+<div id="locations_screen_3" class="w-screen relative">
   <div class="container">
     <div class="grid grid-cols-12 md:gap-20">
       <div
-        class="locations-text-col col-span-12 md:col-span-7 md:h-[100dvh] md:flex md:flex-col md:justify-center"
+        id="locations-3-text"
+        class="locations-text-col col-span-12 md:col-span-7 h-[100dvh] flex flex-col justify-center"
       >
         <p>
           As with the task of classifying characters, there were challenges with establishing a
@@ -239,9 +131,20 @@
           <span class="location">other location</span> grouping was added to classify the many other unique
           types of locations used infrequently, like hospitals or courtrooms.
         </p>
-        <div class="md:hidden flex flex-wrap justify-center gap-4 mt-10">
-          {#each locations as location}
-            <div class="flex flex-col items-center">
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile locations — 3 rows, parallax per row -->
+  <div class="absolute block md:hidden w-full" style="height: 800px; top: 100dvh;">
+    <div class="h-full flex flex-col justify-center gap-20 px-6">
+      {#each mobileRows as row, rowIndex}
+        <div class="location-mobile-row flex justify-around" data-speed={mobileRowSpeeds[rowIndex]}>
+          {#each row as location, i}
+            <div
+              class="location-char flex flex-col items-center"
+              style="position: relative; top: {i % 2 === 0 ? '0' : '30px'};"
+            >
               <div
                 class="character rounded-full bg-contain bg-center"
                 style="background-color: #12020A; background-image: url('{getLocationIconPath(
@@ -252,35 +155,47 @@
             </div>
           {/each}
         </div>
-      </div>
-      <div class="col-span-12 md:col-span-4">
-        {#each locations as location, i}
-          <div
-            class="icon-wrapper hidden md:block md:absolute cursor-pointer"
-            style="top: {locationPositions[i]?.top ?? 0}px; left: {locationPositions[i]?.left ??
-              0}px;"
-            role="button"
-            tabindex="0"
-            onmouseenter={() => handleIconEnter(i)}
-            onmouseleave={() => handleIconLeave(i)}
-          >
-            <div class="supporting-char flex flex-col items-center">
+      {/each}
+    </div>
+  </div>
+
+  <!-- Desktop locations — single row, parallax per location -->
+  <div
+    class="container absolute hidden md:block"
+    style="height: 1400px; top: 100vh; left: 0; right: 0;"
+  >
+    <div class="grid grid-cols-12 gap-4">
+      <div class="md:col-span-1"></div>
+      <div class="col-span-12 md:col-span-11 h-[100dvh] flex flex-col justify-center">
+        <ul class="flex justify-between">
+          {#each locations as location, i}
+            <li class="my-2">
               <div
-                class="character rounded-full bg-contain bg-center"
-                style="background-color: #12020A; background-image: url('{getLocationIconPath(
-                  location.id,
-                )}'); width: 75px; height: 75px;"
-              ></div>
-              <div class="mid pt-2">{location.label}</div>
-            </div>
-          </div>
-        {/each}
+                class="location-desktop-parallax relative flex flex-col items-center"
+                style="top: {i % 2 === 0 ? '0' : '160px'};"
+                data-speed={i % 2 === 0 ? 3 : 0.5}
+              >
+                <div class="location-char flex flex-col items-center">
+                  <div
+                    class="character rounded-full bg-contain bg-center shadow-md w-[75px] h-[75px] md:w-[100px] md:h-[100px]"
+                    style="background-color: #12020A; background-image: url('{getLocationIconPath(location.id)}');"
+                  ></div>
+                  <div class="mid pt-2 text-center">{location.label}</div>
+                </div>
+              </div>
+            </li>
+          {/each}
+        </ul>
       </div>
     </div>
   </div>
 </div>
 
 <style>
+  #locations_screen_3 {
+    padding-bottom: 100vh;
+  }
+
   .location {
     padding: 0 4px;
     font-weight: 600;

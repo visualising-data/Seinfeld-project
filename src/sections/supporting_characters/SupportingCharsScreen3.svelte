@@ -1,14 +1,18 @@
 <script>
   import { onMount } from 'svelte';
   import { gsap } from 'gsap/dist/gsap';
+  import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
   import { characters } from '$lib/data/characters';
   import { getCharacterImagePath } from '../../utils/getCharacterImagePath';
-  import { forceSimulation, forceCollide, forceManyBody, forceX, forceY } from 'd3-force';
 
   const supportingChars = characters.slice(4, characters.length - 1);
 
-  let charPositions = $state(/** @type {{ top: number; left: number }[]} */ ([]));
-  let iconsContainer = /** @type {HTMLDivElement} */ (/** @type {unknown} */ (null));
+  const mobileRows = [
+    supportingChars.slice(0, 3),
+    supportingChars.slice(3, 6),
+    supportingChars.slice(6),
+  ];
+  const mobileRowSpeeds = [0.5, 1.5, 3];
 
   onMount(() => {
     gsap.set('#supporting_chars_screen_3 .supporting-char', { translateY: 100, opacity: 0 });
@@ -21,8 +25,8 @@
       onComplete: () => {
         gsap.utils.toArray('#supporting_chars_screen_3 .supporting-char').forEach((el) => {
           gsap.to(el, {
-            y: -(Math.random() * 3 + 3), // 3–6px upward
-            duration: 2.5 + Math.random() * 1.5, // 2.5–4s per half-cycle
+            y: -(Math.random() * 3 + 3),
+            duration: 2.5 + Math.random() * 1.5,
             ease: 'sine.inOut',
             yoyo: true,
             repeat: -1,
@@ -62,162 +66,62 @@
         '<-0.5',
       );
 
-    function computePositions() {
-      const screenW = iconsContainer.clientWidth;
-      const screenH = iconsContainer.clientHeight;
-      const border = 30;
-      const xMin = border + 37.5;
-      const xMax = screenW - border - 37.5;
-      const yMin = border + 37.5;
-      const yMax = screenH - border - 67.5;
+    const mm = gsap.matchMedia();
 
-      const textCol = iconsContainer.querySelector('.supporting-chars-text-col');
-      const screenRect = iconsContainer.getBoundingClientRect();
-      const textRect = textCol.getBoundingClientRect();
-      const textZone = {
-        x1: textRect.left - screenRect.left - border,
-        x2: textRect.right - screenRect.left + border,
-        y1: textRect.top - screenRect.top - border,
-        y2: textRect.bottom - screenRect.top + border,
-      };
-
-      // Disc centred in the available area (right of text zone)
-      const cx = (textZone.x2 + screenW) / 2;
-      const cy = screenH / 2;
-      const discRadius = Math.min((screenW - textZone.x2) * 0.45, screenH * 0.38);
-
-      // Measure each element's real rendered dimensions for accurate collision
-      const iconEls = Array.from(iconsContainer.querySelectorAll('.supporting-char'));
-
-      // Seed nodes uniformly within the disc using polar coordinates
-      const nodes = supportingChars.map((_, i) => {
-        const el = /** @type {HTMLElement | undefined} */ (iconEls[i]);
-        const w = el ? el.offsetWidth : 75;
-        const h = el ? el.offsetHeight : 100;
-        const angle = Math.random() * 2 * Math.PI;
-        const r = Math.sqrt(Math.random()) * discRadius;
-        return {
-          x: Math.max(xMin, Math.min(cx + r * Math.cos(angle), xMax)),
-          y: Math.max(yMin, Math.min(cy + r * Math.sin(angle), yMax)),
-          collisionR: Math.max(w, h) / 2 + 20,
-          w,
-          h,
-        };
+    // Mobile: pin text, parallax on rows
+    mm.add('(max-width: 767px)', () => {
+      ScrollTrigger.create({
+        trigger: '#supporting_chars_screen_3',
+        start: 'top top',
+        end: 'bottom top',
+        pin: '#supporting-chars-3-text',
       });
 
-      // Custom force: push nodes back inside the disc if they drift outside
-      function forceBoundCircle(centerX, centerY, r) {
-        /** @type {any[]} */ let simNodes;
-        /** @param {number} alpha */
-        function force(alpha) {
-          for (const node of simNodes) {
-            const dx = node.x - centerX;
-            const dy = node.y - centerY;
-            const d = Math.sqrt(dx * dx + dy * dy);
-            if (d > r) {
-              const k = ((d - r) / d) * alpha * 2;
-              node.vx -= dx * k;
-              node.vy -= dy * k;
-            }
-          }
-        }
-        force.initialize = (/** @type {any[]} */ n) => {
-          simNodes = n;
-        };
-        return force;
-      }
-
-      forceSimulation(nodes)
-        .force(
-          'collide',
-          forceCollide(/** @type {any} */ ((d) => d.collisionR))
-            .strength(1)
-            .iterations(4),
-        )
-        .force('charge', forceManyBody().strength(-5))
-        .force('x', forceX(cx).strength(0.08))
-        .force('y', forceY(cy).strength(0.08))
-        .force('bound', forceBoundCircle(cx, cy, discRadius))
-        .stop()
-        .tick(400);
-
-      charPositions = nodes.map((node) => ({
-        top: Math.max(border, Math.min(node.y - node.h / 2, screenH - node.h - border)),
-        left: Math.max(border, Math.min(node.x - node.w / 2, screenW - node.w - border)),
-      }));
-    }
-
-    computePositions();
-
-    let rafId = 0;
-    const observer = new ResizeObserver(() => {
-      cancelAnimationFrame(rafId);
-      rafId = requestAnimationFrame(computePositions);
+      /** @type {HTMLElement[]} */
+      const mobileRowEls = gsap.utils.toArray('.mobile-char-row');
+      mobileRowEls.forEach((el) => {
+        gsap.to(el, {
+          yPercent: Number(el.dataset.speed) * 50,
+          ease: 'none',
+          scrollTrigger: { trigger: el, start: 'top bottom', scrub: true },
+        });
+      });
     });
-    observer.observe(iconsContainer);
+
+    // Desktop: pin text, parallax on individual chars
+    mm.add('(min-width: 768px)', () => {
+      ScrollTrigger.create({
+        trigger: '#supporting_chars_screen_3',
+        start: 'top top',
+        end: 'bottom top',
+        pin: '#supporting-chars-3-text',
+      });
+
+      /** @type {HTMLElement[]} */
+      const parallaxEls = gsap.utils.toArray('.desktop-char-parallax');
+      parallaxEls.forEach((el) => {
+        gsap.to(el, {
+          yPercent: Number(el.dataset.speed) * 50,
+          ease: 'none',
+          scrollTrigger: { trigger: el, start: 'top bottom', scrub: true },
+        });
+      });
+    });
 
     return () => {
-      observer.disconnect();
-      cancelAnimationFrame(rafId);
+      tl3.scrollTrigger?.kill();
+      tl3.kill();
+      mm.revert();
     };
   });
-
-  const handleIconEnter = (/** @type {number} */ index) => {
-    const wrappers = Array.from(iconsContainer.querySelectorAll('.icon-wrapper'));
-    const chars = Array.from(iconsContainer.querySelectorAll('.supporting-char'));
-
-    // Scale up the hovered icon
-    gsap.to(chars[index], { scale: 1.3, duration: 0.3, ease: 'back.out(1.7)' });
-
-    // Measure the hovered icon's centre in viewport coordinates
-    const hoveredRect = wrappers[index].getBoundingClientRect();
-    const hoveredCx = hoveredRect.left + hoveredRect.width / 2;
-    const hoveredCy = hoveredRect.top + hoveredRect.height / 2;
-
-    // Push nearby wrappers away
-    wrappers.forEach((wrapper, i) => {
-      if (i === index) return;
-      const rect = wrapper.getBoundingClientRect();
-      const dx = rect.left + rect.width / 2 - hoveredCx;
-      const dy = rect.top + rect.height / 2 - hoveredCy;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      const maxDist = 220;
-      if (dist < maxDist) {
-        const force = Math.pow((maxDist - dist) / maxDist, 1.5) * 35;
-        gsap.to(wrapper, {
-          x: (dx / dist) * force,
-          y: (dy / dist) * force,
-          duration: 0.5,
-          ease: 'power2.out',
-        });
-      }
-    });
-  };
-
-  const handleIconLeave = (/** @type {number} */ index) => {
-    const wrappers = Array.from(iconsContainer.querySelectorAll('.icon-wrapper'));
-    const chars = Array.from(iconsContainer.querySelectorAll('.supporting-char'));
-
-    // Scale the hovered icon back
-    gsap.to(chars[index], { scale: 1, duration: 0.4, ease: 'power2.inOut' });
-
-    // Spring all wrappers back to their original positions
-    wrappers.forEach((wrapper, i) => {
-      if (i === index) return;
-      gsap.to(wrapper, { x: 0, y: 0, duration: 0.6, ease: 'elastic.out(1, 0.5)' });
-    });
-  };
 </script>
 
-<div
-  id="supporting_chars_screen_3"
-  class="md:h-[100dvh] w-screen py-60 md:py-0 relative"
-  bind:this={iconsContainer}
->
+<div id="supporting_chars_screen_3" class="w-screen relative">
   <div class="container">
     <div class="grid grid-cols-12 md:gap-20">
       <div
-        class="supporting-chars-text-col col-span-12 md:col-span-7 md:h-[100dvh] md:flex md:flex-col md:justify-center"
+        id="supporting-chars-3-text"
+        class="supporting-chars-text-col col-span-12 md:col-span-7 h-[100dvh] flex flex-col justify-center"
       >
         <p>
           The ultimate decision was to create categories for the four respective <span
@@ -238,9 +142,20 @@
           into different groupings across the show (e.g. a former love interest may shift to become a
           friend, and vice-versa).
         </p>
-        <div class="md:hidden flex flex-wrap justify-center gap-4 mt-10">
-          {#each supportingChars as char}
-            <div class="flex flex-col items-center">
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile characters — 3 rows of 3, parallax per row -->
+  <div class="absolute block md:hidden w-full" style="height: 800px; top: 100dvh;">
+    <div class="h-full flex flex-col justify-center gap-20 px-6">
+      {#each mobileRows as row, rowIndex}
+        <div class="mobile-char-row flex justify-around" data-speed={mobileRowSpeeds[rowIndex]}>
+          {#each row as char, i}
+            <div
+              class="supporting-char flex flex-col items-center"
+              style="position: relative; top: {i % 2 === 0 ? '0' : '30px'};"
+            >
               <div
                 class="character rounded-full bg-contain bg-center"
                 style="background-image: url('{getCharacterImagePath(
@@ -251,34 +166,47 @@
             </div>
           {/each}
         </div>
-      </div>
-      <div class="col-span-12 md:col-span-4">
-        {#each supportingChars as char, i}
-          <div
-            class="icon-wrapper hidden md:block md:absolute cursor-pointer"
-            style="top: {charPositions[i]?.top ?? 0}px; left: {charPositions[i]?.left ?? 0}px;"
-            role="button"
-            tabindex="0"
-            onmouseenter={() => handleIconEnter(i)}
-            onmouseleave={() => handleIconLeave(i)}
-          >
-            <div class="supporting-char flex flex-col items-center">
+      {/each}
+    </div>
+  </div>
+
+  <!-- Desktop characters — single row, parallax per char -->
+  <div
+    class="container absolute hidden md:block"
+    style="height: 1400px; top: 100vh; left: 0; right: 0;"
+  >
+    <div class="grid grid-cols-12 gap-4">
+      <div class="md:col-span-1"></div>
+      <div class="col-span-12 md:col-span-11 h-[100dvh] flex flex-col justify-center">
+        <ul class="flex justify-between">
+          {#each supportingChars as char, i}
+            <li class="my-2">
               <div
-                class="character rounded-full bg-contain bg-center"
-                style="background-image: url('{getCharacterImagePath(
-                  char.id,
-                )}'); width: 75px; height: 75px;"
-              ></div>
-              <div class="mid pt-2 text-center">{char.label}</div>
-            </div>
-          </div>
-        {/each}
+                class="desktop-char-parallax relative flex flex-col items-center"
+                style="top: {i % 2 === 0 ? '0' : '160px'};"
+                data-speed={i % 2 === 0 ? 3 : 0.5}
+              >
+                <div class="supporting-char flex flex-col items-center">
+                  <div
+                    class="character rounded-full bg-contain bg-center shadow-md w-[75px] h-[75px] md:w-[100px] md:h-[100px]"
+                    style="background-image: url('{getCharacterImagePath(char.id)}');"
+                  ></div>
+                  <div class="mid pt-2 text-center">{char.label}</div>
+                </div>
+              </div>
+            </li>
+          {/each}
+        </ul>
       </div>
     </div>
   </div>
 </div>
 
 <style>
+  #supporting_chars_screen_3 {
+    padding-bottom: 100vh;
+  }
+
   .color {
     font-weight: 600;
   }

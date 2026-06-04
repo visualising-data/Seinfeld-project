@@ -1,4 +1,6 @@
 <script lang="ts">
+  import CloseIcon from '../icons/CloseIcon.svelte';
+
   interface Finding {
     id: number;
     category: string;
@@ -384,6 +386,15 @@
             <p class="text-[#12020A] text-base desktop:text-lg leading-relaxed m-0">
               {@html highlightText(hoveredFinding.text)}
             </p>
+            <div class="desktop:hidden flex justify-end mt-3">
+              <button
+                class="opacity-40 hover:opacity-80 transition-opacity"
+                onclick={() => (hoveredFinding = null)}
+                aria-label="Close"
+              >
+                <CloseIcon color="#12020A" size={18} />
+              </button>
+            </div>
           </div>
         {:else}
           <p class="text-[#928D90] text-[1.2rem] italic m-0">

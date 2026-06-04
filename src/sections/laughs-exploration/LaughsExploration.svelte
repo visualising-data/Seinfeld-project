@@ -501,7 +501,7 @@
           >
         </div>
 
-        <h5>Cummulative presence per episode</h5>
+        <h5 class:hidden={isMobile && activeChartTab !== 'bars'}>Cummulative presence per episode</h5>
         <div
           class="desktop:flex-1 overflow-hidden"
           class:opacity-30={isLoading}
@@ -522,7 +522,7 @@
             onClosePin={closePinnedScene}
           />
         </div>
-        <h5 class="mt-8">All the distinct scenes</h5>
+        <h5 class="mt-8" class:hidden={isMobile && activeChartTab !== 'beeswarm'}>All the distinct scenes</h5>
         <div
           class="desktop:flex-1 overflow-hidden"
           class:opacity-30={isLoading}

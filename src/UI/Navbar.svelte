@@ -45,7 +45,7 @@
         />
       {/if}
     </button>
-    <button class="ml-4" onclick={toggleMenu} disabled={showMenu}><Burger {color} /></button>
+    <button class="ml-4" onclick={toggleMenu} disabled={showMenu}><Burger color={$soundSectionIsInView ? '#E71D80' : color} /></button>
   </div>
 </div>
 {#if showMenu}
