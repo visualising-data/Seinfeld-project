@@ -219,7 +219,6 @@
             start: 'top center',
             end: 'bottom bottom',
             scrub: 1,
-            invalidateOnRefresh: true,
           },
         })
         // t=0–1: implicit hold (content fully visible)
@@ -228,7 +227,7 @@
         //         the same position and fan out to form a light superposition
         .fromTo(
           ['#title-the', '#title-chronicles', '#title-screen svg', '#subtitle'],
-          { opacity: 1, y: 0 },
+          { opacity: 1, y: 0, immediateRender: false },
           { opacity: 0, y: -80, ease: 'none' },
           1,
         )
@@ -241,9 +240,10 @@
         .to('.seinfeld-season-word', { opacity: 1, duration: 0.001 }, 2)
         .fromTo(
           '.seinfeld-season-word',
-          { xPercent: 0, scale: 1 },
+          { xPercent: 0, scale: 1, x: 0 },
           {
             xPercent: (/** @type {number} */ i) => (i - 4) * 4,
+            x: () => (window.innerWidth < 768 ? -80 : 0),
             scale: (/** @type {number} */ i) => 1 + i * 0.05,
             ease: 'none',
             duration: 1,
