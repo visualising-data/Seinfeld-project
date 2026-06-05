@@ -189,7 +189,7 @@
       bind:this={scrollEl}
       onscroll={handleScrollEl}
       class="flex-col"
-      style="overflow: scroll; margin-top: -18px;"
+      style="overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain; margin-top: -18px;"
     >
     <svg height={18}>
       <g transform="translate(0, 9)">

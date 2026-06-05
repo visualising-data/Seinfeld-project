@@ -469,7 +469,7 @@
             </div>
             <!-- Icons -->
             <div
-              class="w-full px-4 flex flex-row justify-between items-end gap-4 lg:gap-10 shrink-0"
+              class="w-full lg:px-4 flex flex-row justify-between items-end lg:gap-4 lg:gap-10 shrink-0"
             >
               {#each laugh3Data as item, i}
                 {@const s = isMobile ? item.mobileSize : item.size}

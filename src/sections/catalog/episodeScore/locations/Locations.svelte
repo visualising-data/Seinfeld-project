@@ -134,7 +134,7 @@
       bind:this={scrollEl}
       onscroll={handleScrollEl}
       class="flex-col"
-      style="overflow: scroll;"
+      style="overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain;"
     >
     <svg {width} height={vizHeight}>
       <Scenes

@@ -220,7 +220,7 @@
   onmouseleave={handleMouseLeave}
 >
   <div class="relative flex-shrink-0" style="max-width: {innerWidth - 63}px; order: {innerWidth < 1280 ? 2 : 0}">
-    <div bind:this={scrollEl} onscroll={handleScrollEl} style="overflow: scroll;">
+    <div bind:this={scrollEl} onscroll={handleScrollEl} style="overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain;">
       <SonificationTrack {scenesWidth} {scenes} {xScale} {playingScene} {handleClickOnScene} />
     </div>
     {#if innerWidth < 1280}

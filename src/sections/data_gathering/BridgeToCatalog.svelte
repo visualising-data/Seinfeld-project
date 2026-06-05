@@ -11,14 +11,14 @@
 
   onMount(() => {
     ctx = gsap.context(() => {
-      gsap.to('#bridge-to-catalog .highlight-reverse', {
+      gsap.to('#bridge-to-catalog-content .highlight-reverse', {
         webkitTextFillColor: 'transparent',
         backgroundPosition: '200% center',
         duration: 2,
         ease: 'power3.out',
         stagger: 0.3,
         scrollTrigger: {
-          trigger: '#bridge-to-catalog',
+          trigger: '#bridge-to-catalog-content',
           start: 'top center',
           toggleActions: 'play none none reverse',
           invalidateOnRefresh: true,
@@ -36,7 +36,7 @@
   <SectionTitle title="Episode Catalogue" section="catalog" />
 </div>
 
-<div class="h-[100dvh]">
+<div id="bridge-to-catalog-content" class="h-[100dvh]">
   <div class="h-[100dvh] container flex content-center flex-wrap">
     <div style="max-width: 900px;">
       <p>

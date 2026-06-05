@@ -87,8 +87,14 @@
           setVideoSrc(j, j === 0);
         }
         gsap.set(
-          ['#show-text-0 .highlight', '#show-text-1 .highlight', '#show-text-2 .highlight', '#show-text-3 .highlight', '#show-text-4 .highlight'],
-          { webkitTextFillColor: 'currentColor', backgroundPosition: '0% center' }
+          [
+            '#show-text-0 .highlight',
+            '#show-text-1 .highlight',
+            '#show-text-2 .highlight',
+            '#show-text-3 .highlight',
+            '#show-text-4 .highlight',
+          ],
+          { webkitTextFillColor: 'currentColor', backgroundPosition: '0% center' },
         );
 
         /** @param {number} index */
@@ -131,11 +137,26 @@
           }
 
           // Highlight animations
-          gsap.set('#show-text-0 .highlight', { webkitTextFillColor: 'currentColor', backgroundPosition: '0% center' });
-          gsap.set('#show-text-1 .highlight', { webkitTextFillColor: 'currentColor', backgroundPosition: '0% center' });
-          gsap.set('#show-text-2 .highlight', { webkitTextFillColor: 'currentColor', backgroundPosition: '0% center' });
-          gsap.set('#show-text-3 .highlight', { webkitTextFillColor: 'currentColor', backgroundPosition: '0% center' });
-          gsap.set('#show-text-4 .highlight', { webkitTextFillColor: 'currentColor', backgroundPosition: '0% center' });
+          gsap.set('#show-text-0 .highlight', {
+            webkitTextFillColor: 'currentColor',
+            backgroundPosition: '0% center',
+          });
+          gsap.set('#show-text-1 .highlight', {
+            webkitTextFillColor: 'currentColor',
+            backgroundPosition: '0% center',
+          });
+          gsap.set('#show-text-2 .highlight', {
+            webkitTextFillColor: 'currentColor',
+            backgroundPosition: '0% center',
+          });
+          gsap.set('#show-text-3 .highlight', {
+            webkitTextFillColor: 'currentColor',
+            backgroundPosition: '0% center',
+          });
+          gsap.set('#show-text-4 .highlight', {
+            webkitTextFillColor: 'currentColor',
+            backgroundPosition: '0% center',
+          });
           if (index === 0) {
             gsap.to('#show-text-0 .highlight', {
               webkitTextFillColor: 'transparent',
@@ -672,10 +693,7 @@
     <!-- Text area -->
     <div class="relative flex-1 bg-black overflow-hidden">
       <!-- Text 0 -->
-      <div
-        id="show-text-0"
-        class="absolute inset-0 container py-6 flex flex-col justify-center overflow-y-auto"
-      >
+      <div id="show-text-0" class="absolute inset-0 container py-6 flex flex-col overflow-y-auto">
         <p>
           Seinfeld is considered a unique sitcom in how it deviated from the traditional rules of
           the time, rejecting the classic three-act story in favour of a faster-paced multi-story
@@ -691,7 +709,7 @@
       <!-- Text 1 -->
       <div
         id="show-text-1"
-        class="absolute inset-0 container py-6 flex flex-col justify-center overflow-y-auto"
+        class="absolute inset-0 container py-6 flex flex-col overflow-y-auto"
         style="opacity: 0; pointer-events: none"
       >
         <p>
@@ -711,7 +729,7 @@
       <!-- Text 2 -->
       <div
         id="show-text-2"
-        class="absolute inset-0 container py-6 flex flex-col justify-center overflow-y-auto"
+        class="absolute inset-0 container py-6 flex flex-col overflow-y-auto"
         style="opacity: 0; pointer-events: none"
       >
         <p>
@@ -724,7 +742,7 @@
       <!-- Text 3 -->
       <div
         id="show-text-3"
-        class="absolute inset-0 container py-6 flex flex-col justify-center overflow-y-auto"
+        class="absolute inset-0 container py-6 flex flex-col overflow-y-auto"
         style="opacity: 0; pointer-events: none"
       >
         <p>
@@ -739,7 +757,7 @@
       <!-- Text 4 -->
       <div
         id="show-text-4"
-        class="absolute inset-0 container py-6 flex flex-col justify-center overflow-y-auto"
+        class="absolute inset-0 container py-6 flex flex-col overflow-y-auto"
         style="opacity: 0; pointer-events: none"
       >
         <p>
