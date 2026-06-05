@@ -8,6 +8,9 @@
   import { episodesInfo } from '$lib/data/episodesInfo';
   import EpisodeTooltip from '../../UI/EpisodeTooltip.svelte';
   import ArrowDown from '../../icons/ArrowDown.svelte';
+  import { fly } from 'svelte/transition';
+  import { elasticOut } from 'svelte/easing';
+  import { onMount } from 'svelte';
 
   const mainChars = characters.slice(0, 4);
   const orderedChars = $state(
@@ -28,9 +31,9 @@
   let containerWidth = $state(1200);
 
   const marginLeft = 30;
-  let isMobile = $derived(containerWidth < 793);
+  let isMobile = $derived(containerWidth < 1024);
   let chartWidth = $derived(
-    isMobile ? containerWidth - 64 : containerWidth - 64 <= 1200 ? containerWidth - 64 - 400 : 800,
+    innerWidth < 760 ? containerWidth - 64 : innerWidth < 1024 ? containerWidth - 120 : 800,
   );
   let charImageSize = $derived(isMobile ? 60 : 75);
   let chartHeight = 545;
@@ -85,12 +88,32 @@
   const statHeight = 10;
   const statScale = scaleLinear().domain([0, 1]).range([0, statWidth]);
 
+  let isHelpVisible = $state(false);
+  let containerEl = $state();
+
+  onMount(() => {
+    const check = () => {
+      if (isHelpVisible || !containerEl) return;
+      const rect = containerEl.getBoundingClientRect();
+      if (rect.top < window.innerHeight * 0.85) {
+        isHelpVisible = true;
+      }
+    };
+    window.addEventListener('scroll', check, { passive: true });
+    check();
+    return () => window.removeEventListener('scroll', check);
+  });
 </script>
 
 <div
   id="peak-performances-container"
+  bind:this={containerEl}
   class="w-screen pb-80 relative"
-  style="opacity: {$mainCharsTextsDone ? 1 : 0}; transform: translateY({$mainCharsTextsDone ? '0px' : '12px'}); pointer-events: {$mainCharsTextsDone ? 'auto' : 'none'}; transition: opacity 0.5s ease 0.2s, transform 0.5s ease 0.2s;"
+  style="opacity: {$mainCharsTextsDone ? 1 : 0}; transform: translateY({$mainCharsTextsDone
+    ? '0px'
+    : '12px'}); pointer-events: {$mainCharsTextsDone
+    ? 'auto'
+    : 'none'}; transition: opacity 0.5s ease 0.2s, transform 0.5s ease 0.2s;"
 >
   <div class="container" bind:clientWidth={containerWidth}>
     <!-- Header -->
@@ -105,22 +128,28 @@
       </div>
     </div>
 
-    <div class="flex flex-col md:flex-row md:items-stretch">
+    <div class="flex flex-col lg:flex-row lg:items-stretch">
       <!-- Character Selector -->
-      <div class="flex flex-col shrink-0 md:items-center md:mr-8 mb-4 md:mb-0">
-        <div class="small flex items-center gap-2 md:max-w-[220px]">
-          <span class="shrink"><HelpIcon color="#E71D80" /></span>
-          <span class="relative top-1">Select a character to reveal their performances.</span>
-        </div>
-        <ul class="flex flex-row md:flex-col mt-3 md:mt-4 gap-6 md:gap-0">
+      <div class="flex flex-col shrink-0 lg:items-center lg:mr-8 mb-4 lg:mb-0 ml-[30px] lg:ml-0">
+        {#if isHelpVisible}
+          <div
+            class="small flex items-center gap-2 lg:max-w-[220px]"
+            in:fly={{ y: 12, duration: 700, easing: elasticOut }}
+          >
+            <span class="shrink"><HelpIcon color="#E71D80" /></span>
+            <span class="relative top-1">Select a character to reveal their performances.</span>
+          </div>
+        {/if}
+        <ul class="flex flex-row lg:flex-col mt-3 lg:mt-4 gap-6 lg:gap-0">
           {#each mainChars as char}
-            <li class="md:my-2">
+            <li class="lg:my-2">
               <button
                 class="flex flex-col character-button {orderedChars.find((c) => c.id === char.id)
                   ?.isActive
                   ? 'active'
                   : ''}"
                 onclick={() => handleCharacterClick(char.id)}
+                disabled={!$mainCharsTextsDone}
               >
                 <div
                   class="character rounded-full bg-contain bg-center opacity-20"
@@ -136,7 +165,7 @@
       </div>
 
       <!-- Scatterplot + Stats wrapper -->
-      <div class="relative md:flex md:flex-row md:items-stretch">
+      <div class="relative lg:flex lg:flex-row lg:items-stretch">
         <!-- Scatterplot -->
         <svg
           class="shrink-0"
@@ -144,7 +173,6 @@
           aria-label="Scatterplot of character peak performances"
           width={isMobile ? chartWidth + marginLeft : chartWidth + 32}
           height={chartHeight + 32}
-          style={isMobile ? `margin-left: -${marginLeft}px` : ''}
           onmousemove={(e) => (mousePosition = [e.clientX, e.clientY])}
         >
           <g transform="translate(30, 1)">
@@ -267,7 +295,7 @@
         <!-- Stats -->
         {#if isTooltipVisible}
           <div
-            class="absolute bottom-12 right-0 md:static md:ml-2 md:pb-8 flex flex-col justify-center gap-4 md:mt-0 p-2 md:p-0 bg-white/80 md:bg-transparent rounded"
+            class="absolute bottom-12 right-0 lg:static lg:ml-2 lg:pb-8 flex flex-col justify-center gap-4 lg:mt-0 p-2 lg:p-0 bg-white/80 lg:bg-transparent rounded"
           >
             <!-- Laughter rate -->
             <div>

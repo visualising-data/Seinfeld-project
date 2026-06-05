@@ -27,20 +27,27 @@
   out:fly={{ duration: 500, y: 165 }}
 >
   <div
-    class="m-auto flex flex-col justify-between md:flex-row md:items-center"
+    class="m-auto flex flex-col justify-between gap-8 md:flex-row md:items-center"
     style="max-width: 1400px"
   >
     <div class="flex items-center">
       <div class="shrink-0">
         <SoundIcon width={100} height={165 / 2} />
       </div>
-      <div class="ml-4 mt-2" style="max-width: {innerWidth >= 793 ? 'none' : '400px'}">
-        <p>This project offers an audio experience. Turn your sound on!</p>
+      <div class="ml-4 mt-2 leading-snug" style="max-width: {innerWidth >= 793 ? 'none' : '400px'}">
+        <p>
+          <span style="display:block">This project offers an audio experience.</span><span
+            style="display:block">Turn your sound on!</span
+          >
+        </p>
       </div>
     </div>
     <div class="mt-8 flex leading-5 md:ml-4 md:mt-0 md:justify-end">
-      <button class="btn btn-secondary" onclick={() => updateSoundAuth(false)}>No, thanks</button>
-      <button class="btn btn-primary ml-4" onclick={() => updateSoundAuth(true)}>Allow sound</button
+      <button class="btn btn-secondary shrink-0" onclick={() => updateSoundAuth(false)}
+        >No, thanks</button
+      >
+      <button class="btn btn-primary shrink-0 ml-4" onclick={() => updateSoundAuth(true)}
+        >Allow sound</button
       >
     </div>
   </div>

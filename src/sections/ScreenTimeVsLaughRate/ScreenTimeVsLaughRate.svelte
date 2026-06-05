@@ -28,7 +28,7 @@
   let innerWidth = $state(1600);
   let innerHeight = $state(800);
   let headerHeight = $state(200);
-  let isMobile = $derived(innerWidth < 793);
+  let isMobile = $derived(innerWidth < 1024);
   let visualizationsContainerHeight = $state(800);
 
   let currentChars = $derived.by(() => {
@@ -52,6 +52,7 @@
 
   let isMouseOver = $state(false);
   let isTextOver = $state(false);
+  let showSelectorHint = $state(false);
 
   let activeFilter = $state(FILTER.SCREEN_TIME);
 
@@ -430,10 +431,12 @@
             isMouseOver = false;
             isTextOver = true;
             mainCharsTextsDone.set(false);
+            showSelectorHint = false;
           },
           onLeave: () => {
             isTextOver = false;
             mainCharsTextsDone.set(true);
+            showSelectorHint = true;
           },
           onLeaveBack: () => {
             isTextOver = false;
@@ -705,11 +708,13 @@
             soundtrackCanPlay = true;
             playAudio();
             enterSoundSection();
+            showSelectorHint = true;
           },
           onEnterBack: () => {
             soundtrackCanPlay = true;
             playAudio();
             enterSoundSection();
+            showSelectorHint = true;
           },
           onLeave: () => {
             soundtrackCanPlay = false;
@@ -720,6 +725,7 @@
             soundtrackCanPlay = false;
             stopAudio();
             leaveSoundSection();
+            showSelectorHint = false;
           },
         },
       });
@@ -746,21 +752,25 @@
       <Header bind:headerHeight {currentSection} />
 
       <!-- Visualization -->
-      <div id="lead-chars-episodes-viz" class="flex flex-col md:grid md:grid-cols-12 md:gap-8" class:pointer-events-none={currentSection === 'main_chars' && isTextOver}>
-        <div class="md:col-span-2 md:flex md:flex-col md:items-center md:relative">
+      <div
+        id="lead-chars-episodes-viz"
+        class="flex flex-col lg:grid lg:grid-cols-12 lg:gap-8"
+        class:pointer-events-none={currentSection === 'main_chars' && isTextOver}
+      >
+        <div class="lg:col-span-2 lg:flex lg:flex-col lg:items-center lg:relative">
           <Selectors
             {currentSection}
             selectors={currentChars}
             activeSelector={activeCharacter}
             {handleCharacterClick}
             {isMobile}
-            hideHint={currentSection === 'main_chars' && isTextOver}
+            showHint={showSelectorHint}
           />
         </div>
 
-        <div class="md:col-span-10 md:mt-1" bind:clientHeight={visualizationsContainerHeight}>
-          <div class="flex gap-10">
-            <Toggle {switchFilter} {activeFilter} {isMobile} {currentSection} />
+        <div class="lg:col-span-10 lg:mt-1" bind:clientHeight={visualizationsContainerHeight}>
+          <div class="flex justify-center lg:justify-start gap-10">
+            <Toggle {switchFilter} {activeFilter} {innerWidth} {currentSection} />
             {#if !isMobile}
               <ScreenTimeVsLaughRateLegend {activeCharacter} {activeFilter} />
             {/if}

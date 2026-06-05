@@ -6,10 +6,10 @@
     SCREEN_TIME: 'screenTime',
     LAUGHS: 'causesLaughs',
   };
-  let { switchFilter, activeFilter, isMobile, currentSection } = $props();
+  let { switchFilter, activeFilter, innerWidth, currentSection } = $props();
 
   let laughLabel = $derived(currentSection === 'locations' ? 'Staging the funny' : 'Being funny');
-  let btnWidth = $derived(currentSection === 'locations' ? 340 : 260);
+  let btnWidth = $state(260);
 
   const selectScreenTime = () => {
     switchFilter(FILTER.SCREEN_TIME);
@@ -19,17 +19,15 @@
   };
 </script>
 
-<div
-  class="relative rounded-full overflow-hidden mb-4"
-  style="width: {btnWidth * 2}px; --btn-width: {btnWidth}px;"
->
+<div class="relative rounded-full overflow-hidden mb-4">
   <!-- Background color -->
   <div
     class="button-background relative z-0 {activeFilter === FILTER.SCREEN_TIME ? 'left' : 'right'}"
+    style="width: {btnWidth / 2}px;"
   ></div>
 
   <!-- Toggle -->
-  <div class="flex items-center relative z-10">
+  <div bind:clientWidth={btnWidth} class="flex items-center relative z-10">
     <button
       class="flex items-center rounded-l-full {activeFilter === FILTER.SCREEN_TIME
         ? 'text-white'
@@ -39,11 +37,11 @@
     >
       <div class="relative" style="top: -2px;">
         <TvIcon
-          size={isMobile ? 26 : 32}
+          size={innerWidth < 1024 ? 26 : 32}
           color={activeFilter === FILTER.SCREEN_TIME ? '#F9F5F7' : '#12020A'}
         />
       </div>
-      <h4 class="ml-2 text-[16px] md:text-[28px]">On screen</h4>
+      <h4 class="ml-2 text-[16px] lg:text-[28px]">On screen</h4>
     </button>
     <button
       class="flex items-center rounded-r-full {activeFilter !== FILTER.SCREEN_TIME
@@ -52,14 +50,12 @@
       style="border-color: {activeFilter !== FILTER.SCREEN_TIME ? '#E71D80' : '#12020A'};"
       onclick={selectLaughRate}
     >
-      <div class="w-8">
-        <Laugh
-          width={isMobile ? 26 : 32}
-          height={isMobile ? 26 : 32}
-          color={activeFilter === FILTER.SCREEN_TIME ? '#12020A' : '#F9F5F7'}
-        />
-      </div>
-      <h4 class="ml-2 text-[16px] md:text-[28px]">{laughLabel}</h4>
+      <Laugh
+        width={innerWidth < 1024 ? 26 : 32}
+        height={innerWidth < 1024 ? 26 : 32}
+        color={activeFilter === FILTER.SCREEN_TIME ? '#12020A' : '#F9F5F7'}
+      />
+      <h4 class="ml-2 text-[16px] lg:text-[28px] whitespace-nowrap">{laughLabel}</h4>
     </button>
   </div>
 </div>

@@ -24,7 +24,7 @@
     innerWidth,
   } = $props();
 
-  let isMobile = $derived(innerWidth < 793);
+  let isMobile = $derived(innerWidth < 1024);
 
   let visualizationsWidth = $state(800);
   const episodesOverviewWidth = 150;
@@ -233,7 +233,7 @@
     </g>
   </svg>
 
-  {#if showEpisodeTooltip && innerWidth >= 793}
+  {#if showEpisodeTooltip && innerWidth >= 1024}
     <EpisodeTooltip episode={highlightedEpisodeInfo} position={episodeTooltipPosition} />
   {/if}
 </div>

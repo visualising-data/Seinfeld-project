@@ -2,6 +2,8 @@
   import { getCharacterImagePath } from '../../utils/getCharacterImagePath';
   import { getLocationIconPath } from '../../utils/getLocationIconPath';
   import HelpIcon from '../../icons/HelpIcon.svelte';
+  import { fly } from 'svelte/transition';
+  import { elasticOut } from 'svelte/easing';
 
   let {
     currentSection,
@@ -9,12 +11,16 @@
     activeSelector,
     handleCharacterClick,
     isMobile = false,
-    hideHint = false,
+    showHint = false,
   } = $props();
 </script>
 
-{#if !isMobile}
-  <div class="hint small flex items-center gap-2 mb-6" style="max-width: 320px; opacity: {hideHint ? 0 : 1};">
+{#if !isMobile && showHint}
+  <div
+    class="hint small flex items-center gap-2 mb-6"
+    style="max-width: 320px;"
+    in:fly={{ y: 12, duration: 700, easing: elasticOut }}
+  >
     <span class="shrink"><HelpIcon color="#E71D80" /></span>
     <span class="relative top-1"
       >{`Select a ${currentSection === 'locations' ? 'location' : 'character'} to explore their time on screen and when they were funny.`}</span

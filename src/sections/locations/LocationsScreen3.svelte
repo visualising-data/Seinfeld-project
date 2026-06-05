@@ -56,7 +56,7 @@
 
     const mm = gsap.matchMedia();
 
-    mm.add('(max-width: 767px)', () => {
+    mm.add('(max-width: 1023px)', () => {
       ScrollTrigger.create({
         trigger: '#locations_screen_3',
         start: 'top top',
@@ -75,7 +75,7 @@
       });
     });
 
-    mm.add('(min-width: 768px)', () => {
+    mm.add('(min-width: 1024px)', () => {
       ScrollTrigger.create({
         trigger: '#locations_screen_3',
         start: 'top top',
@@ -104,10 +104,10 @@
 
 <div id="locations_screen_3" class="w-screen relative">
   <div class="container">
-    <div class="grid grid-cols-12 md:gap-20">
+    <div class="grid grid-cols-12 lg:gap-20">
       <div
         id="locations-3-text"
-        class="locations-text-col col-span-12 md:col-span-7 h-[100dvh] flex flex-col justify-center"
+        class="locations-text-col col-span-12 lg:col-span-7 h-[100dvh] flex flex-col justify-center"
       >
         <p>
           As with the task of classifying characters, there were challenges with establishing a
@@ -135,8 +135,8 @@
     </div>
   </div>
 
-  <!-- Mobile locations — 3 rows, parallax per row -->
-  <div class="absolute block md:hidden w-full" style="height: 800px; top: 100dvh;">
+  <!-- Mobile/tablet locations — 3 rows, parallax per row -->
+  <div class="absolute block lg:hidden w-full" style="height: 800px; top: 100dvh;">
     <div class="h-full flex flex-col justify-center gap-20 px-6">
       {#each mobileRows as row, rowIndex}
         <div class="location-mobile-row flex justify-around" data-speed={mobileRowSpeeds[rowIndex]}>
@@ -161,12 +161,12 @@
 
   <!-- Desktop locations — single row, parallax per location -->
   <div
-    class="container absolute hidden md:block"
+    class="container absolute hidden lg:block"
     style="height: 1400px; top: 100vh; left: 0; right: 0;"
   >
     <div class="grid grid-cols-12 gap-4">
-      <div class="md:col-span-1"></div>
-      <div class="col-span-12 md:col-span-11 h-[100dvh] flex flex-col justify-center">
+      <div class="lg:col-span-1"></div>
+      <div class="col-span-12 lg:col-span-11 h-[100dvh] flex flex-col justify-center">
         <ul class="flex justify-between">
           {#each locations as location, i}
             <li class="my-2">
@@ -177,7 +177,7 @@
               >
                 <div class="location-char flex flex-col items-center">
                   <div
-                    class="character rounded-full bg-contain bg-center shadow-md w-[75px] h-[75px] md:w-[100px] md:h-[100px]"
+                    class="character rounded-full bg-contain bg-center shadow-md w-[75px] h-[75px] lg:w-[100px] lg:h-[100px]"
                     style="background-color: #12020A; background-image: url('{getLocationIconPath(location.id)}');"
                   ></div>
                   <div class="mid pt-2 text-center">{location.label}</div>

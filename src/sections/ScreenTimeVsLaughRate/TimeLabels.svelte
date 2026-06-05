@@ -3,7 +3,7 @@
 
   let innerWidth = $state(1600);
 
-  const timeLabels = $derived(innerWidth >= 768 ? [0, 5, 10, 15, 20, 25, 30] : [0, 30]);
+  const timeLabels = $derived(innerWidth >= 1024 ? [0, 5, 10, 15, 20, 25, 30] : [0, 30]);
 </script>
 
 <svelte:window bind:innerWidth />
@@ -15,7 +15,7 @@
       class="number"
       fill="#928D90"
       fill-opacity={isMouseOver ? 0.3 : 1}
-      text-anchor={innerWidth >= 768 ? 'middle' : timeLabel === 0 ? 'start' : 'end'}
+      text-anchor={innerWidth >= 1024 ? 'middle' : timeLabel === 0 ? 'start' : 'end'}
     >
       <text x={0} y={-18}>
         {`${timeLabel === 0 || timeLabel === 5 ? '0' : ''}${timeLabel}:00`}

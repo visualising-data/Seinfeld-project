@@ -162,16 +162,16 @@
           .padStart(2, '0')}s`;
 </script>
 
-<div class="flex flex-col gap-4 px-4 md:px-0 pb-4 md:pb-0">
+<div class="flex flex-col gap-4 px-4 lg:px-0 pb-4 lg:pb-0">
   <!-- Header -->
   <div class="flex flex-col gap-1">
     {#if episodeTitle}
-      <h4 class="mt-4 md:mt-0 text-[24px] md:text-[42px] leading-[1.1]">
+      <h4 class="mt-4 lg:mt-0 text-[24px] lg:text-[42px] leading-[1.1]">
         S{scene.season.toString().padStart(2, '0')} E{scene.episode.toString().padStart(2, '0')} Scene
         {scene.sceneNumber}
       </h4>
     {/if}
-    <div class="font-semibold text-[1rem] md:text-[1.25rem]">
+    <div class="font-semibold text-[1rem] lg:text-[1.25rem]">
       {episodeTitle}
     </div>
   </div>
@@ -179,19 +179,19 @@
   <!-- Stats grid -->
   <div class="grid grid-cols-3 gap-2">
     <div>
-      <div class="font-semibold text-[1.2rem] md:text-[1.5rem] leading-tight">
+      <div class="font-semibold text-[1.2rem] lg:text-[1.5rem] leading-tight">
         {formatDuration(scene.duration)}
       </div>
       <div class="text-[0.8rem] text-[#928D90]">Duration</div>
     </div>
     <div>
-      <div class="font-semibold text-[1.2rem] md:text-[1.5rem] leading-tight">
+      <div class="font-semibold text-[1.2rem] lg:text-[1.5rem] leading-tight">
         {formatDuration(scene.laughDuration)}
       </div>
       <div class="text-[0.8rem] text-[#928D90]">Causing laughs</div>
     </div>
     <div>
-      <div class="font-semibold text-[1.2rem] md:text-[1.5rem] leading-tight">
+      <div class="font-semibold text-[1.2rem] lg:text-[1.5rem] leading-tight">
         {Math.round(scene.laughRate * 100)}%
       </div>
       <div class="text-[0.8rem] text-[#928D90]">Laugh rate</div>
