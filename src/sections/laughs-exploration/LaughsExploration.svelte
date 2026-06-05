@@ -344,7 +344,7 @@
     soundtrack.volume.value = TARGET_VOLUME;
 
     const gsapCtx = gsap.context(() => {
-      gsap.to('#laughs-exploration .highlight-reverse', {
+      gsap.to('#laughs-exploration-intro .highlight-reverse', {
         webkitTextFillColor: 'transparent',
         backgroundPosition: '200% center',
         duration: 2,
@@ -414,7 +414,7 @@
 >
   <SectionTitle title="Combinations & Findings" section="laughs-exploration" />
 
-  <div class="container flex flex-col flex-1 overflow-hidden">
+  <div id="laughs-exploration-intro" class="container flex flex-col flex-1 overflow-hidden">
     <!-- Header -->
     <div class="h-screen flex flex-col justify-center" bind:this={headerEl}>
       <div class="mt-12" style="max-width: 900px;">
@@ -501,7 +501,9 @@
           >
         </div>
 
-        <h5 class:hidden={isMobile && activeChartTab !== 'bars'}>Cummulative presence per episode</h5>
+        <h5 class:hidden={isMobile && activeChartTab !== 'bars'}>
+          Cummulative presence per episode
+        </h5>
         <div
           class="desktop:flex-1 overflow-hidden"
           class:opacity-30={isLoading}
@@ -522,7 +524,9 @@
             onClosePin={closePinnedScene}
           />
         </div>
-        <h5 class="mt-8" class:hidden={isMobile && activeChartTab !== 'beeswarm'}>All the distinct scenes</h5>
+        <h5 class="mt-8" class:hidden={isMobile && activeChartTab !== 'beeswarm'}>
+          All the distinct scenes
+        </h5>
         <div
           class="desktop:flex-1 overflow-hidden"
           class:opacity-30={isLoading}

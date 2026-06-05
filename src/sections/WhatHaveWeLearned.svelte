@@ -291,15 +291,15 @@
 
   const CHAR_COLORS: Record<string, string> = {
     // Locations — longest first so "Kramer's home" beats "Kramer", etc.
-    "Places of leisure": '#12020A',
-    "Place of leisure": '#12020A',
+    'Places of leisure': '#12020A',
+    'Place of leisure': '#12020A',
     "Jerry's home": '#12020A',
     "George's home": '#12020A',
     "Kramer's home": '#12020A',
     "Kramer's": '#12020A',
     "Elaine's home": '#12020A',
     "Elaine's": '#12020A',
-    "Family home": '#12020A',
+    'Family home': '#12020A',
     Workplace: '#12020A',
     Diner: '#12020A',
     Transport: '#12020A',
@@ -343,9 +343,7 @@
       <div class="order-last desktop:order-none desktop:col-span-5 flex flex-col gap-5">
         {#each findingsByCategory as group}
           <div class="flex flex-col gap-1">
-            <span
-              class="text-[11px] font-mono uppercase tracking-widest mb-1 text-[#12020A]"
-            >
+            <span class="text-[11px] font-mono uppercase tracking-widest mb-1 text-[#12020A]">
               {group.name}
             </span>
             {#each group.findings as finding}
@@ -355,8 +353,13 @@
                 class="bar-row py-0.5 cursor-pointer"
                 onmouseenter={() => (hoveredFinding = finding)}
                 onmouseleave={() => (hoveredFinding = null)}
-                ontouchend={(e) => { e.preventDefault(); hoveredFinding = hoveredFinding?.id === finding.id ? null : finding; }}
-                onkeydown={(e) => e.key === 'Enter' && (hoveredFinding = hoveredFinding?.id === finding.id ? null : finding)}
+                ontouchend={(e) => {
+                  e.preventDefault();
+                  hoveredFinding = hoveredFinding?.id === finding.id ? null : finding;
+                }}
+                onkeydown={(e) =>
+                  e.key === 'Enter' &&
+                  (hoveredFinding = hoveredFinding?.id === finding.id ? null : finding)}
               >
                 <div
                   class="bar h-2 rounded-full transition-all duration-150"
@@ -375,15 +378,17 @@
       </div>
 
       <!-- Detail panel: sticky at top on mobile, right column on desktop -->
-      <div class="order-first desktop:order-none desktop:col-span-7 sticky top-0 desktop:static z-10 bg-[#F9F5F7] py-4 desktop:py-0 border-b border-[#928D90]/20 desktop:border-none mb-6 desktop:mb-0 min-h-[80px] desktop:min-h-0 flex flex-col desktop:justify-center">
+      <div
+        class="order-first desktop:order-none desktop:col-span-7 sticky top-0 desktop:static z-10 bg-[#F9F5F7] py-4 desktop:py-0 border-b border-[#928D90]/20 desktop:border-none mb-6 desktop:mb-0 min-h-[80px] desktop:min-h-0 flex flex-col desktop:justify-center"
+      >
         {#if hoveredFinding}
           <div class="finding-detail">
             <span
-              class="inline-block text-[11px] font-mono uppercase tracking-widest mb-3 text-[#12020A]"
+              class="inline-block text-[14px] font-mono uppercase tracking-widest mb-3 text-[#12020A]"
             >
               {hoveredFinding.category}
             </span>
-            <p class="text-[#12020A] text-base desktop:text-lg leading-relaxed m-0">
+            <p class="text-[#12020A] leading-relaxed m-0">
               {@html highlightText(hoveredFinding.text)}
             </p>
             <div class="desktop:hidden flex justify-end mt-3">
@@ -398,7 +403,8 @@
           </div>
         {:else}
           <p class="text-[#928D90] text-[1.2rem] italic m-0">
-            <span class="hidden desktop:inline">Hover</span><span class="desktop:hidden">Tap</span> a bar to read the finding
+            <span class="hidden desktop:inline">Hover</span><span class="desktop:hidden">Tap</span> a
+            bar to read the finding
           </p>
         {/if}
       </div>

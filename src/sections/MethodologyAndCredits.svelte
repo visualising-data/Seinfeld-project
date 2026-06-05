@@ -37,7 +37,6 @@
   class="container mt-20"
   style="--ring-gradient: {seasonGradient}; --linear-gradient: {linearGradient}"
 >
-
   <!-- Credits -->
   <div class="section-block px-4 mb-16">
     <h3 class="section-heading">Credits</h3>
@@ -122,78 +121,91 @@
   <div class="section-block px-4 mb-16">
     <h3 class="section-heading">Methodology</h3>
     <div class="methodology-columns">
-      <p>
-        The data used in this study did not exist; it had to be manually gathered by watching every
-        episode, armed with a spreadsheet, to log all the timings, categories, and characteristics
-        of different events. Some of the data gathering decisions and approaches have been explained
-        elsewhere in the project but it's worth adding some further detail.
-      </p>
-      <p>
-        As outlined earlier, with so many episodes to work through, a pragmatic approach was
-        required to ensure the best quality data could be obtained in the most efficient way.
-        Typically, each episode's data was gathered through two full viewings. The first viewing
-        would focus on recording the times of when discrete scenes started and finished, the
-        locations in which these scenes were set, and when characters appeared on-screen in those
-        scenes. The second viewing was done to validate the first-pass data and additionally capture
-        details about which characters caused the observed audience laughter.
-      </p>
-      <p>
-        To help with the efficiency of the data collecting, all measurements were recorded in and
-        against units of 5-seconds periods. This approach offered sufficient granularity to
-        accurately quantify a character's appearance and laughter contributions and, as explained
-        earlier, aligned with the typical length of a moment of audience laughter.
-      </p>
-      <p>
-        Though every effort has been made to maximise the accuracy of this collected data, the
-        nature of qualitative enquiries and the subjective classifications being made means
-        perfection will always be an elusive and unrealistic goal. It is inevitable there will be a
-        small number of mistakes in the absolute precision of the categorisations or timings. A
-        third viewing might have enhanced this data quality by ~1%, but given the manual effort
-        already expended, life was considered far too short.
-      </p>
-      <p>
-        One peculiarity encountered in this work concerned how networks, streaming platforms, and
-        publishers sequence episodes in different ways. It is not unusual, for some shows, for
-        studios to force the release of shows in production order, in order to maintain continuity
-        (perhaps in the appearance of characters, the cast, or the design of sets).
-      </p>
-      <p>
-        All the data gathered and used in this analysis came from watching episodes from the DVD
-        box-set. However, the date an episode was first aired on US TV was used to determine its
-        sequencing, rather than when it was originally produced, arranged on the DVDs, or ordered on
-        streaming platform menus.
-      </p>
-      <p>
-        There were 180 broadcasted episodes, of which 176 are defined, for this analysis, as
-        discrete written episodes. This distinction is important. To mark the milestone of the 100th
-        episode, NBC broadcast a special, double-episode (S6E14, S6E15) showing stand-out clips from
-        the series to date. There was another double-episode (S9E21, S9E22) highlights compilation,
-        shown ahead of the final ever episodes. As none of these were original written episodes they
-        do not align with the remit of this exploration and were excluded.
-      </p>
-      <p>
-        The timing and counting of distinct scenes within each episode was made through common sense
-        judgements. Typically, a scene would be considered to be the period of a continuous,
-        unbroken acted section of the story. There was usually a clear breakpoint or gap to conclude
-        one scene and lead into the next. An episode's opening scene was judged to commence when the
-        first acted scene began and, likewise, the final scene was timed to have finished once the
-        last acted scene ended.
-      </p>
-      <p>
-        The show's credits were not counted as being part of the episode run-time unless they were
-        overlaid during the continuation of an acted scene. For the second part of double-episodes,
-        any recaps were ignored. If a scene moved between multiple locations, so long as the
-        dialogue continued seamlessly between the two, this was considered a single scene (e.g. when
-        characters started a scene in some form of transport then got out, or if a phone
-        conversation was being shown with the callers in different locations).
-      </p>
-      <p>
-        Additional data was collected about broadcast dates, plot synopses and ratings from the
-        episode pages on <a href="https://www.imdb.com/title/tt0098904/" target="_blank">IMDb</a>.
-        Further qualitative information relating to joke topics, specific patterns in language
-        usage, or themes of character representation were considered but were ultimately considered
-        beyond the scope of the main enquiry.
-      </p>
+      <div class="methodology-col">
+        <h4 class="methodology-subheading">Data Collection Process</h4>
+        <p>
+          The data used in this study did not exist; it had to be manually gathered by watching
+          every episode, armed with a spreadsheet, to log all the timings, categories, and
+          characteristics of different events. Some of the data gathering decisions and approaches
+          have been explained elsewhere in the project but it's worth adding some further detail.
+        </p>
+        <p>
+          As outlined earlier, with so many episodes to work through, a pragmatic approach was
+          required to ensure the best quality data could be obtained in the most efficient way.
+          Typically, each episode's data was gathered through two full viewings. The first viewing
+          would focus on recording the times of when discrete scenes started and finished, the
+          locations in which these scenes were set, and when characters appeared on-screen in those
+          scenes. The second viewing was done to validate the first-pass data and additionally
+          capture details about which characters caused the observed audience laughter.
+        </p>
+        <p>
+          To help with the efficiency of the data collecting, all measurements were recorded in and
+          against units of 5-seconds periods. This approach offered sufficient granularity to
+          accurately quantify a character's appearance and laughter contributions and, as explained
+          earlier, aligned with the typical length of a moment of audience laughter.
+        </p>
+
+        <h4 class="methodology-subheading">Data Sources</h4>
+        <p>
+          Additional data was collected about broadcast dates, plot synopses and ratings from the
+          episode pages on <a href="https://www.imdb.com/title/tt0098904/" target="_blank">IMDb</a>.
+          Further qualitative information relating to joke topics, specific patterns in language
+          usage, or themes of character representation were considered but were ultimately
+          considered beyond the scope of the main enquiry.
+        </p>
+
+        <h4 class="methodology-subheading">Accuracy & Limitations</h4>
+        <p>
+          Though every effort has been made to maximise the accuracy of this collected data, the
+          nature of qualitative enquiries and the subjective classifications being made means
+          perfection will always be an elusive and unrealistic goal. It is inevitable there will be
+          a small number of mistakes in the absolute precision of the categorisations or timings. A
+          third viewing might have enhanced this data quality by ~1%, but given the manual effort
+          already expended, life was considered far too short.
+        </p>
+      </div>
+
+      <div class="methodology-col">
+        <h4 class="methodology-subheading">Episode Sequencing</h4>
+        <p>
+          One peculiarity encountered in this work concerned how networks, streaming platforms, and
+          publishers sequence episodes in different ways. It is not unusual, for some shows, for
+          studios to force the release of shows in production order, in order to maintain continuity
+          (perhaps in the appearance of characters, the cast, or the design of sets).
+        </p>
+        <p>
+          All the data gathered and used in this analysis came from watching episodes from the DVD
+          box-set. However, the date an episode was first aired on US TV was used to determine its
+          sequencing, rather than when it was originally produced, arranged on the DVDs, or ordered
+          on streaming platform menus.
+        </p>
+        <p>
+          There were 180 broadcasted episodes, of which 176 are defined, for this analysis, as
+          discrete written episodes. This distinction is important. To mark the milestone of the
+          100th episode, NBC broadcast a special, double-episode (S6E14, S6E15) showing stand-out
+          clips from the series to date. There was another double-episode (S9E21, S9E22) highlights
+          compilation, shown ahead of the final ever episodes. As none of these were original
+          written episodes they do not align with the remit of this exploration and were excluded.
+        </p>
+
+        <h4 class="methodology-subheading">Scene Classification</h4>
+        <p>
+          The timing and counting of distinct scenes within each episode was made through common
+          sense judgements. Typically, a scene would be considered to be the period of a continuous,
+          unbroken acted section of the story. There was usually a clear breakpoint or gap to
+          conclude one scene and lead into the next. An episode's opening scene was judged to
+          commence when the first acted scene began and, likewise, the final scene was timed to have
+          finished once the last acted scene ended.
+        </p>
+        <p>
+          The show's credits were not counted as being part of the episode run-time unless they were
+          overlaid during the continuation of an acted scene. For the second part of
+          double-episodes, any recaps were ignored. If a scene moved between multiple locations, so
+          long as the dialogue continued seamlessly between the two, this was considered a single
+          scene (e.g. when characters started a scene in some form of transport then got out, or if
+          a phone conversation was being shown with the callers in different locations).
+        </p>
+      </div>
     </div>
   </div>
 
@@ -211,14 +223,13 @@
         Pictures Television. These rights remain with their owners and no endorsement is implied.
       </p>
       <p>
-        Audio clips are sourced from <a
+        Media clips are sourced from <a
           href="https://getyarn.io/tv-series/6e5aa574-9637-11e7-a34c-42010af00cf6"
           target="_blank">YARN</a
-        > and still imagery sourced from <a
-          href="https://www.imdb.com/title/tt0098904/"
-          target="_blank">IMDb</a
-        >. All illustrations are original artworks, all sonification tracks are original
-        compositions.
+        >
+        and still imagery sourced from
+        <a href="https://www.imdb.com/title/tt0098904/" target="_blank">IMDb</a>. All illustrations
+        are original artworks, all sonification tracks are original compositions.
       </p>
       <p>
         For any enquiries, please contact Andy Kirk via <a href="mailto:andy@visualisingdata.com"
@@ -227,7 +238,6 @@
       </p>
     </div>
   </div>
-
 </section>
 
 <style>
@@ -262,19 +272,29 @@
     }
   }
 
-  /* Methodology: 2-column magazine layout on large screens */
+  /* Methodology: 2-column grid on large screens */
+  .methodology-columns {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
   .methodology-columns p {
     margin-top: 0;
     margin-bottom: 1em;
   }
   @media (min-width: 1024px) {
     .methodology-columns {
-      columns: 2;
+      grid-template-columns: 1fr 1fr;
       column-gap: 4rem;
     }
-    .methodology-columns p {
-      break-inside: avoid;
-    }
+  }
+
+  .methodology-subheading {
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+  }
+  .methodology-col:first-child .methodology-subheading:first-child,
+  .methodology-col:last-child .methodology-subheading:first-child {
+    margin-top: 0;
   }
 
   /* Copyright: slightly smaller, muted */
@@ -282,17 +302,13 @@
     border-top: 1px solid rgba(255, 255, 255, 0.12);
     padding-top: 2rem;
   }
-  .copyright-text {
-    font-size: 0.9rem;
-    opacity: 0.75;
-    max-width: 80ch;
-  }
 
   /* Credit name & portrait hover */
   .credit-name {
-    font-size: 1.2rem;
+    font-size: 1.375rem;
   }
   .credit-role {
+    margin-top: 5px;
     font-size: 1rem;
   }
   .credit-name-container {
