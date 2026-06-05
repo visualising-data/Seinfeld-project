@@ -56,9 +56,12 @@
     const newSrc = baseVideoUrl + videoFiles[index] + (useCC ? '(CC).mp4' : '.mp4');
     if (source.getAttribute('src') !== newSrc) {
       source.setAttribute('src', newSrc);
+      video.load();
+      // Safari rejects play() called synchronously after load() — wait for canplay
+      video.addEventListener('canplay', () => video.play().catch(() => {}), { once: true });
+    } else {
+      video.play().catch(() => {});
     }
-    video.load();
-    video.play().catch(() => {});
   };
 
   onMount(() => {
@@ -125,6 +128,8 @@
           if (isMobile) {
             for (let j = 0; j < 5; j++) gsap.set(`#show-video-${j}`, { opacity: 0 });
             gsap.set(`#show-video-${index}`, { opacity: 1 });
+            // Safari may have silently rejected the initial play(); retry when the video becomes visible
+            setVideoSrc(index, true);
           } else {
             for (let j = 0; j < 5; j++) {
               setVideoSrc(j, j === index);
