@@ -51,15 +51,16 @@
     if (!container) return;
     const video = /** @type {HTMLVideoElement} */ (container.querySelector('video'));
     if (!video) return;
+    const source = /** @type {HTMLSourceElement} */ (video.querySelector('source'));
+    if (!source) return;
     const newSrc = baseVideoUrl + videoFiles[index] + (useCC ? '(CC).mp4' : '.mp4');
-    // Set src directly on the video element (not via <source>) — this triggers
-    // the load algorithm automatically. Avoid calling video.load() explicitly:
-    // on iOS Safari, load() + play() causes an AbortError because play() fires
-    // before load() finishes. Setting video.src lets play() queue correctly.
-    if (video.src !== newSrc) {
-      video.src = newSrc;
+    if (source.getAttribute('src') !== newSrc) {
+      source.setAttribute('src', newSrc);
     }
-    video.play().catch(() => {});
+    // load() is async; calling play() synchronously after causes AbortError on
+    // iOS Safari. Register canplay before load() so it's ready when data arrives.
+    video.addEventListener('canplay', () => video.play().catch(() => {}), { once: true });
+    video.load();
   };
 
   onMount(() => {
@@ -329,7 +330,7 @@
           autoplay
           muted
           loop
-          preload="none"
+          preload="metadata"
           class="h-full w-full object-cover"
         >
           <source
@@ -380,7 +381,7 @@
           autoplay
           muted
           loop
-          preload="none"
+          preload="metadata"
           class="h-full w-full object-cover"
         >
           <source
@@ -431,7 +432,7 @@
           autoplay
           muted
           loop
-          preload="none"
+          preload="metadata"
           class="h-full w-full object-cover"
         >
           <source
@@ -482,7 +483,7 @@
           autoplay
           muted
           loop
-          preload="none"
+          preload="metadata"
           class="h-full w-full object-cover"
         >
           <source
