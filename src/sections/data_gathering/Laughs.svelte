@@ -456,8 +456,8 @@
             </div>
           </div>
         </div>
-        <div id="laughs-text-3" class="absolute inset-x-0 top-0 px-6 md:px-12 py-8 md:py-12">
-          <div class="flex flex-col md:grid md:grid-cols-[1fr_auto] gap-6 md:gap-8 items-end">
+        <div id="laughs-text-3" class="absolute inset-x-0 top-0 px-6 lg:px-12 py-8 lg:py-12">
+          <div class="flex flex-col lg:grid lg:grid-cols-[1fr_auto] gap-6 lg:gap-8 items-end">
             <!-- Text -->
             <div class="self-center max-w-[984px]">
               Measuring laughter was the most subjective and, therefore, challenging data collection
@@ -469,7 +469,7 @@
             </div>
             <!-- Icons -->
             <div
-              class="w-full lg:px-4 flex flex-row justify-between items-end lg:gap-4 lg:gap-10 shrink-0"
+              class="w-full lg:px-4 flex flex-row justify-between md:justify-start lg:justify-between items-end lg:gap-4 xl:gap-10 shrink-0"
             >
               {#each laugh3Data as item, i}
                 {@const s = isMobile ? item.mobileSize : item.size}

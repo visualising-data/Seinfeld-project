@@ -51,16 +51,15 @@
     if (!container) return;
     const video = /** @type {HTMLVideoElement} */ (container.querySelector('video'));
     if (!video) return;
-    const source = /** @type {HTMLSourceElement} */ (video.querySelector('source'));
-    if (!source) return;
     const newSrc = baseVideoUrl + videoFiles[index] + (useCC ? '(CC).mp4' : '.mp4');
-    if (source.getAttribute('src') !== newSrc) {
-      source.setAttribute('src', newSrc);
+    // Set src directly on the video element (not via <source>) — this triggers
+    // the load algorithm automatically. Avoid calling video.load() explicitly:
+    // on iOS Safari, load() + play() causes an AbortError because play() fires
+    // before load() finishes. Setting video.src lets play() queue correctly.
+    if (video.src !== newSrc) {
+      video.src = newSrc;
     }
-    // Listener must be attached before load() to avoid a race on Safari where
-    // canplay can fire before addEventListener if the video is already buffered.
-    video.addEventListener('canplay', () => video.play().catch(() => {}), { once: true });
-    video.load();
+    video.play().catch(() => {});
   };
 
   onMount(() => {
