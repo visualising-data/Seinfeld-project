@@ -558,7 +558,7 @@
       : 'rgb(231 29 128 / 0.05)'};"
   >
     <!-- Seasons -->
-    <div class="flex flex-col" style="width: {seasonsWidth}px;">
+    <div class="flex flex-col h-full" style="width: {seasonsWidth}px;">
       <div class="relative px-4 bg-accent" style="height: {headersHeight}px;">
         {#if innerWidth >= 793}
           <div class="relative text-white" style="top: {12}px;">Schedule</div>
