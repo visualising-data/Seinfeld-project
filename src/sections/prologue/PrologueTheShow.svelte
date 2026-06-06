@@ -56,12 +56,11 @@
     const newSrc = baseVideoUrl + videoFiles[index] + (useCC ? '(CC).mp4' : '.mp4');
     if (source.getAttribute('src') !== newSrc) {
       source.setAttribute('src', newSrc);
-      video.load();
-      // Safari rejects play() called synchronously after load() — wait for canplay
-      video.addEventListener('canplay', () => video.play().catch(() => {}), { once: true });
-    } else {
-      video.play().catch(() => {});
     }
+    // Listener must be attached before load() to avoid a race on Safari where
+    // canplay can fire before addEventListener if the video is already buffered.
+    video.addEventListener('canplay', () => video.play().catch(() => {}), { once: true });
+    video.load();
   };
 
   onMount(() => {
