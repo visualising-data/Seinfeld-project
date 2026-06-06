@@ -8,6 +8,8 @@
   import PrologueBook from './PrologueBook.svelte';
   import PrologueBeforeBook from './PrologueBeforeBook.svelte';
   import PrologueEnd from './PrologueEnd.svelte';
+
+  let { scheduleRefresh } = $props();
 </script>
 
 <section id="intro" class="bg-black">
@@ -18,6 +20,6 @@
   <PrologueAfterVideo />
   <PrologueTheShow />
   <PrologueBeforeBook />
-  <PrologueBook />
+  <PrologueBook {scheduleRefresh} />
   <PrologueEnd />
 </section>

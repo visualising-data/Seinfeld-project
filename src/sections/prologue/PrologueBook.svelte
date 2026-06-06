@@ -6,6 +6,8 @@
   import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 
   import BookCover from '$lib/assets/book/book_cover.jpg';
+
+  let { scheduleRefresh = () => ScrollTrigger.refresh() } = $props();
   import BookIntro from '$lib/assets/book/book_intro.jpg';
   import BookCalendar from '$lib/assets/book/book_calendar.jpg';
   import BookLaughs from '$lib/assets/book/book_laughs.jpg';
@@ -73,9 +75,9 @@
           ? Promise.resolve()
           : new Promise((r) => img.addEventListener('load', r, { once: true })),
       ),
-    ).then(() => ScrollTrigger.refresh());
+    ).then(() => scheduleRefresh());
 
-    window.addEventListener('load', () => ScrollTrigger.refresh(), { once: true });
+    window.addEventListener('load', scheduleRefresh, { once: true });
   });
 
   onDestroy(() => {

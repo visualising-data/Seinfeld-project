@@ -341,7 +341,7 @@
       $navBarColor = inView ? 'white' : 'pink';
     }}
   >
-    <Prologue />
+    <Prologue {scheduleRefresh} />
     {#if $soundAuthModaleIsOpen}
       <SoundAuthPopup />
     {/if}

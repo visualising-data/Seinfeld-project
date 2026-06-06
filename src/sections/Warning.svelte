@@ -11,35 +11,44 @@
 
   onMount(() => {
     ctx = gsap.context(() => {
-      const isMobile = window.innerWidth < 768;
+      const mm = gsap.matchMedia();
 
-      // Single timeline covers entry (0→0.5) and exit (0.5→1)
-      // Trigger spans the full wrapper: top bottom → bottom top
-      const tl = gsap.timeline({ defaults: { ease: 'none' } });
-      tl
-        // Entry: coffee from left, couch from right; labels fade+slide up simultaneously
-        .from('#warning-coffee-bg', { xPercent: -110 }, 0)
-        .from('#warning-couch-bg', { xPercent: 110 }, 0)
-        .from('.warning-label', { opacity: 0, y: 30, duration: 0.2 }, 0)
-        // Exit: coffee exits right, couch exits left
-        .to('#warning-coffee-bg', { xPercent: 110 }, 0.5)
-        .to('#warning-couch-bg', { xPercent: isMobile ? -350 : -110, duration: isMobile ? 0.3 : 0.5 }, 0.5)
-        // Text fades out after images are gone
-        .to('.warning-text-item', { opacity: 0, duration: 0.1 }, 0.8)
-        // Background reveals #F9F5F7
-        .to('#warning-bg-fill', { opacity: 1, duration: 0.1 }, 0.9);
+      const buildAnimation = (isMobile: boolean) => {
+        // Single timeline covers entry (0→0.5) and exit (0.5→1)
+        // Trigger spans the full wrapper: top bottom → bottom bottom
+        const tl = gsap.timeline({ defaults: { ease: 'none' } });
+        tl
+          // Entry: coffee from left, couch from right; labels fade+slide up simultaneously
+          .from('#warning-coffee-bg', { xPercent: -110 }, 0)
+          .from('#warning-couch-bg', { xPercent: 110 }, 0)
+          .from('.warning-label', { opacity: 0, y: 30, duration: 0.2 }, 0)
+          // Exit: coffee exits right, couch exits left
+          .to('#warning-coffee-bg', { xPercent: 110 }, 0.5)
+          .to(
+            '#warning-couch-bg',
+            { xPercent: isMobile ? -350 : -350, duration: isMobile ? 0.3 : 0.5 },
+            0.5,
+          )
+          // Text fades out after images are gone
+          .to('.warning-text-item', { opacity: 0, duration: 0.1 }, 0.8)
+          // Background reveals #F9F5F7
+          .to('#warning-bg-fill', { opacity: 1, duration: 0.1 }, 0.9);
 
-      ScrollTrigger.create({
-        trigger: '.warning-wrapper',
-        start: 'top bottom',
-        end: 'bottom bottom',
-        scrub: 1.5,
-        animation: tl,
-        invalidateOnRefresh: true,
-        onUpdate: (self: { progress: number }) => {
-          navBarColor.set(self.progress >= 0.9 ? 'pink' : 'white');
-        },
-      });
+        ScrollTrigger.create({
+          trigger: '.warning-wrapper',
+          start: 'top bottom',
+          end: 'bottom bottom',
+          scrub: 1.5,
+          animation: tl,
+          invalidateOnRefresh: true,
+          onUpdate: (self: { progress: number }) => {
+            navBarColor.set(self.progress >= 0.9 ? 'pink' : 'white');
+          },
+        });
+      };
+
+      mm.add('(max-width: 767px)', () => buildAnimation(true));
+      mm.add('(min-width: 768px)', () => buildAnimation(false));
     });
   });
 
