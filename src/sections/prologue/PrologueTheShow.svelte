@@ -45,22 +45,15 @@
     '14.ElaineDancing',
   ];
 
-  /** @param {number} index @param {boolean} useCC */
-  const setVideoSrc = (index, useCC) => {
+  /** @param {number} index */
+  const playVideo = (index) => {
     const container = document.querySelector(`#show-video-${index}`);
     if (!container) return;
     const video = /** @type {HTMLVideoElement} */ (container.querySelector('video'));
-    if (!video) return;
-    const source = /** @type {HTMLSourceElement} */ (video.querySelector('source'));
-    if (!source) return;
-    const newSrc = baseVideoUrl + videoFiles[index] + (useCC ? '(CC).mp4' : '.mp4');
-    if (source.getAttribute('src') !== newSrc) {
-      source.setAttribute('src', newSrc);
-    }
-    // load() is async; calling play() synchronously after causes AbortError on
-    // iOS Safari. Register canplay before load() so it's ready when data arrives.
-    video.addEventListener('canplay', () => video.play().catch(() => {}), { once: true });
-    video.load();
+    // Don't call video.load() — it aborts the HTML autoplay and causes AbortError on
+    // iOS Safari when play() is called before the new load completes. The HTML already
+    // has autoplay + muted + playsinline + correct src; play() alone is sufficient.
+    video?.play().catch(() => {});
   };
 
   onMount(() => {
@@ -84,9 +77,9 @@
           } else {
             gsap.set(`#show-video-${j}`, { flexGrow: j === 0 ? 4 : 1 });
           }
-          // Always use CC versions — switching between CC/non-CC causes a cold fetch on iOS
-          // Safari which prevents canplay from firing and the video never starts.
-          setVideoSrc(j, true);
+          // On mobile, hidden videos are opacity:0 — iOS Safari won't play them, so
+          // defer to transitionTo. On desktop all strips are visible, so start all.
+          if (!isMobile || j === 0) playVideo(j);
         }
         gsap.set(
           [
@@ -127,11 +120,11 @@
           if (isMobile) {
             for (let j = 0; j < 5; j++) gsap.set(`#show-video-${j}`, { opacity: 0 });
             gsap.set(`#show-video-${index}`, { opacity: 1 });
-            // Safari may have silently rejected the initial play(); retry when the video becomes visible
-            setVideoSrc(index, true);
+            // Video is now visible — play it (iOS Safari won't start hidden videos)
+            playVideo(index);
           } else {
             for (let j = 0; j < 5; j++) {
-              setVideoSrc(j, true);
+              playVideo(j);
               gsap.to(`#show-video-${j}`, {
                 flexGrow: j === index ? 4 : 1,
                 duration: 0.3,
