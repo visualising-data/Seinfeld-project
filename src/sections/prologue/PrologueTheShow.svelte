@@ -84,9 +84,9 @@
           } else {
             gsap.set(`#show-video-${j}`, { flexGrow: j === 0 ? 4 : 1 });
           }
-          // Explicitly load + play every video; video 0 gets CC, others get plain.
-          // This is needed because browsers don't reliably autoplay <video><source> elements.
-          setVideoSrc(j, j === 0);
+          // Always use CC versions — switching between CC/non-CC causes a cold fetch on iOS
+          // Safari which prevents canplay from firing and the video never starts.
+          setVideoSrc(j, true);
         }
         gsap.set(
           [
@@ -131,7 +131,7 @@
             setVideoSrc(index, true);
           } else {
             for (let j = 0; j < 5; j++) {
-              setVideoSrc(j, j === index);
+              setVideoSrc(j, true);
               gsap.to(`#show-video-${j}`, {
                 flexGrow: j === index ? 4 : 1,
                 duration: 0.3,
