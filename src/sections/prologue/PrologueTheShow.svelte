@@ -77,9 +77,9 @@
           } else {
             gsap.set(`#show-video-${j}`, { flexGrow: j === 0 ? 4 : 1 });
           }
-          // On mobile, hidden videos are opacity:0 — iOS Safari won't play them, so
-          // defer to transitionTo. On desktop all strips are visible, so start all.
-          if (!isMobile || j === 0) playVideo(j);
+          // Let HTML autoplay + muted + playsinline handle all video starts.
+          // Calling play() here races with the browser's own autoplay on iOS Safari
+          // and causes both attempts to abort. transitionTo handles play() after that.
         }
         gsap.set(
           [
