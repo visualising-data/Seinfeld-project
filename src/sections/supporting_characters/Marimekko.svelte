@@ -79,7 +79,7 @@
   const MOBILE_BAR_INDENT = 16; // gap from text right edge to bars
   const MOBILE_TOP_PADDING = 36;
 
-  let isMobile = $derived(containerWidth < 640);
+  let isMobile = $derived(containerWidth < 1024);
   let mobileBarsStart = $derived(MOBILE_IMAGE_SIZE + 6 + MOBILE_TEXT_WIDTH + MOBILE_BAR_INDENT);
   let mobileMaxLaughRate = $derived(
     Math.max(...filteredCharsScreenTime.map((c) => c.causeLaughsWhileOnScreen)),
