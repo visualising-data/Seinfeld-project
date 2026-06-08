@@ -1,5 +1,5 @@
 <script>
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import { gsap } from 'gsap/dist/gsap';
   import * as Tone from 'tone';
 
@@ -381,39 +381,58 @@
 
     return mainCharsData;
   });
+  /** @type {gsap.MatchMedia | undefined} */
+  let mm;
+
   onMount(() => {
     // Preload audio files
     preload();
 
+    mm = gsap.matchMedia();
+
     if (currentSection === 'main_chars') {
-      // Pin visualization
-      gsap.timeline({
-        scrollTrigger: {
-          trigger: '#main_chars-episodes-container',
-          start: `top top-=${headerHeight}`,
-          end: 'bottom bottom',
-          pin: '#lead-chars-episodes-viz',
-          onEnter: () => {
-            soundtrackCanPlay = true;
-            playAudio();
-            enterSoundSection();
+      // Pin visualization — desktop only (pin:true is problematic on iOS)
+      mm.add('(min-width: 1024px)', () => {
+        const st = gsap.timeline({
+          scrollTrigger: {
+            trigger: '#main_chars-episodes-container',
+            start: `top top-=${headerHeight}`,
+            end: 'bottom bottom',
+            pin: '#lead-chars-episodes-viz',
+            onEnter: () => { soundtrackCanPlay = true; playAudio(); enterSoundSection(); },
+            onEnterBack: () => { soundtrackCanPlay = true; playAudio(); enterSoundSection(); },
+            onLeave: () => { soundtrackCanPlay = false; stopAudio(); leaveSoundSection(); },
+            onLeaveBack: () => { soundtrackCanPlay = false; stopAudio(); leaveSoundSection(); },
           },
-          onEnterBack: () => {
-            soundtrackCanPlay = true;
-            playAudio();
-            enterSoundSection();
+        });
+        return () => { st.scrollTrigger?.kill(); st.kill(); };
+      });
+
+      // Mobile/tablet: IntersectionObserver for audio section tracking (no pin)
+      mm.add('(max-width: 1023px)', () => {
+        const containerEl = document.getElementById('main_chars-episodes-container');
+        if (!containerEl) return;
+        const obs = new IntersectionObserver(
+          ([entry]) => {
+            if (entry.isIntersecting) {
+              soundtrackCanPlay = true;
+              playAudio();
+              enterSoundSection();
+            } else {
+              soundtrackCanPlay = false;
+              stopAudio();
+              leaveSoundSection();
+            }
           },
-          onLeave: () => {
-            soundtrackCanPlay = false;
-            stopAudio();
-            leaveSoundSection();
-          },
-          onLeaveBack: () => {
-            soundtrackCanPlay = false;
-            stopAudio();
-            leaveSoundSection();
-          },
-        },
+          { threshold: 0 },
+        );
+        obs.observe(containerEl);
+        return () => {
+          obs.disconnect();
+          soundtrackCanPlay = false;
+          stopAudio();
+          leaveSoundSection();
+        };
       });
 
       // Prevent mouse over effect while text is scrolling
@@ -731,6 +750,13 @@
       });
     }
   });
+
+  onDestroy(() => {
+    mm?.revert();
+    soundtrackCanPlay = false;
+    stopAudio();
+    leaveSoundSection();
+  });
 </script>
 
 <svelte:window bind:innerWidth bind:innerHeight />
@@ -738,14 +764,12 @@
 <div
   id="{currentSection}-episodes-container"
   class="relative mt-20 mb-52"
-  style="padding-bottom: {currentSection === 'main_chars'
-    ? '250vh'
-    : '150vh'}; background-color: {bgColor}; transition: background-color 1s ease;"
+  style="padding-bottom: {isMobile ? '0' : currentSection === 'main_chars' ? '250vh' : '150vh'}; background-color: {bgColor}; transition: background-color 1s ease;"
 >
   <div
     id="lead-chars-episodes"
-    class="absolute w-screen top-0 left-0"
-    style="height: {innerHeight + headerHeight}px"
+    class="w-screen top-0 left-0"
+    style="position: {isMobile ? (currentSection === 'main_chars' ? 'sticky' : 'relative') : 'absolute'}; height: {isMobile && currentSection !== 'main_chars' ? 'auto' : (isMobile ? innerHeight : innerHeight + headerHeight) + 'px'};"
   >
     <div class="container">
       <!-- Header -->
@@ -795,9 +819,10 @@
     <div
       id="lead-chars-episodes-texts"
       class="z-10 relative pointer-events-none"
-      style="top: calc(100vh + {headerHeight}px);"
+      style="top: {isMobile ? '0' : `calc(100vh + ${headerHeight}px)`};"
     >
       <MainCharsTexts {charData} />
+      <div class="lg:hidden" style="height: 100dvh;"></div>
     </div>
   {/if}
 </div>

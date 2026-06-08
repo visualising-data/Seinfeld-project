@@ -136,7 +136,7 @@
   };
 </script>
 
-<div class="flex mx-[-28px] md:mx-0" bind:clientWidth={visualizationsWidth}>
+<div class="flex mx-0" bind:clientWidth={visualizationsWidth}>
   <svg width={visualizationsWidth} height={visualizationsHeight}>
     <!-- Episode details -->
     <g transform="translate(0, {margin.top})">

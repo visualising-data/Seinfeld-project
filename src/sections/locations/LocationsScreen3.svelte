@@ -56,25 +56,7 @@
 
     const mm = gsap.matchMedia();
 
-    mm.add('(max-width: 1023px)', () => {
-      ScrollTrigger.create({
-        trigger: '#locations_screen_3',
-        start: 'top top',
-        end: 'bottom top',
-        pin: '#locations-3-text',
-      });
-
-      /** @type {HTMLElement[]} */
-      const mobileRowEls = gsap.utils.toArray('.location-mobile-row');
-      mobileRowEls.forEach((el) => {
-        gsap.to(el, {
-          yPercent: Number(el.dataset.speed) * 50,
-          ease: 'none',
-          scrollTrigger: { trigger: el, start: 'top bottom', scrub: true },
-        });
-      });
-    });
-
+    // Desktop only: pin text, parallax on individual locations
     mm.add('(min-width: 1024px)', () => {
       ScrollTrigger.create({
         trigger: '#locations_screen_3',
@@ -107,7 +89,7 @@
     <div class="grid grid-cols-12 lg:gap-20">
       <div
         id="locations-3-text"
-        class="locations-text-col col-span-12 lg:col-span-7 h-[100dvh] flex flex-col justify-center"
+        class="locations-text-col col-span-12 lg:col-span-7 h-auto lg:h-[100dvh] flex flex-col justify-center"
       >
         <p>
           As with the task of classifying characters, there were challenges with establishing a
@@ -135,9 +117,9 @@
     </div>
   </div>
 
-  <!-- Mobile/tablet locations — 3 rows, parallax per row -->
-  <div class="absolute block lg:hidden w-full" style="height: 800px; top: 100dvh;">
-    <div class="h-full flex flex-col justify-center gap-20 px-6">
+  <!-- Mobile/tablet locations — 3 rows, static below text -->
+  <div class="block lg:hidden w-full py-12">
+    <div class="flex flex-col gap-12 px-6">
       {#each mobileRows as row, rowIndex}
         <div class="location-mobile-row flex justify-around" data-speed={mobileRowSpeeds[rowIndex]}>
           {#each row as location, i}
@@ -194,6 +176,11 @@
 <style>
   #locations_screen_3 {
     padding-bottom: 100vh;
+  }
+  @media (max-width: 1023px) {
+    #locations_screen_3 {
+      padding-bottom: 2rem;
+    }
   }
 
   .location {

@@ -1,5 +1,5 @@
 <script>
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import { gsap } from 'gsap/dist/gsap';
   import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
   import Lenis from 'lenis';
@@ -8,115 +8,170 @@
 
   const mainChars = characters.slice(0, 4);
 
+  /** @type {gsap.MatchMedia | undefined} */
+  let mm;
+
   onMount(() => {
     gsap.set('#lead-chars-intro p', { translateY: 100, opacity: 0 });
-    gsap.set('#lead-chars-intro .highlight', { webkitTextFillColor: '#F9F5F7', backgroundPosition: '0% center' });
-
-    const tl1 = gsap.timeline({
-      scrollTrigger: {
-        trigger: '#lead-chars-intro',
-        start: 'top top',
-        end: 'bottom top',
-        pin: '#lead-chars-intro-text-container',
-        invalidateOnRefresh: true,
-      },
+    gsap.set('#lead-chars-intro .highlight', {
+      webkitTextFillColor: '#F9F5F7',
+      backgroundPosition: '0% center',
     });
-    tl1
-      .to('#lead-chars-intro p', {
-        translateY: 0,
-        opacity: 1,
-        duration: 1,
-        ease: 'power3.out',
-        stagger: { each: 0.3 },
-      })
-      .to('#lead-chars-intro .color-jerry', {
-        color: '#5FA8D3',
-        duration: 1,
-        ease: 'back.out(1.7)',
-      })
-      .to(
-        '#lead-chars-intro .color-george',
-        {
-          color: '#EB6447',
+
+    mm = gsap.matchMedia();
+
+    // Desktop: pin + scrub parallax + Lenis smooth scroll
+    mm.add('(min-width: 1024px)', () => {
+      const tl1 = gsap.timeline({
+        scrollTrigger: {
+          trigger: '#lead-chars-intro',
+          start: 'top top',
+          end: 'bottom top',
+          pin: '#lead-chars-intro-text-container',
+          invalidateOnRefresh: true,
+        },
+      });
+      tl1
+        .to('#lead-chars-intro p', {
+          translateY: 0,
+          opacity: 1,
+          duration: 1,
+          ease: 'power3.out',
+          stagger: { each: 0.3 },
+        })
+        .to('#lead-chars-intro .color-jerry', {
+          color: '#5FA8D3',
           duration: 1,
           ease: 'back.out(1.7)',
-        },
-        '-=0.5',
-      )
-      .to(
-        '#lead-chars-intro .color-elaine',
-        {
-          color: '#FBBA3A',
-          duration: 1,
-          ease: 'back.out(1.7)',
-        },
-        '-=0.8',
-      )
-      .to(
-        '#lead-chars-intro .color-kramer',
-        {
-          color: '#83C8C3',
-          duration: 1,
-          ease: 'back.out(1.7)',
-        },
-        '-=0.9',
-      )
-      .to('#lead-chars-intro .highlight', {
-        webkitTextFillColor: 'transparent',
-        backgroundPosition: '200% center',
-        duration: 2,
-        delay: 1,
-        ease: 'power3.out',
-        stagger: { each: 0.5 },
+        })
+        .to(
+          '#lead-chars-intro .color-george',
+          { color: '#EB6447', duration: 1, ease: 'back.out(1.7)' },
+          '-=0.5',
+        )
+        .to(
+          '#lead-chars-intro .color-elaine',
+          { color: '#FBBA3A', duration: 1, ease: 'back.out(1.7)' },
+          '-=0.8',
+        )
+        .to(
+          '#lead-chars-intro .color-kramer',
+          { color: '#83C8C3', duration: 1, ease: 'back.out(1.7)' },
+          '-=0.9',
+        )
+        .to('#lead-chars-intro .highlight', {
+          webkitTextFillColor: 'transparent',
+          backgroundPosition: '200% center',
+          duration: 2,
+          delay: 1,
+          ease: 'power3.out',
+          stagger: { each: 0.5 },
+        });
+
+      /** @type {gsap.core.Tween[]} */
+      const parallaxTweens = [];
+      /** @type {HTMLElement[]} */
+      const chars = gsap.utils.toArray('.lead-char-parallax');
+      chars.forEach((char) => {
+        parallaxTweens.push(
+          gsap.to(char, {
+            yPercent: Number(char.dataset.speed) * 50,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: char,
+              start: 'top bottom',
+              scrub: true,
+              invalidateOnRefresh: true,
+            },
+          }),
+        );
       });
 
-    // Add parallax effect to characters
-    /** @type {gsap.core.Tween[]} */
-    const parallaxTweens = [];
-    /** @type {HTMLElement[]} */
-    const chars = gsap.utils.toArray('.lead-char-parallax');
-    chars.forEach((char) => {
-      parallaxTweens.push(
-        gsap.to(char, {
-          yPercent: Number(char.dataset.speed) * 50,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: char,
-            start: 'top bottom',
-            scrub: true,
-            invalidateOnRefresh: true,
-          },
-        }),
+      const lenis = new Lenis();
+      lenis.on('scroll', ScrollTrigger.update);
+      const lenisRaf = (time) => lenis.raf(time * 1000);
+      gsap.ticker.add(lenisRaf);
+      gsap.ticker.lagSmoothing(0);
+
+      return () => {
+        tl1.scrollTrigger?.kill();
+        tl1.kill();
+        parallaxTweens.forEach((t) => {
+          t.scrollTrigger?.kill();
+          t.kill();
+        });
+        gsap.ticker.remove(lenisRaf);
+        lenis.destroy();
+      };
+    });
+
+    // Mobile/tablet: IntersectionObserver reveal — no pin, no scrub, no Lenis
+    mm.add('(max-width: 1023px)', () => {
+      const el = document.getElementById('lead-chars-intro');
+      if (!el) return;
+
+      const obs = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            obs.disconnect();
+            gsap
+              .timeline()
+              .to('#lead-chars-intro p', {
+                translateY: 0,
+                opacity: 1,
+                duration: 1,
+                ease: 'power3.out',
+                stagger: { each: 0.3 },
+              })
+              .to('#lead-chars-intro .color-jerry', {
+                color: '#5FA8D3',
+                duration: 1,
+                ease: 'back.out(1.7)',
+              })
+              .to(
+                '#lead-chars-intro .color-george',
+                { color: '#EB6447', duration: 1, ease: 'back.out(1.7)' },
+                '-=0.5',
+              )
+              .to(
+                '#lead-chars-intro .color-elaine',
+                { color: '#FBBA3A', duration: 1, ease: 'back.out(1.7)' },
+                '-=0.8',
+              )
+              .to(
+                '#lead-chars-intro .color-kramer',
+                { color: '#83C8C3', duration: 1, ease: 'back.out(1.7)' },
+                '-=0.9',
+              )
+              .to('#lead-chars-intro .highlight', {
+                webkitTextFillColor: 'transparent',
+                backgroundPosition: '200% center',
+                duration: 2,
+                delay: 1,
+                ease: 'power3.out',
+                stagger: { each: 0.5 },
+              });
+          }
+        },
+        { threshold: 0.3 },
       );
+      obs.observe(el);
+
+      return () => obs.disconnect();
     });
+  });
 
-    // Smooth scroll — drive Lenis through GSAP's ticker so ScrollTrigger stays in sync.
-    // Store the function reference so the same identity can be passed to remove().
-    const lenis = new Lenis();
-    lenis.on('scroll', ScrollTrigger.update);
-    const lenisRaf = (time) => lenis.raf(time * 1000);
-    gsap.ticker.add(lenisRaf);
-    gsap.ticker.lagSmoothing(0);
-
-    return () => {
-      tl1.scrollTrigger?.kill();
-      tl1.kill();
-      parallaxTweens.forEach((t) => {
-        t.scrollTrigger?.kill();
-        t.kill();
-      });
-      gsap.ticker.remove(lenisRaf);
-      lenis.destroy();
-    };
+  onDestroy(() => {
+    mm?.revert();
   });
 </script>
 
-<div id="lead-chars-intro" class="bg-black text-white relative" style="padding-bottom: 100vh;">
+<div id="lead-chars-intro" class="bg-black text-white relative">
   <div class="container">
     <div class="grid grid-cols-12 gap-4">
       <div
         id="lead-chars-intro-text-container"
-        class="col-span-12 md:col-span-7 h-[100dvh] flex flex-col justify-center"
+        class="col-span-12 md:col-span-7 h-auto lg:h-[100dvh] flex flex-col justify-center"
       >
         <p>
           We begin with a look at the lead characters. It was no surprise to find the majority of
@@ -137,8 +192,27 @@
       </div>
     </div>
 
-    <!-- Characters -->
-    <div class="container absolute" style="height: 1400px; top: 100vh; left: 0; right: 0;">
+    <!-- Mobile-only character row (static, no parallax) -->
+    <div class="lg:hidden flex justify-around mt-8 pb-12">
+      {#each mainChars as char}
+        <div class="flex flex-col items-center">
+          <div
+            class="character rounded-full bg-contain bg-center shadow-md w-[60px] h-[60px]"
+            style="background-image: url('{getCharacterImagePath(char.id)}');"
+          ></div>
+          <div class="text-sm mt-1" style="background-color: rgba(18, 2, 10, 0.8);">
+            {char.label}
+          </div>
+        </div>
+      {/each}
+    </div>
+
+    <!-- Characters (desktop parallax) -->
+    <div
+      id="lead-chars-parallax-container"
+      class="container absolute"
+      style="height: 1400px; top: 100vh; left: 0; right: 0;"
+    >
       <div class="grid grid-cols-12 gap-4">
         <div class="md:col-span-1"></div>
         <div class="col-span-12 md:col-span-11 h-[100dvh] flex flex-col justify-center">
@@ -170,5 +244,16 @@
 <style>
   .color {
     font-weight: 600;
+  }
+  #lead-chars-intro {
+    padding-bottom: 100vh;
+  }
+  @media (max-width: 1023px) {
+    #lead-chars-intro {
+      padding-bottom: 4rem;
+    }
+    #lead-chars-parallax-container {
+      display: none;
+    }
   }
 </style>

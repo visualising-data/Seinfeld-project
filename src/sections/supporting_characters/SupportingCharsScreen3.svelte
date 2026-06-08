@@ -68,27 +68,7 @@
 
     const mm = gsap.matchMedia();
 
-    // Mobile/tablet: pin text, parallax on rows
-    mm.add('(max-width: 1023px)', () => {
-      ScrollTrigger.create({
-        trigger: '#supporting_chars_screen_3',
-        start: 'top top',
-        end: 'bottom top',
-        pin: '#supporting-chars-3-text',
-      });
-
-      /** @type {HTMLElement[]} */
-      const mobileRowEls = gsap.utils.toArray('.mobile-char-row');
-      mobileRowEls.forEach((el) => {
-        gsap.to(el, {
-          yPercent: Number(el.dataset.speed) * 50,
-          ease: 'none',
-          scrollTrigger: { trigger: el, start: 'top bottom', scrub: true },
-        });
-      });
-    });
-
-    // Desktop: pin text, parallax on individual chars
+    // Desktop only: pin text, parallax on individual chars
     mm.add('(min-width: 1024px)', () => {
       ScrollTrigger.create({
         trigger: '#supporting_chars_screen_3',
@@ -121,7 +101,7 @@
     <div class="grid grid-cols-12 lg:gap-20">
       <div
         id="supporting-chars-3-text"
-        class="supporting-chars-text-col col-span-12 lg:col-span-7 h-[100dvh] flex flex-col justify-center"
+        class="supporting-chars-text-col col-span-12 lg:col-span-7 h-auto lg:h-[100dvh] flex flex-col justify-center"
       >
         <p>
           The ultimate decision was to create categories for the four respective <span
@@ -146,9 +126,9 @@
     </div>
   </div>
 
-  <!-- Mobile/tablet characters — 3 rows of 3, parallax per row -->
-  <div class="absolute block lg:hidden w-full" style="height: 800px; top: 100dvh;">
-    <div class="h-full flex flex-col justify-center gap-20 px-6">
+  <!-- Mobile/tablet characters — 3 rows of 3, static below text -->
+  <div class="block lg:hidden w-full py-12">
+    <div class="flex flex-col gap-12 px-6">
       {#each mobileRows as row, rowIndex}
         <div class="mobile-char-row flex justify-around" data-speed={mobileRowSpeeds[rowIndex]}>
           {#each row as char, i}
@@ -205,6 +185,11 @@
 <style>
   #supporting_chars_screen_3 {
     padding-bottom: 100vh;
+  }
+  @media (max-width: 1023px) {
+    #supporting_chars_screen_3 {
+      padding-bottom: 2rem;
+    }
   }
 
   .color {

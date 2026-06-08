@@ -1,5 +1,5 @@
 <script>
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import { gsap } from 'gsap/dist/gsap';
   import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
   import Lenis from 'lenis';
@@ -10,82 +10,36 @@
   const screen1 = '#supporting_chars_screen_1';
   const screen2 = '#supporting_chars_screen_2';
 
+  /** @type {gsap.MatchMedia | undefined} */
+  let mm;
+
   onMount(() => {
-    gsap.set('#supporting_chars p', {
-      translateY: 100,
-      opacity: 0,
-    });
+    gsap.set('#supporting_chars p', { translateY: 100, opacity: 0 });
 
-    const tl1 = gsap.timeline({
-      scrollTrigger: {
-        trigger: screen1,
-        start: 'top center',
-      },
-    });
+    // Text reveals — no pin/scrub, safe on all devices
+    const tl1 = gsap.timeline({ scrollTrigger: { trigger: screen1, start: 'top center' } });
     tl1
-      .to(`${screen1} p`, {
-        translateY: 0,
-        opacity: 1,
-        duration: 1,
-        ease: 'power3.out',
-        stagger: { each: 0.3 },
-      })
-      .to(
-        `${screen1} .highlight`,
-        {
-          webkitTextFillColor: 'transparent',
-          backgroundPosition: '200% center',
-          duration: 2,
-          delay: 1,
-          ease: 'power3.out',
-        },
-        '<-0.5',
-      );
+      .to(`${screen1} p`, { translateY: 0, opacity: 1, duration: 1, ease: 'power3.out', stagger: { each: 0.3 } })
+      .to(`${screen1} .highlight`, { webkitTextFillColor: 'transparent', backgroundPosition: '200% center', duration: 2, delay: 1, ease: 'power3.out' }, '<-0.5');
 
-    const tl2 = gsap.timeline({
-      scrollTrigger: {
-        trigger: screen2,
-        start: 'top top<20%',
-      },
-    });
+    const tl2 = gsap.timeline({ scrollTrigger: { trigger: screen2, start: 'top top<20%' } });
     tl2
-      .to(`${screen2} p`, {
-        translateY: 0,
-        opacity: 1,
-        duration: 1,
-        ease: 'power3.out',
-      })
-      .to(
-        `${screen2} .highlight`,
-        {
-          webkitTextFillColor: 'transparent',
-          backgroundPosition: '200% center',
-          duration: 2,
-          delay: 1,
-          ease: 'power3.out',
-        },
-        '<-0.5',
-      );
+      .to(`${screen2} p`, { translateY: 0, opacity: 1, duration: 1, ease: 'power3.out' })
+      .to(`${screen2} .highlight`, { webkitTextFillColor: 'transparent', backgroundPosition: '200% center', duration: 2, delay: 1, ease: 'power3.out' }, '<-0.5');
 
-    // Smooth scroll
-    const lenis = new Lenis();
-    let rafId = 0;
-
-    /**
-     * @param {number} time
-     */
-    function raf(time) {
-      lenis.raf(time);
+    // Lenis smooth scroll — desktop only (conflicts with iOS native momentum scroll)
+    mm = gsap.matchMedia();
+    mm.add('(min-width: 1024px)', () => {
+      const lenis = new Lenis();
+      let rafId = 0;
+      /** @param {number} time */
+      function raf(time) { lenis.raf(time); rafId = requestAnimationFrame(raf); }
       rafId = requestAnimationFrame(raf);
-    }
-
-    rafId = requestAnimationFrame(raf);
-
-    return () => {
-      cancelAnimationFrame(rafId);
-      lenis.destroy();
-    };
+      return () => { cancelAnimationFrame(rafId); lenis.destroy(); };
+    });
   });
+
+  onDestroy(() => { mm?.revert(); });
 </script>
 
 <div id="supporting_chars" class="bg-black text-white">
@@ -93,7 +47,7 @@
   <div id="supporting_chars_screen_1" class="md:h-[100dvh] w-screen py-60 md:py-0">
     <div class="container">
       <div class="grid grid-cols-12 gap-4">
-        <div class="col-span-12 md:col-span-7 h-[100dvh] flex flex-col justify-center">
+        <div class="col-span-12 md:col-span-7 h-auto lg:h-[100dvh] flex flex-col justify-center">
           <p>
             As a show grows, it is inevitable that so does the universe of different characters. And
             as the list of potential characters grows, so too does the temptation to use them more

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onMount, onDestroy } from 'svelte';
     import { scaleBand, scaleLinear } from 'd3-scale';
     import { episodesInfo } from '$lib/data/episodesInfo';
     import EpisodeBars from '../Laughs/EpisodeBars.svelte';
@@ -46,16 +46,24 @@
 		isTooltipVisible = false;
 	};
 
+    /** @type {gsap.MatchMedia | undefined} */
+    let mm;
+
     onMount(() => {
 		setTimeout(() => {
-            // Pin vsualizations
-		ScrollTrigger.create({
-			trigger: '#all-episodes',
-			start: 'top top',
-            end: 'bottom bottom',
-			pin: '#all-episodes-visualizations',
-			preventOverlaps: true
-		});
+            mm = gsap.matchMedia();
+
+            // Pin visualizations — desktop only (pin:true is problematic on iOS)
+            mm.add('(min-width: 1024px)', () => {
+                const st = ScrollTrigger.create({
+                    trigger: '#all-episodes',
+                    start: 'top top',
+                    end: 'bottom bottom',
+                    pin: '#all-episodes-visualizations',
+                    preventOverlaps: true,
+                });
+                return () => st.kill();
+            });
 
         // Texts timelines
         gsap.set('#all-episodes .episode-bar, #all-episodes #laugh-rate .bar, #all-episodes #imdb-rating .bar', {
@@ -158,6 +166,10 @@
             }, '<-0.8')
         }, 3000);
 	});
+
+    onDestroy(() => {
+        mm?.revert();
+    });
 </script>
 
 <svelte:window bind:innerWidth />

@@ -1,76 +1,39 @@
 <script>
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import { gsap } from 'gsap/dist/gsap';
   import Lenis from 'lenis';
   import LocationsScreen3 from './LocationsScreen3.svelte';
 
+  /** @type {gsap.MatchMedia | undefined} */
+  let mm;
+
   onMount(() => {
     gsap.set('#locations p', { translateY: 100, opacity: 0 });
 
-    const tl1 = gsap.timeline({
-      scrollTrigger: {
-        trigger: '#locations_screen_1',
-        start: 'top center',
-      },
-    });
+    // Text reveals — no pin/scrub, safe on all devices
+    const tl1 = gsap.timeline({ scrollTrigger: { trigger: '#locations_screen_1', start: 'top center' } });
     tl1
-      .to('#locations_screen_1 p', {
-        translateY: 0,
-        opacity: 1,
-        duration: 1,
-        ease: 'power3.out',
-        stagger: { each: 0.3 },
-      })
-      .to(
-        '#locations_screen_1 .highlight',
-        {
-          webkitTextFillColor: 'transparent',
-          backgroundPosition: '200% center',
-          duration: 2,
-          delay: 1,
-          ease: 'power3.out',
-        },
-        '<-0.5',
-      );
+      .to('#locations_screen_1 p', { translateY: 0, opacity: 1, duration: 1, ease: 'power3.out', stagger: { each: 0.3 } })
+      .to('#locations_screen_1 .highlight', { webkitTextFillColor: 'transparent', backgroundPosition: '200% center', duration: 2, delay: 1, ease: 'power3.out' }, '<-0.5');
 
-    const tl2 = gsap.timeline({
-      scrollTrigger: {
-        trigger: '#locations_screen_2',
-        start: 'top top<20%',
-      },
-    });
+    const tl2 = gsap.timeline({ scrollTrigger: { trigger: '#locations_screen_2', start: 'top top<20%' } });
     tl2
-      .to('#locations_screen_2 p', {
-        translateY: 0,
-        opacity: 1,
-        duration: 1,
-        ease: 'power3.out',
-      })
-      .to(
-        '#locations_screen_2 .highlight',
-        {
-          webkitTextFillColor: 'transparent',
-          backgroundPosition: '200% center',
-          duration: 2,
-          delay: 1,
-          ease: 'power3.out',
-        },
-        '<-0.5',
-      );
+      .to('#locations_screen_2 p', { translateY: 0, opacity: 1, duration: 1, ease: 'power3.out' })
+      .to('#locations_screen_2 .highlight', { webkitTextFillColor: 'transparent', backgroundPosition: '200% center', duration: 2, delay: 1, ease: 'power3.out' }, '<-0.5');
 
-    // Smooth scroll
-    const lenis = new Lenis();
-
-    /**
-     * @param {number} time
-     */
-    function raf(time) {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
-    }
-
-    requestAnimationFrame(raf);
+    // Lenis smooth scroll — desktop only (conflicts with iOS native momentum scroll)
+    mm = gsap.matchMedia();
+    mm.add('(min-width: 1024px)', () => {
+      const lenis = new Lenis();
+      let rafId = 0;
+      /** @param {number} time */
+      function raf(time) { lenis.raf(time); rafId = requestAnimationFrame(raf); }
+      rafId = requestAnimationFrame(raf);
+      return () => { cancelAnimationFrame(rafId); lenis.destroy(); };
+    });
   });
+
+  onDestroy(() => { mm?.revert(); });
 </script>
 
 <div id="locations" class="bg-black text-white">
@@ -78,7 +41,7 @@
   <div id="locations_screen_1" class="md:h-[100dvh] w-screen py-60 md:py-0">
     <div class="container">
       <div class="grid grid-cols-12 gap-4">
-        <div class="col-span-12 md:col-span-7 h-[100dvh] flex flex-col justify-center">
+        <div class="col-span-12 md:col-span-7 h-auto lg:h-[100dvh] flex flex-col justify-center">
           <p>
             After examining the use of lead and supporting characters - <span class="highlight"
               >the who</span
