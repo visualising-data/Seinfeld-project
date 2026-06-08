@@ -158,16 +158,14 @@
     barsTl = animateBars();
   };
 
-  /** @type {gsap.Context | undefined} */
-  let ctx;
+  /** @type {gsap.MatchMedia | undefined} */
+  let mm;
 
   onMount(() => {
     soundtrack = new Tone.Player(
       'https://amdufour.github.io/hosted-data/apis/sonification/20250925_Seinfeld_Intro_Title_All.mp3',
     ).toDestination();
 
-    // IntersectionObserver is more reliable than GSAP ScrollTrigger on iOS Chrome
-    // for detecting whether the section is actually in view.
     const titleEl = document.getElementById('title-screen');
     if (titleEl) {
       ioObserver = new IntersectionObserver(
@@ -181,90 +179,116 @@
       ioObserver.observe(titleEl);
     }
 
-    ctx = gsap.context(() => {
-      revealTl = gsap
-        .timeline({
-          scrollTrigger: {
-            trigger: '#title-screen',
-            start: 'top top',
-            end: 'bottom top',
-            toggleActions: 'play none restart reset',
-            invalidateOnRefresh: true,
-            onEnterBack: () => {
-              barsHaveAnimated = false;
-            },
-            onLeaveBack: () => {
-              barsHaveAnimated = false;
-            },
-          },
-        })
-        .add(revealContent(), 0)
-        .call(
-          () => {
-            barsHaveAnimated = true;
-            playJingle();
-          },
-          [],
-          1.5,
-        )
-        .add(animateBars(), 1.5);
+    mm = gsap.matchMedia();
 
-      // Section is 500dvh, sticky container is 100dvh.
-      // scrub (top center → bottom bottom) covers ~450dvh.
-      // fromTo from-states are explicit so the scrub never fights the reveal tween.
-      gsap
-        .timeline({
-          scrollTrigger: {
-            trigger: '#title-screen',
-            start: 'top center',
-            end: 'bottom bottom',
-            scrub: 1,
-            invalidateOnRefresh: true,
-          },
-        })
-        // t=0–1: implicit hold (content fully visible)
-        // t=1–2: fly-out (everything except Seinfeld fades + moves up)
-        // t=2–3: white Seinfeld fades out; 9 season-colored copies emerge from
-        //         the same position and fan out to form a light superposition
-        .fromTo(
-          ['#title-the', '#title-chronicles', '#title-screen svg', '#subtitle'],
-          { opacity: 1, y: 0, immediateRender: false },
-          { opacity: 0, y: -80, ease: 'none' },
-          1,
-        )
-        .fromTo(
-          '#title-seinfeld-text',
-          { opacity: 1 },
-          { opacity: 0, ease: 'none', duration: 0.5 },
-          2,
-        )
-        .to('.seinfeld-season-word', { opacity: 1, duration: 0.001 }, 2)
-        .fromTo(
-          '.seinfeld-season-word',
-          { xPercent: 0, scale: 1, x: 0 },
-          {
-            xPercent: (/** @type {number} */ i) => (i - 4) * 4,
-            x: () => (window.innerWidth < 768 ? -80 : 0),
-            scale: (/** @type {number} */ i) => 1 + i * 0.05,
-            ease: 'none',
-            duration: 1,
-          },
-          2,
-        );
+    // Desktop: ScrollTrigger reveal + scrub fan-out.
+    mm.add('(min-width: 1024px)', () => {
+      const ctx = gsap.context(() => {
+        revealTl = gsap
+          .timeline({
+            scrollTrigger: {
+              trigger: '#title-screen',
+              start: 'top top',
+              end: 'bottom top',
+              toggleActions: 'play none restart reset',
+              invalidateOnRefresh: true,
+              onEnterBack: () => {
+                barsHaveAnimated = false;
+              },
+              onLeaveBack: () => {
+                barsHaveAnimated = false;
+              },
+            },
+          })
+          .add(revealContent(), 0)
+          .call(
+            () => {
+              barsHaveAnimated = true;
+              playJingle();
+            },
+            [],
+            1.5,
+          )
+          .add(animateBars(), 1.5);
+
+        gsap
+          .timeline({
+            scrollTrigger: {
+              trigger: '#title-screen',
+              start: 'top center',
+              end: 'bottom bottom',
+              scrub: 1,
+              invalidateOnRefresh: true,
+            },
+          })
+          .fromTo(
+            ['#title-the', '#title-chronicles', '#title-screen svg', '#subtitle'],
+            { opacity: 1, y: 0, immediateRender: false },
+            { opacity: 0, y: -80, ease: 'none' },
+            1,
+          )
+          .fromTo(
+            '#title-seinfeld-text',
+            { opacity: 1 },
+            { opacity: 0, ease: 'none', duration: 0.5 },
+            2,
+          )
+          .to('.seinfeld-season-word', { opacity: 1, duration: 0.001 }, 2)
+          .fromTo(
+            '.seinfeld-season-word',
+            { xPercent: 0, scale: 1, x: 0 },
+            {
+              xPercent: (/** @type {number} */ i) => (i - 4) * 4,
+              x: 0,
+              scale: (/** @type {number} */ i) => 1 + i * 0.05,
+              ease: 'none',
+              duration: 1,
+            },
+            2,
+          );
+      });
+      return () => ctx.revert();
+    });
+
+    // Mobile/tablet: one-shot entrance animation, no pin spacer, no scrub.
+    mm.add('(max-width: 1023px)', () => {
+      let hasRevealed = false;
+      /** @type {gsap.core.Timeline | undefined} */
+      let mobileTl;
+      const revealObs = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting && !hasRevealed) {
+            hasRevealed = true;
+            revealObs.disconnect();
+            mobileTl = gsap
+              .timeline()
+              .add(revealContent(), 0)
+              .call(() => { barsHaveAnimated = true; playJingle(); }, [], 1.5)
+              .add(animateBars(), 1.5);
+          }
+        },
+        { threshold: 0.1 },
+      );
+      const el = document.getElementById('title-screen');
+      if (el) revealObs.observe(el);
+      return () => {
+        revealObs.disconnect();
+        mobileTl?.kill();
+      };
     });
   });
 
   onDestroy(() => {
     ioObserver?.disconnect();
     isTitleInView = false;
-    ctx?.revert();
+    mm?.revert();
     soundtrack?.dispose();
   });
 </script>
 
 <svelte:window bind:innerWidth />
 
-<section id="title-screen" style="min-height: 500dvh; --ring-gradient: {seasonGradient}">
+<section id="title-screen" style="--ring-gradient: {seasonGradient}">
   <div
     class="title-container h-[100dvh]"
     style="position: sticky; top: var(--vv-top, 0px); z-index: 10;"
@@ -379,6 +403,12 @@
       rgba(48, 56, 67, 1) 68%,
       rgba(18, 2, 10, 1) 100%
     );
+    min-height: 500dvh;
+  }
+  @media (max-width: 1023px) {
+    section {
+      min-height: 100dvh;
+    }
   }
   .title-container {
     padding-top: 100px;

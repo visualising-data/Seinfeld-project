@@ -18,10 +18,8 @@
 
   gsap.registerPlugin(ScrollTrigger);
 
-  /** @type {gsap.core.Timeline | undefined} */
-  let tl;
-  /** @type {ScrollTrigger | undefined} */
-  let st;
+  /** @type {gsap.MatchMedia | undefined} */
+  let mm;
 
   onMount(() => {
     const imgSlider = document.getElementById('books-inner-container');
@@ -29,45 +27,7 @@
 
     if (!imgSlider || !imgSliderMain) return;
 
-    // Create the pin immediately (synchronously) so the pin spacer exists in the
-    // DOM before downstream components' onMount callbacks (Title, Calendar) run.
-    // In dev mode, images may not be loaded yet — scrollWidth could be 0 —
-    // but invalidateOnRefresh:true recalculates the end value on every refresh,
-    // and the post-load refresh below corrects the pin spacer size.
-    tl = gsap.timeline({ defaults: { ease: 'none' } });
-    tl.to(imgSlider, { x: () => -(imgSlider.scrollWidth - imgSliderMain.offsetWidth) });
-    tl.to('#book-cover', { scale: 1.08 }, 0);
-    tl.from('#accent-line', { width: 0 }, 0);
-
-    st = ScrollTrigger.create({
-      trigger: '#book-sticky',
-      start: 'top top',
-      end: () => `+=${(imgSlider.scrollWidth - imgSliderMain.offsetWidth) * 3}`,
-      scrub: 1,
-      pin: true,
-      animation: tl,
-      invalidateOnRefresh: true,
-    });
-
-    gsap.set('#book-cover-container .highlight', {
-      webkitTextFillColor: 'currentColor',
-      backgroundPosition: '0% center',
-    });
-    gsap.to('#book-cover-container .highlight', {
-      webkitTextFillColor: 'transparent',
-      backgroundPosition: '200% center',
-      duration: 1.5,
-      ease: 'power3.out',
-      delay: 0.3,
-      scrollTrigger: {
-        trigger: '#book-sticky',
-        start: 'top 80%',
-        toggleActions: 'play none none reverse',
-      },
-    });
-
-    // After images load, refresh so the pin spacer gets the correct size and
-    // all downstream ScrollTriggers (Calendar etc.) recalculate their positions.
+    // Refresh after desktop strip images load — downstream sections depend on it.
     const imgs = [...imgSlider.querySelectorAll('img')];
     Promise.all(
       imgs.map((img) =>
@@ -76,26 +36,91 @@
           : new Promise((r) => img.addEventListener('load', r, { once: true })),
       ),
     ).then(() => scheduleRefresh());
-
     window.addEventListener('load', scheduleRefresh, { once: true });
+
+    mm = gsap.matchMedia();
+
+    // Desktop only: GSAP pin + horizontal scroll.
+    mm.add('(min-width: 1024px)', () => {
+      const tl = gsap.timeline({ defaults: { ease: 'none' } });
+      tl.to(imgSlider, { x: () => -(imgSlider.scrollWidth - imgSliderMain.offsetWidth) });
+      tl.to('#book-cover', { scale: 1.08 }, 0);
+      tl.from('#accent-line', { width: 0 }, 0);
+
+      const st = ScrollTrigger.create({
+        trigger: '#book-sticky',
+        start: 'top top',
+        end: () => `+=${(imgSlider.scrollWidth - imgSliderMain.offsetWidth) * 3}`,
+        scrub: 1,
+        pin: true,
+        animation: tl,
+        invalidateOnRefresh: true,
+      });
+
+      gsap.set('#book-cover-container .highlight', {
+        webkitTextFillColor: 'currentColor',
+        backgroundPosition: '0% center',
+      });
+      gsap.to('#book-cover-container .highlight', {
+        webkitTextFillColor: 'transparent',
+        backgroundPosition: '200% center',
+        duration: 1.5,
+        ease: 'power3.out',
+        delay: 0.3,
+        scrollTrigger: {
+          trigger: '#book-sticky',
+          start: 'top 80%',
+          toggleActions: 'play none none reverse',
+        },
+      });
+
+      return () => {
+        tl.kill();
+        st.kill();
+      };
+    });
+
+    // Mobile/tablet: alternating offset stack, slide-in reveal on scroll.
+    mm.add('(max-width: 1023px)', () => {
+      const wraps = [...document.querySelectorAll('.book-img-wrap')];
+      /** @type {IntersectionObserver[]} */
+      const observers = [];
+
+      wraps.forEach((wrap, i) => {
+        const fromLeft = i % 2 === 0;
+        gsap.set(wrap, { opacity: 0, x: fromLeft ? -40 : 40 });
+
+        const obs = new IntersectionObserver(
+          ([entry]) => {
+            if (entry.isIntersecting) {
+              gsap.to(wrap, { opacity: 1, x: 0, duration: 0.6, ease: 'power2.out' });
+              obs.disconnect();
+            }
+          },
+          { threshold: 0.15 },
+        );
+        obs.observe(wrap);
+        observers.push(obs);
+      });
+
+      return () => {
+        observers.forEach((o) => o.disconnect());
+        gsap.set(document.querySelectorAll('.book-img-wrap'), { clearProps: 'all' });
+      };
+    });
   });
 
   onDestroy(() => {
-    tl?.kill();
-    st?.kill();
+    mm?.revert();
   });
 </script>
 
 <div id="book-images-section" class="bg-black">
   <div id="book-scroll-wrapper" class="relative">
-    <!--
-      #book-sticky is the pinned element.
-      GSAP pins it at top:0 the moment it hits the viewport top, then holds it
-      there for exactly the horizontal scroll distance — no manual spacer needed.
-    -->
-    <div id="book-sticky" class="bg-black h-[100dvh] flex flex-col justify-between">
-      <!-- Desktop: text + book cover -->
-      <div id="book-cover-container" class="hidden lg:flex flex-1 items-center container">
+
+    <!-- ── DESKTOP ── sticky section with text + GSAP horizontal strip -->
+    <div id="book-sticky" class="bg-black h-[100dvh] hidden lg:flex flex-col justify-between">
+      <div id="book-cover-container" class="flex flex-1 items-center container">
         <div class="flex-1 px-4">
           <p>
             And so began a self-motivated, long-running, <span class="highlight"
@@ -130,8 +155,23 @@
         </div>
       </div>
 
-      <!-- Mobile: text fills the top of the pinned screen -->
-      <div class="lg:hidden flex-1 container py-8 flex flex-col justify-center overflow-y-auto">
+      <div id="books-outer-container" class="shrink-0">
+        <div id="accent-line" class="mb-3 h-2 w-full" style="background-color: #E71D80;"></div>
+        <div id="books-inner-container" class="flex items-start" style="will-change: transform;">
+          <img loading="eager" class="book-img mx-4" src={BookIntro} alt="Introduction of the book." />
+          <img loading="eager" class="book-img mx-4" src={BookCalendar} alt="Calendar of the nine seasons of Seinfeld." />
+          <img loading="eager" class="book-img mx-4" src={BookLaughs} alt="Data visualizations of the laughs caused by the four main characters." />
+          <img loading="eager" class="book-img mx-4" src={BookScatterplot} alt="Data visualizations of the peak performances of the four main characters." />
+          <img loading="eager" class="book-img mx-4" src={BookQuotes} alt="Famous quotes from each episode." />
+          <img loading="eager" class="book-img mx-4" src={BookCatalog1} alt="Data visualization of season 4 episode 11 'The Contest'." />
+          <img loading="eager" class="book-img mx-4" src={BookCatalog2} alt="Data visualization of season 7 episode 6 'The Soup Nazi'." />
+        </div>
+      </div>
+    </div>
+
+    <!-- ── MOBILE/TABLET ── text + alternating offset image stack -->
+    <div class="lg:hidden bg-black overflow-x-hidden">
+      <div class="container py-8 flex flex-col justify-center">
         <p>
           My curiosity transcended just <a
             href="https://jenniferkarmstrong.com/books/seinfeldia/"
@@ -153,79 +193,43 @@
           >.
         </p>
       </div>
-
-      <!-- Image strip: GSAP-animated on both mobile and desktop -->
-      <div id="books-outer-container" class="shrink-0">
-        <div id="accent-line" class="mb-3 h-2 w-full" style="background-color: #E71D80;"></div>
-        <div id="books-inner-container" class="flex items-start">
-          <!-- Book cover as first image on mobile only -->
-          <img
-            loading="eager"
-            class="book-img mx-4 lg:hidden"
-            src={BookCover}
-            alt="Cover of the book The Seinfeld Chronicles."
-          />
-          <img
-            loading="eager"
-            class="book-img mx-4"
-            src={BookIntro}
-            alt="Introduction of the book."
-          />
-          <img
-            loading="eager"
-            class="book-img mx-4"
-            src={BookCalendar}
-            alt="Calendar of the nine seasons of Seinfeld."
-          />
-          <img
-            loading="eager"
-            class="book-img mx-4"
-            src={BookLaughs}
-            alt="Data visualizations of the laughs caused by the four main characters."
-          />
-          <img
-            loading="eager"
-            class="book-img mx-4"
-            src={BookScatterplot}
-            alt="Data visualizations of the peak performances of the four main characters."
-          />
-          <img
-            loading="eager"
-            class="book-img mx-4"
-            src={BookQuotes}
-            alt="Famous quotes from each episode."
-          />
-          <img
-            loading="eager"
-            class="book-img mx-4"
-            src={BookCatalog1}
-            alt="Data visualization of season 4 episode 11 'The Contest'."
-          />
-          <img
-            loading="eager"
-            class="book-img mx-4"
-            src={BookCatalog2}
-            alt="Data visualization of season 7 episode 6 'The Soup Nazi'."
-          />
-        </div>
+      <div class="flex flex-col" style="gap: 4px;">
+        <div class="book-img-wrap"><img loading="eager" src={BookCover} alt="Cover of the book The Seinfeld Chronicles." /></div>
+        <div class="book-img-wrap"><img loading="eager" src={BookIntro} alt="Introduction of the book." /></div>
+        <div class="book-img-wrap"><img loading="eager" src={BookCalendar} alt="Calendar of the nine seasons of Seinfeld." /></div>
+        <div class="book-img-wrap"><img loading="eager" src={BookLaughs} alt="Data visualizations of the laughs caused by the four main characters." /></div>
+        <div class="book-img-wrap"><img loading="eager" src={BookScatterplot} alt="Data visualizations of the peak performances of the four main characters." /></div>
+        <div class="book-img-wrap"><img loading="eager" src={BookQuotes} alt="Famous quotes from each episode." /></div>
+        <div class="book-img-wrap"><img loading="eager" src={BookCatalog1} alt="Data visualization of season 4 episode 11 'The Contest'." /></div>
+        <div class="book-img-wrap"><img loading="eager" src={BookCatalog2} alt="Data visualization of season 7 episode 6 'The Soup Nazi'." /></div>
       </div>
     </div>
-    <!-- No manual spacer: GSAP pin:true inserts its own pin spacer -->
+
   </div>
 </div>
 
 <style>
+  /* Desktop strip images */
   .book-img {
     height: calc(100dvh / 3.5);
   }
-  @media (max-width: 1023px) {
-    .book-img {
-      height: 200px;
-    }
+
+  /* Mobile alternating offset stack */
+  .book-img-wrap {
+    width: 88%;
+    position: relative;
   }
-  /* will-change forces its own GPU compositing layer so iOS Chrome renders
-     the GSAP translateX correctly inside the pinned container */
-  #books-inner-container {
-    will-change: transform;
+  .book-img-wrap:nth-child(odd) {
+    margin-right: auto;
+    border-left: 3px solid #E71D80;
+  }
+  .book-img-wrap:nth-child(even) {
+    margin-left: auto;
+    border-right: 3px solid #E71D80;
+  }
+  .book-img-wrap img {
+    display: block;
+    width: 100%;
+    height: auto;
   }
 </style>

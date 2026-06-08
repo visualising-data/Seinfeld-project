@@ -23,17 +23,106 @@
   const kramerImg = getCharacterImagePath('KRAMER');
   const jerrysHomeImg = getLocationIconPath("Jerry's home");
 
-  /** @type {gsap.Context | undefined} */
-  let ctx;
+  /** @type {gsap.MatchMedia | undefined} */
+  let mm;
 
   onMount(() => {
-    ctx = gsap.context(() => {
-      const wrapper = document.querySelector('#video-text-wrapper');
-      const heights = [1, 2, 3].map((i) => {
-        const el = document.querySelector(`#video-text-${i}`);
-        return el ? /** @type {HTMLElement} */ (el).scrollHeight : 0;
-      });
+    mm = gsap.matchMedia();
 
+    // Desktop: sticky container + scroll-trigger text transition.
+    mm.add('(min-width: 1024px)', () => {
+      const ctx = gsap.context(() => {
+        const wrapper = document.querySelector('#video-text-wrapper');
+        const heights = [1, 2, 3].map((i) => {
+          const el = document.querySelector(`#video-text-${i}`);
+          return el ? /** @type {HTMLElement} */ (el).scrollHeight : 0;
+        });
+
+        gsap.set('.video-char-icon', { opacity: 0, translateY: 20 });
+        gsap.set('#video-text-2', { opacity: 0 });
+
+        gsap.to('#video-text-1 .highlight', {
+          webkitTextFillColor: 'transparent',
+          backgroundPosition: '200% center',
+          duration: 2,
+          ease: 'power3.out',
+          delay: 1,
+        });
+
+        const tl2 = gsap.timeline({
+          scrollTrigger: {
+            trigger: '#video-step-2',
+            start: 'top top',
+            toggleActions: 'play none none reverse',
+            invalidateOnRefresh: true,
+          },
+        });
+        tl2
+          .to('#video-text-1', { opacity: 0, duration: 0.3 })
+          .to(wrapper, { height: heights[1], duration: 0.3, ease: 'power2.inOut' }, 0)
+          .to('#video-text-2', { opacity: 1, duration: 0.3 }, '<')
+          .to('#video-text-2 .color-jerry', {
+            color: '#5FA8D3',
+            duration: 0.6,
+            ease: 'back.out(1.7)',
+          })
+          .to('#icon-jerry', { opacity: 1, translateY: 0, duration: 0.4, ease: 'power3.out' }, '<')
+          .to(
+            '#video-text-2 .color-george',
+            { color: '#EB6447', duration: 0.6, ease: 'back.out(1.7)' },
+            '-=0.2',
+          )
+          .to('#icon-george', { opacity: 1, translateY: 0, duration: 0.4, ease: 'power3.out' }, '<')
+          .to(
+            '#video-text-2 .color-elaine',
+            { color: '#FBBA3A', duration: 0.6, ease: 'back.out(1.7)' },
+            '-=0.2',
+          )
+          .to('#icon-elaine', { opacity: 1, translateY: 0, duration: 0.4, ease: 'power3.out' }, '<')
+          .to(
+            '#video-text-2 .color-kramer',
+            { color: '#83C8C3', duration: 0.6, ease: 'back.out(1.7)' },
+            '-=0.2',
+          )
+          .to('#icon-kramer', { opacity: 1, translateY: 0, duration: 0.4, ease: 'power3.out' }, '<')
+          .to(
+            '#icon-jerrys-home',
+            { opacity: 1, translateY: 0, duration: 0.4, ease: 'power3.out' },
+            '-=0.2',
+          )
+          .to(
+            '#video-text-2 .jerrys-apartment',
+            { color: '#5FA8D3', duration: 0.6, ease: 'back.out(1.7)' },
+            '<',
+          );
+
+        ScrollTrigger.create({
+          trigger: '#video-scroll-container',
+          start: 'top bottom',
+          end: 'bottom top',
+          onEnter: () => {
+            inSection = true;
+            enterSoundSection();
+          },
+          onEnterBack: () => {
+            inSection = true;
+            enterSoundSection();
+          },
+          onLeave: () => {
+            inSection = false;
+            leaveSoundSection();
+          },
+          onLeaveBack: () => {
+            inSection = false;
+            leaveSoundSection();
+          },
+        });
+      });
+      return () => ctx.revert();
+    });
+
+    // Mobile/tablet: stacked text panels, IntersectionObserver reveals, no spacers.
+    mm.add('(max-width: 1023px)', () => {
       gsap.set('.video-char-icon', { opacity: 0, translateY: 20 });
       gsap.set('#video-text-2', { opacity: 0 });
 
@@ -45,86 +134,106 @@
         delay: 1,
       });
 
-      // text-2 replaces text-1 when step-2 enters the viewport
-      const tl2 = gsap.timeline({
-        scrollTrigger: {
-          trigger: '#video-step-2',
-          start: 'top top',
-          toggleActions: 'play none none reverse',
-          invalidateOnRefresh: true,
-        },
-      });
-      tl2
-        .to('#video-text-1', { opacity: 0, duration: 0.3 })
-        .to('#video-text-2', { opacity: 1, duration: 0.3 }, '<')
-        .to('#video-text-2 .color-jerry', {
-          color: '#5FA8D3',
-          duration: 0.6,
-          ease: 'back.out(1.7)',
-        })
-        .to('#icon-jerry', { opacity: 1, translateY: 0, duration: 0.4, ease: 'power3.out' }, '<')
-        .to(
-          '#video-text-2 .color-george',
-          { color: '#EB6447', duration: 0.6, ease: 'back.out(1.7)' },
-          '-=0.2',
-        )
-        .to('#icon-george', { opacity: 1, translateY: 0, duration: 0.4, ease: 'power3.out' }, '<')
-        .to(
-          '#video-text-2 .color-elaine',
-          { color: '#FBBA3A', duration: 0.6, ease: 'back.out(1.7)' },
-          '-=0.2',
-        )
-        .to('#icon-elaine', { opacity: 1, translateY: 0, duration: 0.4, ease: 'power3.out' }, '<')
-        .to(
-          '#video-text-2 .color-kramer',
-          { color: '#83C8C3', duration: 0.6, ease: 'back.out(1.7)' },
-          '-=0.2',
-        )
-        .to('#icon-kramer', { opacity: 1, translateY: 0, duration: 0.4, ease: 'power3.out' }, '<')
-        .to(
-          '#icon-jerrys-home',
-          { opacity: 1, translateY: 0, duration: 0.4, ease: 'power3.out' },
-          '-=0.2',
-        )
-        .to(
-          '#video-text-2 .jerrys-apartment',
-          { color: '#5FA8D3', duration: 0.6, ease: 'back.out(1.7)' },
-          '<',
+      // Sound section tracking
+      const containerEl = document.getElementById('video-scroll-container');
+      /** @type {IntersectionObserver | undefined} */
+      let soundObs;
+      if (containerEl) {
+        soundObs = new IntersectionObserver(
+          ([entry]) => {
+            if (entry.isIntersecting) {
+              inSection = true;
+              enterSoundSection();
+            } else {
+              inSection = false;
+              leaveSoundSection();
+            }
+          },
+          { threshold: 0 },
         );
+        soundObs.observe(containerEl);
+      }
 
-      // Unmute video while the section is on screen
-      ScrollTrigger.create({
-        trigger: '#video-scroll-container',
-        start: 'top bottom',
-        end: 'bottom top',
-        onEnter: () => {
-          inSection = true;
-          enterSoundSection();
-        },
-        onEnterBack: () => {
-          inSection = true;
-          enterSoundSection();
-        },
-        onLeave: () => {
-          inSection = false;
-          leaveSoundSection();
-        },
-        onLeaveBack: () => {
-          inSection = false;
-          leaveSoundSection();
-        },
-      });
+      // Text-2 reveal when it scrolls into view
+      const text2El = document.getElementById('video-text-2');
+      /** @type {IntersectionObserver | undefined} */
+      let text2Obs;
+      if (text2El) {
+        text2Obs = new IntersectionObserver(
+          ([entry]) => {
+            if (entry.isIntersecting) {
+              text2Obs?.disconnect();
+              gsap
+                .timeline()
+                .to('#video-text-2', { opacity: 1, duration: 0.3 })
+                .to('#video-text-2 .color-jerry', {
+                  color: '#5FA8D3',
+                  duration: 0.6,
+                  ease: 'back.out(1.7)',
+                })
+                .to(
+                  '#icon-jerry',
+                  { opacity: 1, translateY: 0, duration: 0.4, ease: 'power3.out' },
+                  '<',
+                )
+                .to(
+                  '#video-text-2 .color-george',
+                  { color: '#EB6447', duration: 0.6, ease: 'back.out(1.7)' },
+                  '-=0.2',
+                )
+                .to(
+                  '#icon-george',
+                  { opacity: 1, translateY: 0, duration: 0.4, ease: 'power3.out' },
+                  '<',
+                )
+                .to(
+                  '#video-text-2 .color-elaine',
+                  { color: '#FBBA3A', duration: 0.6, ease: 'back.out(1.7)' },
+                  '-=0.2',
+                )
+                .to(
+                  '#icon-elaine',
+                  { opacity: 1, translateY: 0, duration: 0.4, ease: 'power3.out' },
+                  '<',
+                )
+                .to(
+                  '#video-text-2 .color-kramer',
+                  { color: '#83C8C3', duration: 0.6, ease: 'back.out(1.7)' },
+                  '-=0.2',
+                )
+                .to(
+                  '#icon-kramer',
+                  { opacity: 1, translateY: 0, duration: 0.4, ease: 'power3.out' },
+                  '<',
+                )
+                .to(
+                  '#icon-jerrys-home',
+                  { opacity: 1, translateY: 0, duration: 0.4, ease: 'power3.out' },
+                  '-=0.2',
+                )
+                .to(
+                  '#video-text-2 .jerrys-apartment',
+                  { color: '#5FA8D3', duration: 0.6, ease: 'back.out(1.7)' },
+                  '<',
+                );
+            }
+          },
+          { threshold: 0.3 },
+        );
+        text2Obs.observe(text2El);
+      }
 
-      // Height animation on desktop only (mobile uses flex-1 to fill remaining space)
-      const mm = gsap.matchMedia();
-      mm.add('(min-width: 1024px)', () => {
-        tl2.to(wrapper, { height: heights[1], duration: 0.3, ease: 'power2.inOut' }, 0);
-      });
+      return () => {
+        soundObs?.disconnect();
+        text2Obs?.disconnect();
+        inSection = false;
+        leaveSoundSection();
+      };
     });
   });
 
   onDestroy(() => {
-    ctx?.revert();
+    mm?.revert();
   });
 </script>
 
@@ -160,7 +269,7 @@
           </div>
         </div>
         <!-- Texts 2-3: absolutely positioned so scrollHeight reflects real content height -->
-        <div id="video-text-2" class="absolute inset-x-0 top-0 py-12 container">
+        <div id="video-text-2" class="absolute inset-x-0 top-0 py-12">
           <div class="flex flex-col lg:flex-row lg:justify-between gap-4 lg:gap-8">
             <div style="max-width: 820px;">
               Here we see the four lead characters: <span class="color color-jerry">Jerry</span>
@@ -231,7 +340,7 @@
 
   <!-- Scroll spacers: one per text transition + one reading-time spacer for the last text -->
   <div id="video-step-2" class="h-[100dvh]"></div>
-  <div class="h-[100dvh]"></div>
+  <div id="video-step-3" class="h-[100dvh]"></div>
 </div>
 
 <style>
@@ -242,5 +351,18 @@
   }
   .color {
     font-weight: 600;
+  }
+  @media (max-width: 1023px) {
+    #video-sticky {
+      position: static;
+      height: auto;
+    }
+    #video-step-2,
+    #video-step-3 {
+      display: none;
+    }
+    #video-text-2 {
+      position: static;
+    }
   }
 </style>

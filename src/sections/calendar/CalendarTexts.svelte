@@ -1,8 +1,5 @@
 <!-- Text 1 -->
-<div
-  class="flex w-screen items-center justify-center"
-  style="height: calc(150vh + 260px); padding-top: calc(50vh + 260px);"
->
+<div class="flex w-screen items-center justify-center text-1-container">
   <div id="calendar-text-overlay-1" class="text-overlay">
     Let’s go back to the start. Seinfeld aired on US TV for the first time on Wednesday 5th July
     <span class="highlight">1989</span>, with a pilot episode titled 'Good News, Bad News'.
@@ -63,3 +60,20 @@
   id="calendar-text-overlay-7"
   class="flex h-[100dvh] w-screen items-center justify-center"
 ></div>
+
+<style>
+  /* Desktop: large spacer so text-1 appears only after significant scroll */
+  .text-1-container {
+    height: calc(150vh + 260px);
+    padding-top: calc(50vh + 260px);
+  }
+  /* Mobile/tablet: calendar is in-flow (sticky) above this content, so the
+     extra push-down padding is not needed — text-1 appears after ~half a
+     viewport of scrolling past the sticky calendar. */
+  @media (max-width: 1023px) {
+    .text-1-container {
+      height: 100dvh;
+      padding-top: 0;
+    }
+  }
+</style>

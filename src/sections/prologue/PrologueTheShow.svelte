@@ -36,6 +36,9 @@
   /** @type {gsap.Context | undefined} */
   let ctx;
 
+  /** @type {((index: number) => void) | undefined} */
+  let mobileTransitionTo;
+
   const baseVideoUrl = 'https://amdufour.github.io/hosted-data/apis/videos/';
   const videoFiles = [
     '6c.ShowAboutNothing',
@@ -47,13 +50,7 @@
 
   /** @param {number} index */
   const playVideo = (index) => {
-    const container = document.querySelector(`#show-video-${index}`);
-    if (!container) return;
-    const video = /** @type {HTMLVideoElement} */ (container.querySelector('video'));
-    // Don't call video.load() — it aborts the HTML autoplay and causes AbortError on
-    // iOS Safari when play() is called before the new load completes. The HTML already
-    // has autoplay + muted + playsinline + correct src; play() alone is sufficient.
-    video?.play().catch(() => {});
+    videoEls[index]?.play().catch(() => {});
   };
 
   onMount(() => {
@@ -77,10 +74,15 @@
           } else {
             gsap.set(`#show-video-${j}`, { flexGrow: j === 0 ? 4 : 1 });
           }
-          // Let HTML autoplay + muted + playsinline handle all video starts.
-          // Calling play() here races with the browser's own autoplay on iOS Safari
-          // and causes both attempts to abort. transitionTo handles play() after that.
         }
+        // HTML autoplay doesn't fire for sections below the fold at load time.
+        // Use rAF so GSAP's initial state renders before play() checks visibility.
+        requestAnimationFrame(() => {
+          for (let j = 0; j < 5; j++) {
+            if (!isMobile || j === 0) playVideo(j);
+          }
+        });
+
         gsap.set(
           [
             '#show-text-0 .highlight',
@@ -120,8 +122,9 @@
           if (isMobile) {
             for (let j = 0; j < 5; j++) gsap.set(`#show-video-${j}`, { opacity: 0 });
             gsap.set(`#show-video-${index}`, { opacity: 1 });
-            // Video is now visible — play it (iOS Safari won't start hidden videos)
-            playVideo(index);
+            // rAF gives iOS Safari a render cycle to recognise the opacity:1
+            // change before play() checks element visibility
+            requestAnimationFrame(() => playVideo(index));
           } else {
             for (let j = 0; j < 5; j++) {
               playVideo(j);
@@ -198,14 +201,18 @@
           }
         };
 
-        for (let i = 0; i < 4; i++) {
-          ScrollTrigger.create({
-            trigger: `#show-step-${i + 1}`,
-            start: 'top top',
-            invalidateOnRefresh: true,
-            onEnter: () => transitionTo(i + 1),
-            onLeaveBack: () => transitionTo(i),
-          });
+        if (!isMobile) {
+          for (let i = 0; i < 4; i++) {
+            ScrollTrigger.create({
+              trigger: `#show-step-${i + 1}`,
+              start: 'top top',
+              invalidateOnRefresh: true,
+              onEnter: () => transitionTo(i + 1),
+              onLeaveBack: () => transitionTo(i),
+            });
+          }
+        } else {
+          mobileTransitionTo = transitionTo;
         }
 
         // Text 0 highlight: animate on initial section entry
@@ -687,6 +694,19 @@
       </div>
     </div>
 
+    <!-- Mobile tab navigation (lg:hidden) -->
+    <div class="lg:hidden flex shrink-0 bg-black">
+      {#each videoFiles as _, tabIdx}
+        <button
+          class="show-tab flex-1 py-2 text-xs"
+          class:show-tab-active={currentIndex === tabIdx}
+          onclick={() => mobileTransitionTo?.(tabIdx)}
+        >
+          {String(tabIdx + 1).padStart(2, '0')}
+        </button>
+      {/each}
+    </div>
+
     <!-- Text area -->
     <div class="relative flex-1 bg-black overflow-hidden">
       <!-- Text 0 -->
@@ -775,7 +795,7 @@
   <div id="show-step-3" class="h-[100dvh]"></div>
   <div id="show-step-4" class="h-[100dvh]"></div>
   <!-- Extra spacer so the last video/text has reading time before sticky releases -->
-  <div class="h-[100dvh]"></div>
+  <div id="show-step-5" class="h-[100dvh]"></div>
 </div>
 
 <style>
@@ -786,6 +806,16 @@
   }
 
   @media (max-width: 1023px) {
+    #show-sticky {
+      position: static;
+    }
+    #show-step-1,
+    #show-step-2,
+    #show-step-3,
+    #show-step-4,
+    #show-step-5 {
+      display: none;
+    }
     .show-video-strip {
       position: relative;
     }
@@ -797,6 +827,16 @@
     #show-text-0 p,
     #show-text-1 p {
       margin: 0.5rem 0;
+    }
+    .show-tab {
+      color: rgba(255, 255, 255, 0.4);
+      border-bottom: 2px solid transparent;
+      background: none;
+      cursor: pointer;
+    }
+    .show-tab-active {
+      color: white;
+      border-bottom-color: #e71d80;
     }
   }
 </style>

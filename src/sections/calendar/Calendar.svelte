@@ -18,8 +18,8 @@
 
   let { ScrollTrigger } = $props();
 
-  /** @type {ReturnType<typeof gsap.context>} */
-  let ctx;
+  /** @type {ReturnType<typeof gsap.matchMedia> | undefined} */
+  let mm;
 
   /**
    * @type {number}
@@ -414,6 +414,90 @@
       }
     });
 
+    mm = gsap.matchMedia();
+
+    // ── Desktop: GSAP pin + ScrollTrigger episode reveals ──────────────────────
+    mm.add('(min-width: 1024px)', () => {
+      const ctx = gsap.context(() => {
+        ScrollTrigger.create({
+          trigger: '#intro-calendar-container',
+          start: 'top top',
+          end: 'bottom bottom',
+          pin: '#intro-calendar',
+          invalidateOnRefresh: true,
+          onEnter: () => { $catalogIsInView = true; },
+          onLeave: () => { $catalogIsInView = false; $navBarColor = 'white'; isTooltipVisible = false; leaveSoundSection(); },
+          onEnterBack: () => { $catalogIsInView = true; $navBarColor = 'pink'; enterSoundSection(); },
+          onLeaveBack: () => { $catalogIsInView = false; isTooltipVisible = false; leaveSoundSection(); },
+        });
+
+        // 'center center' fires when the text element's center reaches the viewport
+        // center — conservative enough to survive ScrollTrigger.refresh() calls.
+        gsap.timeline({ scrollTrigger: { trigger: '#calendar-text-overlay-1', start: 'center center', invalidateOnRefresh: true, onEnter: () => { showEpisodes(1); enterSoundSection(); animateHighlight(1); }, onLeaveBack: () => { for (let i = 1; i <= 6; i++) hideEpisodes(i); } } });
+        gsap.timeline({ scrollTrigger: { trigger: '#calendar-text-overlay-2', start: 'center center', invalidateOnRefresh: true, onEnter: () => { showEpisodes(2); animateHighlight(2); }, onLeaveBack: () => hideEpisodes(2) } });
+        gsap.timeline({ scrollTrigger: { trigger: '#calendar-text-overlay-3', start: 'center center', invalidateOnRefresh: true, onEnter: () => { showEpisodes(3); animateHighlight(3); }, onLeaveBack: () => hideEpisodes(3) } });
+        gsap.timeline({ scrollTrigger: { trigger: '#calendar-text-overlay-4', start: 'center center', invalidateOnRefresh: true, onEnter: () => { showEpisodes(4); animateHighlight(4); }, onLeaveBack: () => hideEpisodes(4) } });
+        gsap.timeline({ scrollTrigger: { trigger: '#calendar-text-overlay-5', start: 'center center', invalidateOnRefresh: true, onEnter: () => { showEpisodes(5); animateHighlight(5); }, onLeaveBack: () => hideEpisodes(5) } });
+        gsap.timeline({ scrollTrigger: { trigger: '#calendar-text-overlay-6', start: 'center center', invalidateOnRefresh: true, onEnter: () => { showEpisodes(6); animateHighlight(6, true); }, onLeaveBack: () => hideEpisodes(6) } });
+      });
+      return () => ctx.revert();
+    });
+
+    // ── Mobile/tablet: CSS sticky + IntersectionObserver episode reveals ────────
+    // No GSAP pin → no pin spacer → no drift when ScrollTrigger.refresh() fires.
+    // The calendar uses position:sticky (set in HTML) and IntersectionObserver
+    // fires at the equivalent of 'center center' via rootMargin '-50% 0px -50% 0px'.
+    mm.add('(max-width: 1023px)', () => {
+      const containerEl = document.getElementById('intro-calendar-container');
+      if (!containerEl) return;
+
+      // Track catalog visibility / sound section
+      const containerObs = new IntersectionObserver(([entry]) => {
+        if (entry.isIntersecting) {
+          $catalogIsInView = true;
+          enterSoundSection();
+          $navBarColor = 'pink';
+        } else {
+          $catalogIsInView = false;
+          isTooltipVisible = false;
+          leaveSoundSection();
+          if (entry.boundingClientRect.top >= 0) $navBarColor = 'white';
+        }
+      }, { threshold: 0 });
+      containerObs.observe(containerEl);
+
+      // Episode reveal / hide — fires when text overlay center crosses viewport center
+      const overlayConfigs = [
+        { id: '#calendar-text-overlay-1', onEnter: () => { showEpisodes(1); enterSoundSection(); animateHighlight(1); }, onLeaveBack: () => { for (let i = 1; i <= 6; i++) hideEpisodes(i); } },
+        { id: '#calendar-text-overlay-2', onEnter: () => { showEpisodes(2); animateHighlight(2); }, onLeaveBack: () => hideEpisodes(2) },
+        { id: '#calendar-text-overlay-3', onEnter: () => { showEpisodes(3); animateHighlight(3); }, onLeaveBack: () => hideEpisodes(3) },
+        { id: '#calendar-text-overlay-4', onEnter: () => { showEpisodes(4); animateHighlight(4); }, onLeaveBack: () => hideEpisodes(4) },
+        { id: '#calendar-text-overlay-5', onEnter: () => { showEpisodes(5); animateHighlight(5); }, onLeaveBack: () => hideEpisodes(5) },
+        { id: '#calendar-text-overlay-6', onEnter: () => { showEpisodes(6); animateHighlight(6, true); }, onLeaveBack: () => hideEpisodes(6) },
+      ];
+      const episodeObservers = overlayConfigs.map(({ id, onEnter, onLeaveBack }) => {
+        const el = document.querySelector(id);
+        if (!el) return null;
+        const obs = new IntersectionObserver(([entry]) => {
+          if (entry.isIntersecting) {
+            onEnter();
+          } else if (entry.boundingClientRect.bottom < window.innerHeight / 2) {
+            // element scrolled entirely above viewport center → onLeaveBack
+            onLeaveBack();
+          }
+        }, { rootMargin: '-50% 0px -50% 0px' });
+        obs.observe(el);
+        return obs;
+      }).filter(Boolean);
+
+      return () => {
+        containerObs.disconnect();
+        episodeObservers.forEach((obs) => obs?.disconnect());
+        $catalogIsInView = false;
+        leaveSoundSection();
+      };
+    });
+
     // Run simulation
     initializeSimulation();
     let simulationInitialized = false;
@@ -426,11 +510,10 @@
           transformOrigin: 'center',
           pointerEvents: 'none',
         });
-        // Restore visible episodes when reloading mid-scroll: ScrollTrigger already
-        // fired onEnter before nodes existed in the DOM, so manually re-show any
-        // batches whose trigger is already past the viewport center.
-        // Uses innerHeight/2 to match the 'center center' trigger start point.
-        for (let i = 1; i <= 5; i++) {
+        // Restore visible episodes when reloading mid-scroll: the trigger may have
+        // already fired before nodes existed in the DOM. Manually re-show any
+        // batches whose text overlay is already past the viewport center.
+        for (let i = 1; i <= 6; i++) {
           const el = document.querySelector(`#calendar-text-overlay-${i}`);
           if (el) {
             const rect = el.getBoundingClientRect();
@@ -441,107 +524,10 @@
         }
       }
     });
-
-    ctx = gsap.context(() => {
-      // Pin calendar
-      ScrollTrigger.create({
-        trigger: '#intro-calendar-container',
-        start: 'top top',
-        end: 'bottom bottom',
-        pin: '#intro-calendar',
-        invalidateOnRefresh: true,
-        onEnter: () => {
-          $catalogIsInView = true;
-        },
-        onLeave: () => {
-          $catalogIsInView = false;
-          $navBarColor = 'white';
-          isTooltipVisible = false;
-          leaveSoundSection();
-        },
-        onEnterBack: () => {
-          $catalogIsInView = true;
-          $navBarColor = 'pink';
-          enterSoundSection();
-        },
-        onLeaveBack: () => {
-          $catalogIsInView = false;
-          isTooltipVisible = false;
-          leaveSoundSection();
-        },
-      });
-
-      // Reveal episodes (forward) / hide in reverse order (backward)
-      // 'center center' fires when the text element's center reaches the viewport
-      // center — the text is fully readable at that point and the trigger is
-      // conservative enough to survive ScrollTrigger.refresh() calls from
-      // lazy-loading without accidentally firing while the text is off-screen.
-      gsap.timeline({
-        scrollTrigger: {
-          trigger: '#calendar-text-overlay-1',
-          start: 'center center',
-          invalidateOnRefresh: true,
-          onEnter: () => { showEpisodes(1); enterSoundSection(); animateHighlight(1); },
-          onLeaveBack: () => {
-            hideEpisodes(1);
-            hideEpisodes(2);
-            hideEpisodes(3);
-            hideEpisodes(4);
-            hideEpisodes(5);
-            hideEpisodes(6);
-          },
-        },
-      });
-      gsap.timeline({
-        scrollTrigger: {
-          trigger: '#calendar-text-overlay-2',
-          start: 'center center',
-          invalidateOnRefresh: true,
-          onEnter: () => { showEpisodes(2); animateHighlight(2); },
-          onLeaveBack: () => hideEpisodes(2),
-        },
-      });
-      gsap.timeline({
-        scrollTrigger: {
-          trigger: '#calendar-text-overlay-3',
-          start: 'center center',
-          invalidateOnRefresh: true,
-          onEnter: () => { showEpisodes(3); animateHighlight(3); },
-          onLeaveBack: () => hideEpisodes(3),
-        },
-      });
-      gsap.timeline({
-        scrollTrigger: {
-          trigger: '#calendar-text-overlay-4',
-          start: 'center center',
-          invalidateOnRefresh: true,
-          onEnter: () => { showEpisodes(4); animateHighlight(4); },
-          onLeaveBack: () => hideEpisodes(4),
-        },
-      });
-      gsap.timeline({
-        scrollTrigger: {
-          trigger: '#calendar-text-overlay-5',
-          start: 'center center',
-          invalidateOnRefresh: true,
-          onEnter: () => { showEpisodes(5); animateHighlight(5); },
-          onLeaveBack: () => hideEpisodes(5),
-        },
-      });
-      gsap.timeline({
-        scrollTrigger: {
-          trigger: '#calendar-text-overlay-6',
-          start: 'center center',
-          invalidateOnRefresh: true,
-          onEnter: () => { showEpisodes(6); animateHighlight(6, true); },
-          onLeaveBack: () => hideEpisodes(6),
-        },
-      });
-    });
   });
 
   onDestroy(() => {
-    ctx?.revert();
+    mm?.revert();
     $catalogIsInView = false;
     unsubSoundAuth();
   });
@@ -552,8 +538,8 @@
 <div id="intro-calendar-container" class="relative">
   <div
     id="intro-calendar"
-    class="absolute flex w-screen"
-    style="height: {innerHeight}px; padding-top: {navbarHeight}px; background: {navbarHeight > 0
+    class="flex w-screen"
+    style="position: {innerWidth < 1024 ? 'sticky' : 'absolute'}; top: var(--vv-top, 0px); height: {innerHeight}px; padding-top: {navbarHeight}px; background: {navbarHeight > 0
       ? `linear-gradient(#E71D80 ${navbarHeight}px, transparent ${navbarHeight}px)`
       : 'rgb(231 29 128 / 0.05)'};"
   >
