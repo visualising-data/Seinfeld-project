@@ -379,7 +379,7 @@
 
       <!-- Detail panel: sticky at top on mobile, right column on desktop -->
       <div
-        class="order-first desktop:order-none desktop:col-span-7 sticky top-0 desktop:static z-10 bg-[#F9F5F7] py-4 desktop:py-0 border-b border-[#928D90]/20 desktop:border-none mb-6 desktop:mb-0 min-h-[80px] desktop:min-h-0 flex flex-col desktop:justify-center"
+        class="order-first desktop:order-none desktop:col-span-7 sticky top-0 desktop:self-start desktop:top-[50vh] desktop:-translate-y-1/2 z-10 bg-[#F9F5F7] py-4 desktop:py-0 border-b border-[#928D90]/20 desktop:border-none mb-6 desktop:mb-0 min-h-[80px] desktop:min-h-0 flex flex-col"
       >
         {#if hoveredFinding}
           <div class="finding-detail">
