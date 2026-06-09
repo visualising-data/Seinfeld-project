@@ -251,6 +251,26 @@
     preloadGuffaw2();
     preloadChuckle2();
 
+    if (isMobile) {
+      ctx = gsap.context(() => {
+        gsap.utils.toArray('.highlight-reverse').forEach((el) => {
+          gsap.set(el, { webkitTextFillColor: 'currentColor', backgroundPosition: '0% center' });
+          gsap.to(el, {
+            webkitTextFillColor: 'transparent',
+            backgroundPosition: '200% center',
+            duration: 1.5,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: el,
+              start: 'top 80%',
+              toggleActions: 'play none none reverse',
+            },
+          });
+        });
+      });
+      return;
+    }
+
     ScrollTrigger.create({
       trigger: '#laughs-scroll-container',
       start: 'top bottom',
@@ -412,12 +432,174 @@
   });
 </script>
 
-<div id="laughs-scroll-container" class="relative">
+<!-- Mobile/tablet layout: normal stacked flow -->
+<div class="lg:hidden">
+  <img
+    src="https://amdufour.github.io/hosted-data/apis/images/data_gathering_1.jpg"
+    alt=""
+    class="w-full h-auto block"
+  />
+  <div class="divide-y divide-white/20">
+    <!-- Panel 1 -->
+    <div class="px-6 py-8">
+      Whilst tracking the episode’s time elapsed on screen, a detailed spreadsheet template was used
+      to <span class="highlight-reverse">quantify</span>
+      and <span class="highlight-reverse">classify</span> data that would aid the analysis of the show’s
+      rhythm and texture.
+    </div>
+
+    <!-- Panel 2 -->
+    <div class="px-6 py-8 flex flex-col gap-6">
+      <div class="relative w-[100px] shrink-0">
+        <Laugh width={100} height={100} color="black" isActive={isPlaying} />
+        <button
+          class="absolute bottom-[-10px] right-[-10px] transition-opacity disabled:opacity-30 disabled:cursor-not-allowed"
+          disabled={isPlaying || !$soundIsAuth}
+          onclick={() => {
+            Promise.all([Tone.start(), Tone.loaded()]).then(() => playLaugh());
+          }}
+          aria-label="Play laughter"
+        >
+          <PlayIcon color="black" diameter={26} />
+        </button>
+      </div>
+      <p>
+        It doesn’t take a genius to recognise the main goal of a situation comedy is to be funny.
+        Therefore, a reliable indicator of a sitcom being funny is to measure the reaction of an
+        audience’s laughter through the laugh track. It is rare to find laugh tracks on modern
+        sitcoms, but Seinfeld had one. With the show always being filmed in front of a <span
+          class="highlight-reverse">live studio audience</span
+        > (any scenes filmed outside were played back in the studio) it meant the laughter heard is an
+        authentic measure of the audience’s reaction.
+      </p>
+    </div>
+
+    <!-- Panel 3 -->
+    <div class="px-6 py-8 flex flex-col gap-8">
+      <p>
+        Measuring laughter was the most subjective and, therefore, challenging data collection
+        activity. Laughing can occur at different levels, from the subtle smile characterising
+        ‘inner’ laughter, through to more external giggles, and up to howling belly laughs. To
+        establish a standard and consistent measurement, any audience laughter heard would be
+        considered as a <span class="highlight-reverse">laughter moment</span>, regardless of its
+        level.
+      </p>
+      <div class="flex flex-row justify-between items-end">
+        {#each laugh3Data as item, i}
+          <div class="flex flex-col items-center gap-1 text-center">
+            <div class="relative shrink-0 flex items-end mb-2" style="height: 100px">
+              <Laugh
+                width={item.mobileSize}
+                height={item.mobileSize}
+                color="black"
+                isActive={activeIcon3 === i + 1}
+              />
+              <button
+                class="absolute bottom-[-10px] right-[-10px] transition-opacity disabled:opacity-30 disabled:cursor-not-allowed"
+                disabled={activeIcon3 > 0 || !$soundIsAuth}
+                onclick={() => {
+                  Promise.all([Tone.start(), laugh3ReadyPromise]).then(() => playLaugh3(i));
+                }}
+                aria-label="Play {item.label}"
+              >
+                <PlayIcon color="black" diameter={item.mobilePlayDiameter} />
+              </button>
+            </div>
+            <div class="font-semibold small">{item.label}</div>
+          </div>
+        {/each}
+      </div>
+    </div>
+
+    <!-- Panel 4 -->
+    <div class="px-6 py-8 flex flex-col gap-6">
+      <p>
+        For consistency, each observed laughter moment was recorded against an associated
+        <span class="highlight-reverse">5&#8209;second</span> block of time, determined by in which period
+        the laughter was heard and/or most associated. When testing out the data collection approach over
+        three sample episodes, the 5-second duration proved to be the most reliable and representative
+        ‘average’ duration, from the gag’s delivery to the audience’s laughter subsiding.
+      </p>
+      <div class="self-start border border-black/40 lg:border-white/40 text-xs">
+        <div class="grid grid-cols-5 border-b border-black/40 lg:border-white/40">
+          {#each ['18:35', '18:40', '18:45', '18:50', '18:55'] as time, ti}
+            <div
+              class="px-4 py-2 number text-center text-black/70 lg:text-white/70 {ti < 4
+                ? 'border-r border-black/40 lg:border-white/40'
+                : ''}"
+            >
+              {time}
+            </div>
+          {/each}
+        </div>
+        <div class="grid grid-cols-5">
+          <div class="px-4 py-3 border-r border-black/40 lg:border-white/40"></div>
+          <div
+            class="px-4 py-3 border-r border-black/40 lg:border-white/40 flex justify-center items-center"
+          >
+            <Laugh width={30} height={30} color="black" />
+          </div>
+          <div class="px-4 py-3 border-r border-black/40 lg:border-white/40"></div>
+          <div class="px-4 py-3 border-r border-black/40 lg:border-white/40"></div>
+          <div class="px-4 py-3"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel 5 -->
+    <div class="px-6 py-8 flex flex-col gap-6">
+      <p>
+        On rare occasions, laughter would run for longer than 5 seconds, sometimes persisting for 10
+        and even 15 seconds. This might have been a single sustained period of laughing or waves of
+        renewed laughter caused by a character’s glance or change in expression, perhaps in reaction
+        to the laughter itself. In such cases, distinct laughter moments would be logged for each
+        consecutive <span class="highlight-reverse">5-second block</span> of the laughing duration.
+      </p>
+      <div class="self-start border border-black/40 lg:border-white/40 text-xs">
+        <div class="grid grid-cols-5 border-b border-black/40 lg:border-white/40">
+          {#each ['18:35', '18:40', '18:45', '18:50', '18:55'] as time, ti}
+            <div
+              class="px-4 py-2 number text-center text-black/70 lg:text-white/70 {ti < 4
+                ? 'border-r border-black/40 lg:border-white/40'
+                : ''}"
+            >
+              {time}
+            </div>
+          {/each}
+        </div>
+        <div class="grid grid-cols-5">
+          <div class="px-4 py-3 border-r border-black/40 lg:border-white/40"></div>
+          <div
+            class="px-4 py-3 border-r border-black/40 lg:border-white/40 flex justify-center items-center"
+          >
+            <Laugh width={30} height={30} color="black" />
+          </div>
+          <div
+            class="px-4 py-3 border-r border-black/40 lg:border-white/40 flex justify-center items-center"
+          >
+            <Laugh width={30} height={30} color="black" />
+          </div>
+          <div
+            class="px-4 py-3 border-r border-black/40 lg:border-white/40 flex justify-center items-center"
+          >
+            <Laugh width={30} height={30} color="black" />
+          </div>
+          <div class="px-4 py-3 flex justify-center items-center">
+            <Laugh width={30} height={30} color="black" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Desktop layout: sticky scroll-animated panels -->
+<div id="laughs-scroll-container" class="relative hidden lg:block">
   <div class="sticky h-[100dvh] self-start" style="top: var(--vv-top, 0px);">
     <!-- Background image -->
     <div
       class="absolute inset-0 bg-cover bg-center"
-      style="background-image: url('https://amdufour.github.io/hosted-data/apis/images/data_gathering_1.jpg');"
+      style="background-image: url(‘https://amdufour.github.io/hosted-data/apis/images/data_gathering_1.jpg’);"
     ></div>
 
     <!-- Text panels at the bottom -->
@@ -425,7 +607,7 @@
       <!-- wrapper: text 1 in flow sets natural height; texts 2-5 are absolute -->
       <div id="laughs-text-wrapper" class="relative container">
         <div id="laughs-text-1" class="py-8 md:py-12 max-w-[840px] pointer-events-none">
-          Whilst tracking the episode's time elapsed on screen, a detailed spreadsheet template was
+          Whilst tracking the episode’s time elapsed on screen, a detailed spreadsheet template was
           used to <span class="highlight">quantify</span>
           and <span class="highlight">classify</span> data that would aid the analysis of the show’s rhythm
           and texture.
@@ -446,9 +628,9 @@
             </div>
             <!-- Text -->
             <div class="max-w-[984px]">
-              It doesn't take a genius to recognise the main goal of a situation comedy is to be
+              It doesn’t take a genius to recognise the main goal of a situation comedy is to be
               funny. Therefore, a reliable indicator of a sitcom being funny is to measure the
-              reaction of an audience's laughter through the laugh track. It is rare to find laugh
+              reaction of an audience’s laughter through the laugh track. It is rare to find laugh
               tracks on modern sitcoms, but Seinfeld had one. With the show always being filmed in
               front of a <span class="highlight">live studio audience</span> (any scenes filmed outside
               were played back in the studio) it meant the laughter heard is an authentic measure of the
@@ -462,7 +644,7 @@
             <div class="self-center max-w-[984px]">
               Measuring laughter was the most subjective and, therefore, challenging data collection
               activity. Laughing can occur at different levels, from the subtle smile characterising
-              'inner' laughter, through to more external giggles, and up to howling belly laughs. To
+              ‘inner’ laughter, through to more external giggles, and up to howling belly laughs. To
               establish a standard and consistent measurement, any audience laughter heard would be
               considered as a <span class="highlight">laughter moment</span>, regardless of its
               level.
@@ -506,7 +688,7 @@
               <span class="highlight">5&#8209;second</span> block of time, determined by in which period
               the laughter was heard and/or most associated. When testing out the data collection approach
               over three sample episodes, the 5-second duration proved to be the most reliable and representative
-              'average' duration, from the gag's delivery to the audience's laughter subsiding.
+              ‘average’ duration, from the gag’s delivery to the audience’s laughter subsiding.
             </div>
             <!-- Excel-like grid -->
             <div class="shrink-0 border border-white/40 text-xs">
