@@ -171,8 +171,10 @@
     });
 
     // Force-load all waves immediately when triggered by menu/sidebar navigation
+    let lazyTriggered = false;
     const unsubLazy = lazyLoadAll.subscribe(async (shouldLoad) => {
       if (!shouldLoad) return;
+      lazyTriggered = true;
       await Promise.all([
         loadWave1(),
         loadWave2(),
@@ -262,7 +264,7 @@
       }
       if (anchor) {
         // Safety timeout: if the target element never mounts (e.g. a section that
-        // is currently disabled), bail out after 5 s so the loader doesn't hang forever.
+        // is currently disabled), bail out after 10 s so the loader doesn't hang forever.
         const pollTimeout = setTimeout(() => {
           if (scrollPollId !== null) {
             clearInterval(scrollPollId);
@@ -270,46 +272,114 @@
           }
           pendingScrollAnchor.set(null);
           isScrollLoading.set(false);
-        }, 5000);
+        }, 10000);
 
         scrollPollId = setInterval(() => {
           const target = document.getElementById(anchor);
-          if (target) {
+          // When lazy loading was triggered, wait for all sections (Footer is last)
+          // before scrolling; otherwise GSAP pin spacers shift mid-flight and we
+          // land at the wrong position.
+          const allLoaded = !lazyTriggered || Footer !== null;
+          if (target && allLoaded) {
             clearTimeout(pollTimeout);
             clearInterval(scrollPollId!);
             scrollPollId = null;
-            // getBoundingClientRect().top + scrollY gives a true document-offset
-            // that's correct even when the target is inside a positioned ancestor.
-            const targetY = target.getBoundingClientRect().top + window.scrollY;
-            window.scrollTo(0, targetY);
-            pendingScrollAnchor.set(null);
-            isScrollLoading.set(false);
-            // iOS defers programmatic scroll rendering asynchronously, so a fixed
-            // rAF count can still read the old scrollY. Poll until scrollY is
-            // stable for 3 consecutive frames before refreshing ScrollTrigger.
-            let lastY = -1;
-            let stableCount = 0;
-            const waitForSettle = () => {
-              const y = window.scrollY;
-              if (y === lastY) {
-                if (++stableCount >= 3) {
-                  ScrollTrigger.refresh();
-                  // After refresh, GSAP recalculates pin spacers (e.g. Calendar),
-                  // which shifts content. Re-scroll to the target so we land correctly.
+
+            if (lazyTriggered) {
+              // Flush any pending GSAP refresh and do one explicit refresh now
+              // (scroll is near 0 since the user just loaded the page, so GSAP
+              // won't need to reset scroll position during this call).
+              if (_refreshTimer) {
+                clearTimeout(_refreshTimer);
+                _refreshTimer = null;
+              }
+              ScrollTrigger.refresh();
+              const scrollTarget = document.getElementById(anchor) ?? target;
+              const targetY = scrollTarget.getBoundingClientRect().top + window.scrollY;
+              window.scrollTo(0, targetY);
+              pendingScrollAnchor.set(null);
+              // Keep isScrollLoading true — the loader stays on screen until child
+              // sections finish their own lazy loads (which cause layout shifts and
+              // GSAP scroll-restoration jumps). Only hide it once the layout is stable.
+
+              // Child sections (SupportingChars, Locations…) have their own nested
+              // lazy loaders. When we jump to the target, their inview sentinels fire,
+              // loading sub-components. Their scheduleRefresh() calls ScrollTrigger.refresh()
+              // ~150 ms later — GSAP saves scrollY, scrolls to 0, recalculates spacers,
+              // then restores to the saved scrollY. But the page is now taller, so the
+              // saved scrollY lands us in the wrong section.
+              // ResizeObserver catches each layout change and re-scrolls using
+              // BCR.top + scrollY (= element's absolute document position, always correct).
+              // The loader is hidden only after the layout stays stable for STABLE_MS.
+              const STABLE_MS = 600;
+              let resizeDebounce: ReturnType<typeof setTimeout> | null = null;
+              let loaderHideTimer: ReturnType<typeof setTimeout> | null = null;
+
+              const scheduleLoaderHide = () => {
+                if (loaderHideTimer) clearTimeout(loaderHideTimer);
+                loaderHideTimer = setTimeout(() => {
+                  loaderHideTimer = null;
+                  isScrollLoading.set(false);
+                }, STABLE_MS);
+              };
+
+              let bodyObserver: ResizeObserver;
+              const stopBodyObserver = () => {
+                bodyObserver.disconnect();
+                if (resizeDebounce) { clearTimeout(resizeDebounce); resizeDebounce = null; }
+                if (loaderHideTimer) { clearTimeout(loaderHideTimer); loaderHideTimer = null; }
+                isScrollLoading.set(false);
+              };
+
+              bodyObserver = new ResizeObserver(() => {
+                // New content loaded — cancel pending loader-hide and debounce re-scroll.
+                if (loaderHideTimer) { clearTimeout(loaderHideTimer); loaderHideTimer = null; }
+                if (resizeDebounce) clearTimeout(resizeDebounce);
+                resizeDebounce = setTimeout(() => {
+                  resizeDebounce = null;
                   const reTarget = document.getElementById(anchor);
                   if (reTarget) {
-                    const newY = reTarget.getBoundingClientRect().top + window.scrollY;
-                    window.scrollTo(0, newY);
+                    window.scrollTo(0, reTarget.getBoundingClientRect().top + window.scrollY);
                   }
-                  return;
+                  // Schedule loader hide — if no more resizes arrive, we're settled.
+                  scheduleLoaderHide();
+                }, 300);
+              });
+              bodyObserver.observe(document.body);
+              // Fallback: if no child resize fires, hide loader after STABLE_MS.
+              scheduleLoaderHide();
+              // Hard timeout: give up after 8 s.
+              setTimeout(stopBodyObserver, 8000);
+            } else {
+              // Non-lazy path: scroll immediately, then settle and refresh for iOS.
+              const targetY = target.getBoundingClientRect().top + window.scrollY;
+              window.scrollTo(0, targetY);
+              pendingScrollAnchor.set(null);
+              isScrollLoading.set(false);
+              // iOS defers programmatic scroll asynchronously; poll until scrollY is
+              // stable for 3 consecutive frames, then refresh and re-scroll.
+              let lastY = -1;
+              let stableCount = 0;
+              const waitForSettle = () => {
+                const y = window.scrollY;
+                if (y === lastY) {
+                  if (++stableCount >= 3) {
+                    ScrollTrigger.refresh();
+                    const reTarget = document.getElementById(anchor);
+                    if (reTarget) {
+                      const newY = reTarget.getBoundingClientRect().top + window.scrollY;
+                      window.scrollTo(0, newY);
+                    }
+                    return;
+                  }
+                } else {
+                  stableCount = 0;
+                  lastY = y;
                 }
-              } else {
-                stableCount = 0;
-                lastY = y;
-              }
+                requestAnimationFrame(waitForSettle);
+              };
               requestAnimationFrame(waitForSettle);
-            };
-            requestAnimationFrame(waitForSettle);
+            }
           }
         }, 50);
       }

@@ -599,7 +599,7 @@
     <!-- Background image -->
     <div
       class="absolute inset-0 bg-cover bg-center"
-      style="background-image: url(‘https://amdufour.github.io/hosted-data/apis/images/data_gathering_1.jpg’);"
+      style="background-image: url('https://amdufour.github.io/hosted-data/apis/images/data_gathering_1.jpg');"
     ></div>
 
     <!-- Text panels at the bottom -->
