@@ -290,6 +290,15 @@
   }));
 
   let hoveredFinding = $state<Finding | null>(findings[0]);
+  let hoveredBar = $state<Finding | null>(null);
+
+  function isBarActive(finding: Finding): boolean {
+    return hoveredBar ? hoveredBar.id === finding.id : hoveredFinding?.id === finding.id;
+  }
+
+  function hasActiveBar(): boolean {
+    return hoveredBar !== null || hoveredFinding !== null;
+  }
 
   function navigateFinding(direction: 1 | -1) {
     const currentIndex = hoveredFinding
@@ -353,7 +362,7 @@
       <div class="order-last desktop:order-none desktop:col-span-5 flex flex-col gap-5">
         {#each findingsByCategory as group}
           <div class="flex flex-col gap-1">
-            <span class="text-[11px] font-mono uppercase tracking-widest mb-1 text-[#12020A]">
+            <span class="text-[12px] font-mono uppercase tracking-widest mb-1 text-[#12020A]">
               {group.name}
             </span>
             {#each group.findings as finding}
@@ -362,6 +371,8 @@
                 tabindex="0"
                 class="bar-row py-0.5 cursor-pointer"
                 onclick={() => (hoveredFinding = finding)}
+                onmouseenter={() => (hoveredBar = finding)}
+                onmouseleave={() => (hoveredBar = null)}
                 ontouchend={(e) => {
                   e.preventDefault();
                   hoveredFinding = hoveredFinding?.id === finding.id ? null : finding;
@@ -375,8 +386,8 @@
                   style="
                     width: {getBarWidth(finding)}%;
                     background: {finding.barGradient ?? finding.barColor ?? group.color};
-                    opacity: {!hoveredFinding || hoveredFinding.id === finding.id ? 1 : 0.25};
-                    transform: scaleY({hoveredFinding?.id === finding.id ? 1.5 : 1});
+                    opacity: {!hasActiveBar() || isBarActive(finding) ? 1 : 0.25};
+                    transform: scaleY({isBarActive(finding) ? 1.5 : 1});
                     transform-origin: center left;
                   "
                 ></div>
