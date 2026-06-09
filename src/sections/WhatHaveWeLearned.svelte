@@ -1,5 +1,7 @@
 <script lang="ts">
   import CloseIcon from '../icons/CloseIcon.svelte';
+  import Next from '../icons/Next.svelte';
+  import Prev from '../icons/Prev.svelte';
 
   interface Finding {
     id: number;
@@ -287,7 +289,15 @@
     findings: findings.filter((f) => f.category === cat.name),
   }));
 
-  let hoveredFinding = $state<Finding | null>(null);
+  let hoveredFinding = $state<Finding | null>(findings[0]);
+
+  function navigateFinding(direction: 1 | -1) {
+    const currentIndex = hoveredFinding
+      ? findings.findIndex((f) => f.id === hoveredFinding!.id)
+      : -1;
+    const nextIndex = Math.max(0, Math.min(findings.length - 1, currentIndex + direction));
+    hoveredFinding = findings[nextIndex];
+  }
 
   const CHAR_COLORS: Record<string, string> = {
     // Locations — longest first so "Kramer's home" beats "Kramer", etc.
@@ -351,8 +361,7 @@
                 role="button"
                 tabindex="0"
                 class="bar-row py-0.5 cursor-pointer"
-                onmouseenter={() => (hoveredFinding = finding)}
-                onmouseleave={() => (hoveredFinding = null)}
+                onclick={() => (hoveredFinding = finding)}
                 ontouchend={(e) => {
                   e.preventDefault();
                   hoveredFinding = hoveredFinding?.id === finding.id ? null : finding;
@@ -400,11 +409,31 @@
                 <CloseIcon color="#12020A" size={18} />
               </button>
             </div>
+            <!-- Desktop prev/next navigation -->
+            <div class="hidden desktop:flex items-center gap-6 mt-6">
+              <button
+                class="nav-btn flex items-center gap-2"
+                onclick={() => navigateFinding(-1)}
+                disabled={hoveredFinding.id === findings[0].id}
+                aria-label="Previous finding"
+              >
+                <Prev color="#12020A" size="xs" />
+                <span class="text-[12px] font-mono uppercase tracking-widest">Previous</span>
+              </button>
+              <button
+                class="nav-btn flex items-center gap-2"
+                onclick={() => navigateFinding(1)}
+                disabled={hoveredFinding.id === findings[findings.length - 1].id}
+                aria-label="Next finding"
+              >
+                <span class="text-[12px] font-mono uppercase tracking-widest">Next</span>
+                <Next color="#12020A" size="xs" />
+              </button>
+            </div>
           </div>
         {:else}
           <p class="text-[#928D90] text-[1.2rem] italic m-0">
-            <span class="hidden desktop:inline">Hover</span><span class="desktop:hidden">Tap</span> a
-            bar to read the finding
+            <span class="desktop:hidden">Tap</span> a bar to read the finding
           </p>
         {/if}
       </div>
@@ -417,6 +446,20 @@
     font-weight: 600;
     color: var(--char-color);
     animation: charReveal 0.8s ease-out both;
+  }
+
+  .nav-btn {
+    color: #12020a;
+    opacity: 0.5;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .nav-btn:hover:not(:disabled) {
+    opacity: 1;
+  }
+  .nav-btn:disabled {
+    opacity: 0.2;
+    cursor: not-allowed;
   }
 
   @keyframes charReveal {

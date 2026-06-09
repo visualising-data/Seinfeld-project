@@ -3,7 +3,7 @@
 </script>
 
 <svg
-  width={size === 'lg' ? 30 : 16}
+  width={size === 'lg' ? 30 : size === 'xs' ? 10 : 16}
   height={size === 'lg' ? 51 : 32}
   viewBox="0 0 30 51"
   fill="none"
