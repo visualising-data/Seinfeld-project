@@ -40,13 +40,6 @@
   let mobileTransitionTo;
 
   const baseVideoUrl = 'https://amdufour.github.io/hosted-data/apis/videos/';
-  const videoFiles = [
-    '6c.ShowAboutNothing',
-    '32.Minutiae',
-    'KramerJeans2',
-    '8.KramerCigarette',
-    '14.ElaineDancing',
-  ];
 
   /** @param {number} index */
   const playVideo = (index) => {
@@ -696,13 +689,13 @@
 
     <!-- Mobile tab navigation (lg:hidden) -->
     <div class="lg:hidden flex shrink-0 bg-black">
-      {#each videoFiles as _, tabIdx}
+      {#each ['Nothing', 'Flawed', 'Irreverent', 'Musicality', 'Sit-com'] as tabLabel, tabIdx}
         <button
           class="show-tab flex-1 py-2 text-xs"
           class:show-tab-active={currentIndex === tabIdx}
           onclick={() => mobileTransitionTo?.(tabIdx)}
         >
-          {String(tabIdx + 1).padStart(2, '0')}
+          {tabLabel}
         </button>
       {/each}
     </div>
