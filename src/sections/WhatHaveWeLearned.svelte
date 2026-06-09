@@ -411,7 +411,28 @@
             <p class="text-[#12020A] leading-relaxed m-0">
               {@html highlightText(hoveredFinding.text)}
             </p>
-            <div class="desktop:hidden flex justify-end mt-3">
+            <!-- Prev/next navigation (mobile + desktop) -->
+            <div class="flex desktop:hidden items-center justify-between mt-3">
+              <div class="flex items-center gap-8">
+                <button
+                  class="nav-btn flex items-center gap-2"
+                  onclick={() => navigateFinding(-1)}
+                  disabled={hoveredFinding.id === findings[0].id}
+                  aria-label="Previous finding"
+                >
+                  <Prev color="#12020A" size="xs" />
+                  <span class="text-[12px] font-mono uppercase tracking-widest">Previous</span>
+                </button>
+                <button
+                  class="nav-btn flex items-center gap-2"
+                  onclick={() => navigateFinding(1)}
+                  disabled={hoveredFinding.id === findings[findings.length - 1].id}
+                  aria-label="Next finding"
+                >
+                  <span class="text-[12px] font-mono uppercase tracking-widest">Next</span>
+                  <Next color="#12020A" size="xs" />
+                </button>
+              </div>
               <button
                 class="opacity-40 hover:opacity-80 transition-opacity"
                 onclick={() => (hoveredFinding = null)}
@@ -420,7 +441,6 @@
                 <CloseIcon color="#12020A" size={18} />
               </button>
             </div>
-            <!-- Desktop prev/next navigation -->
             <div class="hidden desktop:flex items-center gap-6 mt-6">
               <button
                 class="nav-btn flex items-center gap-2"
