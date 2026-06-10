@@ -254,7 +254,7 @@
     <!-- ── Size legend (concentric circles) ─────────────────────── -->
     {#each [...legendSizes].reverse() as size}
       <circle
-        cx={innerWidth - legendRMax - 30}
+        cx={innerWidth - legendRMax - 34}
         cy={legendRMax * 2 + 4 - size.r}
         r={size.r}
         fill="#BEBABC"
@@ -266,15 +266,15 @@
       {@const lx = innerWidth - legendRMax - 30}
       {@const topY = legendRMax * 2 + 4 - size.r * 2}
       <line
-        x1={lx + 4}
+        x1={lx}
         y1={topY}
-        x2={lx + legendLineLen}
+        x2={lx + legendLineLen - 4}
         y2={topY + (i === 0 ? 4 : i === legendSizes.length - 1 ? -4 : 0)}
         stroke="#E71D80"
         stroke-width="1"
       />
       <text
-        x={lx + legendLineLen + 4}
+        x={lx + legendLineLen}
         y={topY + (i === 0 ? 6 : i === legendSizes.length - 1 ? -4 : 0)}
         class="small accent"
         dominant-baseline="middle"

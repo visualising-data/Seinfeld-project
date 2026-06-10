@@ -273,7 +273,7 @@
             opacity={hoveredLocation === null ? (innerWidth < 640 ? 0 : 1) : 0}
           >
             <text
-              x={135}
+              x={197}
               y={chartHeight / 2 - 9}
               transform="rotate(-90, {0}, {chartHeight / 2})"
               text-anchor="middle"
