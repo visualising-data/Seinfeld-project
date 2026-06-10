@@ -434,13 +434,11 @@
                 />
 
                 <!-- Text -->
-                {#if innerWidth >= 1024}
-                  <foreignobject width={char.screenTimeWidth} height={char.noLaughsWidth}>
-                    <div class="px-4 py-2">
-                      <div class="small">{char.text}</div>
-                    </div>
-                  </foreignobject>
-                {/if}
+                <foreignobject width={char.screenTimeWidth} height={char.noLaughsWidth}>
+                  <div class="px-4 py-2">
+                    <div class="small">{char.text}</div>
+                  </div>
+                </foreignobject>
               </g>
             {/each}
 
