@@ -30,12 +30,12 @@
 
 <div id="prologue-end" class="w-screen h-[100dvh]" style="margin-top: 800px;">
   <div class="h-[100dvh] container flex content-center flex-wrap">
-    <div style="max-width: 520px;">
+    <div style="max-width: 620px;">
       <p>
         A few years later, I decided it was time to revisit this work and develop a new format that
         could reach a wider audience.
       </p>
-      <p>Presenting, <span class="highlight">The Seinfeld Chronicles</span> digital edition.</p>
+      <p>Presenting, The Seinfeld Chronicles: <span class="highlight">Digital Edition</span>.</p>
     </div>
   </div>
 </div>

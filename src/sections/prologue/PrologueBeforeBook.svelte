@@ -33,17 +33,17 @@
   <div class="h-[100dvh] container flex content-center flex-wrap">
     <div class="bg-black" style="max-width: 900px;">
       <p>
-        I became intrigued by the possibilities of mixing work with pleasure: <span
-          class="highlight">visually exploring a sitcom through its data</span
+        I was intrigued by the possibilities of mixing work with pleasure: <span class="highlight"
+          >visually exploring a sitcom through its data</span
         >.
       </p>
       <p>
         Intrigued became compelled. I wanted to explore how Seinfeld and David, with the support of
         their evolving pool of talented writers, managed to achieve such sustained sitcom
         brilliance. Much like a sports coach seeks to assemble the right players in the right
-        combinations, to win a game, I wanted to explore how the Seinfeld ‘coaching team’ used their
-        resources to assemble the right characters in the right scenes, in order to score the laughs
-        and create TV gold.
+        combinations, to win a game, how did the Seinfeld ‘coaching team’ use their resources to
+        assemble the right characters in the right scenes, in order to score the laughs and create
+        TV gold?
       </p>
     </div>
   </div>
