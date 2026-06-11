@@ -130,9 +130,11 @@
     sharedScrollLeft.set(0);
   });
 
-  // Scroll to keep the playing scene near the left edge
+  // Scroll to keep the playing scene near the left edge.
+  // Only on narrow screens where the timeline overflows horizontally; on
+  // desktop the whole timeline fits, so auto-scrolling just drifts it left.
   $effect(() => {
-    if (isPlaying && playingScene > 0 && scenes.length > 0) {
+    if (innerWidth <= 1000 && isPlaying && playingScene > 0 && scenes.length > 0) {
       const scene = scenes.find((s) => s.sceneNum === playingScene);
       if (scene) {
         sharedScrollLeft.set(Math.max(0, xScale(scene.startTime) - 20));
