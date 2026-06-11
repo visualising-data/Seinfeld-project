@@ -51,9 +51,13 @@
           href="https://www.vice.com/en/article/how-seinfelds-theme-song-was-created"
           target="_blank">Jonathan Wolff</a
         >, you can now hear the unique sonic signatures of each episode’s character and location,
-        using a bespoke repertoire of instruments and sounds drawn from the show. Be prepared, it’s
-        about to get <span class="highlight-reverse">weird</span>, but, good-weird, maybe even funky
-        weird.
+        using a bespoke repertoire of instruments and sounds drawn from the show. Regardless of
+        their duration in the episode, the sonfication of each scene runs for the length of four
+        bars.
+      </p>
+      <p>
+        Be prepared, it’s about to get <span class="highlight-reverse">weird</span>, but,
+        good-weird, maybe even funky weird.
       </p>
     </div>
   </div>
