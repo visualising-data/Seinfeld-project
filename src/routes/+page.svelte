@@ -394,6 +394,20 @@
       }
     });
 
+    // Handle an initial URL hash (e.g. /#episodes). The target section is almost
+    // always lazy-loaded and not yet in the DOM on first paint, so the browser's
+    // native anchor jump finds nothing and leaves us at the top. Feed the hash
+    // into the same pendingScrollAnchor flow the menu uses: set the anchor, and
+    // if its element isn't mounted yet, show the loader and force all waves to load.
+    const initialHash = decodeURIComponent(window.location.hash.slice(1));
+    if (initialHash) {
+      pendingScrollAnchor.set(initialHash);
+      if (!document.getElementById(initialHash)) {
+        isScrollLoading.set(true);
+        lazyLoadAll.set(true);
+      }
+    }
+
     return () => {
       unsubscribe();
       unsubLazy();
