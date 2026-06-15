@@ -24,9 +24,7 @@
   const labelsWidth = $derived(innerWidth >= 1280 ? 176 : 60);
   const extraPadding = $derived(innerWidth >= 1280 ? 60 : 10);
   let vizWidth = $derived(
-    innerWidth > 1000
-      ? innerWidth - statsWidth - extraPadding
-      : Math.max(innerWidth * 2, 600),
+    innerWidth > 1000 ? innerWidth - statsWidth - extraPadding : Math.max(innerWidth * 2, 600),
   );
   let scenesWidth = $derived(vizWidth - labelsWidth);
 
@@ -96,7 +94,7 @@
     // Deferred so the refresh doesn't fire mid-scroll and cause a position jump.
     setTimeout(() => ScrollTrigger.refresh(), 150);
 
-    const catalogEl = document.getElementById('catalog-section');
+    const catalogEl = document.getElementById('episodes');
     if (catalogEl) {
       catalogObserver = new IntersectionObserver(
         ([entry]) => {
@@ -164,7 +162,7 @@
 
 <svelte:window bind:innerWidth bind:innerHeight />
 
-<section id="catalog-section" style="min-height: 100vh; background: #F9F5F7;">
+<section id="episodes" style="min-height: 100vh; background: #F9F5F7;">
   <div id="catalog-inner" class="relative">
     {#if showIllustration && catalogIllustration}
       <img

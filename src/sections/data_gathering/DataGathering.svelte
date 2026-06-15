@@ -91,7 +91,7 @@
   }
 
   // When menu/sidebar navigation triggers a force-load, chain through all
-  // internal sub-sections so catalog-section exists before the scroll poll fires.
+  // internal sub-sections so episodes exists before the scroll poll fires.
   onMount(() => {
     const unsub = lazyLoadAll.subscribe(async (shouldLoad) => {
       if (!shouldLoad) return;
@@ -155,10 +155,12 @@
           ></div>
 
           {#if Catalog}
-            {#await Promise.all([csv(sonificationCharactersDataUrl), csv(sonificationLocationDataUrl)])}
-              <section id="catalog-section" style="min-height: 100vh; background: #F9F5F7;">
+            {#await Promise.all( [csv(sonificationCharactersDataUrl), csv(sonificationLocationDataUrl)], )}
+              <section id="episodes" style="min-height: 100vh; background: #F9F5F7;">
                 <div class="flex items-center justify-center" style="height: 100vh;">
-                  <div class="w-8 h-8 rounded-full border-2 border-gray-300 border-t-gray-600 animate-spin"></div>
+                  <div
+                    class="w-8 h-8 rounded-full border-2 border-gray-300 border-t-gray-600 animate-spin"
+                  ></div>
                 </div>
               </section>
             {:then [sonificationCharactersData, sonificationLocationData]}
@@ -169,9 +171,11 @@
                 {ScrollTrigger}
               />
             {:catch}
-              <section id="catalog-section" style="min-height: 100vh; background: #F9F5F7;">
+              <section id="episodes" style="min-height: 100vh; background: #F9F5F7;">
                 <div class="flex items-center justify-center" style="height: 100vh;">
-                  <p style="color: #888; font-size: 0.9rem;">Failed to load episode data. Please refresh the page.</p>
+                  <p style="color: #888; font-size: 0.9rem;">
+                    Failed to load episode data. Please refresh the page.
+                  </p>
                 </div>
               </section>
             {/await}

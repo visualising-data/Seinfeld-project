@@ -206,7 +206,7 @@
       'title-screen',
       'intro',
       'intro-calendar-container',
-      'catalog-section',
+      'episodes',
       'lead-chars',
       'supporting-chars',
       'locations',
@@ -326,14 +326,23 @@
               let bodyObserver: ResizeObserver;
               const stopBodyObserver = () => {
                 bodyObserver.disconnect();
-                if (resizeDebounce) { clearTimeout(resizeDebounce); resizeDebounce = null; }
-                if (loaderHideTimer) { clearTimeout(loaderHideTimer); loaderHideTimer = null; }
+                if (resizeDebounce) {
+                  clearTimeout(resizeDebounce);
+                  resizeDebounce = null;
+                }
+                if (loaderHideTimer) {
+                  clearTimeout(loaderHideTimer);
+                  loaderHideTimer = null;
+                }
                 isScrollLoading.set(false);
               };
 
               bodyObserver = new ResizeObserver(() => {
                 // New content loaded — cancel pending loader-hide and debounce re-scroll.
-                if (loaderHideTimer) { clearTimeout(loaderHideTimer); loaderHideTimer = null; }
+                if (loaderHideTimer) {
+                  clearTimeout(loaderHideTimer);
+                  loaderHideTimer = null;
+                }
                 if (resizeDebounce) clearTimeout(resizeDebounce);
                 resizeDebounce = setTimeout(() => {
                   resizeDebounce = null;

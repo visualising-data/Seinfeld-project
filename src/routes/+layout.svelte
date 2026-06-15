@@ -1,6 +1,16 @@
 <script lang="ts">
   import '../app.css';
+  import { onMount } from 'svelte';
   let { children } = $props();
+
+  onMount(() => {
+    // Always start a fresh page load at the top, ignoring the browser's
+    // restored scroll position (important for the scrollytelling flow).
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+    }
+    window.scrollTo(0, 0);
+  });
 </script>
 
 <svelte:head>
