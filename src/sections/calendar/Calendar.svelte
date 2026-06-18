@@ -481,8 +481,8 @@
         const obs = new IntersectionObserver(([entry]) => {
           if (entry.isIntersecting) {
             onEnter();
-          } else if (entry.boundingClientRect.bottom < window.innerHeight / 2) {
-            // element scrolled entirely above viewport center → onLeaveBack
+          } else if (entry.boundingClientRect.top > window.innerHeight / 2) {
+            // element is below viewport center → user scrolled back up past it
             onLeaveBack();
           }
         }, { rootMargin: '-50% 0px -50% 0px' });
