@@ -28,7 +28,7 @@
           (isHover && hoveredSceneData && laugh >= hoveredSceneData.startTime && laugh <= hoveredSceneData.endTime) ||
           (isPlaying &&
             laugh >= playingSceneData.startTime &&
-            laugh + laughWidth <= playingSceneData.endTime)
+            laugh <= playingSceneData.endTime)
             ? 1
             : 0.2}
           stroke="#F9F5F7"
@@ -36,7 +36,7 @@
           (isHover && hoveredSceneData && laugh >= hoveredSceneData.startTime && laugh <= hoveredSceneData.endTime) ||
           (isPlaying &&
             laugh >= playingSceneData.startTime &&
-            laugh + laughWidth <= playingSceneData.endTime)
+            laugh <= playingSceneData.endTime)
             ? 1
             : 0}
         />
