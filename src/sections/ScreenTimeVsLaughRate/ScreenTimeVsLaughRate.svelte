@@ -152,7 +152,7 @@
   });
 
   const playRythm = () => {
-    if ($soundIsAuth) {
+    if ($soundIsAuth && soundtrackCanPlay) {
       soundtrack.player('rythm').start();
 
       playRythmTimeout = setTimeout(() => {
@@ -161,7 +161,7 @@
     }
   };
   const playChar = () => {
-    if ($soundIsAuth && playingFile) {
+    if ($soundIsAuth && soundtrackCanPlay && playingFile) {
       soundtrack.player(playingFile).start();
 
       playCharTimeout = setTimeout(() => {
@@ -171,22 +171,20 @@
   };
 
   const playAudio = () => {
-    if (soundtrack.state === 'started') return; // already playing
     playRythm();
     playChar();
   };
 
   const stopAudio = () => {
-    if (soundtrack.state !== 'started') return; // already stopped
-    soundtrack.stopAll();
     clearTimeout(playRythmTimeout);
     clearTimeout(playCharTimeout);
+    soundtrack.stopAll();
   };
 
   $effect(() => {
-    if ($soundIsAuth && soundtrackCanPlay && soundtrack?.state !== 'started') {
+    if ($soundIsAuth && soundtrackCanPlay) {
       playAudio();
-    } else if (!$soundIsAuth && soundtrackCanPlay && soundtrack?.state === 'started') {
+    } else if (!$soundIsAuth) {
       stopAudio();
     }
   });
