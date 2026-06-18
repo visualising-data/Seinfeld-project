@@ -11,6 +11,7 @@
   import PresenceOnScreen from './PresenceOnScreen.svelte';
   import CausedLaughs from './CausedLaughs.svelte';
   import CharactersStats from './CharactersStats.svelte';
+  import ChevronDown from '../../../../icons/ChevronDown.svelte';
 
   let {
     width,
@@ -152,7 +153,10 @@
           char.timesOnScreen?.length > 0
             ? Math.min(99, Math.round(((char.timesOnScreen.length * 5) / episodeDuration) * 100))
             : null,
-        laughPct: laugh && totalLaughs > 0 ? Math.round((laugh.causedLaughs.length / totalLaughs) * 100) : null,
+        laughPct:
+          laugh && totalLaughs > 0
+            ? Math.round((laugh.causedLaughs.length / totalLaughs) * 100)
+            : null,
       };
     });
   });
@@ -191,49 +195,49 @@
       class="flex-col"
       style="overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain; margin-top: -18px;"
     >
-    <svg height={18}>
-      <g transform="translate(0, 9)">
-        <text class="small accent" alignment-baseline="middle">Scene number</text>
-        <g transform="translate({102}, {-3})">
-          <path d="M30 3L25 0.113249V5.88675L30 3ZM0 3V3.5H25.5V3V2.5H0V3Z" fill="#E71D80" />
+      <svg height={18}>
+        <g transform="translate(0, 9)">
+          <text class="small accent" alignment-baseline="middle">Scene number</text>
+          <g transform="translate({102}, {-3})">
+            <path d="M30 3L25 0.113249V5.88675L30 3ZM0 3V3.5H25.5V3V2.5H0V3Z" fill="#E71D80" />
+          </g>
         </g>
-      </g>
-    </svg>
-    <svg {width} height={vizHeight}>
-      <Scenes
-        {scenes}
-        {xScale}
-        height={vizHeight}
-        {isHover}
-        {hoveredTime}
-        {isPlaying}
-        {playingScene}
-        {handleClickOnScene}
-      />
-      <PresenceOnScreen
-        characters={charactersOnScreen}
-        {xScale}
-        {yScale}
-        {scenes}
-        {isHover}
-        {hoveredTime}
-        {isPlaying}
-        {playingScene}
-      />
-      <CausedLaughs
-        characters={charactersCausedLaughs}
-        {xScale}
-        {yScale}
-        {isHover}
-        {hoveredTime}
-        {isPlaying}
-        {playingScene}
-        {scenes}
-      />
-      {#if isHover}
-        <line x1={hoveredPosition} y1={0} x2={hoveredPosition} y2={vizHeight} stroke="#12020A" />
-      {/if}
-    </svg>
+      </svg>
+      <svg {width} height={vizHeight}>
+        <Scenes
+          {scenes}
+          {xScale}
+          height={vizHeight}
+          {isHover}
+          {hoveredTime}
+          {isPlaying}
+          {playingScene}
+          {handleClickOnScene}
+        />
+        <PresenceOnScreen
+          characters={charactersOnScreen}
+          {xScale}
+          {yScale}
+          {scenes}
+          {isHover}
+          {hoveredTime}
+          {isPlaying}
+          {playingScene}
+        />
+        <CausedLaughs
+          characters={charactersCausedLaughs}
+          {xScale}
+          {yScale}
+          {isHover}
+          {hoveredTime}
+          {isPlaying}
+          {playingScene}
+          {scenes}
+        />
+        {#if isHover}
+          <line x1={hoveredPosition} y1={0} x2={hoveredPosition} y2={vizHeight} stroke="#12020A" />
+        {/if}
+      </svg>
     </div>
     {#if innerWidth < 1280}
       <div class="scroll-fade"></div>
@@ -259,7 +263,8 @@
   <div class="mobile-stats">
     <button class="stats-toggle" onclick={() => (statsOpen = !statsOpen)}>
       <span class="small accent">Character stats</span>
-      <span class="arrow" style="transform: rotate({statsOpen ? 180 : 0}deg);">▾</span>
+      <span class="arrow" style="transform: rotate({statsOpen ? 180 : 0}deg);"><ChevronDown /></span
+      >
     </button>
     {#if statsOpen}
       <div class="stats-grid">

@@ -10,6 +10,7 @@
   import LocationsList from './LocationsList.svelte';
   import LocationsOnScreen from './LocationsOnScreen.svelte';
   import LocationsStats from './LocationsStats.svelte';
+  import ChevronDown from '../../../../icons/ChevronDown.svelte';
 
   let {
     width,
@@ -136,40 +137,40 @@
       class="flex-col"
       style="overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain;"
     >
-    <svg {width} height={vizHeight}>
-      <Scenes
-        {scenes}
-        {xScale}
-        height={vizHeight}
-        isNumbersUp={false}
-        {isHover}
-        {hoveredTime}
-        {isPlaying}
-        {playingScene}
-        {handleClickOnScene}
-      />
-      <LocationsOnScreen
-        locations={locationsOnScreen}
-        {xScale}
-        {yScale}
-        {isHover}
-        {hoveredTime}
-        {scenes}
-        {isPlaying}
-        {playingScene}
-      />
-      {#if isHover}
-        <line x1={hoveredPosition} y1={0} x2={hoveredPosition} y2={vizHeight} stroke="#12020A" />
-      {/if}
-    </svg>
-    <svg height={18}>
-      <g transform="translate(0, 9)">
-        <text class="small accent" alignment-baseline="middle">Scene number</text>
-        <g transform="translate({102}, {-3})">
-          <path d="M30 3L25 0.113249V5.88675L30 3ZM0 3V3.5H25.5V3V2.5H0V3Z" fill="#E71D80" />
+      <svg {width} height={vizHeight}>
+        <Scenes
+          {scenes}
+          {xScale}
+          height={vizHeight}
+          isNumbersUp={false}
+          {isHover}
+          {hoveredTime}
+          {isPlaying}
+          {playingScene}
+          {handleClickOnScene}
+        />
+        <LocationsOnScreen
+          locations={locationsOnScreen}
+          {xScale}
+          {yScale}
+          {isHover}
+          {hoveredTime}
+          {scenes}
+          {isPlaying}
+          {playingScene}
+        />
+        {#if isHover}
+          <line x1={hoveredPosition} y1={0} x2={hoveredPosition} y2={vizHeight} stroke="#12020A" />
+        {/if}
+      </svg>
+      <svg height={18}>
+        <g transform="translate(0, 9)">
+          <text class="small accent" alignment-baseline="middle">Scene number</text>
+          <g transform="translate({102}, {-3})">
+            <path d="M30 3L25 0.113249V5.88675L30 3ZM0 3V3.5H25.5V3V2.5H0V3Z" fill="#E71D80" />
+          </g>
         </g>
-      </g>
-    </svg>
+      </svg>
     </div>
     {#if innerWidth < 1280}
       <div class="scroll-fade"></div>
@@ -193,7 +194,8 @@
   <div class="mobile-stats">
     <button class="stats-toggle" onclick={() => (statsOpen = !statsOpen)}>
       <span class="small accent">Location stats</span>
-      <span class="arrow" style="transform: rotate({statsOpen ? 180 : 0}deg);">▾</span>
+      <span class="arrow" style="transform: rotate({statsOpen ? 180 : 0}deg);"><ChevronDown /></span
+      >
     </button>
     {#if statsOpen}
       <div class="stats-grid">
