@@ -12,6 +12,7 @@
 
   let innerWidth = $state(1200);
   let innerHeight = $state(800);
+  let episodeDetailsHeight = $state(0);
   let episodeWidth = $derived(innerWidth > 793 ? innerWidth - 273 : innerWidth - 98);
   const statsWidth = $derived(innerWidth >= 1280 ? 240 : 0);
 
@@ -493,7 +494,7 @@
   <div id="episode-example" class="sticky w-full" style="top: var(--vv-top, 0px); z-index: 5;">
     <div class="relative flex flex-col overflow-hidden" style="height: calc(100dvh + 260px);">
       <!-- Episode details -->
-      <div class="mask self-start">
+      <div class="mask self-start" bind:clientHeight={episodeDetailsHeight}>
         <div id="episode-detail-container">
           <EpisodeDetails {episodeInfo} />
         </div>
@@ -502,8 +503,8 @@
       <!-- Episode duration and laughs -->
       <div
         id="duration-example"
-        class="flex flex-1 items-center justify-center"
-        style="width: {innerWidth - 25}px; opacity: 0;"
+        class="flex items-center justify-center"
+        style="width: {innerWidth - 25}px; height: {innerHeight - episodeDetailsHeight}px; opacity: 0;"
       >
         <svg width={innerWidth > 793 ? innerWidth - 225 : innerWidth - 50} height="140">
           <g transform="translate(0, 40)">
@@ -567,7 +568,7 @@
 
       <!-- Episode data -->
       <div
-        class="score-wrapper w-full absolute top-[120px] md:top-[160px] mt-[40px]"
+        class="score-wrapper w-full absolute top-[120px] md:top-[260px] mt-[40px]"
         style="max-height: {innerHeight - 320}px;"
       >
         <EpisodeScore
