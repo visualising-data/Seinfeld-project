@@ -21,9 +21,10 @@
       .to('#locations_screen_2 p', { translateY: 0, opacity: 1, duration: 1, ease: 'power3.out' })
       .to('#locations_screen_2 .highlight', { webkitTextFillColor: 'transparent', backgroundPosition: '200% center', duration: 2, delay: 1, ease: 'power3.out' }, '<-0.5');
 
-    // Lenis smooth scroll — desktop only (conflicts with iOS native momentum scroll)
+    // Lenis smooth scroll — desktop only (conflicts with iOS/tablet native momentum scroll).
+    // hover:hover excludes touch-only devices (iPads, phones) where Lenis blocks Gecko scroll.
     mm = gsap.matchMedia();
-    mm.add('(min-width: 1024px)', () => {
+    mm.add('(min-width: 1024px) and (hover: hover)', () => {
       const lenis = new Lenis();
       let rafId = 0;
       /** @param {number} time */

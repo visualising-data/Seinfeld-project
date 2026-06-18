@@ -20,8 +20,9 @@
 
     mm = gsap.matchMedia();
 
-    // Desktop: pin + scrub parallax + Lenis smooth scroll
-    mm.add('(min-width: 1024px)', () => {
+    // Desktop: pin + scrub parallax + Lenis smooth scroll.
+    // hover:hover excludes touch-only tablets (iPads) where Lenis blocks Gecko scroll.
+    mm.add('(min-width: 1024px) and (hover: hover)', () => {
       const tl1 = gsap.timeline({
         scrollTrigger: {
           trigger: '#lead-chars-intro',
@@ -105,8 +106,9 @@
       };
     });
 
-    // Mobile/tablet: IntersectionObserver reveal — no pin, no scrub, no Lenis
-    mm.add('(max-width: 1023px)', () => {
+    // Mobile/tablet: IntersectionObserver reveal — no pin, no scrub, no Lenis.
+    // Also covers wide-screen touch-only devices (e.g. iPad landscape, hover: none).
+    mm.add('(max-width: 1023px), (hover: none)', () => {
       const el = document.getElementById('lead-chars-intro');
       if (!el) return;
 

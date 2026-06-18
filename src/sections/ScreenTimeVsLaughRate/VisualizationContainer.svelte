@@ -137,7 +137,7 @@
 </script>
 
 <div class="flex mx-0" bind:clientWidth={visualizationsWidth}>
-  <svg width={visualizationsWidth} height={visualizationsHeight}>
+  <svg width={visualizationsWidth} height={visualizationsHeight} style="touch-action: pan-y;">
     <!-- Episode details -->
     <g transform="translate(0, {margin.top})">
       <text
