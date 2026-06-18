@@ -64,6 +64,9 @@
   {#if ScreenTimeVsLaughRate}
     <ScreenTimeVsLaughRate {episodesData} currentSection="main_chars" />
 
+    <!-- Mobile spacer: lets the sticky viz fully clear before Marimekko enters -->
+    <div class="lg:hidden h-[100dvh]"></div>
+
     <!-- Sentinel 2: loads Marimekko -->
     <div
       use:inview={{ rootMargin: '1000px' }}

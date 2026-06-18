@@ -451,6 +451,17 @@
       const containerEl = document.getElementById('intro-calendar-container');
       if (!containerEl) return;
 
+      // Track scroll direction so the overlay observers can distinguish
+      // a forward pass (down) from a backward pass (up) through center.
+      let scrollingDown = true;
+      let _prevScrollY = window.scrollY;
+      const onScroll = () => {
+        const y = window.scrollY;
+        scrollingDown = y >= _prevScrollY;
+        _prevScrollY = y;
+      };
+      window.addEventListener('scroll', onScroll, { passive: true });
+
       // Track catalog visibility / sound section
       const containerObs = new IntersectionObserver(([entry]) => {
         if (entry.isIntersecting) {
@@ -480,7 +491,9 @@
         if (!el) return null;
         const obs = new IntersectionObserver(([entry]) => {
           if (entry.isIntersecting) {
-            onEnter();
+            // Only reveal when scrolling forward — prevents a brief show→hide
+            // flash when the overlay re-crosses center on the way back up.
+            if (scrollingDown) onEnter();
           } else if (entry.boundingClientRect.top > window.innerHeight / 2) {
             // element is below viewport center → user scrolled back up past it
             onLeaveBack();
@@ -491,6 +504,7 @@
       }).filter(Boolean);
 
       return () => {
+        window.removeEventListener('scroll', onScroll);
         containerObs.disconnect();
         episodeObservers.forEach((obs) => obs?.disconnect());
         $catalogIsInView = false;

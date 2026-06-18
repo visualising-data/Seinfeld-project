@@ -504,7 +504,8 @@
       <div
         id="duration-example"
         class="flex items-center justify-center"
-        style="width: {innerWidth - 25}px; height: {innerHeight - episodeDetailsHeight}px; opacity: 0;"
+        style="width: {innerWidth - 25}px; height: {innerHeight -
+          episodeDetailsHeight}px; opacity: 0;"
       >
         <svg width={innerWidth > 793 ? innerWidth - 225 : innerWidth - 50} height="140">
           <g transform="translate(0, 40)">
@@ -568,7 +569,7 @@
 
       <!-- Episode data -->
       <div
-        class="score-wrapper w-full absolute top-[120px] md:top-[260px] mt-[40px]"
+        class="score-wrapper w-full absolute top-[120px] md:top-[160px] lg:top-[260px] mt-[40px]"
         style="max-height: {innerHeight - 320}px;"
       >
         <EpisodeScore

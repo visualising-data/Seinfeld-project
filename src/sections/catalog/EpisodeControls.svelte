@@ -75,7 +75,7 @@
 
 <div
   style="width: {innerWidth >= 1280 ? 'calc(100vw - 425px)' : '100vw'}; background-color: #E71D80;"
-  use:inview={{}}
+  use:inview={{ rootMargin: '0px 0px -80% 0px' }}
   oninview_change={(/** @type {{ detail: { inView: any; }; }} */ event) => {
     const { inView } = event.detail;
     $navBarColor = inView ? 'white' : 'pink';

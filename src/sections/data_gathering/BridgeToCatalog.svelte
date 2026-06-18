@@ -3,6 +3,7 @@
   import { gsap } from 'gsap/dist/gsap';
   import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
   import SectionTitle from '../SectionTitle.svelte';
+  import { navBarColor } from '../../stores/navbarColor';
 
   gsap.registerPlugin(ScrollTrigger);
 
@@ -24,11 +25,23 @@
           invalidateOnRefresh: true,
         },
       });
+
+      ScrollTrigger.create({
+        trigger: '#bridge-to-catalog-content',
+        start: 'top bottom',
+        end: 'bottom top',
+        invalidateOnRefresh: true,
+        onEnter: () => { $navBarColor = 'dark'; },
+        onLeave: () => { $navBarColor = 'white'; },
+        onEnterBack: () => { $navBarColor = 'dark'; },
+        onLeaveBack: () => { $navBarColor = 'white'; },
+      });
     });
   });
 
   onDestroy(() => {
     ctx?.revert();
+    $navBarColor = 'white';
   });
 </script>
 
