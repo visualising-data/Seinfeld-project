@@ -64,6 +64,55 @@
 
   let tlVideo;
   let pendingCanPlay = null;
+
+  let isInView = $state(false);
+  let isVideoPlaying = $state(false);
+
+  let playPauseTimer;
+  function debouncePlayPause(fn) {
+    clearTimeout(playPauseTimer);
+    playPauseTimer = setTimeout(fn, 100);
+  }
+
+  function playVideo() {
+    debouncePlayPause(() => {
+      if (!videoEl || !videoEl.paused) return;
+      isVideoLoading = true;
+
+      if (pendingCanPlay) videoEl.removeEventListener('canplay', pendingCanPlay);
+      pendingCanPlay = () => {
+        isVideoLoading = false;
+        isVideoPlaying = true;
+        tlVideo.restart();
+        pendingCanPlay = null;
+      };
+      videoEl.addEventListener('canplay', pendingCanPlay, { once: true });
+
+      // iOS Safari with preload="none" silently blocks play() unless load()
+      // is called first to explicitly start the resource fetch.
+      videoEl.load();
+      videoEl.play().catch((err) => {
+        if (err.name !== 'AbortError') console.warn('Video play failed:', err);
+        isVideoLoading = false;
+      });
+    });
+  }
+
+  function pauseVideo() {
+    debouncePlayPause(() => {
+      isVideoLoading = false;
+      isVideoPlaying = false;
+      if (pendingCanPlay && videoEl) {
+        videoEl.removeEventListener('canplay', pendingCanPlay);
+        pendingCanPlay = null;
+      }
+      if (!videoEl || videoEl.paused) return;
+      videoEl.pause();
+      videoEl.currentTime = 0;
+      tlVideo?.pause();
+    });
+  }
+
   onMount(async () => {
     const laughIconReveal = { opacity: 0, yPercent: 50, duration: 1, ease: 'power3.out' };
 
@@ -73,10 +122,10 @@
         start: 'top top',
         end: 'bottom top',
         toggleActions: 'play pause resume pause',
-        onEnter: () => { playVideo(); enterSoundSection(); },
-        onLeave: () => { pauseVideo(); leaveSoundSection(); },
-        onEnterBack: () => { playVideo(); enterSoundSection(); },
-        onLeaveBack: () => { pauseVideo(); leaveSoundSection(); },
+        onEnter: () => { isInView = true; playVideo(); enterSoundSection(); },
+        onLeave: () => { isInView = false; pauseVideo(); leaveSoundSection(); },
+        onEnterBack: () => { isInView = true; playVideo(); enterSoundSection(); },
+        onLeaveBack: () => { isInView = false; pauseVideo(); leaveSoundSection(); },
       },
     });
 
@@ -114,48 +163,6 @@
         .from('.laugh-icon-1230', laughIconReveal, 1230 - videoStartTime);
     });
 
-    const video = document.getElementById('demo-video');
-
-    let playPauseTimer;
-    function debouncePlayPause(fn) {
-      clearTimeout(playPauseTimer);
-      playPauseTimer = setTimeout(fn, 100);
-    }
-
-    const playVideo = () =>
-      debouncePlayPause(() => {
-        if (!video.paused) return;
-        isVideoLoading = true;
-
-        if (pendingCanPlay) video.removeEventListener('canplay', pendingCanPlay);
-        pendingCanPlay = () => {
-          isVideoLoading = false;
-          tlVideo.restart();
-          pendingCanPlay = null;
-        };
-        video.addEventListener('canplay', pendingCanPlay, { once: true });
-
-        // iOS Safari with preload="none" silently blocks play() unless load()
-        // is called first to explicitly start the resource fetch.
-        video.load();
-        video.play().catch((err) => {
-          if (err.name !== 'AbortError') console.warn('Video play failed:', err);
-          isVideoLoading = false;
-        });
-      });
-
-    const pauseVideo = () =>
-      debouncePlayPause(() => {
-        isVideoLoading = false;
-        if (pendingCanPlay) {
-          video.removeEventListener('canplay', pendingCanPlay);
-          pendingCanPlay = null;
-        }
-        if (video.paused) return;
-        video.pause();
-        video.currentTime = 0;
-        tlVideo.pause();
-      });
   });
 
   onDestroy(() => {
@@ -194,10 +201,23 @@
       style="background-image: url('{tv_noise}')"
     ></div>
 
-    <!-- Loading spinner -->
-    {#if isVideoLoading}
-      <div class="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
-        <div class="video-loader"></div>
+    <!-- Fallback play button (also shows spinner while loading) -->
+    {#if isInView && !isVideoPlaying}
+      <div class="absolute inset-0 flex items-center justify-center z-20">
+        <button
+          class="play-btn"
+          disabled={isVideoLoading}
+          onclick={playVideo}
+          aria-label="Play video"
+        >
+          {#if isVideoLoading}
+            <div class="btn-spinner"></div>
+          {:else}
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+              <polygon points="6,3 20,12 6,21" />
+            </svg>
+          {/if}
+        </button>
       </div>
     {/if}
   </div>
@@ -287,10 +307,34 @@
     background-size: cover;
   }
 
-  .video-loader {
-    width: 48px;
-    height: 48px;
-    border: 3px solid rgba(255, 255, 255, 0.25);
+  .play-btn {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s, opacity 0.2s;
+  }
+
+  .play-btn:not(:disabled):hover {
+    background: rgba(231, 29, 128, 0.4);
+    border-color: #e71d80;
+  }
+
+  .play-btn:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+
+  .btn-spinner {
+    width: 24px;
+    height: 24px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
     border-top-color: white;
     border-radius: 50%;
     animation: spin 0.8s linear infinite;

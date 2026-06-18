@@ -570,7 +570,7 @@
       <!-- Episode data -->
       <div
         class="score-wrapper w-full absolute top-[120px] md:top-[160px] lg:top-[260px] mt-[40px]"
-        style="max-height: {innerHeight - 320}px;"
+        style="max-height: {innerHeight - 320}px; opacity: 0; transform: translateY(-30px);"
       >
         <EpisodeScore
           {statsWidth}
