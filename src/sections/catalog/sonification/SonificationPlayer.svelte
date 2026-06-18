@@ -90,18 +90,21 @@
         (/** @type {{ SceneNumber: string; }} */ d) => +d.SceneNumber === sceneNum,
       );
 
+      // Capture a single AudioContext timestamp so every clip starts on the exact same sample.
+      const startTime = Tone.now();
+
       // Play audio files
-      soundtrack.player('rythm').start();
+      soundtrack.player('rythm').start(startTime);
       chars.forEach((/** @type {{ Character: string; laughBinFull: string; }} */ charData) => {
         const player = getCharSoundFileName(charData.Character, charData.laughBinFull);
         if (player) {
-          soundtrack.player(player).start();
+          soundtrack.player(player).start(startTime);
         }
       });
       locations.forEach((/** @type {{ Location: string; }} */ locData) => {
         const player = getLocationSoundFileName(locData.Location);
         if (player) {
-          soundtrack.player(player).start();
+          soundtrack.player(player).start(startTime);
         }
       });
 
