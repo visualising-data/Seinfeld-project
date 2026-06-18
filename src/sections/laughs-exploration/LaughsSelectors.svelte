@@ -261,7 +261,11 @@
   .selector {
     transition: opacity 0.3s ease-out;
   }
-  .selector-button:hover .selector,
+  @media (hover: hover) {
+    .selector-button:hover .selector {
+      opacity: 1;
+    }
+  }
   .selector-button.active .selector {
     opacity: 1;
   }
