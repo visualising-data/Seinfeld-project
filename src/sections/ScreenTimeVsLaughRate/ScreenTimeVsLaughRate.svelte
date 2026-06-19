@@ -82,11 +82,7 @@
   /**
    * @type {number | undefined}
    */
-  let playRythmTimeout;
-  /**
-   * @type {number | undefined}
-   */
-  let playCharTimeout;
+  let playbackTimeout;
   /**
    * @type {string | null}
    */
@@ -151,33 +147,25 @@
     updatePlayingFile(activeCharacter);
   });
 
-  const playRythm = () => {
-    if ($soundIsAuth && soundtrackCanPlay) {
-      soundtrack.player('rythm').start();
-
-      playRythmTimeout = setTimeout(() => {
-        playRythm();
-      }, 8727.272727);
-    }
-  };
-  const playChar = () => {
-    if ($soundIsAuth && soundtrackCanPlay && playingFile) {
-      soundtrack.player(playingFile).start();
-
-      playCharTimeout = setTimeout(() => {
-        playChar();
-      }, 8727.272727);
-    }
+  // Single bar loop: rhythm and character always start at the exact same AudioContext
+  // timestamp so they land on the same downbeat regardless of how playback was triggered.
+  const _playBar = () => {
+    if (!$soundIsAuth || !soundtrackCanPlay) return;
+    const startTime = Tone.now();
+    soundtrack.player('rythm').start(startTime);
+    if (playingFile) soundtrack.player(playingFile).start(startTime);
+    playbackTimeout = setTimeout(_playBar, 8727.272727);
   };
 
   const playAudio = () => {
-    playRythm();
-    playChar();
+    // Clear any running loop and stop all clips so the next bar starts clean.
+    clearTimeout(playbackTimeout);
+    soundtrack.stopAll();
+    _playBar();
   };
 
   const stopAudio = () => {
-    clearTimeout(playRythmTimeout);
-    clearTimeout(playCharTimeout);
+    clearTimeout(playbackTimeout);
     soundtrack.stopAll();
   };
 
@@ -192,15 +180,13 @@
   const handleCharacterClick = (/** @type {string} */ char) => {
     if (char !== activeCharacter) {
       isMouseOver = false;
-
-      if ($soundIsAuth && soundtrackCanPlay && soundtrack?.state === 'started') {
-        if (playingFile) soundtrack.player(playingFile).stop();
-        clearTimeout(playCharTimeout);
-        updatePlayingFile(char);
-        playChar();
-      }
-
+      updatePlayingFile(char);
       activeCharacter = char;
+
+      if ($soundIsAuth && soundtrackCanPlay) {
+        // Restart both rhythm and character from the top so they share the same downbeat.
+        playAudio();
+      }
     }
   };
 
