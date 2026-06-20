@@ -1,6 +1,7 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
   import { gsap } from 'gsap/dist/gsap';
+  import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
   import * as Tone from 'tone';
 
   import {
@@ -380,8 +381,11 @@
         const st = gsap.timeline({
           scrollTrigger: {
             trigger: '#main_chars-episodes-container',
-            start: `top top-=${headerHeight}`,
+            // Function form so it reads the live headerHeight on every refresh,
+            // not the stale initial value from onMount.
+            start: () => `top top-=${headerHeight}`,
             end: 'bottom bottom',
+            invalidateOnRefresh: true,
             pin: '#lead-chars-episodes-viz',
             onEnter: () => { soundtrackCanPlay = true; playAudio(); enterSoundSection(); },
             onEnterBack: () => { soundtrackCanPlay = true; playAudio(); enterSoundSection(); },
@@ -735,6 +739,14 @@
     }
   });
 
+  // Reactively refresh ScrollTrigger when headerHeight changes — bind:clientHeight
+  // fires via ResizeObserver after onMount, so the initial $state(200) is stale.
+  $effect(() => {
+    void headerHeight; // must be first — registers reactive dependency before any early return
+    if (!mm || currentSection !== 'main_chars') return;
+    ScrollTrigger.refresh();
+  });
+
   onDestroy(() => {
     mm?.revert();
     soundtrackCanPlay = false;
@@ -752,8 +764,8 @@
 >
   <div
     id="lead-chars-episodes"
-    class="w-screen top-0 left-0"
-    style="position: {isMobile ? (currentSection === 'main_chars' ? 'sticky' : 'relative') : 'absolute'}; height: {isMobile && currentSection !== 'main_chars' ? 'auto' : (isMobile ? innerHeight : innerHeight + headerHeight) + 'px'};"
+    class="w-screen left-0"
+    style="position: {isMobile ? (currentSection === 'main_chars' ? 'sticky' : 'relative') : 'absolute'}; top: {isMobile && currentSection === 'main_chars' ? `-${headerHeight}px` : '0'}; height: {isMobile && currentSection !== 'main_chars' ? 'auto' : `${innerHeight + headerHeight}px`};"
   >
     <div class="container">
       <!-- Header -->

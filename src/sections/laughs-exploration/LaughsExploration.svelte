@@ -365,6 +365,15 @@
     }
   });
 
+  // Clip-path slide: sheet stays at bottom:0 the whole time (never off-screen),
+  // so iOS WebKit cannot auto-scroll to bring it into view. rounded-t-3xl = 1.5rem.
+  function slideUp(_node: HTMLElement, { duration = 300 }: { duration?: number } = {}) {
+    return {
+      duration,
+      css: (t: number) => `clip-path: inset(${(1 - t) * 100}% 0 0 0 round 1.5rem 1.5rem 0 0)`,
+    };
+  }
+
   onMount(() => {
     soundtrack = new Tone.Players(sonificationFiles).toDestination();
     soundtrack.volume.value = TARGET_VOLUME;
@@ -570,7 +579,7 @@
     ></div>
     <div
       class="desktop:hidden fixed bottom-0 inset-x-0 z-50 bg-[#F9F5F7] rounded-t-3xl shadow-2xl max-h-[75vh] flex flex-col"
-      transition:fly={{ y: 400, duration: 300, opacity: 1 }}
+      transition:slideUp={{ duration: 300 }}
     >
       <div class="flex justify-between items-center px-5 py-4 border-b border-[#DDDBDC] shrink-0">
         <span class="relative top-0.5 font-semibold text-[#12020A]">Scene detail</span>
