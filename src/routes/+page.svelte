@@ -314,18 +314,11 @@
               const STABLE_MS = 600;
               let resizeDebounce: ReturnType<typeof setTimeout> | null = null;
               let loaderHideTimer: ReturnType<typeof setTimeout> | null = null;
+              let bodyObserver: ResizeObserver | null = null;
 
-              const scheduleLoaderHide = () => {
-                if (loaderHideTimer) clearTimeout(loaderHideTimer);
-                loaderHideTimer = setTimeout(() => {
-                  loaderHideTimer = null;
-                  isScrollLoading.set(false);
-                }, STABLE_MS);
-              };
-
-              let bodyObserver: ResizeObserver;
               const stopBodyObserver = () => {
-                bodyObserver.disconnect();
+                bodyObserver?.disconnect();
+                bodyObserver = null;
                 if (resizeDebounce) {
                   clearTimeout(resizeDebounce);
                   resizeDebounce = null;
@@ -335,6 +328,16 @@
                   loaderHideTimer = null;
                 }
                 isScrollLoading.set(false);
+              };
+
+              const scheduleLoaderHide = () => {
+                if (loaderHideTimer) clearTimeout(loaderHideTimer);
+                loaderHideTimer = setTimeout(() => {
+                  loaderHideTimer = null;
+                  // Disconnect observer so later body resizes (from user-triggered lazy
+                  // loads as they scroll) don't re-scroll them back to the anchor.
+                  stopBodyObserver();
+                }, STABLE_MS);
               };
 
               bodyObserver = new ResizeObserver(() => {

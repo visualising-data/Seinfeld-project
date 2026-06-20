@@ -1,7 +1,8 @@
 <script>
   // @ts-nocheck
-  import { tick } from 'svelte';
+  import { tick, onMount } from 'svelte';
   import { inview } from 'svelte-inview';
+  import { lazyLoadAll } from '../../stores/lazyLoadTrigger';
 
   // SectionTitle and Intro are the first visible components — load immediately.
   import SectionTitle from '../SectionTitle.svelte';
@@ -45,6 +46,15 @@
     await tick();
     scheduleRefresh();
   }
+
+  // When menu navigation triggers lazyLoadAll, force-load all sub-components
+  // immediately so their scheduleRefresh() calls fire while the loader is visible.
+  onMount(() => {
+    return lazyLoadAll.subscribe(async (shouldLoad) => {
+      if (!shouldLoad) return;
+      await Promise.all([loadScreenTime(), loadMarimekko(), loadPeakPerformances()]);
+    });
+  });
 </script>
 
 <section id="lead-chars">
