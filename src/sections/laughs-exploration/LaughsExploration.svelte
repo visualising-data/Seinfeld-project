@@ -380,7 +380,9 @@
 
   // Lock body scroll when the bottom sheet is open on mobile.
   // overflow:hidden alone doesn't prevent scroll on iOS — position:fixed is required.
-  $effect(() => {
+  // $effect.pre runs before DOM updates so the lock is applied before the sheet renders,
+  // preventing iOS from scrolling to the newly added element.
+  $effect.pre(() => {
     if (!(pinnedScene && isMobile)) return;
     const scrollY = window.scrollY;
     document.body.style.overflow = 'hidden';
