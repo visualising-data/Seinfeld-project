@@ -99,23 +99,43 @@
   }
 
   let _savedScrollY = 0;
+  let _sheetEl = $state<HTMLElement | null>(null);
+  let _scrollWatcher: (() => void) | null = null;
+  let _touchMoveHandler: ((e: TouchEvent) => void) | null = null;
 
   function lockBodyScroll() {
-    if (!isMobile || document.body.style.position === 'fixed') return;
+    if (!isMobile || _scrollWatcher !== null) return;
     _savedScrollY = window.scrollY;
-    document.body.style.overflow = 'hidden';
-    document.body.style.position = 'fixed';
-    document.body.style.top = `-${_savedScrollY}px`;
-    document.body.style.width = '100%';
+    const target = _savedScrollY;
+
+    // Snap back if anything (iOS, GSAP, focus management) scrolls the page.
+    // Avoids the position:fixed trick which fires a scroll event at y=0 and
+    // causes GSAP ScrollTrigger to react and jump elsewhere.
+    _scrollWatcher = () => {
+      if (Math.abs(window.scrollY - target) > 5) {
+        window.scrollTo({ top: target, behavior: 'instant' });
+      }
+    };
+    window.addEventListener('scroll', _scrollWatcher, { passive: true });
+
+    // Prevent user touch-scroll of background while the sheet is open.
+    _touchMoveHandler = (e: TouchEvent) => {
+      if (_sheetEl && e.composedPath().includes(_sheetEl as EventTarget)) return;
+      e.preventDefault();
+    };
+    document.addEventListener('touchmove', _touchMoveHandler, { passive: false });
   }
 
   function unlockBodyScroll() {
-    if (document.body.style.position !== 'fixed') return;
-    document.body.style.overflow = '';
-    document.body.style.position = '';
-    document.body.style.top = '';
-    document.body.style.width = '';
-    window.scrollTo(0, _savedScrollY);
+    if (_scrollWatcher) {
+      window.removeEventListener('scroll', _scrollWatcher);
+      _scrollWatcher = null;
+    }
+    if (_touchMoveHandler) {
+      document.removeEventListener('touchmove', _touchMoveHandler);
+      _touchMoveHandler = null;
+    }
+    window.scrollTo({ top: _savedScrollY, behavior: 'instant' });
   }
 
   function handleSceneClick(scene: HoveredScene) {
@@ -580,6 +600,7 @@
     <div
       class="desktop:hidden fixed bottom-0 inset-x-0 z-50 bg-[#F9F5F7] rounded-t-3xl shadow-2xl max-h-[75vh] flex flex-col"
       transition:slideUp={{ duration: 300 }}
+      bind:this={_sheetEl}
     >
       <div class="flex justify-between items-center px-5 py-4 border-b border-[#DDDBDC] shrink-0">
         <span class="relative top-0.5 font-semibold text-[#12020A]">Scene detail</span>
