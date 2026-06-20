@@ -98,12 +98,38 @@
     activeLocation = activeLocation === id ? null : id;
   }
 
+  let _savedScrollY = 0;
+
+  function lockBodyScroll() {
+    if (!isMobile || document.body.style.position === 'fixed') return;
+    _savedScrollY = window.scrollY;
+    document.body.style.overflow = 'hidden';
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${_savedScrollY}px`;
+    document.body.style.width = '100%';
+  }
+
+  function unlockBodyScroll() {
+    if (document.body.style.position !== 'fixed') return;
+    document.body.style.overflow = '';
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.width = '';
+    window.scrollTo(0, _savedScrollY);
+  }
+
   function handleSceneClick(scene: HoveredScene) {
     const key = `${scene.season}-${scene.episode}`;
-    pinnedScene = pinnedEpisodeKey === key ? null : scene;
+    if (pinnedEpisodeKey === key) {
+      closePinnedScene();
+      return;
+    }
+    lockBodyScroll();
+    pinnedScene = scene;
   }
 
   function closePinnedScene() {
+    unlockBodyScroll();
     pinnedScene = null;
   }
 
@@ -360,6 +386,7 @@
     return () => {
       stopSoundsImmediate();
       gsapCtx.revert();
+      unlockBodyScroll();
     };
   });
 
@@ -376,26 +403,6 @@
     );
     observer.observe(sectionEl);
     return () => observer.disconnect();
-  });
-
-  // Lock body scroll when the bottom sheet is open on mobile.
-  // overflow:hidden alone doesn't prevent scroll on iOS — position:fixed is required.
-  // $effect.pre runs before DOM updates so the lock is applied before the sheet renders,
-  // preventing iOS from scrolling to the newly added element.
-  $effect.pre(() => {
-    if (!(pinnedScene && isMobile)) return;
-    const scrollY = window.scrollY;
-    document.body.style.overflow = 'hidden';
-    document.body.style.position = 'fixed';
-    document.body.style.top = `-${scrollY}px`;
-    document.body.style.width = '100%';
-    return () => {
-      document.body.style.overflow = '';
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.width = '';
-      window.scrollTo(0, scrollY);
-    };
   });
 
   // Mobile detection
