@@ -13,12 +13,6 @@
   <svg
     width={scenesWidth}
     {height}
-    style="transform: translateX({playingScene && innerWidth <= 1000
-      ? xScale(
-          scenes.find((/** @type {{ sceneNum: number; }} */ s) => s.sceneNum === playingScene)
-            .startTime,
-        ) * -1
-      : 0}px);"
   >
     <g transform="translate(0, {height / 2})">
       {#each scenes as scene, i}
