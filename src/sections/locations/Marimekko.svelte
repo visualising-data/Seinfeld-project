@@ -180,7 +180,6 @@
                 opacity={hoveredChar === null || hoveredChar === char.id ? 1 : 0.3}
                 class="transition-opacity duration-200 ease-out"
                 role="presentation"
-                style="cursor: pointer;"
                 onclick={() => (hoveredChar = hoveredChar === char.id ? null : char.id)}
                 onmouseenter={() => (hoveredChar = char.id)}
                 onmouseleave={() => (hoveredChar = null)}
@@ -331,7 +330,6 @@
                 transform="translate({char.paddingLeft}, 0)"
                 opacity={hoveredChar === null || hoveredChar === char.id ? 1 : 0.3}
                 class="transition-opacity duration-200 ease-out"
-                style="cursor: pointer;"
                 role="presentation"
                 onmouseenter={() => (hoveredChar = char.id)}
                 onmouseleave={() => (hoveredChar = null)}
