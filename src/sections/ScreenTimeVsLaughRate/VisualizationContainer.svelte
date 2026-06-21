@@ -121,7 +121,7 @@
       highlightedEpisodeTimeLabel = formatTimeLabel(timeInSeconds);
     }
 
-    episodeTooltipPosition = [-58, y];
+    episodeTooltipPosition = [e.clientX, e.clientY];
 
     showEpisodeTooltip = false;
     if (tooltipTimer) clearTimeout(tooltipTimer);

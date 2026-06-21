@@ -183,7 +183,6 @@
                 opacity={hoveredChar === null || hoveredChar === char.id ? 1 : 0.3}
                 class="transition-opacity duration-200 ease-out"
                 role="presentation"
-                style="cursor: pointer;"
                 onclick={() => (hoveredChar = hoveredChar === char.id ? null : char.id)}
                 onmouseenter={() => (hoveredChar = char.id)}
                 onmouseleave={() => (hoveredChar = null)}

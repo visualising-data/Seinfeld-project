@@ -14,7 +14,7 @@
   let tooltip = $state();
 
   let tooltipWidth = $derived(innerWidth < 500 ? innerWidth - 40 : 432);
-  let tooltipHeight = $state(0);
+  let tooltipHeight = $state(500);
   $effect(() => {
     if (tooltip) tooltipHeight = tooltip.clientHeight;
   });
@@ -34,9 +34,9 @@
 
 <div
   bind:this={tooltip}
-  class="tooltip absolute z-50"
+  class="tooltip fixed z-50"
   style="width: {tooltipWidth}px; max-height: {innerHeight -
-    40}px; top: {tooltipTopPosition}px; left: {tooltipLeftPosition}px;}"
+    40}px; top: {tooltipTopPosition}px; left: {tooltipLeftPosition}px;"
   in:fly={{ duration: 100, y: 50 }}
   out:fade={{ duration: 100 }}
 >
