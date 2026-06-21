@@ -14,8 +14,9 @@
       const mm = gsap.matchMedia();
 
       const buildAnimation = (isMobile: boolean) => {
-        // Single timeline covers entry (0→0.5) and exit (0.5→1)
-        // Trigger spans the full wrapper: top bottom → bottom bottom
+        // On mobile/tablet, delay exit to 0.65 so there's dwell time to read the text
+        // before the images leave and the white background fades in
+        const exitStart = isMobile ? 0.65 : 0.5;
         const tl = gsap.timeline({ defaults: { ease: 'none' } });
         tl
           // Entry: coffee from left, couch from right; labels fade+slide up simultaneously
@@ -23,11 +24,11 @@
           .from('#warning-couch-bg', { xPercent: 110 }, 0)
           .from('.warning-label', { opacity: 0, y: 30, duration: 0.2 }, 0)
           // Exit: coffee exits right, couch exits left
-          .to('#warning-coffee-bg', { xPercent: 110 }, 0.5)
+          .to('#warning-coffee-bg', { xPercent: 110, duration: isMobile ? 0.3 : 0.5 }, exitStart)
           .to(
             '#warning-couch-bg',
-            { xPercent: isMobile ? -350 : -350, duration: isMobile ? 0.3 : 0.5 },
-            0.5,
+            { xPercent: isMobile ? -350 : -350, duration: isMobile ? 0.25 : 0.5 },
+            exitStart,
           )
           // Text fades out after images are gone
           .to('.warning-text-item', { opacity: 0, duration: 0.1 }, 0.8)
