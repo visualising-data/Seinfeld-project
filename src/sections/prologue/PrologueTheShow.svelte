@@ -16,6 +16,7 @@
   let videoEls = Array(5);
   let currentIndex = 0;
   let inSection = false;
+  let showPlayButton = false;
 
   $: videoEls.forEach((v, i) => {
     if (!v) return;
@@ -71,8 +72,10 @@
         // HTML autoplay doesn't fire for sections below the fold at load time.
         // Use rAF so GSAP's initial state renders before play() checks visibility.
         requestAnimationFrame(() => {
-          for (let j = 0; j < 5; j++) {
-            if (!isMobile || j === 0) playVideo(j);
+          if (isMobile) {
+            videoEls[0]?.play().catch(() => { showPlayButton = true; });
+          } else {
+            for (let j = 0; j < 5; j++) playVideo(j);
           }
         });
 
@@ -89,6 +92,7 @@
 
         /** @param {number} index */
         const transitionTo = (index) => {
+          const prevIndex = currentIndex;
           // Kill all in-progress transitions first
           for (let j = 0; j < 5; j++) {
             gsap.killTweensOf(`#show-text-${j}`);
@@ -113,11 +117,20 @@
 
           // Videos
           if (isMobile) {
+            videoEls[prevIndex]?.pause();
             for (let j = 0; j < 5; j++) gsap.set(`#show-video-${j}`, { opacity: 0 });
             gsap.set(`#show-video-${index}`, { opacity: 1 });
             // rAF gives iOS Safari a render cycle to recognise the opacity:1
             // change before play() checks element visibility
-            requestAnimationFrame(() => playVideo(index));
+            requestAnimationFrame(() => {
+              const v = videoEls[index];
+              if (v) {
+                v.currentTime = 0;
+                v.play()
+                  .then(() => { if (index === 0) showPlayButton = false; })
+                  .catch(() => {});
+              }
+            });
           } else {
             for (let j = 0; j < 5; j++) {
               playVideo(j);
@@ -281,6 +294,19 @@
         </video>
         <div class="readable-layer z-1 absolute inset-0"></div>
         <div class="absolute inset-0" style="background-image: url('{tv_noise}')"></div>
+        {#if showPlayButton}
+          <button
+            aria-label="Play video"
+            class="lg:hidden absolute inset-0 flex items-center justify-center z-10"
+            onclick={() => { videoEls[0]?.play().then(() => { showPlayButton = false; }).catch(() => {}); }}
+          >
+            <div class="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center border border-white/40">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" class="w-8 h-8 ml-1">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+            </div>
+          </button>
+        {/if}
         <!-- Desktop info overlay only -->
         <div
           id="show-info-0"
