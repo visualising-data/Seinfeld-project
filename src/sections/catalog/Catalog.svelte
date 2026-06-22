@@ -121,11 +121,12 @@
     leaveSoundSection();
   });
 
-  // Reset scroll when episode changes
+  // Reset scroll and stop any playing sonification when episode changes
   $effect(() => {
     currentEpisode;
     currentSeason;
     sharedScrollLeft.set(0);
+    sonificationPlayerRef?.stopWithFadeOut();
   });
 
   // Scroll to keep the playing scene near the left edge.
