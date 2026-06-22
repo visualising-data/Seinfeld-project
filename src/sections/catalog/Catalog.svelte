@@ -1,5 +1,5 @@
 <script>
-  import { onMount, onDestroy } from 'svelte';
+  import { onMount, onDestroy, untrack } from 'svelte';
   import { enterSoundSection, leaveSoundSection } from '../../stores/soundSectionIsInView';
   import { sharedScrollLeft } from '../../stores/scrollStore';
 
@@ -125,8 +125,10 @@
   $effect(() => {
     currentEpisode;
     currentSeason;
-    sharedScrollLeft.set(0);
-    sonificationPlayerRef?.stopWithFadeOut();
+    untrack(() => {
+      sharedScrollLeft.set(0);
+      sonificationPlayerRef?.stopWithFadeOut();
+    });
   });
 
   // Scroll to keep the playing scene near the left edge.
