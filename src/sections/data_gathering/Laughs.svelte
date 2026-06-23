@@ -21,6 +21,7 @@
   /** @type {Tone.Players | undefined} */
   let laughTracks;
   let isPlaying = $state(false);
+  /** @type {ReturnType<typeof setTimeout> | undefined} */
   let debounceTimer;
   let laugh2Cancelled = false;
 
@@ -103,6 +104,7 @@
   let laugh3Stopped = false;
   /** @type {Set<number>} */
   let laugh3Started = new Set();
+  /** @type {ReturnType<typeof setTimeout> | undefined} */
   let debounceTimer3;
   /** @type {Promise<void>} */
   let laugh3ReadyPromise;
@@ -178,7 +180,20 @@
     debounceTimer3 = setTimeout(stopLaugh3Sequence, 50);
   }
 
+  // Tracks whether the desktop scroll section is currently in view. Guards the
+  // auto-played tracks (guffaw2/chuckle2) whose play is deferred behind a
+  // promise, so a promise that resolves after we leave doesn't start audio.
+  let laughsInView = false;
+
   function stopAllLaughsAudio() {
+    laughsInView = false;
+
+    // Cancel any pending/debounced playback so nothing restarts after we leave.
+    clearTimeout(debounceTimer);
+    laugh2Cancelled = true;
+    clearTimeout(debounceTimer3);
+    laugh3Stopped = true;
+
     stopLaugh();
     stopLaugh3Sequence();
     try {
@@ -209,7 +224,7 @@
   };
 
   function playGuffaw2() {
-    if (!guffaw2Player || !get(soundIsAuth)) return;
+    if (!guffaw2Player || !get(soundIsAuth) || !laughsInView) return;
     try {
       if (guffaw2Player.state === 'started') guffaw2Player.stop();
       guffaw2Player.start();
@@ -234,7 +249,7 @@
   };
 
   function playChuckle2() {
-    if (!chuckle2Player || !get(soundIsAuth)) return;
+    if (!chuckle2Player || !get(soundIsAuth) || !laughsInView) return;
     try {
       if (chuckle2Player.state === 'started') chuckle2Player.stop();
       chuckle2Player.start();
@@ -275,8 +290,14 @@
       trigger: '#laughs-scroll-container',
       start: 'top bottom',
       end: 'bottom top',
-      onEnter: () => enterSoundSection(),
-      onEnterBack: () => enterSoundSection(),
+      onEnter: () => {
+        laughsInView = true;
+        enterSoundSection();
+      },
+      onEnterBack: () => {
+        laughsInView = true;
+        enterSoundSection();
+      },
       onLeave: () => {
         stopAllLaughsAudio();
         leaveSoundSection();
