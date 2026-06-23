@@ -46,5 +46,5 @@
   />
 </svelte:head>
 
-<a href="#main-content" class="skip-link">Skip to main content</a>
+<a href="#intro" class="skip-link">Skip to main content</a>
 {@render children()}
