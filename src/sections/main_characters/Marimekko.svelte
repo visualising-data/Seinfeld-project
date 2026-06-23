@@ -182,10 +182,19 @@
               <g
                 opacity={hoveredChar === null || hoveredChar === char.id ? 1 : 0.3}
                 class="transition-opacity duration-200 ease-out"
-                role="presentation"
+                role="button"
+                tabindex={0}
+                aria-label={char.label}
+                aria-pressed={hoveredChar === char.id}
                 onclick={() => (hoveredChar = hoveredChar === char.id ? null : char.id)}
                 onmouseenter={() => (hoveredChar = char.id)}
                 onmouseleave={() => (hoveredChar = null)}
+                onkeydown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    hoveredChar = hoveredChar === char.id ? null : char.id;
+                  }
+                }}
               >
                 <!-- Image -->
                 <foreignobject

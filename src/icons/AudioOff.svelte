@@ -11,6 +11,7 @@
 	stroke-width="1.5"
 	style="stroke: {color}; transition: stroke 0.4s ease;"
 	class={animated ? 'icon-wiggle' : ''}
+	aria-hidden="true"
 >
 	<path
 		stroke-linecap="round"

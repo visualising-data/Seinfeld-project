@@ -377,9 +377,12 @@
                   e.preventDefault();
                   hoveredFinding = hoveredFinding?.id === finding.id ? null : finding;
                 }}
-                onkeydown={(e) =>
-                  e.key === 'Enter' &&
-                  (hoveredFinding = hoveredFinding?.id === finding.id ? null : finding)}
+                onkeydown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    hoveredFinding = hoveredFinding?.id === finding.id ? null : finding;
+                  }
+                }}
               >
                 <div
                   class="bar h-2 rounded-full transition-all duration-150"

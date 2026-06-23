@@ -423,7 +423,7 @@
   });
 </script>
 
-<main>
+<main id="main-content">
   <Navbar />
   <SectionProgressBar />
   {#if $isScrollLoading}

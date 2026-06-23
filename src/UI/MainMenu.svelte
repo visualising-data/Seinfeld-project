@@ -1,5 +1,6 @@
 <script>
   import { fade, fly } from 'svelte/transition';
+  import { onMount, onDestroy } from 'svelte';
   import CloseIcon from '../icons/CloseIcon.svelte';
   import ArrowRight from '../icons/ArrowRight.svelte';
   import { pendingScrollAnchor, isScrollLoading } from '../stores/scrollAnchor';
@@ -17,9 +18,45 @@
     { label: 'Combinations & Findings', anchor: 'laughs-exploration' },
     { label: 'Credits & Methodology', anchor: 'methodology' },
   ];
+
+  let menuContainerRef = $state(null);
+  let previouslyFocused;
+
+  onMount(() => {
+    previouslyFocused = document.activeElement;
+    const firstFocusable = menuContainerRef?.querySelector('a, button, [tabindex="0"]');
+    firstFocusable?.focus();
+  });
+
+  onDestroy(() => {
+    previouslyFocused?.focus();
+  });
+
+  function handleKeydown(e) {
+    if (e.key === 'Escape') {
+      toggleMenu();
+      return;
+    }
+    if (e.key === 'Tab' && menuContainerRef) {
+      const focusable = Array.from(
+        menuContainerRef.querySelectorAll('a, button, [tabindex="0"]')
+      ).filter((el) => !el.hasAttribute('disabled'));
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
+  }
 </script>
 
-<!-- svelte-ignore a11y_click_events_have_key_events -->
+<svelte:window onkeydown={handleKeydown} />
+
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
   in:fade={{ duration: 250 }}
@@ -27,11 +64,16 @@
   class="backdrop"
   style="z-index: 3000;"
   onclick={toggleMenu}
+  role="presentation"
 >
   <div
+    bind:this={menuContainerRef}
     in:fly={{ duration: 250, x: 500 }}
     out:fly={{ duration: 250, x: 500 }}
     class="menu-container h-[100dvh]"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Navigation menu"
     onclick={(e) => e.stopPropagation()}
   >
     <div class="h-[100dvh] flex flex-col justify-center px-12 py-8">
@@ -65,6 +107,7 @@
     </div>
     <button
       class="menu-close-button"
+      aria-label="Close navigation menu"
       onclick={(e) => {
         e.stopPropagation();
         toggleMenu();

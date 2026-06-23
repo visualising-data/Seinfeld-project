@@ -35,6 +35,9 @@
 <div
   bind:this={tooltip}
   class="tooltip fixed z-50"
+  role="status"
+  aria-live="polite"
+  aria-atomic="true"
   style="width: {tooltipWidth}px; max-height: {innerHeight -
     40}px; top: {tooltipTopPosition}px; left: {tooltipLeftPosition}px;"
   in:fly={{ duration: 100, y: 50 }}

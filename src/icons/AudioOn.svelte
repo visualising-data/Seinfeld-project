@@ -10,6 +10,7 @@
 	fill="none"
 	stroke-width="1.5"
 	stroke={color}
+	aria-hidden="true"
 >
 	<path
 		stroke-linecap="round"

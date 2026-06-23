@@ -2,8 +2,8 @@
   import { fade } from 'svelte/transition';
 </script>
 
-<div class="loader-backdrop" transition:fade={{ duration: 200 }}>
-  <div class="spinner"></div>
+<div class="loader-backdrop" role="status" aria-label="Loading content" transition:fade={{ duration: 200 }}>
+  <div class="spinner" aria-hidden="true"></div>
 </div>
 
 <style>

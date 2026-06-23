@@ -206,7 +206,12 @@
         onmouseenter={() => handleMouseEnter(tile)}
         onmouseleave={handleMouseLeave}
         onclick={() => handleTileClick(tile.id)}
-        onkeydown={(e) => e.key === 'Enter' && handleTileClick(tile.id)}
+        onkeydown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            handleTileClick(tile.id);
+          }
+        }}
       >
         <div
           class="tile relative z-10"

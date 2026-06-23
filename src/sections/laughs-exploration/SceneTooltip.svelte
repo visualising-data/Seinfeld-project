@@ -162,7 +162,7 @@
           .padStart(2, '0')}s`;
 </script>
 
-<div class="flex flex-col gap-4 px-4 lg:px-0 pb-4 lg:pb-0">
+<div class="flex flex-col gap-4 px-4 lg:px-0 pb-4 lg:pb-0" role="status" aria-live="polite" aria-atomic="true">
   <!-- Header -->
   <div class="flex flex-col gap-1">
     {#if episodeTitle}

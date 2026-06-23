@@ -100,12 +100,12 @@
 
     <!-- Seasons dropdown -->
     <div class="my-1">
-      <Dropdown options={seasonNums} bind:value={currentSeason} prefix="s" />
+      <Dropdown options={seasonNums} bind:value={currentSeason} prefix="s" label="Select season" />
     </div>
 
     <!-- Episodes dropdown -->
     <div class="my-1">
-      <Dropdown options={availableEpisodes} bind:value={currentEpisode} prefix="e" />
+      <Dropdown options={availableEpisodes} bind:value={currentEpisode} prefix="e" label="Select episode" />
     </div>
 
     <!-- Next episode -->

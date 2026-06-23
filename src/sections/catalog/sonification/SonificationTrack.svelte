@@ -16,7 +16,6 @@
   >
     <g transform="translate(0, {height / 2})">
       {#each scenes as scene, i}
-        <!-- svelte-ignore a11y_click_events_have_key_events -->
         <line
           class="scene-player {playingScene === i + 1 ? 'playing' : ''} {$soundIsAuth
             ? 'sound-is-auth'
@@ -28,8 +27,16 @@
           y2={0}
           stroke-width={14}
           role="button"
-          tabindex={0}
+          aria-label="Scene {i + 1}"
+          tabindex={$soundIsAuth ? 0 : -1}
+          aria-disabled={!$soundIsAuth}
           onclick={() => handleClickOnScene(i + 1)}
+          onkeydown={(e) => {
+            if ((e.key === 'Enter' || e.key === ' ') && $soundIsAuth) {
+              e.preventDefault();
+              handleClickOnScene(i + 1);
+            }
+          }}
         />
         {#if i > 0}
           <line
@@ -50,11 +57,15 @@
 <style>
   .scene-player {
     stroke: #bebabc;
-    outline: none;
     transition: stroke 150ms ease-out;
   }
   .scene-player.sound-is-auth.playing,
-  .scene-player.sound-is-auth:hover {
+  .scene-player.sound-is-auth:hover,
+  .scene-player.sound-is-auth:focus-visible {
     stroke: #e71d80;
+  }
+  .scene-player:focus-visible {
+    outline: 2px solid #e71d80;
+    outline-offset: 4px;
   }
 </style>

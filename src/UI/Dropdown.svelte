@@ -1,11 +1,11 @@
 <script>
   import UpDownCarets from '$lib/assets/UpDownCarets.svg';
 
-  let { options, value = $bindable(), prefix } = $props();
+  let { options, value = $bindable(), prefix, label } = $props();
 </script>
 
 <div class="dropdown">
-  <select bind:value style="background-image: url({UpDownCarets});">
+  <select bind:value aria-label={label} style="background-image: url({UpDownCarets});">
     {#each options as option}
       <option value={option}>{prefix}{option}</option>
     {/each}

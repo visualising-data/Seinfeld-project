@@ -160,7 +160,7 @@
   {height}
   role="presentation"
   onclick={onClosePin}
-  onkeydown={() => {}}
+  onkeydown={(e) => e.key === 'Escape' && onClosePin()}
   style="cursor: default"
   onmouseleave={() => {
     onEpisodeHover(null);
