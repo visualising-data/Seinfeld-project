@@ -1,5 +1,4 @@
 <script lang="ts">
-  import CloseIcon from '../icons/CloseIcon.svelte';
   import Next from '../icons/Next.svelte';
   import Prev from '../icons/Prev.svelte';
 
@@ -406,53 +405,16 @@
       >
         {#if hoveredFinding}
           <div class="finding-detail">
-            <span
-              class="inline-block text-[14px] font-mono uppercase tracking-widest mb-3 text-[#12020A]"
-            >
-              {hoveredFinding.category}
-            </span>
-            <p class="text-[#12020A] leading-relaxed m-0">
-              {@html highlightText(hoveredFinding.text)}
-            </p>
-            <!-- Prev/next navigation (mobile + desktop) -->
-            <div class="flex desktop:hidden items-center justify-between mt-3">
-              <div class="flex items-center gap-8">
-                <button
-                  class="nav-btn flex items-center gap-2"
-                  onclick={() => navigateFinding(-1)}
-                  disabled={hoveredFinding.id === findings[0].id}
-                  aria-label="Previous finding"
-                >
-                  <Prev color="#12020A" size="xs" />
-                  <span class="text-[12px] font-mono uppercase tracking-widest">Previous</span>
-                </button>
-                <button
-                  class="nav-btn flex items-center gap-2"
-                  onclick={() => navigateFinding(1)}
-                  disabled={hoveredFinding.id === findings[findings.length - 1].id}
-                  aria-label="Next finding"
-                >
-                  <span class="text-[12px] font-mono uppercase tracking-widest">Next</span>
-                  <Next color="#12020A" size="xs" />
-                </button>
-              </div>
-              <button
-                class="opacity-40 hover:opacity-80 transition-opacity"
-                onclick={() => (hoveredFinding = null)}
-                aria-label="Close"
-              >
-                <CloseIcon color="#12020A" size={18} />
-              </button>
-            </div>
-            <div class="hidden desktop:flex items-center gap-6 mt-6">
+            <!-- Mobile prev/next: above category label -->
+            <div class="flex desktop:hidden items-center gap-8 mb-3">
               <button
                 class="nav-btn flex items-center gap-2"
                 onclick={() => navigateFinding(-1)}
                 disabled={hoveredFinding.id === findings[0].id}
                 aria-label="Previous finding"
               >
-                <Prev color="#12020A" size="xs" />
-                <span class="text-[12px] font-mono uppercase tracking-widest">Previous</span>
+                <Prev color="#e71d80" size="xs" />
+                <span class="text-[12px] font-mono uppercase tracking-widest accent">Previous</span>
               </button>
               <button
                 class="nav-btn flex items-center gap-2"
@@ -460,10 +422,39 @@
                 disabled={hoveredFinding.id === findings[findings.length - 1].id}
                 aria-label="Next finding"
               >
-                <span class="text-[12px] font-mono uppercase tracking-widest">Next</span>
-                <Next color="#12020A" size="xs" />
+                <span class="text-[12px] font-mono uppercase tracking-widest accent">Next</span>
+                <Next color="#e71d80" size="xs" />
               </button>
             </div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-[14px] font-mono uppercase tracking-widest text-[#12020A]">
+                {hoveredFinding.category}
+              </span>
+              <!-- Desktop prev/next inline with category label -->
+              <div class="hidden desktop:flex items-center gap-6">
+                <button
+                  class="nav-btn flex items-center gap-2"
+                  onclick={() => navigateFinding(-1)}
+                  disabled={hoveredFinding.id === findings[0].id}
+                  aria-label="Previous finding"
+                >
+                  <Prev color="#e71d80" size="xs" />
+                  <span class="text-[12px] font-mono uppercase tracking-widest accent">Previous</span>
+                </button>
+                <button
+                  class="nav-btn flex items-center gap-2"
+                  onclick={() => navigateFinding(1)}
+                  disabled={hoveredFinding.id === findings[findings.length - 1].id}
+                  aria-label="Next finding"
+                >
+                  <span class="text-[12px] font-mono uppercase tracking-widest accent">Next</span>
+                  <Next color="#e71d80" size="xs" />
+                </button>
+              </div>
+            </div>
+            <p class="text-[#12020A] leading-relaxed m-0">
+              {@html highlightText(hoveredFinding.text)}
+            </p>
           </div>
         {:else}
           <p class="text-[#928D90] text-[1.2rem] italic m-0">
@@ -484,12 +475,8 @@
 
   .nav-btn {
     color: #12020a;
-    opacity: 0.5;
     cursor: pointer;
     transition: opacity 0.15s;
-  }
-  .nav-btn:hover:not(:disabled) {
-    opacity: 1;
   }
   .nav-btn:disabled {
     opacity: 0.2;
