@@ -5,7 +5,6 @@
   import { inview } from 'svelte-inview';
   import { lazyLoadAll } from '../../stores/lazyLoadTrigger';
   import { isScrollLoading, navigationAnchor } from '../../stores/scrollAnchor';
-  import { captureMobileScrollAnchor, restoreMobileScrollAnchor } from '../../utils/mobileScrollCorrect.js';
 
   // SectionTitle and Intro are the first visible components — load immediately.
   import SectionTitle from '../SectionTitle.svelte';
@@ -39,30 +38,24 @@
 
   async function loadScreenTime() {
     if (ScreenTimeVsLaughRate) return;
-    const anchor = captureMobileScrollAnchor();
     ScreenTimeVsLaughRate = await import(
       '../ScreenTimeVsLaughRate/ScreenTimeVsLaughRate.svelte'
     ).then((m) => m.default);
     await tick();
-    restoreMobileScrollAnchor(anchor);
     scheduleRefresh();
   }
 
   async function loadMarimekko() {
     if (Marimekko) return;
-    const anchor = captureMobileScrollAnchor();
     Marimekko = await import('./Marimekko.svelte').then((m) => m.default);
     await tick();
-    restoreMobileScrollAnchor(anchor);
     scheduleRefresh();
   }
 
   async function loadAlluvial() {
     if (Alluvial) return;
-    const anchor = captureMobileScrollAnchor();
     Alluvial = await import('./Alluvial.svelte').then((m) => m.default);
     await tick();
-    restoreMobileScrollAnchor(anchor);
     scheduleRefresh();
   }
 
@@ -85,7 +78,10 @@
   <div
     use:inview={{ rootMargin: '1000px' }}
     oninview_change={async (event) => {
-      if (event.detail.inView && !get(isScrollLoading)) await loadScreenTime();
+      if (!event.detail.inView || get(isScrollLoading)) return;
+      if (window.matchMedia('(max-width: 1023px)').matches &&
+          event.currentTarget.getBoundingClientRect().bottom < 0) return;
+      await loadScreenTime();
     }}
   ></div>
 
@@ -96,7 +92,10 @@
     <div
       use:inview={{ rootMargin: '1000px' }}
       oninview_change={async (event) => {
-        if (event.detail.inView && !get(isScrollLoading)) await loadMarimekko();
+        if (!event.detail.inView || get(isScrollLoading)) return;
+        if (window.matchMedia('(max-width: 1023px)').matches &&
+            event.currentTarget.getBoundingClientRect().bottom < 0) return;
+        await loadMarimekko();
       }}
     ></div>
 
@@ -107,7 +106,10 @@
       <div
         use:inview={{ rootMargin: '1000px' }}
         oninview_change={async (event) => {
-          if (event.detail.inView && !get(isScrollLoading)) await loadAlluvial();
+          if (!event.detail.inView || get(isScrollLoading)) return;
+          if (window.matchMedia('(max-width: 1023px)').matches &&
+              event.currentTarget.getBoundingClientRect().bottom < 0) return;
+          await loadAlluvial();
         }}
       ></div>
 
