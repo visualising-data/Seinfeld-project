@@ -5,6 +5,7 @@
   import { get } from 'svelte/store';
   import { lazyLoadAll } from '../../stores/lazyLoadTrigger';
   import { isScrollLoading, navigationAnchor } from '../../stores/scrollAnchor';
+  import { captureMobileScrollAnchor, restoreMobileScrollAnchor } from '../../utils/mobileScrollCorrect.js';
 
   // SectionTitle and Intro are the first visible components — load immediately.
   import SectionTitle from '../SectionTitle.svelte';
@@ -35,24 +36,30 @@
 
   async function loadScreenTime() {
     if (ScreenTimeVsLaughRate) return;
+    const anchor = captureMobileScrollAnchor();
     ScreenTimeVsLaughRate = await import(
       '../ScreenTimeVsLaughRate/ScreenTimeVsLaughRate.svelte'
     ).then((m) => m.default);
     await tick();
+    restoreMobileScrollAnchor(anchor);
     scheduleRefresh();
   }
 
   async function loadMarimekko() {
     if (Marimekko) return;
+    const anchor = captureMobileScrollAnchor();
     Marimekko = await import('./Marimekko.svelte').then((m) => m.default);
     await tick();
+    restoreMobileScrollAnchor(anchor);
     scheduleRefresh();
   }
 
   async function loadPeakPerformances() {
     if (PeakPerformances) return;
+    const anchor = captureMobileScrollAnchor();
     PeakPerformances = await import('./PeakPerformances.svelte').then((m) => m.default);
     await tick();
+    restoreMobileScrollAnchor(anchor);
     scheduleRefresh();
   }
 

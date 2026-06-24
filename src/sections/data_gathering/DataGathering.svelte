@@ -9,6 +9,7 @@
   import { get } from 'svelte/store';
   import { lazyLoadAll } from '../../stores/lazyLoadTrigger';
   import { isScrollLoading, navigationAnchor } from '../../stores/scrollAnchor';
+  import { captureMobileScrollAnchor, restoreMobileScrollAnchor } from '../../utils/mobileScrollCorrect.js';
 
   import type { Episode } from '$lib/types/episode';
   import { episodesInfo } from '$lib/data/episodesInfo';
@@ -70,32 +71,40 @@
   // there's no extra sentinel or refresh cycle for such a small component.
   async function loadDataGatheringDetails() {
     if (DataGatheringDetails) return;
+    const anchor = captureMobileScrollAnchor();
     [DataGatheringDetails, Bridge] = await Promise.all([
       import('./DataGatheringDetails.svelte').then((m) => m.default),
       import('./Bridge.svelte').then((m) => m.default),
     ]);
     await tick();
+    restoreMobileScrollAnchor(anchor);
     scheduleRefresh();
   }
 
   async function loadEpisodeExample() {
     if (EpisodeExample) return;
+    const anchor = captureMobileScrollAnchor();
     EpisodeExample = await import('./EpisodeExample.svelte').then((m) => m.default);
     await tick();
+    restoreMobileScrollAnchor(anchor);
     scheduleRefresh();
   }
 
   async function loadBridgeToCatalog() {
     if (BridgeToCatalog) return;
+    const anchor = captureMobileScrollAnchor();
     BridgeToCatalog = await import('./BridgeToCatalog.svelte').then((m) => m.default);
     await tick();
+    restoreMobileScrollAnchor(anchor);
     scheduleRefresh();
   }
 
   async function loadCatalog() {
     if (Catalog) return;
+    const anchor = captureMobileScrollAnchor();
     Catalog = await import('../catalog/Catalog.svelte').then((m) => m.default);
     await tick();
+    restoreMobileScrollAnchor(anchor);
     scheduleRefresh();
   }
 
