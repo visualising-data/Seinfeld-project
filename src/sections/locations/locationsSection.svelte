@@ -4,7 +4,7 @@
   import { get } from 'svelte/store';
   import { inview } from 'svelte-inview';
   import { lazyLoadAll } from '../../stores/lazyLoadTrigger';
-  import { isScrollLoading } from '../../stores/scrollAnchor';
+  import { isScrollLoading, navigationAnchor } from '../../stores/scrollAnchor';
 
   // SectionTitle and Intro are the first visible components — load immediately.
   import SectionTitle from '../SectionTitle.svelte';
@@ -27,6 +27,11 @@
       // the loader, which covers any spacers we'd set up here.
       if (get(isScrollLoading)) return;
       ScrollTrigger.refresh();
+      const navAnchor = get(navigationAnchor);
+      if (navAnchor) {
+        const el = document.getElementById(navAnchor);
+        if (el) window.scrollTo(0, el.getBoundingClientRect().top + window.scrollY);
+      }
     }, 150);
   }
 

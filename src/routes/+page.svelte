@@ -13,7 +13,7 @@
   ScrollTrigger.config({ ignoreMobileResize: true });
 
   import { navBarColor } from '../stores/navbarColor';
-  import { pendingScrollAnchor, isScrollLoading } from '../stores/scrollAnchor';
+  import { pendingScrollAnchor, isScrollLoading, navigationAnchor } from '../stores/scrollAnchor';
   import { lazyLoadAll } from '../stores/lazyLoadTrigger';
   import ScrollLoader from '../UI/ScrollLoader.svelte';
   import SectionProgressBar from '../UI/SectionProgressBar.svelte';
@@ -298,6 +298,9 @@
               const targetY = scrollTarget.getBoundingClientRect().top + window.scrollY;
               window.scrollTo(0, targetY);
               pendingScrollAnchor.set(null);
+              // Expose the anchor so child-section scheduleRefresh() calls can
+              // re-scroll to its updated position after pin spacers are resized.
+              navigationAnchor.set(anchor);
               // Keep isScrollLoading true — the loader stays on screen until child
               // sections finish their own lazy loads (which cause layout shifts and
               // GSAP scroll-restoration jumps). Only hide it once the layout is stable.
@@ -339,6 +342,21 @@
                     window.scrollTo(0, finalTarget.getBoundingClientRect().top + window.scrollY);
                   }
                   isScrollLoading.set(false);
+                  // Keep navigationAnchor set so late-loading sub-sections can
+                  // still correct scroll drift after a GSAP refresh. Clear it
+                  // on first user scroll interaction, or after 5 s at most.
+                  const clearNavAnchor = () => {
+                    navigationAnchor.set(null);
+                    window.removeEventListener('touchstart', clearNavAnchor, true);
+                    window.removeEventListener('wheel', clearNavAnchor, true);
+                  };
+                  setTimeout(clearNavAnchor, 5000);
+                  // Small delay before listening so loader close animation doesn't
+                  // immediately trigger a touchstart that clears the anchor.
+                  setTimeout(() => {
+                    window.addEventListener('touchstart', clearNavAnchor, { capture: true });
+                    window.addEventListener('wheel', clearNavAnchor, { capture: true });
+                  }, 300);
                 });
               };
 

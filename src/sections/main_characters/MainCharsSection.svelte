@@ -2,7 +2,9 @@
   // @ts-nocheck
   import { tick, onMount } from 'svelte';
   import { inview } from 'svelte-inview';
+  import { get } from 'svelte/store';
   import { lazyLoadAll } from '../../stores/lazyLoadTrigger';
+  import { isScrollLoading, navigationAnchor } from '../../stores/scrollAnchor';
 
   // SectionTitle and Intro are the first visible components — load immediately.
   import SectionTitle from '../SectionTitle.svelte';
@@ -19,8 +21,14 @@
   function scheduleRefresh() {
     if (_refreshTimer) clearTimeout(_refreshTimer);
     _refreshTimer = setTimeout(() => {
-      ScrollTrigger.refresh();
       _refreshTimer = null;
+      if (get(isScrollLoading)) return;
+      ScrollTrigger.refresh();
+      const navAnchor = get(navigationAnchor);
+      if (navAnchor) {
+        const el = document.getElementById(navAnchor);
+        if (el) window.scrollTo(0, el.getBoundingClientRect().top + window.scrollY);
+      }
     }, 150);
   }
 

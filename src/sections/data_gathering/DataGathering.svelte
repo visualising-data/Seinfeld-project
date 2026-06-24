@@ -6,7 +6,9 @@
   // Laughs is the first visible component when DataGathering mounts — load it immediately.
   import Laughs from './Laughs.svelte';
   import BeforeVideo from './BeforeVideo.svelte';
+  import { get } from 'svelte/store';
   import { lazyLoadAll } from '../../stores/lazyLoadTrigger';
+  import { isScrollLoading, navigationAnchor } from '../../stores/scrollAnchor';
 
   import type { Episode } from '$lib/types/episode';
   import { episodesInfo } from '$lib/data/episodesInfo';
@@ -52,8 +54,16 @@
   function scheduleRefresh() {
     if (_refreshTimer) clearTimeout(_refreshTimer);
     _refreshTimer = setTimeout(() => {
-      ScrollTrigger.refresh();
       _refreshTimer = null;
+      if (get(isScrollLoading)) return;
+      ScrollTrigger.refresh();
+      // Pin spacers above the navigation anchor may have changed size, shifting
+      // the anchor's absolute position. Re-scroll to its new correct location.
+      const navAnchor = get(navigationAnchor);
+      if (navAnchor) {
+        const el = document.getElementById(navAnchor);
+        if (el) window.scrollTo(0, el.getBoundingClientRect().top + window.scrollY);
+      }
     }, 150);
   }
 

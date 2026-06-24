@@ -1,7 +1,9 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
+  import { get } from 'svelte/store';
   import { gsap } from 'gsap/dist/gsap';
   import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
+  import { navigationAnchor } from '../../stores/scrollAnchor';
   import * as Tone from 'tone';
 
   import {
@@ -745,6 +747,13 @@
     void headerHeight; // must be first — registers reactive dependency before any early return
     if (!mm || currentSection !== 'main_chars') return;
     ScrollTrigger.refresh();
+    // Re-scroll to the navigation anchor if one is active — the refresh may have
+    // resized pin spacers above the anchor, shifting its absolute position.
+    const navAnchor = get(navigationAnchor);
+    if (navAnchor) {
+      const el = document.getElementById(navAnchor);
+      if (el) window.scrollTo(0, el.getBoundingClientRect().top + window.scrollY);
+    }
   });
 
   onDestroy(() => {
