@@ -199,8 +199,10 @@
               stroke="#BEBABC"
             />
             <g class="number" fill-opacity={isTooltipVisible ? 0 : 1}>
-              <text x={charLaughterRateScale(0.5) + 4} y={chartHeight - 4}>50%</text>
-              <text x={4} y={charShareLaughScale(0.5) - 4}>50%</text>
+              <text x={charLaughterRateScale(0.5) - 4} y={chartHeight - 4} text-anchor="end"
+                >50%</text
+              >
+              <text x={4} y={charShareLaughScale(0.5) + 16}>50%</text>
             </g>
 
             <g>

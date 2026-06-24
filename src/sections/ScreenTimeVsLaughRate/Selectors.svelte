@@ -29,7 +29,7 @@
 {/if}
 <ul
   class={isMobile
-    ? 'flex flex-row flex-wrap justify-center gap-2 mb-3'
+    ? 'flex flex-row flex-wrap justify-center gap-2'
     : `grid gap-6 flex-wrap ${currentSection === 'main_chars' ? 'grid-cols-1' : 'grid-cols-2'}`}
 >
   {#each selectors as selector}

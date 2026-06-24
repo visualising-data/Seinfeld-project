@@ -66,11 +66,37 @@
 
   onMount(() => {
     isMobile = window.matchMedia('(max-width: 1023px)').matches;
-    return lazyLoadAll.subscribe(async (shouldLoad) => {
+
+    const unsubLazyLoad = lazyLoadAll.subscribe(async (shouldLoad) => {
       if (!shouldLoad) return;
-      if (window.matchMedia('(max-width: 1023px)').matches) return;
-      await Promise.all([loadScreenTime(), loadMarimekko(), loadPeakPerformances()]);
+      if (!window.matchMedia('(max-width: 1023px)').matches) {
+        await Promise.all([loadScreenTime(), loadMarimekko(), loadPeakPerformances()]);
+        return;
+      }
+      // Mobile: load sequentially while the nav loader covers the screen so all
+      // three sub-components are ready before the user can scroll. Sentinels are
+      // gated by isScrollLoading during menu navigation and miss their trigger.
+      await loadScreenTime();
+      await loadMarimekko();
+      await loadPeakPerformances();
     });
+
+    // Mobile fallback: fires on isScrollLoading true→false in case lazyLoadAll
+    // wasn't triggered (e.g. navigating to a section that was already in the DOM).
+    let prevLoading = get(isScrollLoading);
+    const unsubIsLoading = isScrollLoading.subscribe(async (loading) => {
+      const was = prevLoading;
+      prevLoading = loading;
+      if (loading || !was || !isMobile) return;
+      await loadScreenTime();
+      await loadMarimekko();
+      await loadPeakPerformances();
+    });
+
+    return () => {
+      unsubLazyLoad();
+      unsubIsLoading();
+    };
   });
 </script>
 
@@ -93,8 +119,8 @@
       <ScreenTimeVsLaughRate {episodesData} currentSection="main_chars" />
     </div>
 
-    <!-- Mobile spacer: lets the sticky viz fully clear before Marimekko enters -->
-    <div class="lg:hidden h-[100dvh]"></div>
+    <!-- Mobile spacer: buffer before Marimekko sentinel so it doesn't preload too early -->
+    <div class="lg:hidden h-8"></div>
 
     <!-- Sentinel 2: loads Marimekko -->
     <div

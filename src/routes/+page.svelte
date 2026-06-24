@@ -356,8 +356,10 @@
               let resizeDebounce: ReturnType<typeof setTimeout> | null = null;
               let loaderHideTimer: ReturnType<typeof setTimeout> | null = null;
               let bodyObserver: ResizeObserver | null = null;
+              let hardTimeout: ReturnType<typeof setTimeout> | null = null;
 
               const stopBodyObserver = () => {
+                if (hardTimeout) { clearTimeout(hardTimeout); hardTimeout = null; }
                 bodyObserver?.disconnect();
                 bodyObserver = null;
                 if (resizeDebounce) {
@@ -417,9 +419,17 @@
                 if (resizeDebounce) clearTimeout(resizeDebounce);
                 resizeDebounce = setTimeout(() => {
                   resizeDebounce = null;
-                  const reTarget = document.getElementById(anchor);
-                  if (reTarget) {
-                    window.scrollTo(0, reTarget.getBoundingClientRect().top + window.scrollY);
+                  // Desktop only: re-scroll to anchor on each sub-section mount.
+                  // GSAP pin spacers shift absolute positions on desktop; the mobile
+                  // layout has no pins so intermediate re-scrolls are unnecessary —
+                  // they cause the scroll-back bug when sub-components mount after
+                  // the loader hides. stopBodyObserver's final rAF scroll lands the
+                  // user at the correct position once everything has settled.
+                  if (!onMobile) {
+                    const reTarget = document.getElementById(anchor);
+                    if (reTarget) {
+                      window.scrollTo(0, reTarget.getBoundingClientRect().top + window.scrollY);
+                    }
                   }
                   // Schedule loader hide — if no more resizes arrive, we're settled.
                   scheduleLoaderHide();
@@ -429,7 +439,7 @@
               // Fallback: if no child resize fires, hide loader after STABLE_MS.
               scheduleLoaderHide();
               // Hard timeout: give up after 8 s.
-              setTimeout(stopBodyObserver, 8000);
+              hardTimeout = setTimeout(stopBodyObserver, 8000);
             } else {
               // Non-lazy path: target already in DOM, scroll immediately.
               const targetY = target.getBoundingClientRect().top + window.scrollY;

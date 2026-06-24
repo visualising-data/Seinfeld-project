@@ -2,8 +2,9 @@
   import { characters } from '$lib/data/characters';
   import Sparkline from '../Sparkline.svelte';
 
-  let { charData } = $props();
+  let { charData, inline = false } = $props();
 
+  const wrapClass = $derived(inline ? 'mb-6' : 'flex h-[100dvh] w-screen items-center justify-end md:pr-6');
   let sparklinesContainerWidth = $state(1000);
   const sparklineWidth = $derived(
     Math.min(160, Math.max(80, Math.floor((sparklinesContainerWidth - 12) / 2))),
@@ -13,7 +14,7 @@
 </script>
 
 <!-- Text 1 -->
-<div id="elaine-text-1" class="flex h-[100dvh] w-screen items-center justify-end md:pr-6">
+<div id="elaine-text-1" class={wrapClass}>
   <div class="text-overlay flex flex-col">
     <div class="mb-4">
       <span class="em" style="color: {color};">Elaine Benes</span> was the lead female character. The
@@ -32,7 +33,7 @@
 </div>
 
 <!-- Text 2 -->
-<div id="elaine-text-2" class="flex h-[100dvh] w-screen items-center justify-end md:pr-6">
+<div id="elaine-text-2" class={wrapClass}>
   <div class="text-overlay flex flex-col">
     <div>
       She did not appear in the <span class="highlight">first episode</span> and also missed filming
@@ -43,7 +44,7 @@
 </div>
 
 <!-- Text 3 -->
-<div id="elaine-text-3" class="flex h-[100dvh] w-screen items-center justify-end md:pr-6">
+<div id="elaine-text-3" class={wrapClass}>
   <div class="text-overlay" style="max-width: 800px;">
     In the book Seinfeldia, author Jennifer Keishin Armstrong reports that, at the start of Season
     3, Julia Louis-Dreyfus (who played Elaine) was unhappy with her lack of quality screen time -
@@ -58,7 +59,7 @@
 </div>
 
 <!-- Text 4 -->
-<div id="elaine-text-4" class="flex h-[100dvh] w-screen items-center justify-end md:pr-6">
+<div id="elaine-text-4" class={wrapClass}>
   <div class="text-overlay" style="max-width: 800px; min-width: 0;">
     Things changed in Season 5 when Carol Leifer joined the show as a writer and became responsible
     for pitching most of Elaine's subsequent stories and character development. Though her laughter
