@@ -443,14 +443,14 @@
                   >
                   <circle
                     cx={-(LABEL_CIRCLE_R + 14)}
-                    cy={char.noLaughsWidth}
+                    cy={char.noLaughsWidth - 10}
                     r={LABEL_CIRCLE_R}
                     fill="#F9F5F7"
                     stroke="#12020A"
                   />
                   <text
                     x={-(LABEL_CIRCLE_R + 14)}
-                    y={char.noLaughsWidth}
+                    y={char.noLaughsWidth - 10}
                     dy="1px"
                     text-anchor="middle"
                     dominant-baseline="middle"

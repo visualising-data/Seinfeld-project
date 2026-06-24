@@ -132,7 +132,12 @@
     <!-- Marimekko chart -->
     <div class="relative">
       {#if isMobile}
-        <svg role="img" aria-label="Mosaic chart comparing screen-time shares across Seinfeld's key locations. Each column's width represents a location's total screen-time share. The left portion (pink) shows time during which audience laughter was recorded; the right portion (grey) shows time without laughter." width={chartWidth} height={mobileChartHeight}>
+        <svg
+          role="img"
+          aria-label="Mosaic chart comparing screen-time shares across Seinfeld's key locations. Each column's width represents a location's total screen-time share. The left portion (pink) shows time during which audience laughter was recorded; the right portion (grey) shows time without laughter."
+          width={chartWidth}
+          height={mobileChartHeight}
+        >
           <!-- Axis labels -->
           <text class="small accent" x={mobileBarsStart - 50} y={10}>Relative screen time</text>
           <text class="small accent" text-anchor="end" x={mobileMidX - 4} y={30}>Laughter</text>
@@ -294,7 +299,12 @@
           </g>
         </svg>
       {:else}
-        <svg role="img" aria-label="Mosaic chart comparing screen-time shares across Seinfeld's key locations. Each column's width represents a location's total screen-time share. The left portion (pink) shows time during which audience laughter was recorded; the right portion (grey) shows time without laughter." width={chartWidth} height={chartHeight}>
+        <svg
+          role="img"
+          aria-label="Mosaic chart comparing screen-time shares across Seinfeld's key locations. Each column's width represents a location's total screen-time share. The left portion (pink) shows time during which audience laughter was recorded; the right portion (grey) shows time without laughter."
+          width={chartWidth}
+          height={chartHeight}
+        >
           <g transform="translate(70, {chartMidPoint})">
             {#each charsData as char, i}
               <g
@@ -417,14 +427,14 @@
                   >
                   <circle
                     cx={-(LABEL_CIRCLE_R + 14)}
-                    cy={char.noLaughsWidth}
+                    cy={char.noLaughsWidth - 18}
                     r={LABEL_CIRCLE_R}
                     fill="#F9F5F7"
                     stroke="#12020A"
                   />
                   <text
                     x={-(LABEL_CIRCLE_R + 14)}
-                    y={char.noLaughsWidth}
+                    y={char.noLaughsWidth - 18}
                     dy="1px"
                     text-anchor="middle"
                     dominant-baseline="middle"
