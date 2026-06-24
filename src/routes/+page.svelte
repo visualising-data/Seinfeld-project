@@ -327,19 +327,19 @@
                   clearTimeout(loaderHideTimer);
                   loaderHideTimer = null;
                 }
-                // One definitive refresh + re-scroll while the loader still covers
-                // the screen. Any child-section GSAP refreshes that were skipped
-                // (isScrollLoading guard) are accounted for here. Two rAFs let
-                // GSAP's internal scroll-restoration complete before we read BCR.
-                if (_refreshTimer) { clearTimeout(_refreshTimer); _refreshTimer = null; }
-                ScrollTrigger.refresh();
-                requestAnimationFrame(() => requestAnimationFrame(() => {
+                // One final re-scroll while the loader still covers the screen,
+                // to correct any drift from sub-section mounts. Avoid calling
+                // ScrollTrigger.refresh() here — on low-end mobile it's expensive
+                // enough to crash the tab. The poll's earlier explicit refresh
+                // already handled spacers; child-section refreshes are deferred
+                // via the isScrollLoading guard in their scheduleRefresh().
+                requestAnimationFrame(() => {
                   const finalTarget = document.getElementById(anchor);
                   if (finalTarget) {
                     window.scrollTo(0, finalTarget.getBoundingClientRect().top + window.scrollY);
                   }
                   isScrollLoading.set(false);
-                }));
+                });
               };
 
               const scheduleLoaderHide = () => {
