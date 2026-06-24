@@ -221,9 +221,10 @@
 
     // If the page loads with a non-zero scroll position (browser scroll restoration
     // or URL hash), the lazy sentinels are already above the viewport and will never
-    // fire. Load all waves eagerly so sections are present when scrolling up.
+    // fire. On desktop, load all waves eagerly so sections are present when scrolling up.
+    // On mobile, skip — all-at-once loading causes OOM; sentinels fire as the user scrolls.
     requestAnimationFrame(() => {
-      if (window.scrollY > 0) {
+      if (window.scrollY > 0 && !window.matchMedia('(max-width: 1023px)').matches) {
         loadWave1();
         loadWave2();
         loadSupportingChars();
@@ -275,7 +276,7 @@
 
       if (_resizeDebounce) clearTimeout(_resizeDebounce);
       _resizeDebounce = setTimeout(() => {
-        ScrollTrigger.refresh();
+        if (!window.matchMedia('(max-width: 1023px)').matches) ScrollTrigger.refresh();
         if (_resizeAnchorId) {
           const el = document.getElementById(_resizeAnchorId);
           if (el) {

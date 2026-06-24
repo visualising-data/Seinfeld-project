@@ -160,7 +160,7 @@
           <div
             use:inview={{ rootMargin: '1000px' }}
             oninview_change={async (/** @type {{ detail: { inView: any; }; }} */ event) => {
-              if (event.detail.inView) await loadCatalog();
+              if (event.detail.inView && !get(isScrollLoading)) await loadCatalog();
             }}
           ></div>
 

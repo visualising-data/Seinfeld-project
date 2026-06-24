@@ -67,7 +67,7 @@
   <div
     use:inview={{ rootMargin: '1000px' }}
     oninview_change={async (event) => {
-      if (event.detail.inView) await loadScreenTime();
+      if (event.detail.inView && !get(isScrollLoading)) await loadScreenTime();
     }}
   ></div>
 
@@ -78,7 +78,7 @@
     <div
       use:inview={{ rootMargin: '1000px' }}
       oninview_change={async (event) => {
-        if (event.detail.inView) await loadMarimekko();
+        if (event.detail.inView && !get(isScrollLoading)) await loadMarimekko();
       }}
     ></div>
 
