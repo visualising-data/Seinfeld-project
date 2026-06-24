@@ -124,7 +124,7 @@
     <div
       use:inview={{ rootMargin: '1000px' }}
       oninview_change={async (/** @type {{ detail: { inView: any; }; }} */ event) => {
-        if (event.detail.inView) await loadDataGatheringDetails();
+        if (event.detail.inView && !get(isScrollLoading)) await loadDataGatheringDetails();
       }}
     ></div>
 
@@ -138,7 +138,7 @@
       <div
         use:inview={{ rootMargin: '1000px' }}
         oninview_change={async (/** @type {{ detail: { inView: any; }; }} */ event) => {
-          if (event.detail.inView) await loadEpisodeExample();
+          if (event.detail.inView && !get(isScrollLoading)) await loadEpisodeExample();
         }}
       ></div>
 
@@ -149,7 +149,7 @@
         <div
           use:inview={{ rootMargin: '1000px' }}
           oninview_change={async (/** @type {{ detail: { inView: any; }; }} */ event) => {
-            if (event.detail.inView) await loadBridgeToCatalog();
+            if (event.detail.inView && !get(isScrollLoading)) await loadBridgeToCatalog();
           }}
         ></div>
 
