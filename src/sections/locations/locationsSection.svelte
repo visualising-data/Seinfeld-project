@@ -1,8 +1,10 @@
 <script>
   // @ts-nocheck
   import { tick, onMount } from 'svelte';
+  import { get } from 'svelte/store';
   import { inview } from 'svelte-inview';
   import { lazyLoadAll } from '../../stores/lazyLoadTrigger';
+  import { isScrollLoading } from '../../stores/scrollAnchor';
 
   // SectionTitle and Intro are the first visible components — load immediately.
   import SectionTitle from '../SectionTitle.svelte';
@@ -19,8 +21,12 @@
   function scheduleRefresh() {
     if (_refreshTimer) clearTimeout(_refreshTimer);
     _refreshTimer = setTimeout(() => {
-      ScrollTrigger.refresh();
       _refreshTimer = null;
+      // Skip while the nav-scroll loader is active — +page.svelte does one
+      // authoritative refresh+scroll inside stopBodyObserver() before hiding
+      // the loader, which covers any spacers we'd set up here.
+      if (get(isScrollLoading)) return;
+      ScrollTrigger.refresh();
     }, 150);
   }
 

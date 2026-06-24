@@ -93,8 +93,6 @@
                 if (!document.getElementById(menuItem.anchor)) {
                   isScrollLoading.set(true);
                   lazyLoadAll.set(true);
-                  const sentinel = document.getElementById('lazy-load-sentinel');
-                  if (sentinel) sentinel.scrollIntoView({ behavior: 'instant' });
                 }
               }}
             >

@@ -327,7 +327,19 @@
                   clearTimeout(loaderHideTimer);
                   loaderHideTimer = null;
                 }
-                isScrollLoading.set(false);
+                // One definitive refresh + re-scroll while the loader still covers
+                // the screen. Any child-section GSAP refreshes that were skipped
+                // (isScrollLoading guard) are accounted for here. Two rAFs let
+                // GSAP's internal scroll-restoration complete before we read BCR.
+                if (_refreshTimer) { clearTimeout(_refreshTimer); _refreshTimer = null; }
+                ScrollTrigger.refresh();
+                requestAnimationFrame(() => requestAnimationFrame(() => {
+                  const finalTarget = document.getElementById(anchor);
+                  if (finalTarget) {
+                    window.scrollTo(0, finalTarget.getBoundingClientRect().top + window.scrollY);
+                  }
+                  isScrollLoading.set(false);
+                }));
               };
 
               const scheduleLoaderHide = () => {
