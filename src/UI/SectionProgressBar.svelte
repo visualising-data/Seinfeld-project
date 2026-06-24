@@ -74,11 +74,11 @@
   }
 
   function navigateTo(anchor: string) {
+    pendingScrollAnchor.set(anchor);
     if (!document.getElementById(anchor)) {
       isScrollLoading.set(true);
       lazyLoadAll.set(true);
     }
-    pendingScrollAnchor.set(anchor);
   }
 
   onMount(() => {

@@ -558,7 +558,7 @@
         <div
           use:inview={{ rootMargin: '1000px' }}
           oninview_change={async (/** @type {{ detail: { inView: any; }; }} */ event) => {
-            if (event.detail.inView) await loadSupportingChars();
+            if (event.detail.inView && !get(isScrollLoading)) await loadSupportingChars();
           }}
         ></div>
 
@@ -569,7 +569,7 @@
           <div
             use:inview={{ rootMargin: '1000px' }}
             oninview_change={async (/** @type {{ detail: { inView: any; }; }} */ event) => {
-              if (event.detail.inView) await loadLocations();
+              if (event.detail.inView && !get(isScrollLoading)) await loadLocations();
             }}
           ></div>
 
@@ -580,7 +580,7 @@
             <div
               use:inview={{ rootMargin: '1000px' }}
               oninview_change={async (/** @type {{ detail: { inView: any; }; }} */ event) => {
-                if (event.detail.inView) await loadLaughsExploration();
+                if (event.detail.inView && !get(isScrollLoading)) await loadLaughsExploration();
               }}
             ></div>
 
@@ -591,7 +591,7 @@
               <div
                 use:inview={{ rootMargin: '1000px' }}
                 oninview_change={async (/** @type {{ detail: { inView: any; }; }} */ event) => {
-                  if (event.detail.inView) await loadMethodology();
+                  if (event.detail.inView && !get(isScrollLoading)) await loadMethodology();
                 }}
               ></div>
 

@@ -59,6 +59,52 @@
   const stepTriggers = [];
 
   onMount(() => {
+    const onMobile = window.matchMedia('(max-width: 1023px)').matches;
+
+    if (onMobile) {
+      // Mirror the desktop hidden state so the same reveal/undo functions work on mobile.
+      gsap.set('#episode-detail-container', { translateY: 260, opacity: 0 });
+      gsap.set('#episode-length', { translateX: -30, opacity: 0 });
+      gsap.set(
+        '#episode-example-container .catalog-character-on-screen, #episode-example-container .catalog-location-on-screen, #episode-example-container .catalog-character-label, #episode-example-container .catalog-location-label',
+        { translateX: -30, opacity: 0 },
+      );
+      gsap.set(
+        '#episode-example-container .catalog-character-stats, #episode-example-container .catalog-location-stats',
+        { translateX: -30, opacity: 0 },
+      );
+      gsap.set('#duration-example .episode-start-end', { translateY: 20, opacity: 0 });
+      gsap.set('#duration-example .laugh-bar, #episode-example-container .catalog-laugh-bar', {
+        translateY: 100,
+        opacity: 0,
+      });
+      gsap.set('#duration-example .label, .score-wrapper', { translateY: -30, opacity: 0 });
+
+      // rootMargin '-50% 0px 0px 0px' makes the detection zone the bottom half of the
+      // viewport, so isIntersecting fires when a panel's top crosses the 50% line —
+      // matching ScrollTrigger's 'start: top center' used on desktop.
+      /** @type {IntersectionObserver[]} */
+      const mobileObservers = [];
+      [1, 2, 3, 4, 5, 6, 7, 8].forEach((step) => {
+        const el = document.getElementById(`episode-example-text-${step}`);
+        if (!el) return;
+        const obs = new IntersectionObserver(
+          ([entry]) => {
+            if (entry.isIntersecting) {
+              episodeStepChange(step);
+            } else if (entry.boundingClientRect.top > window.innerHeight / 2) {
+              // Panel top slid back below center → user scrolled back up past this step.
+              episodeStepLeave(step);
+            }
+          },
+          { rootMargin: '-50% 0px 0px 0px', threshold: 0 },
+        );
+        obs.observe(el);
+        mobileObservers.push(obs);
+      });
+      return () => mobileObservers.forEach((obs) => obs.disconnect());
+    }
+
     // Establish initial hidden state BEFORE creating ScrollTriggers.
     // If the component mounts while the user is already scrolled into or past this
     // section (e.g. browser scroll restoration, direct navigation, or fast scrolling),

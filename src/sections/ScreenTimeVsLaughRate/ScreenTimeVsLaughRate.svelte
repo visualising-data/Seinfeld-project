@@ -799,7 +799,11 @@
   /** @param {HTMLElement} node */
   function portal(node) {
     document.body.appendChild(node);
-    return { destroy() { node.remove(); } };
+    return {
+      destroy() {
+        node.remove();
+      },
+    };
   }
 </script>
 
@@ -843,7 +847,7 @@
         </div>
 
         {#if isMobile && currentSection === 'main_chars'}
-          <div class="flex justify-center py-3">
+          <div class="flex justify-center pt-3">
             <button
               onclick={() => (drawerOpen = true)}
               class="px-6 py-3 rounded-full text-sm font-medium"
@@ -855,7 +859,7 @@
         {/if}
 
         <div class="lg:col-span-10 lg:mt-1" bind:clientHeight={visualizationsContainerHeight}>
-          <div class="flex justify-center lg:justify-start gap-10">
+          <div class="flex justify-center lg:justify-start gap-10 mt-3 lg:mt-0">
             <Toggle {switchFilter} {activeFilter} {innerWidth} {currentSection} />
             {#if !isMobile}
               <ScreenTimeVsLaughRateLegend {activeCharacter} {activeFilter} />

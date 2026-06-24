@@ -8,7 +8,7 @@
   import BeforeVideo from './BeforeVideo.svelte';
   import { get } from 'svelte/store';
   import { lazyLoadAll } from '../../stores/lazyLoadTrigger';
-  import { isScrollLoading, navigationAnchor } from '../../stores/scrollAnchor';
+  import { pendingScrollAnchor, isScrollLoading, navigationAnchor } from '../../stores/scrollAnchor';
 
   import type { Episode } from '$lib/types/episode';
   import { episodesInfo } from '$lib/data/episodesInfo';
@@ -108,12 +108,28 @@
   }
 
   // When menu/sidebar navigation triggers a force-load, chain through all
-  // internal sub-sections so episodes exists before the scroll poll fires.
+  // internal sub-sections so the target anchor exists before the scroll poll fires.
   onMount(() => {
     isMobile = window.matchMedia('(max-width: 1023px)').matches;
     const unsub = lazyLoadAll.subscribe(async (shouldLoad) => {
       if (!shouldLoad) return;
-      if (window.matchMedia('(max-width: 1023px)').matches) return;
+      if (window.matchMedia('(max-width: 1023px)').matches) {
+        // Mobile: only load sub-sections needed to reach the target anchor.
+        // EpisodeExample (~850vh) and Catalog are too heavy to load eagerly for
+        // other anchors, so only load them when directly navigated to.
+        const anchor = get(pendingScrollAnchor);
+        if (anchor === 'episodes') {
+          await loadDataGatheringDetails();
+          await loadEpisodeExample();
+          await loadBridgeToCatalog();
+          await loadCatalog();
+        } else if (anchor === 'bridge-to-catalog') {
+          await loadDataGatheringDetails();
+          await loadEpisodeExample();
+          await loadBridgeToCatalog();
+        }
+        return;
+      }
       await loadDataGatheringDetails();
       await loadEpisodeExample();
       await loadBridgeToCatalog();
