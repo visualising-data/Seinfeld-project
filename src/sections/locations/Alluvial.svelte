@@ -220,6 +220,16 @@
   });
 
   let hoveredLocation = $state(null);
+
+  /** @type {SVGTextElement | null} */
+  let axisLabelEl = $state(null);
+  let axisLabelLength = $state(0);
+
+  $effect(() => {
+    if (axisLabelEl) {
+      axisLabelLength = axisLabelEl.getComputedTextLength();
+    }
+  });
 </script>
 
 <svelte:window bind:innerWidth bind:innerHeight />
@@ -274,17 +284,19 @@
             class="axis-label transition-opacity duration-200 ease-out"
             opacity={hoveredLocation === null ? (innerWidth < 640 ? 0 : 1) : 0}
           >
-            <text
-              x={197}
-              y={chartHeight / 2 - 9}
-              transform="rotate(-90, {0}, {chartHeight / 2})"
-              text-anchor="middle"
-              class="small accent"
-            >
-              Rank of average screen-time share
-            </text>
+            <g transform="translate(-9, 0) rotate(-90)">
+              <text
+                bind:this={axisLabelEl}
+                x="0"
+                y="0"
+                text-anchor="end"
+                class="small accent"
+              >
+                Rank of average screen-time share
+              </text>
+            </g>
             <!-- Downward arrow -->
-            <g transform="translate(-16, 238)">
+            <g transform="translate(-16, {axisLabelLength + 8})">
               <ArrowDown />
             </g>
           </g>
