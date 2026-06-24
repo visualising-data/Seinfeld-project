@@ -114,7 +114,7 @@
         {#if activeCharacter.length < 2}
           <div>Select at least two characters</div>
         {:else}
-          <svg width={vizContainerWidth} height={600} style="border: 1px solid cyan;">
+          <svg role="img" aria-label="Bubble chart showing all episodes in which the selected characters appeared together. Each bubble represents one episode, sized by its total runtime." width={vizContainerWidth} height={600}>
             {#each descendantsToDisplay as circle}
               <circle
                 class={circle.depth === 1 ? `episode ${circle.data.name}` : circle.depth === 2 ? `scene ${circle.data.name}` : `location ${circle.data.location}`}

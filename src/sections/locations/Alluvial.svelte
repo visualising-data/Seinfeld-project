@@ -255,6 +255,8 @@
       </div>
 
       <svg
+        role="img"
+        aria-label="Alluvial flow diagram showing how the share of screen time across Seinfeld's key locations shifted across the 9 seasons. Ribbon widths represent each location's proportional screen-time share. Jerry's apartment consistently holds the largest share throughout the series."
         width={availableWidth}
         height={chartHeight + margin.top + margin.bottom}
         style="display: block; max-width: 100%; overflow: visible; margin: 0 auto;"

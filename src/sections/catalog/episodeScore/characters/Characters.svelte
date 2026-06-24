@@ -203,7 +203,7 @@
           </g>
         </g>
       </svg>
-      <svg {width} height={vizHeight}>
+      <svg role="img" aria-label="Row chart showing each main character's on-screen presence across the selected episode's scenes. Coloured segments indicate when the character was on screen; darker pink segments mark moments when audience laughter was present." {width} height={vizHeight}>
         <Scenes
           {scenes}
           {xScale}

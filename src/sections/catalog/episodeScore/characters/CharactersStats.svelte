@@ -76,7 +76,7 @@
       <div class="small accent absolute" style="width: {columnWidth}px;">
         % of episode appeared in
       </div>
-      <svg width={columnWidth} {height}>
+      <svg role="img" aria-label="Bar chart showing each character's percentage of screen time for the selected episode." width={columnWidth} {height}>
         {#each charactersOnScreen as char}
           {#if char.timesOnScreen}
             <rect
@@ -112,7 +112,7 @@
       <div class="small accent absolute" style="width: {columnWidth}px;">
         % share of episode laughs
       </div>
-      <svg width={columnWidth} {height}>
+      <svg role="img" aria-label="Bar chart showing each character's share of audience laughter moments for the selected episode." width={columnWidth} {height}>
         {#each charactersCausedLaughs as char}
           <rect
             x={0}

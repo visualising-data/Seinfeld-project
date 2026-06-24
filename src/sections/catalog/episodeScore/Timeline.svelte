@@ -26,6 +26,8 @@
 <svelte:window bind:innerWidth />
 
 <svg
+  role="img"
+  aria-label="Horizontal timeline for the selected episode, showing scene boundaries at regular minute intervals."
   width={xScale(numMinutes * 60) + labelsWidth + 100}
   {height}
   style="transform: translateX({-$sharedScrollLeft}px);"

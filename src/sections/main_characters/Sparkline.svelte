@@ -94,7 +94,7 @@
   class="flex flex-col {showCharBadge ? 'items-center' : 'items-start'}"
   style="margin-left: {showLabels || onlyAxes ? 0 : -46}px;"
 >
-  <svg {width} height={innerHeight + margin.top + margin.bottom}>
+  <svg {width} height={innerHeight + margin.top + margin.bottom} role="img" aria-label="{charId ? charId.charAt(0).toUpperCase() + charId.slice(1) + \"'s \" : ''}{isScreenTime ? 'screen-time share' : isLaughRate ? 'laugh rate' : 'laugh share'} per season, Seasons 1 to 9.">
     <defs>
       <!-- White gradient -->
       <linearGradient id="gradient-white" x1="0" x2="0" y1="0" y2="1">

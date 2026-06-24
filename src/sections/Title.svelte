@@ -293,7 +293,7 @@
     class="title-container h-[100dvh]"
     style="position: sticky; top: var(--vv-top, 0px); z-index: 10;"
   >
-    <svg width={svgWidth} height="132" onmouseenter={handleMouseEnterBars} role="figure">
+    <svg width={svgWidth} height="132" onmouseenter={handleMouseEnterBars} role="img" aria-label="Bar chart showing the number of episodes per season across all 9 seasons of Seinfeld, from 4 episodes in Season 1 to 24 episodes in later seasons.">
       {#each seasons as season, i}
         <rect
           class="season-rect season-rect-{i}"

@@ -132,7 +132,7 @@
     <!-- Marimekko chart -->
     <div class="relative">
       {#if isMobile}
-        <svg width={chartWidth} height={mobileChartHeight}>
+        <svg role="img" aria-label="Mosaic chart comparing screen-time shares across Seinfeld's key locations. Each column's width represents a location's total screen-time share. The left portion (pink) shows time during which audience laughter was recorded; the right portion (grey) shows time without laughter." width={chartWidth} height={mobileChartHeight}>
           <!-- Axis labels -->
           <text class="small accent" x={mobileBarsStart - 50} y={10}>Relative screen time</text>
           <text class="small accent" text-anchor="end" x={mobileMidX - 4} y={30}>Laughter</text>
@@ -294,7 +294,7 @@
           </g>
         </svg>
       {:else}
-        <svg width={chartWidth} height={chartHeight}>
+        <svg role="img" aria-label="Mosaic chart comparing screen-time shares across Seinfeld's key locations. Each column's width represents a location's total screen-time share. The left portion (pink) shows time during which audience laughter was recorded; the right portion (grey) shows time without laughter." width={chartWidth} height={chartHeight}>
           <g transform="translate(70, {chartMidPoint})">
             {#each charsData as char, i}
               <g

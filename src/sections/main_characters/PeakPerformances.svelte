@@ -170,7 +170,7 @@
         <svg
           class="shrink-0"
           role="img"
-          aria-label="Scatterplot of character peak performances"
+          aria-label="Scatter plot showing each lead character's peak episode performances. Horizontal axis: episode laugh rate. Vertical axis: character's share of episode laughs. Bubble size: character's screen-time percentage. Reference lines at 50% mark the midpoints of both axes."
           width={isMobile ? chartWidth + marginLeft : chartWidth + 32}
           height={chartHeight + 32}
           onmousemove={(e) => (mousePosition = [e.clientX, e.clientY])}

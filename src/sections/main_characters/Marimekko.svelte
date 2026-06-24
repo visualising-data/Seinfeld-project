@@ -135,7 +135,7 @@
     <!-- Marimekko chart -->
     <div class="relative">
       {#if isMobile}
-        <svg width={chartWidth} height={mobileChartHeight}>
+        <svg role="img" aria-label="Mosaic chart comparing screen-time shares across the four lead Seinfeld characters: Jerry, George, Elaine, and Kramer. Each column's width represents a character's total screen-time share. The left portion (pink) shows time during which laughter was present; the right portion (grey) shows time without laughter." width={chartWidth} height={mobileChartHeight}>
           <!-- Axis labels -->
           <text class="small accent" x={mobileBarsStart - 50} y={10}>Relative screen time</text>
           <text class="small accent" text-anchor="end" x={mobileMidX - 4} y={30}>Laughter</text>
@@ -306,7 +306,7 @@
           </g>
         </svg>
       {:else}
-        <svg width={chartWidth} height={chartHeight} viewBox="0 0 {chartWidth} {chartHeight}">
+        <svg role="img" aria-label="Mosaic chart comparing screen-time shares across the four lead Seinfeld characters: Jerry, George, Elaine, and Kramer. Each column's width represents a character's total screen-time share. The left portion (pink) shows time during which laughter was present; the right portion (grey) shows time without laughter." width={chartWidth} height={chartHeight} viewBox="0 0 {chartWidth} {chartHeight}">
           <g transform="translate({CHART_PADDING_LEFT}, {midpointY})">
             {#each charsData as char}
               <g

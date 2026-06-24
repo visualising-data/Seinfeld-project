@@ -54,7 +54,7 @@
         {/each}
       </div>
     {:else}
-      <svg width={columnWidth} {height}>
+      <svg role="img" aria-label="Bar chart showing each location's share of total screen time for the selected episode." width={columnWidth} {height}>
         {#each locationsOnScreen as location}
           <rect
             x={0}

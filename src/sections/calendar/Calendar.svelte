@@ -581,6 +581,8 @@
 
     <svg
       class="absolute"
+      role="img"
+      aria-label="Scatter chart showing all 180 Seinfeld episodes as circles positioned by their original US air date, spanning September 1989 to May 1998. Circles are colour-coded by season and arranged to avoid overlap."
       width={innerWidth - seasonsWidth}
       height={innerHeight - navbarHeight}
       style="top: {navbarHeight}px; left: {seasonsWidth}px;"

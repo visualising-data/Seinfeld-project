@@ -137,7 +137,7 @@
       class="flex-col"
       style="overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain;"
     >
-      <svg {width} height={vizHeight}>
+      <svg role="img" aria-label="Row chart showing each key location's on-screen presence across the selected episode's scenes." {width} height={vizHeight}>
         <Scenes
           {scenes}
           {xScale}

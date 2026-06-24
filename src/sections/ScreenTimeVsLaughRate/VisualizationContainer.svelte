@@ -137,7 +137,13 @@
 </script>
 
 <div class="flex mx-0" bind:clientWidth={visualizationsWidth}>
-  <svg width={visualizationsWidth} height={visualizationsHeight} style="touch-action: pan-y;">
+  <svg
+    role="img"
+    aria-label="Interactive chart showing a timeline of each written episode. When selecting a character or a location, its moments on screen or the moments it was causing laughs are highlighted."
+    width={visualizationsWidth}
+    height={visualizationsHeight}
+    style="touch-action: pan-y;"
+  >
     <!-- Episode details -->
     <g transform="translate(0, {margin.top})">
       <text
