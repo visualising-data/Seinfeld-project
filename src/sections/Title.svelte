@@ -13,6 +13,11 @@
   const seasonGradient = `conic-gradient(${seasons.map((s) => s.accessibleOverDarkColor).join(', ')}, ${seasons[0].accessibleOverDarkColor})`;
 
   let innerWidth = $state(1600);
+  let innerHeight = $state(800);
+
+  const svgHeight = $derived(Math.max(66, Math.min(132, Math.round(innerHeight * 0.11))));
+  const barSpacing = $derived(Math.round((svgHeight / 132) * 12));
+  const barHeight = $derived(Math.round((svgHeight / 132) * 8));
   const gridContainer = $derived.by(() => {
     switch (true) {
       case innerWidth >= 1536:
@@ -263,7 +268,14 @@
             mobileTl = gsap
               .timeline()
               .add(revealContent(), 0)
-              .call(() => { barsHaveAnimated = true; playJingle(); }, [], 1.5)
+              .call(
+                () => {
+                  barsHaveAnimated = true;
+                  playJingle();
+                },
+                [],
+                1.5,
+              )
               .add(animateBars(), 1.5);
           }
         },
@@ -286,27 +298,33 @@
   });
 </script>
 
-<svelte:window bind:innerWidth />
+<svelte:window bind:innerWidth bind:innerHeight />
 
 <section id="title-screen" style="--ring-gradient: {seasonGradient}">
   <div
     class="title-container h-[100dvh]"
     style="position: sticky; top: var(--vv-top, 0px); z-index: 10;"
   >
-    <svg width={svgWidth} height="132" onmouseenter={handleMouseEnterBars} role="img" aria-label="Bar chart showing the number of episodes per season across all 9 seasons of Seinfeld, from 4 episodes in Season 1 to 24 episodes in later seasons.">
+    <svg
+      width={svgWidth}
+      height={svgHeight}
+      onmouseenter={handleMouseEnterBars}
+      role="img"
+      aria-label="Bar chart showing the number of episodes per season across all 9 seasons of Seinfeld, from 4 episodes in Season 1 to 24 episodes in later seasons."
+    >
       {#each seasons as season, i}
         <rect
           class="season-rect season-rect-{i}"
           x={0}
-          y={i * 12}
+          y={i * barSpacing}
           width={seasonScale(season.numEpisodes)}
-          height={8}
+          height={barHeight}
           fill={season.accessibleOverDarkColor}
         />
       {/each}
     </svg>
     <div class="container">
-      <div style="margin-top: -25px; max-width: 940px;">
+      <div style="max-width: 940px;">
         <h1>
           <span id="title-the">The</span>{' '}<span id="title-seinfeld"
             ><span id="title-seinfeld-text">Seinfeld</span><span
@@ -318,7 +336,7 @@
                 >{/each}<span class="seinfeld-season-word" style="color: #F9F5F7">Seinfeld</span
               ></span
             ></span
-          ><br /><span id="title-chronicles"> Chronicles</span>
+          ><span id="title-chronicles"> Chronicles</span>
         </h1>
       </div>
       <div id="subtitle" class="subtitle number mt-6">
@@ -393,6 +411,14 @@
   h1,
   #subtitle {
     opacity: 0;
+  }
+  h1 {
+    font-size: clamp(2rem, min(12dvh, 14vw), 10rem);
+    margin-top: clamp(0.25rem, 2dvh, 2rem);
+  }
+  #subtitle {
+    font-size: clamp(0.7rem, 1.8dvh, 1.1rem);
+    line-height: clamp(1.4rem, 3.4dvh, 2.2rem);
   }
   section {
     background: linear-gradient(
