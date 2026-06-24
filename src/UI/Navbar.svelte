@@ -2,7 +2,6 @@
   import { soundIsAuth } from '../stores/soundAuthStore';
   import { catalogIsInView } from '../stores/catalogIsInView';
   import { navBarColor } from '../stores/navbarColor';
-  import { isAtCatalog } from '../stores/atCatalog';
   import { soundSectionIsInView } from '../stores/soundSectionIsInView';
   import { fade } from 'svelte/transition';
   import AudioOn from '../icons/AudioOn.svelte';
@@ -31,7 +30,12 @@
   style="width: 80px; height: 56px; z-index: 2000;"
 >
   <div class="flex">
-    <button onclick={toggleSound} class="relative" aria-label={$soundIsAuth ? 'Turn sound off' : 'Turn sound on'} aria-pressed={$soundIsAuth}>
+    <button
+      onclick={toggleSound}
+      class="relative"
+      aria-label={$soundIsAuth ? 'Turn sound off' : 'Turn sound on'}
+      aria-pressed={$soundIsAuth}
+    >
       {#if $soundSectionIsInView && !$soundIsAuth}
         <div class="sound-blob-outer" aria-hidden="true" transition:fade={{ duration: 600 }}></div>
         <div class="sound-blob" aria-hidden="true" transition:fade={{ duration: 600 }}></div>
@@ -45,7 +49,15 @@
         />
       {/if}
     </button>
-    <button class="ml-4" onclick={toggleMenu} disabled={showMenu} aria-label="Open navigation menu" aria-expanded={showMenu}><Burger {color} /></button>
+    {#if innerWidth > 1024}
+      <button
+        class="ml-4"
+        onclick={toggleMenu}
+        disabled={showMenu}
+        aria-label="Open navigation menu"
+        aria-expanded={showMenu}><Burger {color} /></button
+      >
+    {/if}
   </div>
 </div>
 {#if showMenu}
