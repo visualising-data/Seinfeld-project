@@ -49,6 +49,14 @@
   let BridgeToCatalog: any = $state(null);
   let Catalog: any = $state(null);
 
+  // Mobile: directional rootMargin (below-only preload) + content-visibility wrappers.
+  // Desktop: symmetric rootMargin, no content-visibility (GSAP needs accurate positions).
+  let isMobile = $state(false);
+  const sentinelMargin = $derived(isMobile ? '0px 0px 1000px 0px' : '1000px');
+  const cvStyle = $derived(
+    isMobile ? 'content-visibility: auto; contain-intrinsic-block-size: auto 100vh;' : '',
+  );
+
   // Local debounced refresh — ScrollTrigger is already available as a prop.
   let _refreshTimer: ReturnType<typeof setTimeout> | null = null;
   function scheduleRefresh() {
@@ -102,6 +110,7 @@
   // When menu/sidebar navigation triggers a force-load, chain through all
   // internal sub-sections so episodes exists before the scroll poll fires.
   onMount(() => {
+    isMobile = window.matchMedia('(max-width: 1023px)').matches;
     const unsub = lazyLoadAll.subscribe(async (shouldLoad) => {
       if (!shouldLoad) return;
       if (window.matchMedia('(max-width: 1023px)').matches) return;
@@ -122,85 +131,81 @@
 
     <!-- Sentinel 1: loads DataGatheringDetails + Bridge -->
     <div
-      use:inview={{ rootMargin: '1000px' }}
+      use:inview={{ rootMargin: sentinelMargin }}
       oninview_change={async (/** @type {{ detail: { inView: any; }; }} */ event) => {
-        if (!event.detail.inView || get(isScrollLoading)) return;
-        if (window.matchMedia('(max-width: 1023px)').matches &&
-            event.currentTarget.getBoundingClientRect().bottom < 0) return;
-        await loadDataGatheringDetails();
+        if (event.detail.inView && !get(isScrollLoading)) await loadDataGatheringDetails();
       }}
     ></div>
 
     <BeforeVideo />
 
     {#if DataGatheringDetails && Bridge}
-      <DataGatheringDetails {laughData} />
-      <Bridge />
+      <div style={cvStyle}>
+        <DataGatheringDetails {laughData} />
+        <Bridge />
+      </div>
 
       <!-- Sentinel 2: loads EpisodeExample -->
       <div
-        use:inview={{ rootMargin: '1000px' }}
+        use:inview={{ rootMargin: sentinelMargin }}
         oninview_change={async (/** @type {{ detail: { inView: any; }; }} */ event) => {
-          if (!event.detail.inView || get(isScrollLoading)) return;
-          if (window.matchMedia('(max-width: 1023px)').matches &&
-              event.currentTarget.getBoundingClientRect().bottom < 0) return;
-          await loadEpisodeExample();
+          if (event.detail.inView && !get(isScrollLoading)) await loadEpisodeExample();
         }}
       ></div>
 
       {#if EpisodeExample}
-        <EpisodeExample {episodeInfo} {episodeData} {laughData} {ScrollTrigger} />
+        <div style={cvStyle}>
+          <EpisodeExample {episodeInfo} {episodeData} {laughData} {ScrollTrigger} />
+        </div>
 
         <!-- Sentinel 3: loads BridgeToCatalog -->
         <div
-          use:inview={{ rootMargin: '1000px' }}
+          use:inview={{ rootMargin: sentinelMargin }}
           oninview_change={async (/** @type {{ detail: { inView: any; }; }} */ event) => {
-            if (!event.detail.inView || get(isScrollLoading)) return;
-            if (window.matchMedia('(max-width: 1023px)').matches &&
-                event.currentTarget.getBoundingClientRect().bottom < 0) return;
-            await loadBridgeToCatalog();
+            if (event.detail.inView && !get(isScrollLoading)) await loadBridgeToCatalog();
           }}
         ></div>
 
         {#if BridgeToCatalog}
-          <BridgeToCatalog />
+          <div style={cvStyle}>
+            <BridgeToCatalog />
+          </div>
 
           <!-- Sentinel 4: loads Catalog component (data fetched in the await blocks below) -->
           <div
-            use:inview={{ rootMargin: '1000px' }}
+            use:inview={{ rootMargin: sentinelMargin }}
             oninview_change={async (/** @type {{ detail: { inView: any; }; }} */ event) => {
-              if (!event.detail.inView || get(isScrollLoading)) return;
-              if (window.matchMedia('(max-width: 1023px)').matches &&
-                  event.currentTarget.getBoundingClientRect().bottom < 0) return;
-              await loadCatalog();
+              if (event.detail.inView && !get(isScrollLoading)) await loadCatalog();
             }}
           ></div>
 
           {#if Catalog}
-            {#await Promise.all( [csv(sonificationCharactersDataUrl), csv(sonificationLocationDataUrl)], )}
-              <section id="episodes" style="min-height: 100vh; background: #F9F5F7;">
-                <div class="flex items-center justify-center" style="height: 100vh;">
-                  <div
-                    class="w-8 h-8 rounded-full border-2 border-gray-300 border-t-gray-600 animate-spin"
-                  ></div>
-                </div>
-              </section>
-            {:then [sonificationCharactersData, sonificationLocationData]}
-              <Catalog
-                {episodesData}
-                {sonificationCharactersData}
-                {sonificationLocationData}
-                {ScrollTrigger}
-              />
-            {:catch}
-              <section id="episodes" style="min-height: 100vh; background: #F9F5F7;">
-                <div class="flex items-center justify-center" style="height: 100vh;">
-                  <p style="color: #888; font-size: 0.9rem;">
-                    Failed to load episode data. Please refresh the page.
-                  </p>
-                </div>
-              </section>
-            {/await}
+            <div style={cvStyle}>
+              {#await Promise.all( [csv(sonificationCharactersDataUrl), csv(sonificationLocationDataUrl)], )}
+                <section id="episodes" style="min-height: 100vh; background: #F9F5F7;">
+                  <div class="flex items-center justify-center" style="height: 100vh;">
+                    <div
+                      class="w-8 h-8 rounded-full border-2 border-gray-300 border-t-gray-600 animate-spin"
+                    ></div>
+                  </div>
+                </section>
+              {:then [sonificationCharactersData, sonificationLocationData]}
+                <Catalog
+                  {episodesData}
+                  {sonificationCharactersData}
+                  {sonificationLocationData}
+                  {ScrollTrigger}
+                />
+              {:catch}
+                <section id="episodes" style="min-height: 100vh; background: #F9F5F7;">
+                  <div class="flex items-center justify-center" style="height: 100vh;">
+                    <p style="color: #888; font-size: 0.9rem;">
+                      Failed to load episode data. Please refresh the page.
+                    </p>
+                  </div>
+                </section>
+              {/await}
+            </div>
           {/if}
         {/if}
       {/if}

@@ -17,6 +17,14 @@
   let Marimekko = $state(null);
   let PeakPerformances = $state(null);
 
+  // Mobile: directional rootMargin (below-only preload) + content-visibility wrappers.
+  // Desktop: symmetric rootMargin, no content-visibility (GSAP needs accurate positions).
+  let isMobile = $state(false);
+  const sentinelMargin = $derived(isMobile ? '0px 0px 1000px 0px' : '1000px');
+  const cvStyle = $derived(
+    isMobile ? 'content-visibility: auto; contain-intrinsic-block-size: auto 100vh;' : '',
+  );
+
   let _refreshTimer = null;
   function scheduleRefresh() {
     if (_refreshTimer) clearTimeout(_refreshTimer);
@@ -56,9 +64,8 @@
     scheduleRefresh();
   }
 
-  // When menu navigation triggers lazyLoadAll, force-load all sub-components
-  // immediately so their scheduleRefresh() calls fire while the loader is visible.
   onMount(() => {
+    isMobile = window.matchMedia('(max-width: 1023px)').matches;
     return lazyLoadAll.subscribe(async (shouldLoad) => {
       if (!shouldLoad) return;
       if (window.matchMedia('(max-width: 1023px)').matches) return;
@@ -75,48 +82,45 @@
 
   <!-- Sentinel 1: loads ScreenTimeVsLaughRate -->
   <div
-    use:inview={{ rootMargin: '1000px' }}
+    use:inview={{ rootMargin: sentinelMargin }}
     oninview_change={async (event) => {
-      if (!event.detail.inView || get(isScrollLoading)) return;
-      if (window.matchMedia('(max-width: 1023px)').matches &&
-          event.currentTarget.getBoundingClientRect().bottom < 0) return;
-      await loadScreenTime();
+      if (event.detail.inView && !get(isScrollLoading)) await loadScreenTime();
     }}
   ></div>
 
   {#if ScreenTimeVsLaughRate}
-    <ScreenTimeVsLaughRate {episodesData} currentSection="main_chars" />
+    <div style={cvStyle}>
+      <ScreenTimeVsLaughRate {episodesData} currentSection="main_chars" />
+    </div>
 
     <!-- Mobile spacer: lets the sticky viz fully clear before Marimekko enters -->
     <div class="lg:hidden h-[100dvh]"></div>
 
     <!-- Sentinel 2: loads Marimekko -->
     <div
-      use:inview={{ rootMargin: '1000px' }}
+      use:inview={{ rootMargin: sentinelMargin }}
       oninview_change={async (event) => {
-        if (!event.detail.inView || get(isScrollLoading)) return;
-        if (window.matchMedia('(max-width: 1023px)').matches &&
-            event.currentTarget.getBoundingClientRect().bottom < 0) return;
-        await loadMarimekko();
+        if (event.detail.inView && !get(isScrollLoading)) await loadMarimekko();
       }}
     ></div>
 
     {#if Marimekko}
-      <Marimekko />
+      <div style={cvStyle}>
+        <Marimekko />
+      </div>
 
       <!-- Sentinel 3: loads PeakPerformances -->
       <div
-        use:inview={{ rootMargin: '1000px' }}
+        use:inview={{ rootMargin: sentinelMargin }}
         oninview_change={async (event) => {
-          if (!event.detail.inView || get(isScrollLoading)) return;
-          if (window.matchMedia('(max-width: 1023px)').matches &&
-              event.currentTarget.getBoundingClientRect().bottom < 0) return;
-          await loadPeakPerformances();
+          if (event.detail.inView && !get(isScrollLoading)) await loadPeakPerformances();
         }}
       ></div>
 
       {#if PeakPerformances}
-        <PeakPerformances />
+        <div style={cvStyle}>
+          <PeakPerformances />
+        </div>
       {/if}
     {/if}
   {/if}

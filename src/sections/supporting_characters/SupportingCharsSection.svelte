@@ -16,6 +16,14 @@
   let ScreenTimeVsLaughRate = $state(null);
   let Marimekko = $state(null);
 
+  // Mobile: directional rootMargin (below-only preload) + content-visibility wrappers.
+  // Desktop: symmetric rootMargin, no content-visibility (GSAP needs accurate positions).
+  let isMobile = $state(false);
+  const sentinelMargin = $derived(isMobile ? '0px 0px 1000px 0px' : '1000px');
+  const cvStyle = $derived(
+    isMobile ? 'content-visibility: auto; contain-intrinsic-block-size: auto 100vh;' : '',
+  );
+
   let _refreshTimer = null;
   function scheduleRefresh() {
     if (_refreshTimer) clearTimeout(_refreshTimer);
@@ -49,6 +57,7 @@
   }
 
   onMount(() => {
+    isMobile = window.matchMedia('(max-width: 1023px)').matches;
     return lazyLoadAll.subscribe(async (shouldLoad) => {
       if (!shouldLoad) return;
       if (window.matchMedia('(max-width: 1023px)').matches) return;
@@ -65,31 +74,29 @@
 
   <!-- Sentinel 1: loads ScreenTimeVsLaughRate -->
   <div
-    use:inview={{ rootMargin: '1000px' }}
+    use:inview={{ rootMargin: sentinelMargin }}
     oninview_change={async (event) => {
-      if (!event.detail.inView || get(isScrollLoading)) return;
-      if (window.matchMedia('(max-width: 1023px)').matches &&
-          event.currentTarget.getBoundingClientRect().bottom < 0) return;
-      await loadScreenTime();
+      if (event.detail.inView && !get(isScrollLoading)) await loadScreenTime();
     }}
   ></div>
 
   {#if ScreenTimeVsLaughRate}
-    <ScreenTimeVsLaughRate {episodesData} currentSection="supporting_chars" />
+    <div style={cvStyle}>
+      <ScreenTimeVsLaughRate {episodesData} currentSection="supporting_chars" />
+    </div>
 
     <!-- Sentinel 2: loads Marimekko -->
     <div
-      use:inview={{ rootMargin: '1000px' }}
+      use:inview={{ rootMargin: sentinelMargin }}
       oninview_change={async (event) => {
-        if (!event.detail.inView || get(isScrollLoading)) return;
-        if (window.matchMedia('(max-width: 1023px)').matches &&
-            event.currentTarget.getBoundingClientRect().bottom < 0) return;
-        await loadMarimekko();
+        if (event.detail.inView && !get(isScrollLoading)) await loadMarimekko();
       }}
     ></div>
 
     {#if Marimekko}
-      <Marimekko />
+      <div style={cvStyle}>
+        <Marimekko />
+      </div>
     {/if}
   {/if}
 </section>
