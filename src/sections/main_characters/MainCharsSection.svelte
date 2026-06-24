@@ -23,6 +23,7 @@
     _refreshTimer = setTimeout(() => {
       _refreshTimer = null;
       if (get(isScrollLoading)) return;
+      if (window.matchMedia('(max-width: 1023px)').matches) return;
       ScrollTrigger.refresh();
       const navAnchor = get(navigationAnchor);
       if (navAnchor) {
@@ -60,6 +61,7 @@
   onMount(() => {
     return lazyLoadAll.subscribe(async (shouldLoad) => {
       if (!shouldLoad) return;
+      if (window.matchMedia('(max-width: 1023px)').matches) return;
       await Promise.all([loadScreenTime(), loadMarimekko(), loadPeakPerformances()]);
     });
   });

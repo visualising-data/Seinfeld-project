@@ -746,9 +746,8 @@
   $effect(() => {
     void headerHeight; // must be first — registers reactive dependency before any early return
     if (!mm || currentSection !== 'main_chars') return;
+    if (window.matchMedia('(max-width: 1023px)').matches) return;
     ScrollTrigger.refresh();
-    // Re-scroll to the navigation anchor if one is active — the refresh may have
-    // resized pin spacers above the anchor, shifting its absolute position.
     const navAnchor = get(navigationAnchor);
     if (navAnchor) {
       const el = document.getElementById(navAnchor);

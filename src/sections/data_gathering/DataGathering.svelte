@@ -56,9 +56,8 @@
     _refreshTimer = setTimeout(() => {
       _refreshTimer = null;
       if (get(isScrollLoading)) return;
+      if (window.matchMedia('(max-width: 1023px)').matches) return;
       ScrollTrigger.refresh();
-      // Pin spacers above the navigation anchor may have changed size, shifting
-      // the anchor's absolute position. Re-scroll to its new correct location.
       const navAnchor = get(navigationAnchor);
       if (navAnchor) {
         const el = document.getElementById(navAnchor);
@@ -105,6 +104,7 @@
   onMount(() => {
     const unsub = lazyLoadAll.subscribe(async (shouldLoad) => {
       if (!shouldLoad) return;
+      if (window.matchMedia('(max-width: 1023px)').matches) return;
       await loadDataGatheringDetails();
       await loadEpisodeExample();
       await loadBridgeToCatalog();

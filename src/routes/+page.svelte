@@ -1,6 +1,7 @@
 <script lang="ts">
   import { json } from 'd3-fetch';
   import { onMount, tick } from 'svelte';
+  import { get } from 'svelte/store';
   import { inview } from 'svelte-inview';
   // @ts-ignore
   import { gsap } from 'gsap/dist/gsap';
@@ -65,8 +66,9 @@
   function scheduleRefresh() {
     if (_refreshTimer) clearTimeout(_refreshTimer);
     _refreshTimer = setTimeout(() => {
-      ScrollTrigger.refresh();
       _refreshTimer = null;
+      if (window.matchMedia('(max-width: 1023px)').matches) return;
+      ScrollTrigger.refresh();
     }, 150);
   }
 
@@ -131,6 +133,31 @@
     scheduleRefresh();
   }
 
+  // Maps each navigable anchor to the minimum number of outer waves that must be
+  // loaded for that section's element to exist in the DOM. Unknown anchors default
+  // to 6 (full load) so nothing gets silently skipped.
+  const ANCHOR_WAVE_LEVEL: Record<string, number> = {
+    'bridge-to-catalog': 1,
+    'data-gathering': 1,
+    'lead-chars': 2,
+    'supporting-chars': 3,
+    'locations': 4,
+    'laughs-exploration': 5,
+    'methodology': 6,
+  };
+
+  // Loads outer waves in strict order — each wave renders inside the previous
+  // wave's DOM condition, so they must be awaited sequentially.
+  async function loadWavesUpToAnchor(anchor: string | null) {
+    const level = anchor ? (ANCHOR_WAVE_LEVEL[anchor] ?? 6) : 6;
+    if (level >= 1) await loadWave1();
+    if (level >= 2) await loadWave2();
+    if (level >= 3) await loadSupportingChars();
+    if (level >= 4) await loadLocations();
+    if (level >= 5) await loadLaughsExploration();
+    if (level >= 6) await loadMethodology();
+  }
+
   onMount(() => {
     // Track the iOS Chrome URL-bar offset via the Visual Viewport API and expose
     // it as --vv-top on :root. Sticky sections use `top: var(--vv-top, 0px)`
@@ -175,14 +202,21 @@
     const unsubLazy = lazyLoadAll.subscribe(async (shouldLoad) => {
       if (!shouldLoad) return;
       lazyTriggered = true;
-      await Promise.all([
-        loadWave1(),
-        loadWave2(),
-        loadSupportingChars(),
-        loadLocations(),
-        loadLaughsExploration(),
-        loadMethodology(),
-      ]);
+      if (window.matchMedia('(max-width: 1023px)').matches) {
+        // Mobile: load only the outer waves needed to reach the target anchor.
+        // Sub-sections within each wave load naturally via sentinels as the user
+        // scrolls. This prevents OOM from mounting 20+ heavy chart components.
+        await loadWavesUpToAnchor(get(pendingScrollAnchor));
+      } else {
+        await Promise.all([
+          loadWave1(),
+          loadWave2(),
+          loadSupportingChars(),
+          loadLocations(),
+          loadLaughsExploration(),
+          loadMethodology(),
+        ]);
+      }
     });
 
     // If the page loads with a non-zero scroll position (browser scroll restoration
@@ -279,28 +313,31 @@
           // When lazy loading was triggered, wait for all sections (Footer is last)
           // before scrolling; otherwise GSAP pin spacers shift mid-flight and we
           // land at the wrong position.
-          const allLoaded = !lazyTriggered || Footer !== null;
+          const onMobile = window.matchMedia('(max-width: 1023px)').matches;
+          const allLoaded = !lazyTriggered || onMobile || Footer !== null;
           if (target && allLoaded) {
             clearTimeout(pollTimeout);
             clearInterval(scrollPollId!);
             scrollPollId = null;
 
             if (lazyTriggered) {
-              // Flush any pending GSAP refresh and do one explicit refresh now
-              // (scroll is near 0 since the user just loaded the page, so GSAP
-              // won't need to reset scroll position during this call).
               if (_refreshTimer) {
                 clearTimeout(_refreshTimer);
                 _refreshTimer = null;
               }
-              ScrollTrigger.refresh();
+              if (!onMobile) {
+                // Desktop: refresh GSAP to recalculate pin spacers before scrolling.
+                ScrollTrigger.refresh();
+              }
               const scrollTarget = document.getElementById(anchor) ?? target;
               const targetY = scrollTarget.getBoundingClientRect().top + window.scrollY;
               window.scrollTo(0, targetY);
               pendingScrollAnchor.set(null);
-              // Expose the anchor so child-section scheduleRefresh() calls can
-              // re-scroll to its updated position after pin spacers are resized.
-              navigationAnchor.set(anchor);
+              if (!onMobile) {
+                // Expose the anchor so child-section scheduleRefresh() calls can
+                // re-scroll to its updated position after pin spacers are resized.
+                navigationAnchor.set(anchor);
+              }
               // Keep isScrollLoading true — the loader stays on screen until child
               // sections finish their own lazy loads (which cause layout shifts and
               // GSAP scroll-restoration jumps). Only hide it once the layout is stable.
@@ -393,34 +430,35 @@
               // Hard timeout: give up after 8 s.
               setTimeout(stopBodyObserver, 8000);
             } else {
-              // Non-lazy path: scroll immediately, then settle and refresh for iOS.
+              // Non-lazy path: target already in DOM, scroll immediately.
               const targetY = target.getBoundingClientRect().top + window.scrollY;
               window.scrollTo(0, targetY);
               pendingScrollAnchor.set(null);
               isScrollLoading.set(false);
-              // iOS defers programmatic scroll asynchronously; poll until scrollY is
-              // stable for 3 consecutive frames, then refresh and re-scroll.
-              let lastY = -1;
-              let stableCount = 0;
-              const waitForSettle = () => {
-                const y = window.scrollY;
-                if (y === lastY) {
-                  if (++stableCount >= 3) {
-                    ScrollTrigger.refresh();
-                    const reTarget = document.getElementById(anchor);
-                    if (reTarget) {
-                      const newY = reTarget.getBoundingClientRect().top + window.scrollY;
-                      window.scrollTo(0, newY);
+              if (!onMobile) {
+                // Desktop: wait for scroll to settle, then refresh pin spacers and re-scroll.
+                let lastY = -1;
+                let stableCount = 0;
+                const waitForSettle = () => {
+                  const y = window.scrollY;
+                  if (y === lastY) {
+                    if (++stableCount >= 3) {
+                      ScrollTrigger.refresh();
+                      const reTarget = document.getElementById(anchor);
+                      if (reTarget) {
+                        const newY = reTarget.getBoundingClientRect().top + window.scrollY;
+                        window.scrollTo(0, newY);
+                      }
+                      return;
                     }
-                    return;
+                  } else {
+                    stableCount = 0;
+                    lastY = y;
                   }
-                } else {
-                  stableCount = 0;
-                  lastY = y;
-                }
+                  requestAnimationFrame(waitForSettle);
+                };
                 requestAnimationFrame(waitForSettle);
-              };
-              requestAnimationFrame(waitForSettle);
+              }
             }
           }
         }, 50);
