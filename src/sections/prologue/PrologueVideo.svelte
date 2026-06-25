@@ -12,6 +12,7 @@
   /** @type {HTMLVideoElement | undefined} */
   let videoEl;
   let inSection = false;
+  let showPlayButton = false;
 
   $: if (videoEl) {
     videoEl.muted = !($soundIsAuth && inSection);
@@ -136,6 +137,9 @@
         delay: 1,
       });
 
+      // Always show the play button on mobile until the user presses play
+      showPlayButton = true;
+
       // Sound section tracking
       const containerEl = document.getElementById('video-scroll-container');
       /** @type {IntersectionObserver | undefined} */
@@ -146,7 +150,6 @@
             if (entry.isIntersecting) {
               inSection = true;
               enterSoundSection();
-              videoEl?.play().catch(() => {});
             } else {
               inSection = false;
               leaveSoundSection();
@@ -230,6 +233,7 @@
         soundObs?.disconnect();
         text2Obs?.disconnect();
         inSection = false;
+        showPlayButton = false;
         leaveSoundSection();
       };
     });
@@ -249,7 +253,7 @@
   >
     <!-- Video: top half on mobile, full screen on desktop -->
     <div class="relative h-[50dvh] lg:absolute lg:inset-0 lg:h-auto">
-      <video bind:this={videoEl} playsinline autoplay muted loop preload="auto">
+      <video bind:this={videoEl} playsinline muted loop preload="auto">
         <source
           src="https://amdufour.github.io/hosted-data/apis/videos/1a.ElaineArrives.mp4"
           type="video/mp4"
@@ -257,6 +261,24 @@
       </video>
       <div class="readable-layer z-1 absolute inset-0"></div>
       <div class="absolute inset-0" style="background-image: url('{tv_noise}')"></div>
+      {#if showPlayButton}
+        <button
+          aria-label="Play video"
+          class="lg:hidden absolute inset-0 flex items-center justify-center z-10"
+          onclick={() => {
+            if (videoEl) {
+              videoEl.currentTime = 0;
+              videoEl.play().then(() => { showPlayButton = false; }).catch(() => {});
+            }
+          }}
+        >
+          <div class="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center border border-white/40">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" class="w-8 h-8 ml-1">
+              <path d="M8 5v14l11-7z"/>
+            </svg>
+          </div>
+        </button>
+      {/if}
     </div>
 
     <!-- Text panels: below video on mobile, overlaid at bottom on desktop -->

@@ -80,21 +80,24 @@
       isVideoLoading = true;
 
       if (pendingCanPlay) videoEl.removeEventListener('canplay', pendingCanPlay);
+      // Call play() inside canplay rather than immediately after load() —
+      // calling play() while load() is still in progress causes an AbortError
+      // on iOS that silently swallows the request without starting playback.
       pendingCanPlay = () => {
-        isVideoLoading = false;
-        isVideoPlaying = true;
-        tlVideo.restart();
         pendingCanPlay = null;
+        videoEl.play()
+          .then(() => {
+            isVideoLoading = false;
+            isVideoPlaying = true;
+            tlVideo.restart();
+          })
+          .catch((err) => {
+            if (err.name !== 'AbortError') console.warn('Video play failed:', err);
+            isVideoLoading = false;
+          });
       };
       videoEl.addEventListener('canplay', pendingCanPlay, { once: true });
-
-      // iOS Safari with preload="none" silently blocks play() unless load()
-      // is called first to explicitly start the resource fetch.
       videoEl.load();
-      videoEl.play().catch((err) => {
-        if (err.name !== 'AbortError') console.warn('Video play failed:', err);
-        isVideoLoading = false;
-      });
     });
   }
 
@@ -122,9 +125,9 @@
         start: 'top top',
         end: 'bottom top',
         toggleActions: 'play pause resume pause',
-        onEnter: () => { isInView = true; playVideo(); enterSoundSection(); },
+        onEnter: () => { isInView = true; if (innerWidth >= 1024) playVideo(); enterSoundSection(); },
         onLeave: () => { isInView = false; pauseVideo(); leaveSoundSection(); },
-        onEnterBack: () => { isInView = true; playVideo(); enterSoundSection(); },
+        onEnterBack: () => { isInView = true; if (innerWidth >= 1024) playVideo(); enterSoundSection(); },
         onLeaveBack: () => { isInView = false; pauseVideo(); leaveSoundSection(); },
       },
     });
