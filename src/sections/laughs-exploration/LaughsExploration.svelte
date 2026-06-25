@@ -99,13 +99,15 @@
   }
 
   let _savedScrollY = 0;
+  let _bodyLocked = false;
   let _sheetEl = $state<HTMLElement | null>(null);
   let _scrollWatcher: (() => void) | null = null;
   let _touchMoveHandler: ((e: TouchEvent) => void) | null = null;
 
   function lockBodyScroll() {
-    if (!isMobile || _scrollWatcher !== null) return;
+    if (!isMobile || _bodyLocked) return;
     _savedScrollY = window.scrollY;
+    _bodyLocked = true;
     const target = _savedScrollY;
 
     // Snap back if anything (iOS, GSAP, focus management) scrolls the page.
@@ -135,7 +137,10 @@
       document.removeEventListener('touchmove', _touchMoveHandler);
       _touchMoveHandler = null;
     }
-    window.scrollTo({ top: _savedScrollY, behavior: 'instant' });
+    if (_bodyLocked) {
+      window.scrollTo({ top: _savedScrollY, behavior: 'instant' });
+      _bodyLocked = false;
+    }
   }
 
   function handleSceneClick(scene: HoveredScene) {

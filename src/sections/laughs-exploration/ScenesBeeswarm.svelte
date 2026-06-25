@@ -159,7 +159,7 @@
   {width}
   {height}
   role="presentation"
-  onclick={onClosePin}
+  onclick={(e) => { if ((e.target as Element).tagName !== 'circle') onClosePin(); }}
   onkeydown={(e) => e.key === 'Escape' && onClosePin()}
   style="cursor: default"
   onmouseleave={() => {
