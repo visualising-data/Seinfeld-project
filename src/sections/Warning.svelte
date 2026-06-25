@@ -29,11 +29,7 @@
             '#warning-couch-bg',
             { xPercent: isMobile ? -350 : -350, duration: isMobile ? 0.25 : 0.5 },
             exitStart,
-          )
-          // Text fades out after images are gone
-          .to('.warning-text-item', { opacity: 0, duration: 0.1 }, 0.8)
-          // Background reveals #F9F5F7
-          .to('#warning-bg-fill', { opacity: 1, duration: 0.1 }, 0.9);
+          );
 
         ScrollTrigger.create({
           trigger: '.warning-wrapper',
