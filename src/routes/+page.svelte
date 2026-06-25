@@ -168,7 +168,6 @@
     };
     setVvTop();
     window.visualViewport?.addEventListener('resize', setVvTop);
-    window.visualViewport?.addEventListener('scroll', setVvTop);
 
     // Load episodes data — use localStorage cache for instant repeat visits
     const cached = localStorage.getItem(EPISODES_CACHE_KEY);
@@ -497,7 +496,6 @@
       window.removeEventListener('resize', onResize);
       if (_resizeDebounce) clearTimeout(_resizeDebounce);
       window.visualViewport?.removeEventListener('resize', setVvTop);
-      window.visualViewport?.removeEventListener('scroll', setVvTop);
     };
   });
 </script>
