@@ -466,6 +466,7 @@
   @media (max-width: 1023px) {
     section {
       min-height: 100dvh;
+      overflow-anchor: none;
     }
   }
   .title-container {

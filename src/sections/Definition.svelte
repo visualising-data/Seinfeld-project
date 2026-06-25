@@ -1,4 +1,4 @@
-<div id="definition" class="container min-h-[50vh] text-white">
+<div id="definition" class="container min-h-[50vh] text-white pb-16 lg:pb-0">
   <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
     <div>
       <h4 class="py-1 text-2xl lg:text-5xl">Chronicle</h4>

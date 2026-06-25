@@ -521,7 +521,7 @@
     <Title />
   </div>
   <Definition />
-  <Warning />
+  <div class="hidden lg:block"><Warning /></div>
   <div class="text-black" style="background: #F9F5F7;">
     <Calendar {ScrollTrigger} />
     <DVDSet />
