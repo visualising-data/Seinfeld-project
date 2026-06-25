@@ -183,6 +183,16 @@
     }
   }
 
+  @media (max-height: 800px) {
+    .location-desktop-parallax .character {
+      width: 75px;
+      height: 75px;
+    }
+    .location-desktop-parallax .mid {
+      font-size: 0.875rem;
+    }
+  }
+
   .location {
     padding: 0 4px;
     font-weight: 600;

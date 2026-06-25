@@ -232,7 +232,7 @@
                         background-image: url('{getCharacterImagePath(char.id)}');
                       "
                   ></div>
-                  <div style="background-color: rgba(18, 2, 10, 0.8);">{char.label}</div>
+                  <div class="char-label" style="background-color: rgba(18, 2, 10, 0.8);">{char.label}</div>
                 </div>
               </li>
             {/each}
@@ -256,6 +256,16 @@
     }
     #lead-chars-parallax-container {
       display: none;
+    }
+  }
+
+  @media (max-height: 800px) {
+    #lead-chars-parallax-container .character {
+      width: 75px;
+      height: 75px;
+    }
+    #lead-chars-parallax-container .char-label {
+      font-size: 0.875rem;
     }
   }
 </style>

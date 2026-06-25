@@ -41,17 +41,14 @@
         onclick={() => handleCharacterClick(selector.id)}
       >
         <div
-          class="selector rounded-full bg-contain bg-center opacity-20"
+          class="selector rounded-full bg-contain bg-center opacity-20 {isMobile
+            ? 'selector-sm'
+            : 'selector-lg'}"
           style="background-image: url('{currentSection === 'locations'
             ? getLocationIconPath(selector.id)
-            : getCharacterImagePath(selector.id)}'); width: {isMobile
-            ? '40px'
-            : '75px'}; height: {isMobile ? '40px' : '75px'};"
+            : getCharacterImagePath(selector.id)}');"
         ></div>
-        <div
-          class="text-center pt-1"
-          style="font-size: {isMobile ? '0.75rem' : '1.25rem'}; line-height: 1.2;"
-        >
+        <div class="text-center pt-1 {isMobile ? 'label-sm' : 'label-lg'}">
           {selector.label}
         </div>
       </button>
@@ -69,5 +66,34 @@
   }
   .selector-button.active .selector {
     cursor: default;
+  }
+  .selector-sm {
+    width: 40px;
+    height: 40px;
+  }
+  .selector-lg {
+    width: 75px;
+    height: 75px;
+  }
+  .label-sm {
+    font-size: 0.75rem;
+    line-height: 1.2;
+  }
+  .label-lg {
+    font-size: 1.25rem;
+    line-height: 1.2;
+  }
+
+  @media (max-height: 800px) {
+    ul {
+      gap: 1rem;
+    }
+    .selector-lg {
+      width: 55px;
+      height: 55px;
+    }
+    .label-lg {
+      font-size: 1rem;
+    }
   }
 </style>

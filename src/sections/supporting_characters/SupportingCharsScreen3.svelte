@@ -192,6 +192,16 @@
     }
   }
 
+  @media (max-height: 800px) {
+    .desktop-char-parallax .character {
+      width: 75px;
+      height: 75px;
+    }
+    .desktop-char-parallax .mid {
+      font-size: 0.875rem;
+    }
+  }
+
   .color {
     font-weight: 600;
   }
