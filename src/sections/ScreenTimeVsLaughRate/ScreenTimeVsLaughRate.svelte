@@ -160,6 +160,11 @@
   // timestamp so they land on the same downbeat regardless of how playback was triggered.
   const _playBar = () => {
     if (!$soundIsAuth || !soundtrackCanPlay || !soundtrack) return;
+    // Buffers are loaded asynchronously; poll until ready when preload is lazy.
+    if (!soundtrack.loaded) {
+      playbackTimeout = setTimeout(_playBar, 200);
+      return;
+    }
     const startTime = Tone.now();
     soundtrack.player('rythm').start(startTime);
     if (playingFile) soundtrack.player(playingFile).start(startTime);
