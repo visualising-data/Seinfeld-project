@@ -99,15 +99,20 @@
 
     const catalogEl = document.getElementById('episodes');
     if (catalogEl) {
+      const onMobile = window.matchMedia('(max-width: 1023px)').matches;
       catalogObserver = new IntersectionObserver(
         ([entry]) => {
           if (entry.isIntersecting) {
             enterSoundSection();
             showIllustration = true;
+            // Mobile: lazy-load audio buffers on first viewport entry.
+            if (onMobile) sonificationPlayerRef?.loadAudio();
           } else {
             leaveSoundSection();
             showIllustration = false;
             sonificationPlayerRef?.stopWithFadeOut();
+            // Mobile: free the 71 decoded WebAudio buffers after leaving; loadAudio() recreates on re-entry.
+            if (onMobile) setTimeout(() => sonificationPlayerRef?.disposeAudio(), 600);
           }
         },
         { threshold: 0.1 },

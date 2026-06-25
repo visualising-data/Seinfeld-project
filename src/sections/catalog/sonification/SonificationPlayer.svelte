@@ -64,6 +64,7 @@
   let attack = $state(0.003);
   let release = $state(0.25);
   const preload = () => {
+    if (soundtrack) return;
     soundtrack = new Tone.Players(sonificationFiles);
 
     compressor = new Tone.Compressor({
@@ -77,11 +78,24 @@
     compressor.toDestination();
   };
 
+  export const loadAudio = () => preload();
+
+  export const disposeAudio = () => {
+    clearTimeout(playSceneTimeout);
+    soundtrack?.stopAll();
+    soundtrack?.dispose();
+    soundtrack = undefined;
+    compressor?.dispose();
+    compressor = undefined;
+    updatePlayingData(false, 0);
+  };
+
   /**
    * @type {number | undefined}
    */
   let playSceneTimeout;
   const playScene = (/** @type {number} */ sceneNum) => {
+    if (!soundtrack) return;
     if (isPlaying && $soundIsAuth && playingScene === sceneNum) {
       let chars = sonificationCharactersData.filter(
         (/** @type {{ SceneNumber: string; }} */ d) => +d.SceneNumber === sceneNum,
@@ -121,18 +135,24 @@
   };
 
   const playFirstScene = () => {
+    if (!soundtrack) return;
     soundtrack.player('start').start();
     setTimeout(() => {
       playScene(1);
     }, 500);
   };
 
-  const play = () => {
+  const play = async () => {
+    if (!soundtrack) {
+      preload();
+      await Tone.loaded();
+    }
     updatePlayingData(true, 1);
     playFirstScene();
   };
 
   const playNext = () => {
+    if (!soundtrack) return;
     updatePlayingData(true, playingScene + 1);
     clearTimeout(playSceneTimeout);
     soundtrack.stopAll(); // Stop currently playing scenes
@@ -140,6 +160,7 @@
   };
 
   const playPrev = () => {
+    if (!soundtrack) return;
     updatePlayingData(true, playingScene - 1);
     clearTimeout(playSceneTimeout);
     soundtrack.stopAll(); // Stop currently playing scenes
@@ -149,11 +170,11 @@
   const stop = () => {
     updatePlayingData(false, 0);
     clearTimeout(playSceneTimeout);
-    soundtrack.stopAll();
+    soundtrack?.stopAll();
   };
 
   export const stopWithFadeOut = () => {
-    if (!isPlaying) return;
+    if (!isPlaying || !soundtrack) return;
     const originalVolume = Tone.Destination.volume.value;
     Tone.Destination.volume.rampTo(-60, 0.5);
     setTimeout(() => {
@@ -162,8 +183,12 @@
     }, 520);
   };
 
-  const handleClickOnScene = (/** @type {number} */ sceneNum) => {
+  const handleClickOnScene = async (/** @type {number} */ sceneNum) => {
     if ($soundIsAuth) {
+      if (!soundtrack) {
+        preload();
+        await Tone.loaded();
+      }
       updatePlayingData(true, sceneNum);
       clearTimeout(playSceneTimeout);
       soundtrack.stopAll(); // Stop currently playing scenes
@@ -188,8 +213,12 @@
   });
 
   onMount(() => {
-    // Preload audio files
-    preload();
+    // Desktop only: preload all 71 audio buffers immediately.
+    // Mobile defers creation to first play click or catalog entry (via loadAudio())
+    // so buffers don't sit in WebAudio memory for the entire rest of the page.
+    if (!window.matchMedia('(max-width: 1023px)').matches) {
+      preload();
+    }
   });
 
   const handleMouseEnter = (/** @type {MouseEvent} */ e) => {
