@@ -319,7 +319,7 @@
           <button
             aria-label="Play video"
             class="lg:hidden absolute inset-0 flex items-center justify-center z-10"
-            onclick={() => { videoEls[0]?.play().then(() => { showPlayButton = false; }).catch(() => {}); }}
+            onclick={() => { if (videoEls[0]) { videoEls[0].currentTime = 0; videoEls[0].play().then(() => { showPlayButton = false; }).catch(() => {}); } }}
           >
             <div class="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center border border-white/40">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" class="w-8 h-8 ml-1">
