@@ -103,10 +103,12 @@
           onEnter: () => {
             inSection = true;
             enterSoundSection();
+            videoEl?.play().catch(() => {});
           },
           onEnterBack: () => {
             inSection = true;
             enterSoundSection();
+            videoEl?.play().catch(() => {});
           },
           onLeave: () => {
             inSection = false;
@@ -144,6 +146,7 @@
             if (entry.isIntersecting) {
               inSection = true;
               enterSoundSection();
+              videoEl?.play().catch(() => {});
             } else {
               inSection = false;
               leaveSoundSection();
@@ -246,7 +249,7 @@
   >
     <!-- Video: top half on mobile, full screen on desktop -->
     <div class="relative h-[50dvh] lg:absolute lg:inset-0 lg:h-auto">
-      <video bind:this={videoEl} playsinline autoplay muted loop preload="metadata">
+      <video bind:this={videoEl} playsinline autoplay muted loop preload="auto">
         <source
           src="https://amdufour.github.io/hosted-data/apis/videos/1a.ElaineArrives.mp4"
           type="video/mp4"

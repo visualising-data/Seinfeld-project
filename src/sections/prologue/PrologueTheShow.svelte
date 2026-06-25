@@ -219,6 +219,19 @@
           }
         } else {
           mobileTransitionTo = transitionTo;
+          // iOS Safari won't autoplay off-screen videos. Retry play() when the
+          // section scrolls into view — the scroll gesture counts as user interaction.
+          ScrollTrigger.create({
+            trigger: '#show-section',
+            start: 'top 90%',
+            onEnter: () => {
+              requestAnimationFrame(() => {
+                videoEls[currentIndex]?.play()
+                  .then(() => { showPlayButton = false; })
+                  .catch(() => {});
+              });
+            },
+          });
         }
 
         // Text 0 highlight: animate on initial section entry
@@ -284,7 +297,7 @@
           autoplay
           muted
           loop
-          preload="metadata"
+          preload="auto"
           class="h-full w-full object-cover"
         >
           <source
@@ -349,7 +362,7 @@
           autoplay
           muted
           loop
-          preload="metadata"
+          preload="auto"
           class="h-full w-full object-cover"
         >
           <source
@@ -400,7 +413,7 @@
           autoplay
           muted
           loop
-          preload="metadata"
+          preload="auto"
           class="h-full w-full object-cover"
         >
           <source
@@ -451,7 +464,7 @@
           autoplay
           muted
           loop
-          preload="metadata"
+          preload="auto"
           class="h-full w-full object-cover"
         >
           <source
@@ -502,7 +515,7 @@
           autoplay
           muted
           loop
-          preload="metadata"
+          preload="auto"
           class="h-full w-full object-cover"
         >
           <source
