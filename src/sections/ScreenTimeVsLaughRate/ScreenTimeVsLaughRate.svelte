@@ -379,14 +379,6 @@
   let mm;
 
   onMount(() => {
-    // On desktop, preload all audio files upfront so they're ready when the user arrives.
-    // On mobile, skip the upfront load — 3 simultaneous Tone.Players instances (main_chars,
-    // supporting_chars, locations) each holding 50+ decoded MP3 buffers causes OOM crashes.
-    // Instead, each instance calls preload() lazily the moment its section enters the viewport.
-    if (!window.matchMedia('(max-width: 1023px)').matches) {
-      preload();
-    }
-
     mm = gsap.matchMedia();
 
     if (currentSection === 'main_chars') {
@@ -402,11 +394,13 @@
             invalidateOnRefresh: true,
             pin: '#lead-chars-episodes-viz',
             onEnter: () => {
+              preload();
               soundtrackCanPlay = true;
               playAudio();
               enterSoundSection();
             },
             onEnterBack: () => {
+              preload();
               soundtrackCanPlay = true;
               playAudio();
               enterSoundSection();
@@ -415,11 +409,15 @@
               soundtrackCanPlay = false;
               stopAudio();
               leaveSoundSection();
+              soundtrack?.dispose();
+              soundtrack = undefined;
             },
             onLeaveBack: () => {
               soundtrackCanPlay = false;
               stopAudio();
               leaveSoundSection();
+              soundtrack?.dispose();
+              soundtrack = undefined;
             },
           },
         });
@@ -753,7 +751,7 @@
           start: 'top bottom',
           end: 'bottom top',
           onEnter: () => {
-            preload(); // lazy-load audio on first viewport entry (mobile only; desktop already preloaded)
+            preload(); // lazy-load audio on first viewport entry
             soundtrackCanPlay = true;
             playAudio();
             enterSoundSection();

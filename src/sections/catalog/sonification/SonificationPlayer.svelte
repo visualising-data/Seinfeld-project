@@ -212,14 +212,7 @@
     }
   });
 
-  onMount(() => {
-    // Desktop only: preload all 71 audio buffers immediately.
-    // Mobile defers creation to first play click or catalog entry (via loadAudio())
-    // so buffers don't sit in WebAudio memory for the entire rest of the page.
-    if (!window.matchMedia('(max-width: 1023px)').matches) {
-      preload();
-    }
-  });
+  onMount(() => {});
 
   const handleMouseEnter = (/** @type {MouseEvent} */ e) => {
     if (!$soundIsAuth) {

@@ -97,6 +97,8 @@
   ];
 
   let isMobile = $state(false);
+  /** @type {HTMLElement | null} */
+  let mobileContainerEl = $state(null);
 
   /** @type {Tone.Player[]} */
   let laugh3Players = [];
@@ -261,10 +263,6 @@
   onMount(async () => {
     isMobile = window.innerWidth < 1024;
     await tick();
-    preloadLaughs();
-    preloadLaughs3();
-    preloadGuffaw2();
-    preloadChuckle2();
 
     if (isMobile) {
       ctx = gsap.context(() => {
@@ -291,6 +289,10 @@
       start: 'top bottom',
       end: 'bottom top',
       onEnter: () => {
+        preloadLaughs();
+        preloadLaughs3();
+        preloadGuffaw2();
+        preloadChuckle2();
         laughsInView = true;
         enterSoundSection();
       },
@@ -444,6 +446,27 @@
     });
   });
 
+  // Mobile: preload once on first viewport entry
+  $effect(() => {
+    if (!mobileContainerEl) return;
+    let loaded = false;
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !loaded) {
+          loaded = true;
+          preloadLaughs();
+          preloadLaughs3();
+          preloadGuffaw2();
+          preloadChuckle2();
+          obs.disconnect();
+        }
+      },
+      { threshold: 0.1 },
+    );
+    obs.observe(mobileContainerEl);
+    return () => obs.disconnect();
+  });
+
   onDestroy(() => {
     ctx?.revert();
     laughTracks?.dispose();
@@ -454,7 +477,7 @@
 </script>
 
 <!-- Mobile/tablet layout: normal stacked flow -->
-<div class="lg:hidden">
+<div class="lg:hidden" bind:this={mobileContainerEl}>
   <img
     src="https://amdufour.github.io/hosted-data/apis/images/data_gathering_1.jpg"
     alt=""

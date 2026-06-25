@@ -137,6 +137,9 @@
   /** @type {gsap.core.Timeline | undefined} */
   let revealTl;
 
+  /** @type {gsap.core.Timeline | undefined} */
+  let mobileTl;
+
   const playJingle = () => {
     if (
       $soundIsAuth &&
@@ -169,6 +172,12 @@
           barsHaveAnimated = false;
           revealTl.play();
         }
+      } else if (!revealTl && mobileTl && !mobileTl.isActive() && mobileTl.progress() > 0.001) {
+        // Mobile re-entry: restart the entrance animation so elements aren't
+        // stranded at opacity 0 if the GSAP context was reverted (e.g. keyboard
+        // resize crossing the 1023px breakpoint) while the user was scrolled away.
+        barsHaveAnimated = false;
+        mobileTl.restart();
       }
       if ($soundIsAuth) playJingle();
     } else {
@@ -188,17 +197,19 @@
   let mm;
 
   onMount(() => {
-    soundtrack = new Tone.Player(
-      'https://amdufour.github.io/hosted-data/apis/sonification/20250925_Seinfeld_Intro_Title_All.mp3',
-    ).toDestination();
-
     const titleEl = document.getElementById('title-screen');
     if (titleEl) {
       ioObserver = new IntersectionObserver(
         ([entry]) => {
           isTitleInView = entry.isIntersecting;
-          if (entry.isIntersecting) enterSoundSection();
-          else leaveSoundSection();
+          if (entry.isIntersecting) {
+            if (!soundtrack) {
+              soundtrack = new Tone.Player(
+                'https://amdufour.github.io/hosted-data/apis/sonification/20250925_Seinfeld_Intro_Title_All.mp3',
+              ).toDestination();
+            }
+            enterSoundSection();
+          } else leaveSoundSection();
         },
         { threshold: 0.1 },
       );
@@ -276,15 +287,13 @@
       return () => ctx.revert();
     });
 
-    // Mobile/tablet: one-shot entrance animation, no pin spacer, no scrub.
+    // Mobile/tablet: entrance animation, no pin spacer, no scrub.
+    // mobileTl lives at component scope so the isTitleInView effect can restart
+    // it when the user scrolls back up after GSAP reverted the context styles.
     mm.add('(max-width: 1023px)', () => {
-      let hasRevealed = false;
-      /** @type {gsap.core.Timeline | undefined} */
-      let mobileTl;
       const revealObs = new IntersectionObserver(
         ([entry]) => {
-          if (entry.isIntersecting && !hasRevealed) {
-            hasRevealed = true;
+          if (entry.isIntersecting && !mobileTl) {
             revealObs.disconnect();
             mobileTl = gsap
               .timeline()
@@ -307,6 +316,7 @@
       return () => {
         revealObs.disconnect();
         mobileTl?.kill();
+        mobileTl = undefined;
       };
     });
   });
@@ -314,6 +324,7 @@
   onDestroy(() => {
     ioObserver?.disconnect();
     isTitleInView = false;
+    mobileTl?.kill();
     mm?.revert();
     soundtrack?.dispose();
   });
