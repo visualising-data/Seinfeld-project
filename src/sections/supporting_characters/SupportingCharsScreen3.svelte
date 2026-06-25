@@ -68,15 +68,18 @@
 
     const mm = gsap.matchMedia();
 
-    // Desktop only: pin text, parallax on individual chars
-    mm.add('(min-width: 1024px)', () => {
+    // Pin text: pointer devices only — pin:true is problematic on iOS/iPadOS touch.
+    mm.add('(min-width: 1024px) and (hover: hover)', () => {
       ScrollTrigger.create({
         trigger: '#supporting_chars_screen_3',
         start: 'top top',
         end: 'bottom top',
         pin: '#supporting-chars-3-text',
       });
+    });
 
+    // Parallax chars: all desktop (scrub without pin is safe on touch).
+    mm.add('(min-width: 1024px)', () => {
       /** @type {HTMLElement[]} */
       const parallaxEls = gsap.utils.toArray('.desktop-char-parallax');
       parallaxEls.forEach((el) => {
