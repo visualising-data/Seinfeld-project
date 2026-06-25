@@ -37,6 +37,9 @@
   /** @type {gsap.Context | undefined} */
   let ctx;
 
+  /** @type {IntersectionObserver | undefined} */
+  let mobileIO;
+
   /** @type {((index: number) => void) | undefined} */
   let mobileTransitionTo;
 
@@ -219,19 +222,6 @@
           }
         } else {
           mobileTransitionTo = transitionTo;
-          // iOS Safari won't autoplay off-screen videos. Retry play() when the
-          // section scrolls into view — the scroll gesture counts as user interaction.
-          ScrollTrigger.create({
-            trigger: '#show-section',
-            start: 'top 90%',
-            onEnter: () => {
-              requestAnimationFrame(() => {
-                videoEls[currentIndex]?.play()
-                  .then(() => { showPlayButton = false; })
-                  .catch(() => {});
-              });
-            },
-          });
         }
 
         // Text 0 highlight: animate on initial section entry
@@ -274,10 +264,28 @@
         },
       });
     });
+
+    // IntersectionObserver is the reliable way to trigger play() on iOS when a
+    // muted inline video enters the viewport — scroll-event callbacks don't work.
+    if (window.matchMedia('(max-width: 1023px)').matches && videoEls[0]) {
+      mobileIO = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            videoEls[0]?.play()
+              .then(() => { showPlayButton = false; })
+              .catch(() => { showPlayButton = true; });
+            mobileIO?.disconnect();
+          }
+        },
+        { threshold: 0.25 }
+      );
+      mobileIO.observe(videoEls[0]);
+    }
   });
 
   onDestroy(() => {
     ctx?.revert();
+    mobileIO?.disconnect();
   });
 </script>
 
