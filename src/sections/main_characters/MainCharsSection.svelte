@@ -17,13 +17,11 @@
   let Marimekko = $state(null);
   let PeakPerformances = $state(null);
 
-  // Mobile: directional rootMargin (below-only preload) + content-visibility wrappers.
-  // Desktop: symmetric rootMargin, no content-visibility (GSAP needs accurate positions).
+  // Mobile: directional rootMargin (below-only preload).
+  // Desktop: symmetric rootMargin. content-visibility:auto was removed — it caused
+  // layout-shift scroll jumps on mobile when placeholder heights diverged from actual heights.
   let isMobile = $state(false);
   const sentinelMargin = $derived(isMobile ? '0px 0px 1000px 0px' : '1000px');
-  const cvStyle = $derived(
-    isMobile ? 'content-visibility: auto; contain-intrinsic-block-size: auto 100vh;' : '',
-  );
 
   let _refreshTimer = null;
   function scheduleRefresh() {
@@ -115,9 +113,7 @@
   ></div>
 
   {#if ScreenTimeVsLaughRate}
-    <div style={cvStyle}>
-      <ScreenTimeVsLaughRate {episodesData} currentSection="main_chars" />
-    </div>
+    <ScreenTimeVsLaughRate {episodesData} currentSection="main_chars" />
 
     <!-- Mobile spacer: buffer before Marimekko sentinel so it doesn't preload too early -->
     <div class="lg:hidden h-8"></div>
@@ -131,9 +127,7 @@
     ></div>
 
     {#if Marimekko}
-      <div style={cvStyle}>
-        <Marimekko />
-      </div>
+      <Marimekko />
 
       <!-- Sentinel 3: loads PeakPerformances -->
       <div
@@ -144,9 +138,7 @@
       ></div>
 
       {#if PeakPerformances}
-        <div style={cvStyle}>
-          <PeakPerformances />
-        </div>
+        <PeakPerformances />
       {/if}
     {/if}
   {/if}

@@ -49,13 +49,11 @@
   let BridgeToCatalog: any = $state(null);
   let Catalog: any = $state(null);
 
-  // Mobile: directional rootMargin (below-only preload) + content-visibility wrappers.
-  // Desktop: symmetric rootMargin, no content-visibility (GSAP needs accurate positions).
+  // Mobile: directional rootMargin (below-only preload).
+  // Desktop: symmetric rootMargin. content-visibility:auto was removed — it caused
+  // layout-shift scroll jumps on mobile when placeholder heights diverged from actual heights.
   let isMobile = $state(false);
   const sentinelMargin = $derived(isMobile ? '0px 0px 1000px 0px' : '1000px');
-  const cvStyle = $derived(
-    isMobile ? 'content-visibility: auto; contain-intrinsic-block-size: auto 100vh;' : '',
-  );
 
   // Local debounced refresh — ScrollTrigger is already available as a prop.
   let _refreshTimer: ReturnType<typeof setTimeout> | null = null;
@@ -156,10 +154,8 @@
     <BeforeVideo />
 
     {#if DataGatheringDetails && Bridge}
-      <div style={cvStyle}>
-        <DataGatheringDetails {laughData} />
-        <Bridge />
-      </div>
+      <DataGatheringDetails {laughData} />
+      <Bridge />
 
       <!-- Sentinel 2: loads EpisodeExample -->
       <div
@@ -170,9 +166,7 @@
       ></div>
 
       {#if EpisodeExample}
-        <div style={cvStyle}>
-          <EpisodeExample {episodeInfo} {episodeData} {laughData} {ScrollTrigger} />
-        </div>
+        <EpisodeExample {episodeInfo} {episodeData} {laughData} {ScrollTrigger} />
 
         <!-- Sentinel 3: loads BridgeToCatalog -->
         <div
@@ -183,9 +177,7 @@
         ></div>
 
         {#if BridgeToCatalog}
-          <div style={cvStyle}>
-            <BridgeToCatalog />
-          </div>
+          <BridgeToCatalog />
 
           <!-- Sentinel 4: loads Catalog component (data fetched in the await blocks below) -->
           <div
@@ -196,32 +188,30 @@
           ></div>
 
           {#if Catalog}
-            <div style={cvStyle}>
-              {#await Promise.all( [csv(sonificationCharactersDataUrl), csv(sonificationLocationDataUrl)], )}
-                <section id="episodes" style="min-height: 100vh; background: #F9F5F7;">
-                  <div class="flex items-center justify-center" style="height: 100vh;">
-                    <div
-                      class="w-8 h-8 rounded-full border-2 border-gray-300 border-t-gray-600 animate-spin"
-                    ></div>
-                  </div>
-                </section>
-              {:then [sonificationCharactersData, sonificationLocationData]}
-                <Catalog
-                  {episodesData}
-                  {sonificationCharactersData}
-                  {sonificationLocationData}
-                  {ScrollTrigger}
-                />
-              {:catch}
-                <section id="episodes" style="min-height: 100vh; background: #F9F5F7;">
-                  <div class="flex items-center justify-center" style="height: 100vh;">
-                    <p style="color: #888; font-size: 0.9rem;">
-                      Failed to load episode data. Please refresh the page.
-                    </p>
-                  </div>
-                </section>
-              {/await}
-            </div>
+            {#await Promise.all( [csv(sonificationCharactersDataUrl), csv(sonificationLocationDataUrl)], )}
+              <section id="episodes" style="min-height: 100vh; background: #F9F5F7;">
+                <div class="flex items-center justify-center" style="height: 100vh;">
+                  <div
+                    class="w-8 h-8 rounded-full border-2 border-gray-300 border-t-gray-600 animate-spin"
+                  ></div>
+                </div>
+              </section>
+            {:then [sonificationCharactersData, sonificationLocationData]}
+              <Catalog
+                {episodesData}
+                {sonificationCharactersData}
+                {sonificationLocationData}
+                {ScrollTrigger}
+              />
+            {:catch}
+              <section id="episodes" style="min-height: 100vh; background: #F9F5F7;">
+                <div class="flex items-center justify-center" style="height: 100vh;">
+                  <p style="color: #888; font-size: 0.9rem;">
+                    Failed to load episode data. Please refresh the page.
+                  </p>
+                </div>
+              </section>
+            {/await}
           {/if}
         {/if}
       {/if}

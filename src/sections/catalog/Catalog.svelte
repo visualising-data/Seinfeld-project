@@ -92,7 +92,10 @@
     // DataGathering). Its content shifts every ScrollTrigger registered earlier
     // (EpisodeExample pin/fade, IntroEnd, Quotes, MainChars, etc.) downward.
     // Deferred so the refresh doesn't fire mid-scroll and cause a position jump.
-    setTimeout(() => ScrollTrigger.refresh(), 150);
+    setTimeout(() => {
+      if (window.matchMedia('(max-width: 1023px)').matches) return;
+      ScrollTrigger.refresh();
+    }, 150);
 
     const catalogEl = document.getElementById('episodes');
     if (catalogEl) {
