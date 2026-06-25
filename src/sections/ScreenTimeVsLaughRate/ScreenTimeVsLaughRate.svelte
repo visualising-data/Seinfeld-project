@@ -82,6 +82,7 @@
    */
   let soundtrack;
   const preload = () => {
+    if (soundtrack) return; // already loaded — guard against double-init
     soundtrack = new Tone.Players(sonificationFiles).toDestination(); //connects to the system sound output
     soundtrack.volume.value = -3;
   };
@@ -158,7 +159,7 @@
   // Single bar loop: rhythm and character always start at the exact same AudioContext
   // timestamp so they land on the same downbeat regardless of how playback was triggered.
   const _playBar = () => {
-    if (!$soundIsAuth || !soundtrackCanPlay) return;
+    if (!$soundIsAuth || !soundtrackCanPlay || !soundtrack) return;
     const startTime = Tone.now();
     soundtrack.player('rythm').start(startTime);
     if (playingFile) soundtrack.player(playingFile).start(startTime);
@@ -168,13 +169,14 @@
   const playAudio = () => {
     // Clear any running loop and stop all clips so the next bar starts clean.
     clearTimeout(playbackTimeout);
+    if (!soundtrack) return;
     soundtrack.stopAll();
     _playBar();
   };
 
   const stopAudio = () => {
     clearTimeout(playbackTimeout);
-    soundtrack.stopAll();
+    soundtrack?.stopAll();
   };
 
   $effect(() => {
@@ -377,8 +379,13 @@
   let mm;
 
   onMount(() => {
-    // Preload audio files
-    preload();
+    // On desktop, preload all audio files upfront so they're ready when the user arrives.
+    // On mobile, skip the upfront load — 3 simultaneous Tone.Players instances (main_chars,
+    // supporting_chars, locations) each holding 50+ decoded MP3 buffers causes OOM crashes.
+    // Instead, each instance calls preload() lazily the moment its section enters the viewport.
+    if (!window.matchMedia('(max-width: 1023px)').matches) {
+      preload();
+    }
 
     mm = gsap.matchMedia();
 
@@ -429,6 +436,7 @@
         const obs = new IntersectionObserver(
           ([entry]) => {
             if (entry.isIntersecting) {
+              preload(); // lazy-load audio on first viewport entry (mobile only)
               soundtrackCanPlay = true;
               playAudio();
               enterSoundSection();
@@ -740,6 +748,7 @@
           start: 'top bottom',
           end: 'bottom top',
           onEnter: () => {
+            preload(); // lazy-load audio on first viewport entry (mobile only; desktop already preloaded)
             soundtrackCanPlay = true;
             playAudio();
             enterSoundSection();
@@ -791,6 +800,7 @@
     mm?.revert();
     soundtrackCanPlay = false;
     stopAudio();
+    soundtrack?.dispose();
     leaveSoundSection();
   });
 
