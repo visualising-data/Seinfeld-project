@@ -36,6 +36,7 @@
 
   /** @type {gsap.Context | undefined} */
   let ctx;
+  let videosFreed = false;
 
   /** @type {IntersectionObserver | undefined} */
   let mobileIO;
@@ -249,14 +250,41 @@
         onEnter: () => {
           inSection = true;
           enterSoundSection();
+          if (videosFreed) {
+            videosFreed = false;
+            videoEls.forEach((v, i) => {
+              if (!v) return;
+              v.removeAttribute('src'); // remove the 'about:blank' placeholder
+              v.load(); // browser falls back to <source> children
+              if (i === currentIndex) v.play().catch(() => {});
+            });
+          }
         },
         onEnterBack: () => {
           inSection = true;
           enterSoundSection();
+          if (videosFreed) {
+            videosFreed = false;
+            videoEls.forEach((v, i) => {
+              if (!v) return;
+              v.removeAttribute('src');
+              v.load();
+              if (i === currentIndex) v.play().catch(() => {});
+            });
+          }
         },
         onLeave: () => {
           inSection = false;
           leaveSoundSection();
+          // Free decoded video memory: 5 looping videos staying in memory while
+          // the user is 8+ sections lower is a primary cause of OOM on mobile.
+          videosFreed = true;
+          videoEls.forEach(v => {
+            if (!v) return;
+            v.pause();
+            v.src = 'about:blank';
+            v.load();
+          });
         },
         onLeaveBack: () => {
           inSection = false;

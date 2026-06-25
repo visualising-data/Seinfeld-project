@@ -13,6 +13,7 @@
   let videoEl;
   let inSection = false;
   let showPlayButton = false;
+  let videoFreed = false;
 
   $: if (videoEl) {
     videoEl.muted = !($soundIsAuth && inSection);
@@ -104,16 +105,19 @@
           onEnter: () => {
             inSection = true;
             enterSoundSection();
+            if (videoFreed && videoEl) { videoFreed = false; videoEl.removeAttribute('src'); videoEl.load(); }
             videoEl?.play().catch(() => {});
           },
           onEnterBack: () => {
             inSection = true;
             enterSoundSection();
+            if (videoFreed && videoEl) { videoFreed = false; videoEl.removeAttribute('src'); videoEl.load(); }
             videoEl?.play().catch(() => {});
           },
           onLeave: () => {
             inSection = false;
             leaveSoundSection();
+            if (videoEl) { videoFreed = true; videoEl.pause(); videoEl.src = 'about:blank'; videoEl.load(); }
           },
           onLeaveBack: () => {
             inSection = false;
@@ -150,9 +154,11 @@
             if (entry.isIntersecting) {
               inSection = true;
               enterSoundSection();
+              if (videoFreed && videoEl) { videoFreed = false; videoEl.removeAttribute('src'); videoEl.load(); }
             } else {
               inSection = false;
               leaveSoundSection();
+              if (videoEl) { videoFreed = true; videoEl.pause(); videoEl.src = 'about:blank'; videoEl.load(); }
             }
           },
           { threshold: 0 },
