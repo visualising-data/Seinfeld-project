@@ -344,7 +344,15 @@
         ).strength(0.5),
       )
       .force('collide', forceCollide().radius(episodeRadius).strength(1))
-      // .force('walls', wallForce)
+      .force('bounds', () => {
+        const r = episodeRadius;
+        const maxY = innerHeight - navbarHeight - r;
+        const minY = headersHeight + r;
+        simulation.nodes().forEach((/** @type {any} */ d) => {
+          if (d.y > maxY) { d.y = maxY; if (d.vy > 0) d.vy = 0; }
+          if (d.y < minY) { d.y = minY; if (d.vy < 0) d.vy = 0; }
+        });
+      })
       .alpha(0.5)
       .alphaDecay(0.1);
   };
@@ -382,6 +390,15 @@
             ).strength(0.5),
           )
           .force('collide', forceCollide().radius(_episodeRadius).strength(1))
+          .force('bounds', () => {
+            const r = _episodeRadius;
+            const maxY = innerHeight - navbarHeight - r;
+            const minY = headersHeight + r;
+            simulation.nodes().forEach((/** @type {any} */ d) => {
+              if (d.y > maxY) { d.y = maxY; if (d.vy > 0) d.vy = 0; }
+              if (d.y < minY) { d.y = minY; if (d.vy < 0) d.vy = 0; }
+            });
+          })
           .alpha(0.3)
           .restart();
       });

@@ -15,6 +15,8 @@
   let episodeDetailsHeight = $state(0);
   let episodeWidth = $derived(innerWidth > 793 ? innerWidth - 273 : innerWidth - 98);
   const statsWidth = $derived(innerWidth >= 1280 ? 240 : 0);
+  // Total offset from sticky container top to score wrapper top (lg = 1024px breakpoint + mt-[40px]).
+  const scoreTopOffset = $derived(innerWidth >= 1024 ? 300 : innerWidth >= 768 ? 200 : 160);
 
   const timeScale = $derived(
     scaleLinear()
@@ -281,6 +283,14 @@
 
   const reveal7 = () => {
     gsap.to('#episode-example-text-7 .highlight', textAnim);
+    // On short screens the locations section sits below the visible window — scroll down to reveal it.
+    const scoreWrapper = document.querySelector('.score-wrapper');
+    if (scoreWrapper) {
+      const scrollTarget = scoreWrapper.scrollHeight - scoreWrapper.clientHeight;
+      if (scrollTarget > 0) {
+        gsap.to(scoreWrapper, { scrollTop: scrollTarget, duration: 1, overwrite: 'auto' });
+      }
+    }
     gsap.to('#episode-example-container .catalog-location-label', {
       translateX: 0,
       opacity: 1,
@@ -479,6 +489,11 @@
   };
 
   const undo7 = () => {
+    // Scroll back up so characters are visible again.
+    const scoreWrapper = document.querySelector('.score-wrapper');
+    if (scoreWrapper && scoreWrapper.scrollTop > 0) {
+      gsap.to(scoreWrapper, { scrollTop: 0, duration: 0.7, overwrite: 'auto' });
+    }
     gsap.to('#episode-example-container .catalog-location-label', {
       translateX: -30,
       opacity: 0,
@@ -616,7 +631,7 @@
       <!-- Episode data -->
       <div
         class="score-wrapper w-full absolute top-[120px] md:top-[160px] lg:top-[260px] mt-[40px]"
-        style="max-height: {innerHeight - 320}px; opacity: 0; transform: translateY(-30px);"
+        style="max-height: {innerHeight - scoreTopOffset}px; overflow: hidden; opacity: 0; transform: translateY(-30px);"
       >
         <EpisodeScore
           {statsWidth}
