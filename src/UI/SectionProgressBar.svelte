@@ -102,7 +102,7 @@
 <svelte:window bind:innerWidth />
 
 {#if innerWidth >= 1024}
-  <nav class="progress-bar" aria-label="Page sections">
+  <nav class="progress-bar pointer-events-none" aria-label="Page sections">
     {#each sections as section}
       <div
         class="dot-wrapper"
@@ -111,7 +111,7 @@
       >
         <span class="label">{section.label}</span>
         <button
-          class="dot"
+          class="dot pointer-events-auto"
           onclick={() => navigateTo(section.anchor)}
           aria-label="Go to {section.label}"
         ></button>
