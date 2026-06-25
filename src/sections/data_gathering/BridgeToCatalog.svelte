@@ -31,10 +31,18 @@
         start: 'top bottom',
         end: 'bottom top',
         invalidateOnRefresh: true,
-        onEnter: () => { $navBarColor = 'dark'; },
-        onLeave: () => { $navBarColor = 'white'; },
-        onEnterBack: () => { $navBarColor = 'dark'; },
-        onLeaveBack: () => { $navBarColor = 'white'; },
+        onEnter: () => {
+          $navBarColor = 'dark';
+        },
+        onLeave: () => {
+          $navBarColor = 'white';
+        },
+        onEnterBack: () => {
+          $navBarColor = 'dark';
+        },
+        onLeaveBack: () => {
+          $navBarColor = 'white';
+        },
       });
     });
   });
@@ -49,8 +57,8 @@
   <SectionTitle title="Episode Catalogue" section="catalog" />
 </div>
 
-<div id="bridge-to-catalog-content" class="h-[100dvh]">
-  <div class="h-[100dvh] container flex content-center flex-wrap">
+<div id="bridge-to-catalog-content" class="lg:h-[100dvh]">
+  <div class="lg:h-[100dvh] container flex content-center flex-wrap">
     <div style="max-width: 900px;">
       <p>
         You can now browse through an interactive catalogue of episodes, showing visual compositions
