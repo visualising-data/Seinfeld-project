@@ -192,7 +192,7 @@
     {width}
     {height}
     role="presentation"
-    onclick={onClosePin}
+    onclick={(e) => { if ((e.target as Element).tagName !== 'rect') onClosePin(); }}
     onkeydown={(e) => e.key === 'Escape' && onClosePin()}
     style="cursor: default"
     onmouseleave={() => {
@@ -268,7 +268,7 @@
     {width}
     {height}
     role="presentation"
-    onclick={onClosePin}
+    onclick={(e) => { if ((e.target as Element).tagName !== 'rect') onClosePin(); }}
     onkeydown={(e) => e.key === 'Escape' && onClosePin()}
     style="cursor: default"
     onmouseleave={() => {
