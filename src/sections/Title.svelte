@@ -18,6 +18,25 @@
   const svgHeight = $derived(Math.max(66, Math.min(132, Math.round(innerHeight * 0.11))));
   const barSpacing = $derived(Math.round((svgHeight / 132) * 12));
   const barHeight = $derived(Math.round((svgHeight / 132) * 8));
+
+  let seinfeldTextEl = $state(/** @type {HTMLElement | null} */ (null));
+  let seinfeldRightEdge = $state(0);
+
+  $effect(() => {
+    // Re-measure whenever viewport changes (font-size clamp depends on both axes)
+    innerWidth;
+    innerHeight;
+    const el = seinfeldTextEl;
+    if (!el) return;
+    const update = () => {
+      seinfeldRightEdge = el.getBoundingClientRect().right;
+    };
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  });
+
   const gridContainer = $derived.by(() => {
     switch (true) {
       case innerWidth >= 1536:
@@ -32,14 +51,16 @@
         return 640;
     }
   });
-  const padding = 30;
+  const padding = 12;
 
   let svgWidth = $derived(
-    innerWidth >= gridContainer
-      ? gridContainer + (innerWidth - gridContainer) / 2
-      : innerWidth > 0
-        ? innerWidth - 2 * padding
-        : 0,
+    innerWidth >= 1024
+      ? Math.min(gridContainer + (innerWidth - gridContainer) / 2, innerWidth * 0.8)
+      : seinfeldRightEdge > 0
+        ? seinfeldRightEdge + padding
+        : innerWidth > 0
+          ? innerWidth - 2 * padding
+          : 0,
   );
 
   let seasonScale = $derived(
@@ -327,7 +348,7 @@
       <div style="max-width: 940px;">
         <h1>
           <span id="title-the">The</span>{' '}<span id="title-seinfeld"
-            ><span id="title-seinfeld-text">Seinfeld</span><span
+            ><span id="title-seinfeld-text" bind:this={seinfeldTextEl}>Seinfeld</span><span
               id="seinfeld-seasons"
               aria-hidden="true"
               >{#each seasons as season}<span
@@ -336,7 +357,7 @@
                 >{/each}<span class="seinfeld-season-word" style="color: #F9F5F7">Seinfeld</span
               ></span
             ></span
-          ><span id="title-chronicles"> Chronicles</span>
+          >{' '}<span id="title-chronicles">Chronicles</span>
         </h1>
       </div>
       <div id="subtitle" class="subtitle number mt-6">
@@ -438,6 +459,7 @@
   }
   .title-container {
     padding-top: 100px;
+    overflow-x: clip;
   }
   .subtitle {
     font-size: 0.875rem;
