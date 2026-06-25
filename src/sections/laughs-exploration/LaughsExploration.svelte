@@ -400,8 +400,13 @@
   }
 
   onMount(() => {
-    soundtrack = new Tone.Players(sonificationFiles).toDestination();
-    soundtrack.volume.value = TARGET_VOLUME;
+    // Desktop only: preload all audio buffers immediately.
+    // Mobile defers creation to first viewport entry (IntersectionObserver $effect below)
+    // so 71 decoded WebAudio buffers don't land in memory before the user reaches this section.
+    if (!window.matchMedia('(max-width: 1023px)').matches) {
+      soundtrack = new Tone.Players(sonificationFiles).toDestination();
+      soundtrack.volume.value = TARGET_VOLUME;
+    }
 
     const gsapCtx = gsap.context(() => {
       gsap.to('#laughs-exploration-intro .highlight-reverse', {
@@ -430,8 +435,14 @@
     const observer = new IntersectionObserver(
       ([entry]) => {
         isInView = entry.isIntersecting;
-        if (entry.isIntersecting) enterSoundSection();
-        else leaveSoundSection();
+        if (entry.isIntersecting) {
+          enterSoundSection();
+          // Mobile: lazy-create Tone.Players on first viewport entry instead of on mount.
+          if (!soundtrack && window.matchMedia('(max-width: 1023px)').matches) {
+            soundtrack = new Tone.Players(sonificationFiles).toDestination();
+            soundtrack.volume.value = TARGET_VOLUME;
+          }
+        } else leaveSoundSection();
       },
       { threshold: 0.2 },
     );
