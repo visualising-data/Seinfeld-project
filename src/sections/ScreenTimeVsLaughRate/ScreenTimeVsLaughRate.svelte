@@ -444,6 +444,9 @@
               soundtrackCanPlay = false;
               stopAudio();
               leaveSoundSection();
+              // Free the 71 decoded WebAudio buffers when out of view; preload() recreates on re-entry.
+              soundtrack?.dispose();
+              soundtrack = undefined;
             }
           },
           { threshold: 0 },
@@ -454,6 +457,8 @@
           soundtrackCanPlay = false;
           stopAudio();
           leaveSoundSection();
+          soundtrack?.dispose();
+          soundtrack = undefined;
         };
       });
 
@@ -755,6 +760,7 @@
             showSelectorHint = true;
           },
           onEnterBack: () => {
+            preload(); // recreate buffers after out-of-view dispose
             soundtrackCanPlay = true;
             playAudio();
             enterSoundSection();
@@ -764,12 +770,18 @@
             soundtrackCanPlay = false;
             stopAudio();
             leaveSoundSection();
+            // Free 71 decoded WebAudio buffers; preload() recreates on re-entry.
+            soundtrack?.dispose();
+            soundtrack = undefined;
           },
           onLeaveBack: () => {
             soundtrackCanPlay = false;
             stopAudio();
             leaveSoundSection();
             showSelectorHint = false;
+            // Free 71 decoded WebAudio buffers; preload() recreates on re-entry.
+            soundtrack?.dispose();
+            soundtrack = undefined;
           },
         },
       });
