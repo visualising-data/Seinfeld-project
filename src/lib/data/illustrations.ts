@@ -28,6 +28,7 @@ export const illustrationEpisodes: { season: number; episode: number; filename: 
   { season: 4, episode: 8, filename: 'Seinfeld__0016_Season-4-_-Cuban-Cigar.png' }, // The Cheever Letters — Cuban cigars
 
   // Season 5
+  { season: 5, episode: 18, filename: 'Seinfeld__0017_Season-5-_-Trenchcoat.png' }, // The Raincoats (Part 1) — trenchcoats and Alton Benes
   { season: 5, episode: 19, filename: 'Seinfeld__0017_Season-5-_-Trenchcoat.png' }, // The Raincoats (Part 2) — trenchcoats and Alton Benes
   { season: 5, episode: 14, filename: 'Seinfeld__0018_Season-5-_-Golf-Ball.png' }, // The Marine Biologist — George pulls golf ball from whale
   { season: 5, episode: 3, filename: 'Seinfeld__0019_Season-5-_-Georges-Lady-Glasses.png' }, // The Glasses — George's prescription mix-up
