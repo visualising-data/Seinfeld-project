@@ -28,7 +28,7 @@
   />
   <meta
     property="og:image"
-    content="https://amdufour.github.io/hosted-data/apis/images/og-image.jpg"
+    content="https://seinfeld.visualisingdata.com/og-image.jpg"
   />
   <meta property="og:url" content="https://seinfeld.visualisingdata.com/" />
   <meta property="og:type" content="website" />
@@ -42,7 +42,7 @@
   />
   <meta
     name="twitter:image"
-    content="https://amdufour.github.io/hosted-data/apis/images/og-image-twitter.jpg"
+    content="https://seinfeld.visualisingdata.com/og-image-twitter.jpg"
   />
 </svelte:head>
 
