@@ -144,6 +144,8 @@
                 ease: 'power2.inOut',
               });
             }
+            const v = videoEls[index];
+            if (v) v.currentTime = 0;
           }
 
           // Highlight animations
