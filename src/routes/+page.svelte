@@ -141,9 +141,9 @@
     'data-gathering': 1,
     'lead-chars': 2,
     'supporting-chars': 3,
-    'locations': 4,
+    locations: 4,
     'laughs-exploration': 5,
-    'methodology': 6,
+    methodology: 6,
   };
 
   // Loads outer waves in strict order — each wave renders inside the previous
@@ -358,7 +358,10 @@
               let hardTimeout: ReturnType<typeof setTimeout> | null = null;
 
               const stopBodyObserver = () => {
-                if (hardTimeout) { clearTimeout(hardTimeout); hardTimeout = null; }
+                if (hardTimeout) {
+                  clearTimeout(hardTimeout);
+                  hardTimeout = null;
+                }
                 bodyObserver?.disconnect();
                 bodyObserver = null;
                 if (resizeDebounce) {
@@ -521,7 +524,7 @@
     <Title />
   </div>
   <Definition />
-  <div class="hidden lg:block"><Warning /></div>
+  <Warning />
   <div class="text-black" style="background: #F9F5F7;">
     <Calendar {ScrollTrigger} />
     <DVDSet />

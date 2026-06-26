@@ -105,19 +105,32 @@
           onEnter: () => {
             inSection = true;
             enterSoundSection();
-            if (videoFreed && videoEl) { videoFreed = false; videoEl.removeAttribute('src'); videoEl.load(); }
+            if (videoFreed && videoEl) {
+              videoFreed = false;
+              videoEl.removeAttribute('src');
+              videoEl.load();
+            }
             videoEl?.play().catch(() => {});
           },
           onEnterBack: () => {
             inSection = true;
             enterSoundSection();
-            if (videoFreed && videoEl) { videoFreed = false; videoEl.removeAttribute('src'); videoEl.load(); }
+            if (videoFreed && videoEl) {
+              videoFreed = false;
+              videoEl.removeAttribute('src');
+              videoEl.load();
+            }
             videoEl?.play().catch(() => {});
           },
           onLeave: () => {
             inSection = false;
             leaveSoundSection();
-            if (videoEl) { videoFreed = true; videoEl.pause(); videoEl.src = 'about:blank'; videoEl.load(); }
+            if (videoEl) {
+              videoFreed = true;
+              videoEl.pause();
+              videoEl.src = 'about:blank';
+              videoEl.load();
+            }
           },
           onLeaveBack: () => {
             inSection = false;
@@ -154,11 +167,20 @@
             if (entry.isIntersecting) {
               inSection = true;
               enterSoundSection();
-              if (videoFreed && videoEl) { videoFreed = false; videoEl.removeAttribute('src'); videoEl.load(); }
+              if (videoFreed && videoEl) {
+                videoFreed = false;
+                videoEl.removeAttribute('src');
+                videoEl.load();
+              }
             } else {
               inSection = false;
               leaveSoundSection();
-              if (videoEl) { videoFreed = true; videoEl.pause(); videoEl.src = 'about:blank'; videoEl.load(); }
+              if (videoEl) {
+                videoFreed = true;
+                videoEl.pause();
+                videoEl.src = 'about:blank';
+                videoEl.load();
+              }
             }
           },
           { threshold: 0 },
@@ -274,13 +296,25 @@
           onclick={() => {
             if (videoEl) {
               videoEl.currentTime = 0;
-              videoEl.play().then(() => { showPlayButton = false; }).catch(() => {});
+              videoEl
+                .play()
+                .then(() => {
+                  showPlayButton = false;
+                })
+                .catch(() => {});
             }
           }}
         >
-          <div class="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center border border-white/40">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" class="w-8 h-8 ml-1">
-              <path d="M8 5v14l11-7z"/>
+          <div
+            class="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center border border-white/40"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="white"
+              class="w-8 h-8 ml-1"
+            >
+              <path d="M8 5v14l11-7z" />
             </svg>
           </div>
         </button>
@@ -311,7 +345,7 @@
               <span class="jerrys-apartment em">Jerry's apartment</span>, set in New York City,
               which acts as the main location base for lots of the show's stories.
             </div>
-            <div class="flex items-start gap-4 md:gap-8">
+            <div class="flex flex-wrap items-start gap-4 md:gap-8">
               <div
                 id="icon-jerry"
                 class="video-char-icon flex flex-col justify-center items-center gap-2"
