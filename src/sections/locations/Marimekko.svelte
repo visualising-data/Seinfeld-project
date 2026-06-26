@@ -135,7 +135,7 @@
         <svg
           role="img"
           aria-label="Mosaic chart comparing screen-time shares across Seinfeld's key locations. Each column's width represents a location's total screen-time share. The left portion (pink) shows time during which audience laughter was recorded; the right portion (grey) shows time without laughter."
-          width={chartWidth}
+          width={chartWidth + 20}
           height={mobileChartHeight}
         >
           <!-- Axis labels -->
