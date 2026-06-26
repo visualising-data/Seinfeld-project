@@ -570,7 +570,7 @@
   <div
     id="intro-calendar"
     class="flex w-screen"
-    style="position: {innerWidth < 1024 ? 'sticky' : 'absolute'}; top: var(--vv-top, 0px); height: {innerHeight}px; padding-top: {navbarHeight}px; background: {navbarHeight > 0
+    style="position: {innerWidth < 1024 ? 'sticky' : 'absolute'}; top: calc(100lvh - 100dvh); height: {innerHeight}px; padding-top: {navbarHeight}px; background: {navbarHeight > 0
       ? `linear-gradient(#E71D80 ${navbarHeight}px, transparent ${navbarHeight}px)`
       : 'rgb(231 29 128 / 0.05)'};"
   >

@@ -335,7 +335,7 @@
 <section id="title-screen" style="--ring-gradient: {seasonGradient}">
   <div
     class="title-container h-[100dvh]"
-    style="position: sticky; top: var(--vv-top, 0px); z-index: 10;"
+    style="position: sticky; top: calc(100lvh - 100dvh); z-index: 10;"
   >
     <svg
       width={svgWidth}

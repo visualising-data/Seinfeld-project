@@ -639,7 +639,7 @@
 
 <!-- Desktop layout: sticky scroll-animated panels -->
 <div id="laughs-scroll-container" class="relative hidden lg:block">
-  <div class="sticky h-[100dvh] self-start" style="top: var(--vv-top, 0px);">
+  <div class="sticky h-[100dvh] self-start" style="top: calc(100lvh - 100dvh);">
     <!-- Background image -->
     <div
       class="absolute inset-0 bg-cover bg-center"

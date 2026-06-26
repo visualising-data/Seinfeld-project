@@ -552,7 +552,7 @@
 <svelte:window bind:innerWidth bind:innerHeight />
 
 <div id="episode-example-container" class="relative pointer-events-none">
-  <div id="episode-example" class="sticky w-full" style="top: var(--vv-top, 0px); z-index: 5;">
+  <div id="episode-example" class="sticky w-full" style="top: calc(100lvh - 100dvh); z-index: 5;">
     <div class="relative flex flex-col overflow-hidden" style="height: calc(100dvh + 260px);">
       <!-- Episode details -->
       <div class="mask self-start" bind:clientHeight={episodeDetailsHeight}>

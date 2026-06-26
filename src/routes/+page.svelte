@@ -159,16 +159,6 @@
   }
 
   onMount(() => {
-    // Track the iOS Chrome URL-bar offset via the Visual Viewport API and expose
-    // it as --vv-top on :root. Sticky sections use `top: var(--vv-top, 0px)`
-    // so they always anchor to the bottom of the URL bar, not behind it.
-    const setVvTop = () => {
-      const offset = window.visualViewport?.offsetTop ?? 0;
-      document.documentElement.style.setProperty('--vv-top', `${offset}px`);
-    };
-    setVvTop();
-    window.visualViewport?.addEventListener('resize', setVvTop);
-
     // Load episodes data — use localStorage cache for instant repeat visits
     const cached = localStorage.getItem(EPISODES_CACHE_KEY);
     if (cached) {
@@ -498,7 +488,6 @@
       if (scrollPollId !== null) clearInterval(scrollPollId);
       window.removeEventListener('resize', onResize);
       if (_resizeDebounce) clearTimeout(_resizeDebounce);
-      window.visualViewport?.removeEventListener('resize', setVvTop);
     };
   });
 </script>
