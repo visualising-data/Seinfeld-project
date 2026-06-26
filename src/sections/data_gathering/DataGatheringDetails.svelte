@@ -63,9 +63,7 @@
   let gridScrollInner;
 
   let tlVideo;
-  let pendingCanPlay = null;
 
-  let isInView = $state(false);
   let isVideoPlaying = $state(false);
 
   let playPauseTimer;
@@ -78,26 +76,16 @@
     debouncePlayPause(() => {
       if (!videoEl || !videoEl.paused) return;
       isVideoLoading = true;
-
-      if (pendingCanPlay) videoEl.removeEventListener('canplay', pendingCanPlay);
-      // Call play() inside canplay rather than immediately after load() —
-      // calling play() while load() is still in progress causes an AbortError
-      // on iOS that silently swallows the request without starting playback.
-      pendingCanPlay = () => {
-        pendingCanPlay = null;
-        videoEl.play()
-          .then(() => {
-            isVideoLoading = false;
-            isVideoPlaying = true;
-            tlVideo.restart();
-          })
-          .catch((err) => {
-            if (err.name !== 'AbortError') console.warn('Video play failed:', err);
-            isVideoLoading = false;
-          });
-      };
-      videoEl.addEventListener('canplay', pendingCanPlay, { once: true });
-      videoEl.load();
+      videoEl.play()
+        .then(() => {
+          isVideoLoading = false;
+          isVideoPlaying = true;
+          tlVideo.restart();
+        })
+        .catch((err) => {
+          console.warn('Video play failed:', err);
+          isVideoLoading = false;
+        });
     });
   }
 
@@ -105,10 +93,6 @@
     debouncePlayPause(() => {
       isVideoLoading = false;
       isVideoPlaying = false;
-      if (pendingCanPlay && videoEl) {
-        videoEl.removeEventListener('canplay', pendingCanPlay);
-        pendingCanPlay = null;
-      }
       if (!videoEl || videoEl.paused) return;
       videoEl.pause();
       videoEl.currentTime = 0;
@@ -125,10 +109,10 @@
         start: 'top top',
         end: 'bottom top',
         toggleActions: 'play pause resume pause',
-        onEnter: () => { isInView = true; if (innerWidth >= 1024) playVideo(); enterSoundSection(); },
-        onLeave: () => { isInView = false; pauseVideo(); leaveSoundSection(); },
-        onEnterBack: () => { isInView = true; if (innerWidth >= 1024) playVideo(); enterSoundSection(); },
-        onLeaveBack: () => { isInView = false; pauseVideo(); leaveSoundSection(); },
+        onEnter: () => { enterSoundSection(); },
+        onLeave: () => { pauseVideo(); leaveSoundSection(); },
+        onEnterBack: () => { enterSoundSection(); },
+        onLeaveBack: () => { pauseVideo(); leaveSoundSection(); },
       },
     });
 
@@ -183,7 +167,7 @@
       class="w-full h-auto"
       playsinline
       muted
-      preload="none"
+      preload="metadata"
       bind:this={videoEl}
     >
       <source
@@ -207,7 +191,7 @@
     ></div>
 
     <!-- Fallback play button (also shows spinner while loading) -->
-    {#if isInView && !isVideoPlaying}
+    {#if !isVideoPlaying}
       <div class="absolute inset-0 flex items-center justify-center z-20">
         <button
           class="play-btn"

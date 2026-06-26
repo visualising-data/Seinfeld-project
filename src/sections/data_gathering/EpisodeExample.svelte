@@ -568,7 +568,12 @@
         style="width: {innerWidth - 25}px; height: {innerHeight -
           episodeDetailsHeight}px; opacity: 0;"
       >
-        <svg width={innerWidth > 793 ? innerWidth - 225 : innerWidth - 50} height="140">
+        <svg
+          width={innerWidth > 793 ? innerWidth - 225 : innerWidth - 50}
+          height="140"
+          role="img"
+          aria-label="Chart showing episode run-time from 00:00 to 21:45 with audience laughter moments marked as 5-second blocks"
+        >
           <g transform="translate(0, 40)">
             <rect
               id="episode-length"
@@ -588,6 +593,7 @@
                   <path
                     d="M30 3L25 0.113249V5.88675L30 3ZM0 3V3.5H25.5V3V2.5H0V3Z"
                     fill="#E71D80"
+                    aria-hidden="true"
                   />
                 </g>
               </g>
