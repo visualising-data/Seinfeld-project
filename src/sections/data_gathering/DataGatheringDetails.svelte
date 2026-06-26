@@ -196,12 +196,14 @@
     <div
       class="absolute inset-0 pointer-events-none"
       style="background: rgba(18, 2, 10, 0.3)"
+      aria-hidden="true"
     ></div>
 
     <!-- TV noise -->
     <div
       class="absolute inset-0 pointer-events-none"
       style="background-image: url('{tv_noise}')"
+      aria-hidden="true"
     ></div>
 
     <!-- Fallback play button (also shows spinner while loading) -->
@@ -239,6 +241,8 @@
             <div
               class="image h-7 w-7 rounded-full shrink-0"
               style="background-image: url({getCharacterImagePath(char.id)});"
+              role="img"
+              aria-label={char.label}
             ></div>
           </div>
         {/each}
@@ -248,6 +252,8 @@
       <div
         class="flex-1 border border-white/40 relative overflow-hidden min-w-0"
         bind:this={gridContainer}
+        role="img"
+        aria-label="Visualization showing laughter moments per character from 18:35 to 20:35"
       >
         <!-- Playhead: positioned in the container's coordinate space,
                independent of the inner content's translateX -->
@@ -255,6 +261,7 @@
           id="viz-playhead"
           class="absolute top-0 bottom-0 w-0.5 bg-[#E71D80] z-10 pointer-events-none"
           style="left: 0"
+          aria-hidden="true"
         ></div>
 
         <!-- Inner content: desktop fills full width (1fr works); mobile is w-fit for GSAP translate -->

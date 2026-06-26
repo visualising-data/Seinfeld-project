@@ -186,22 +186,27 @@
       </p>
     </div>
   </div>
-  <div id="timeline" class="sticky top-0 h-[100dvh] self-start col-span-1 px-4">
+  <div id="timeline" class="sticky top-0 h-[100dvh] self-start col-span-1 px-4" role="list">
     <div
       id="timeline-line"
       class="absolute bg-white"
       style="left: {innerWidth >= 768 ? 213 : 85}px; width: 2px; height: {innerHeight -
         120}px; border-radius: 1px; top: 60px;"
+      aria-hidden="true"
     ></div>
 
     <div
       id="date-1"
       class="absolute w-full"
       style={`top: ${(innerHeight - 120) / 3 + 30}px; left: 0`}
+      role="listitem"
     >
       <div id="date-us" class="flex items-center">
         <div id="year-us" class="year" style="width: {innerWidth >= 768 ? 176 : 60}px;">1989</div>
-        <div class="circle bg-accent"></div>
+        <div class="circle bg-accent" aria-hidden="true"></div>
+        {#if innerWidth < 996}
+          <span class="sr-only">Seinfeld first aired on NBC in the USA</span>
+        {/if}
         {#if innerWidth >= 996}
           <div class="timeline-description" style="margin-left: 24px">
             Seinfeld first aired on NBC in the USA
@@ -214,10 +219,14 @@
       id="date-2"
       class="absolute w-full"
       style={`top: ${((innerHeight - 120) / 3) * 2 + 30}px; left: 0`}
+      role="listitem"
     >
       <div id="date-uk" class="flex items-center">
         <div id="year-uk" class="year" style="width: {innerWidth >= 768 ? 176 : 60}px;">1993</div>
-        <div class="circle bg-accent"></div>
+        <div class="circle bg-accent" aria-hidden="true"></div>
+        {#if innerWidth < 996}
+          <span class="sr-only">Seinfeld first aired on BBC2 in the UK</span>
+        {/if}
         {#if innerWidth >= 996}
           <div class="timeline-description" style="margin-left: 24px">
             Seinfeld first aired on BBC2 in the UK
@@ -226,10 +235,13 @@
       </div>
     </div>
 
-    <div id="date-3" class="absolute w-full" style={`top: ${innerHeight - 120 + 30}px; left: 0`}>
+    <div id="date-3" class="absolute w-full" style={`top: ${innerHeight - 120 + 30}px; left: 0`} role="listitem">
       <div id="date-andy" class="flex items-center" style="opacity: 0">
         <div id="year-andy" class="year" style="width: {innerWidth >= 768 ? 176 : 60}px;">2012</div>
-        <div class="pulse circle bg-accent"></div>
+        <div class="pulse circle bg-accent" aria-hidden="true"></div>
+        {#if innerWidth < 996}
+          <span class="sr-only">Seinfeld returns to UK prime-time on Sky TV</span>
+        {/if}
         {#if innerWidth >= 996}
           <div class="timeline-description" style="margin-left: 24px">
             Seinfeld returns to UK prime-time on Sky TV
@@ -238,10 +250,13 @@
       </div>
     </div>
 
-    <div id="date-4" class="absolute w-full" style={`top: ${innerHeight - 120 + 30}px; left: 0`}>
+    <div id="date-4" class="absolute w-full" style={`top: ${innerHeight - 120 + 30}px; left: 0`} role="listitem">
       <div id="date-hulu" class="flex items-center" style="opacity: 0">
         <div class="year" style="width: {innerWidth >= 768 ? 176 : 60}px;">2015</div>
-        <div class="circle bg-accent"></div>
+        <div class="circle bg-accent" aria-hidden="true"></div>
+        {#if innerWidth < 996}
+          <span class="sr-only">Seinfeld available on-demand on Hulu in the USA</span>
+        {/if}
         {#if innerWidth >= 996}
           <div class="timeline-description" style="margin-left: 24px">
             Seinfeld available on-demand on Hulu in the USA
@@ -250,10 +265,13 @@
       </div>
     </div>
 
-    <div id="date-5" class="absolute w-full" style={`top: ${innerHeight - 120 + 30}px; left: 0`}>
+    <div id="date-5" class="absolute w-full" style={`top: ${innerHeight - 120 + 30}px; left: 0`} role="listitem">
       <div id="date-netflix" class="flex items-center" style="opacity: 0">
         <div class="year" style="width: {innerWidth >= 768 ? 176 : 60}px;">2021</div>
-        <div class="circle bg-accent"></div>
+        <div class="circle bg-accent" aria-hidden="true"></div>
+        {#if innerWidth < 996}
+          <span class="sr-only">Seinfeld launches on Netflix with worldwide streaming</span>
+        {/if}
         {#if innerWidth >= 996}
           <div class="timeline-description" style="margin-left: 24px">
             Seinfeld launches on Netflix with worldwide streaming

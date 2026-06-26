@@ -486,9 +486,9 @@
   <div class="divide-y divide-white/20">
     <!-- Panel 1 -->
     <div class="px-6 py-8">
-      Whilst tracking the episode’s time elapsed on screen, a detailed spreadsheet template was used
+      Whilst tracking the episode's time elapsed on screen, a detailed spreadsheet template was used
       to <span class="highlight-reverse">quantify</span>
-      and <span class="highlight-reverse">classify</span> data that would aid the analysis of the show’s
+      and <span class="highlight-reverse">classify</span> data that would aid the analysis of the show's
       rhythm and texture.
     </div>
 
@@ -508,13 +508,13 @@
         </button>
       </div>
       <p>
-        It doesn’t take a genius to recognise the main goal of a situation comedy is to be funny.
+        It doesn't take a genius to recognise the main goal of a situation comedy is to be funny.
         Therefore, a reliable indicator of a sitcom being funny is to measure the reaction of an
-        audience’s laughter through the laugh track. It is rare to find laugh tracks on modern
+        audience's laughter through the laugh track. It is rare to find laugh tracks on modern
         sitcoms, but Seinfeld had one. With the show always being filmed in front of a <span
           class="highlight-reverse">live studio audience</span
         > (any scenes filmed outside were played back in the studio) it meant the laughter heard is an
-        authentic measure of the audience’s reaction.
+        authentic measure of the audience's reaction.
       </p>
     </div>
 
@@ -523,7 +523,7 @@
       <p>
         Measuring laughter was the most subjective and, therefore, challenging data collection
         activity. Laughing can occur at different levels, from the subtle smile characterising
-        ‘inner’ laughter, through to more external giggles, and up to howling belly laughs. To
+        'inner' laughter, through to more external giggles, and up to howling belly laughs. To
         establish a standard and consistent measurement, any audience laughter heard would be
         considered as a <span class="highlight-reverse">laughter moment</span>, regardless of its
         level.
@@ -562,9 +562,13 @@
         <span class="highlight-reverse">5&#8209;second</span> block of time, determined by in which period
         the laughter was heard and/or most associated. When testing out the data collection approach over
         three sample episodes, the 5-second duration proved to be the most reliable and representative
-        ‘average’ duration, from the gag’s delivery to the audience’s laughter subsiding.
+        'average' duration, from the gag's delivery to the audience's laughter subsiding.
       </p>
-      <div class="self-start border border-black/40 lg:border-white/40 text-xs">
+      <div
+        class="self-start border border-black/40 lg:border-white/40 text-xs"
+        role="img"
+        aria-label="Spreadsheet showing a single laughter moment logged at 18:40"
+      >
         <div class="grid grid-cols-5 border-b border-black/40 lg:border-white/40">
           {#each ['18:35', '18:40', '18:45', '18:50', '18:55'] as time, ti}
             <div
@@ -580,6 +584,7 @@
           <div class="px-4 py-3 border-r border-black/40 lg:border-white/40"></div>
           <div
             class="px-4 py-3 border-r border-black/40 lg:border-white/40 flex justify-center items-center"
+            aria-hidden="true"
           >
             <Laugh width={30} height={30} color="black" />
           </div>
@@ -595,11 +600,15 @@
       <p>
         On rare occasions, laughter would run for longer than 5 seconds, sometimes persisting for 10
         and even 15 seconds. This might have been a single sustained period of laughing or waves of
-        renewed laughter caused by a character’s glance or change in expression, perhaps in reaction
+        renewed laughter caused by a character's glance or change in expression, perhaps in reaction
         to the laughter itself. In such cases, distinct laughter moments would be logged for each
         consecutive <span class="highlight-reverse">5-second block</span> of the laughing duration.
       </p>
-      <div class="self-start border border-black/40 lg:border-white/40 text-xs">
+      <div
+        class="self-start border border-black/40 lg:border-white/40 text-xs"
+        role="img"
+        aria-label="Spreadsheet showing laughter logged across four consecutive 5-second blocks: 18:40, 18:45, 18:50, and 18:55"
+      >
         <div class="grid grid-cols-5 border-b border-black/40 lg:border-white/40">
           {#each ['18:35', '18:40', '18:45', '18:50', '18:55'] as time, ti}
             <div
@@ -611,7 +620,7 @@
             </div>
           {/each}
         </div>
-        <div class="grid grid-cols-5">
+        <div class="grid grid-cols-5" aria-hidden="true">
           <div class="px-4 py-3 border-r border-black/40 lg:border-white/40"></div>
           <div
             class="px-4 py-3 border-r border-black/40 lg:border-white/40 flex justify-center items-center"
@@ -651,9 +660,9 @@
       <!-- wrapper: text 1 in flow sets natural height; texts 2-5 are absolute -->
       <div id="laughs-text-wrapper" class="relative container">
         <div id="laughs-text-1" class="py-8 md:py-12 max-w-[840px] pointer-events-none">
-          Whilst tracking the episode’s time elapsed on screen, a detailed spreadsheet template was
+          Whilst tracking the episode's time elapsed on screen, a detailed spreadsheet template was
           used to <span class="highlight">quantify</span>
-          and <span class="highlight">classify</span> data that would aid the analysis of the show’s rhythm
+          and <span class="highlight">classify</span> data that would aid the analysis of the show's rhythm
           and texture.
         </div>
         <div id="laughs-text-2" class="absolute inset-x-0 top-0 px-6 md:px-12 py-8 md:py-12">
@@ -672,13 +681,13 @@
             </div>
             <!-- Text -->
             <div class="max-w-[984px]">
-              It doesn’t take a genius to recognise the main goal of a situation comedy is to be
+              It doesn't take a genius to recognise the main goal of a situation comedy is to be
               funny. Therefore, a reliable indicator of a sitcom being funny is to measure the
-              reaction of an audience’s laughter through the laugh track. It is rare to find laugh
+              reaction of an audience's laughter through the laugh track. It is rare to find laugh
               tracks on modern sitcoms, but Seinfeld had one. With the show always being filmed in
               front of a <span class="highlight">live studio audience</span> (any scenes filmed outside
               were played back in the studio) it meant the laughter heard is an authentic measure of the
-              audience’s reaction.
+              audience's reaction.
             </div>
           </div>
         </div>
@@ -688,7 +697,7 @@
             <div class="self-center max-w-[984px]">
               Measuring laughter was the most subjective and, therefore, challenging data collection
               activity. Laughing can occur at different levels, from the subtle smile characterising
-              ‘inner’ laughter, through to more external giggles, and up to howling belly laughs. To
+              'inner' laughter, through to more external giggles, and up to howling belly laughs. To
               establish a standard and consistent measurement, any audience laughter heard would be
               considered as a <span class="highlight">laughter moment</span>, regardless of its
               level.
@@ -732,10 +741,14 @@
               <span class="highlight">5&#8209;second</span> block of time, determined by in which period
               the laughter was heard and/or most associated. When testing out the data collection approach
               over three sample episodes, the 5-second duration proved to be the most reliable and representative
-              ‘average’ duration, from the gag’s delivery to the audience’s laughter subsiding.
+              'average' duration, from the gag's delivery to the audience's laughter subsiding.
             </div>
             <!-- Excel-like grid -->
-            <div class="shrink-0 border border-white/40 text-xs">
+            <div
+              class="shrink-0 border border-white/40 text-xs"
+              role="img"
+              aria-label="Spreadsheet showing a single laughter moment logged at 18:40"
+            >
               <!-- Time headers -->
               <div class="grid grid-cols-5 border-b border-white/40">
                 {#each ['18:35', '18:40', '18:45', '18:50', '18:55'] as time, ti}
@@ -752,7 +765,7 @@
               <div class="grid grid-cols-5">
                 <div class="px-4 py-3 border-r border-white/40"></div>
                 <div class="px-4 py-3 border-r border-white/40 flex justify-center items-center">
-                  <div id="text4-laugh-icon">
+                  <div id="text4-laugh-icon" aria-hidden="true">
                     <Laugh width={30} height={30} color="white" />
                   </div>
                 </div>
@@ -769,13 +782,17 @@
             <div class="max-w-[984px]">
               On rare occasions, laughter would run for longer than 5 seconds, sometimes persisting
               for 10 and even 15 seconds. This might have been a single sustained period of laughing
-              or waves of renewed laughter caused by a character’s glance or change in expression,
+              or waves of renewed laughter caused by a character's glance or change in expression,
               perhaps in reaction to the laughter itself. In such cases, distinct laughter moments
               would be logged for each consecutive <span class="highlight">5-second block</span> of the
               laughing duration.
             </div>
             <!-- Excel-like grid -->
-            <div class="shrink-0 border border-white/40 text-xs">
+            <div
+              class="shrink-0 border border-white/40 text-xs"
+              role="img"
+              aria-label="Spreadsheet showing laughter logged across four consecutive 5-second blocks: 18:40, 18:45, 18:50, and 18:55"
+            >
               <!-- Time headers -->
               <div class="grid grid-cols-5 border-b border-white/40">
                 {#each ['18:35', '18:40', '18:45', '18:50', '18:55'] as time, ti}
@@ -792,16 +809,16 @@
               <div class="grid grid-cols-5">
                 <div class="px-4 py-3 border-r border-white/40"></div>
                 <div class="px-4 py-3 border-r border-white/40 flex justify-center items-center">
-                  <div id="text5-icon-1"><Laugh width={30} height={30} color="white" /></div>
+                  <div id="text5-icon-1" aria-hidden="true"><Laugh width={30} height={30} color="white" /></div>
                 </div>
                 <div class="px-4 py-3 border-r border-white/40 flex justify-center items-center">
-                  <div id="text5-icon-2"><Laugh width={30} height={30} color="white" /></div>
+                  <div id="text5-icon-2" aria-hidden="true"><Laugh width={30} height={30} color="white" /></div>
                 </div>
                 <div class="px-4 py-3 border-r border-white/40 flex justify-center items-center">
-                  <div id="text5-icon-3"><Laugh width={30} height={30} color="white" /></div>
+                  <div id="text5-icon-3" aria-hidden="true"><Laugh width={30} height={30} color="white" /></div>
                 </div>
                 <div class="px-4 py-3 flex justify-center items-center">
-                  <div id="text5-icon-4"><Laugh width={30} height={30} color="white" /></div>
+                  <div id="text5-icon-4" aria-hidden="true"><Laugh width={30} height={30} color="white" /></div>
                 </div>
               </div>
             </div>
