@@ -465,7 +465,7 @@
   }
   @media (max-width: 1023px) {
     section {
-      min-height: 100dvh;
+      min-height: 100lvh;
       overflow-anchor: none;
     }
   }

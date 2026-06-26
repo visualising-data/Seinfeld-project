@@ -256,6 +256,14 @@
   }
 }
 
+/* iOS: dvh changes as URL bar animates, shifting total page height by url-bar-height × N elements.
+   lvh (large viewport height) is stable — always the URL-bar-hidden size — so no layout shifts. */
+@media (max-width: 1023px) {
+  .h-\[100dvh\] { height: 100lvh; }
+  .h-dvh         { height: 100lvh; }
+  .min-h-\[100dvh\] { min-height: 100lvh; }
+}
+
 .float {
   animation: float 6s ease-in-out infinite;
 }

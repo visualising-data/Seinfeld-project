@@ -72,7 +72,7 @@
      viewport of scrolling past the sticky calendar. */
   @media (max-width: 1023px) {
     .text-1-container {
-      height: 100dvh;
+      height: 100lvh;
       padding-top: 0;
     }
   }
