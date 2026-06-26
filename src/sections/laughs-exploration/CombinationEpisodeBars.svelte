@@ -191,8 +191,11 @@
   <svg
     {width}
     {height}
-    role="presentation"
-    onclick={(e) => { if ((e.target as Element).tagName !== 'rect') onClosePin(); }}
+    role="img"
+    aria-label="Bar chart showing time on screen, time causing laughs and laugh rate per episode across all seasons for the selected characters and locations."
+    onclick={(e) => {
+      if ((e.target as Element).tagName !== 'rect') onClosePin();
+    }}
     onkeydown={(e) => e.key === 'Escape' && onClosePin()}
     style="cursor: default"
     onmouseleave={() => {
@@ -267,8 +270,11 @@
   <svg
     {width}
     {height}
-    role="presentation"
-    onclick={(e) => { if ((e.target as Element).tagName !== 'rect') onClosePin(); }}
+    role="img"
+    aria-label="Bar chart showing time on screen, time causing laughs and laugh rate per episode across all seasons for the selected characters and locations."
+    onclick={(e) => {
+      if ((e.target as Element).tagName !== 'rect') onClosePin();
+    }}
     onkeydown={(e) => e.key === 'Escape' && onClosePin()}
     style="cursor: default"
     onmouseleave={() => {

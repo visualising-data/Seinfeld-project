@@ -158,7 +158,11 @@
     <!-- Marimekko chart -->
     <div class="relative">
       {#if isMobile}
-        <svg width={chartWidth} height={mobileChartHeight}>
+        <svg
+          width={chartWidth}
+          height={mobileChartHeight}
+          aria-label="Marimekko chart comparing screen-time shares across the supporting characters. Each column's height represents a character's total screen-time share. The left portion shows time during which laughter was present; the right portion shows time without laughter."
+        >
           <!-- Axis labels -->
           <text class="small accent" x={mobileBarsStart - 50} y={10}>Relative screen time</text>
           <text class="small accent" text-anchor="end" x={mobileMidX - 4} y={30}>Laughter</text>
@@ -320,7 +324,11 @@
           </g>
         </svg>
       {:else}
-        <svg width={chartWidth} height={chartHeight}>
+        <svg
+          width={chartWidth}
+          height={chartHeight}
+          aria-label="Marimekko chart comparing screen-time shares across the supporting characters. Each column's width represents a character's total screen-time share. The top portion shows time during which laughter was present; the bottom portion shows time without laughter."
+        >
           <g transform="translate(70, {chartHeight / 2})">
             {#each charsData as char, i}
               <g

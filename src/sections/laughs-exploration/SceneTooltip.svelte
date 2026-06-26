@@ -200,7 +200,7 @@
 
   <!-- Mini scene viz -->
   <div class="border-t border-[#DDDBDC] pt-3" bind:clientWidth={containerWidth}>
-    <svg width={containerWidth} height={vizHeight + AXIS_H}>
+    <svg width={containerWidth} height={vizHeight + AXIS_H} aria-hidden="true">
       <!-- Character + location labels (left side: text then icon, right-aligned to bars) -->
       {#each vizDomain as itemId}
         {@const isLoc = sceneLocationIdSet.has(itemId)}

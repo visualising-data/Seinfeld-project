@@ -158,8 +158,11 @@
 <svg
   {width}
   {height}
-  role="presentation"
-  onclick={(e) => { if ((e.target as Element).tagName !== 'circle') onClosePin(); }}
+  role="img"
+  aria-label="Beeswarm chart showing individual scenes as circles positioned by laugh rate across all seasons for the selected characters and locations. Circle size represents scene duration. "
+  onclick={(e) => {
+    if ((e.target as Element).tagName !== 'circle') onClosePin();
+  }}
   onkeydown={(e) => e.key === 'Escape' && onClosePin()}
   style="cursor: default"
   onmouseleave={() => {

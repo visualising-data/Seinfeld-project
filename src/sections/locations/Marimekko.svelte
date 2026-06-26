@@ -134,7 +134,7 @@
       {#if isMobile}
         <svg
           role="img"
-          aria-label="Mosaic chart comparing screen-time shares across Seinfeld's key locations. Each column's width represents a location's total screen-time share. The left portion (pink) shows time during which audience laughter was recorded; the right portion (grey) shows time without laughter."
+          aria-label="Marimekko chart comparing screen-time shares across Seinfeld's key locations. Each column's height represents a location's total screen-time share. The left portion shows time during which audience laughter was recorded; the right portion shows time without laughter."
           width={chartWidth + 20}
           height={mobileChartHeight}
         >
@@ -301,7 +301,7 @@
       {:else}
         <svg
           role="img"
-          aria-label="Mosaic chart comparing screen-time shares across Seinfeld's key locations. Each column's width represents a location's total screen-time share. The left portion (pink) shows time during which audience laughter was recorded; the right portion (grey) shows time without laughter."
+          aria-label="Marimekko chart comparing screen-time shares across Seinfeld's key locations. Each column's width represents a location's total screen-time share. The top portion shows time during which audience laughter was recorded; the bottom portion shows time without laughter."
           width={chartWidth}
           height={chartHeight}
         >
