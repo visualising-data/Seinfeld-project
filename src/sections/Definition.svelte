@@ -18,7 +18,7 @@
       <h4 class="py-1 text-2xl lg:text-5xl leading-[1.2]">The Seinfeld Chronicles</h4>
       <div class="max-w-[600px] w-full">
         <p>
-          Also known as 'Good News, Bas News', or, simply, 'Pilot', 'The Seinfeld Chronicles' was
+          Also known as 'Good News, Bad News', or, simply, 'Pilot', 'The Seinfeld Chronicles' was
           the title given to the pilot episode of the popular American sitcom, Seinfeld.
         </p>
       </div>
